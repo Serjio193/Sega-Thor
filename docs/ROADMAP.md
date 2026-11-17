@@ -6658,6 +6658,8 @@ The accepted dynamic tail is now tied to runtime caller `0x03B448`, exact
 `JSR.L` entry at `0x00B730`, and A0 reaching definition `0x03B436`. The path
 is validated across 23 transitions; selector semantics remain unassigned and
 `SOURCE_OWNED` is unchanged.
+- [x] **M15.379: ROM Ali Pit Respawn Interpolation & Water Swimming Combat (`0x006B2A..0x006D7A`)** — State 0x38 per-frame 2px coordinate interpolation towards safe anchor `$FF1972`, companion entity notification at `$FF1AA4`, pit lock clear `bit 2 of $FF17B8`, water locomotion with 25% speed scaling (`>> 2`), water tread idle state 6 with splash SFX `#$500341`, and water weapon attacks for unarmed, dagger, sword (SFX `#$600377`), and bow.
+
 # M12 Dynamic SAT Selector / A6 Provenance V1 — PASS
 
 The accepted caller-side path now proves A6 base `0x00FFAFCE`, field `8(A6)`,

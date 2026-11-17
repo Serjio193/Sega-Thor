@@ -31418,6 +31418,15 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.379: ROM Ali Pit Respawn Interpolation & Water Swimming Combat (0x006B2A..0x006D7A)
+
+- Decoded and tested ROM Ali pit respawn coordinate interpolation step in State 0x38 (`0x006B48..0x006C38`), companion notification at `$FF1AA4`, default animation descriptor restore from `$03F306`, post-respawn invulnerability timers (`+0x32 = 0x3F`, `$FF198E = 12`), and pit lock clear `bit 2 of $FF17B8`.
+- Decoded and tested water swimming locomotion with 25% speed scaling (`d1 >>= 2, d2 >>= 2`), swim stroke animation `0x20` / coast animation `0x24`, stroke counter `$FF1980`, water tread idle state 6 with splash SFX `#$500341`, and water weapon attack triggers for unarmed (`0x42`), dagger (`0x4A`), sword (`0x4E` with SFX `#$600377`), and bow (`0x52`).
+- Extracted JSON evidence `data/thor-evidence/rom_ali_water_swim_m15_379.json` (4 routines, 592 bytes).
+- Unit tests: `tests/rom_ali_water_swim_test.py` (`4/4 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_379_ALI_WATER_SWIM_HANDOFF.md`.
+- Next Step: Commit and push M15.379 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-16 - Native Vertical Slice Collision & Test Recovery (In-Progress Fix)
 
 - **Root Cause:** `ScreenInstance::rebind_views()` in `src/game/screen_instance.cpp` bound `terrain` at offset `0x204U` (inside Plane A metatiles) instead of the authentic `0x00D406` collision grid offset `0x2004U` (`+4` header + `8192` bytes Plane A metatiles). That caused `oasis_native_vertical_slice` to hit synthetic metatile bytes (`0xCC`/`0x40`) instead of real ROM collision.

@@ -12271,7 +12271,11 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
-## 2026-11-16 - Shared Gemini campaign workspace (user-authorized)
+## 2026-11-17 - Milestone M15.379: ROM Ali Pit Respawn Interpolation & Water Swimming Combat (0x006B2A..0x006D7A)
+
+- Decoded Ali pit respawn per-frame interpolation step in State 0x38 (`0x006B48..0x006C38`): advances timer up to 8, steps coordinate interpolation 2px per frame per axis towards anchor `$FF1972`, updates companion entity at `$FF1AA4` via `0x0001378A`, resets facing to down (2), loads animation descriptors from `$03F306`, and clears pit lock flag `bit 2 of $FF17B8`.
+- Decoded water swimming locomotion and 25% speed scaling (`d1 >>= 2, d2 >>= 2`), stroke counter `$FF1980`, water tread idle state 6 with splash SFX `#$500341`, and weapon attack dispatch for unarmed (`0x42`), dagger (`0x4A`), sword (`0x4E` with SFX `#$600377`), and bow (`0x52`).
+
 
 The user replaces separate A/B working copies with one authoritative project at
 C:/Github/Sega-Thor. A and B retain distinct persistent conversation IDs and

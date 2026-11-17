@@ -1,0 +1,40 @@
+{
+  "milestone": "M15.379",
+  "description": "ROM Ali Pit Respawn Interpolation & Water Swimming Combat",
+  "address_range": [
+    "0x006B2A",
+    "0x006D7A"
+  ],
+  "byte_count": 592,
+  "routines": [
+    {
+      "name": "ali_state58_recovery",
+      "start": "0x006B2A",
+      "end": "0x006B46",
+      "purpose": "Clear velocity and transition to State 0x5A upon anim completion"
+    },
+    {
+      "name": "ali_pit_respawn_interpolation_step",
+      "start": "0x006B48",
+      "end": "0x006C38",
+      "purpose": "Step 2x interpolation towards safe anchor $FF1972, notify companion and exit state 0x38"
+    },
+    {
+      "name": "ali_water_swimming_locomotion",
+      "start": "0x006C46",
+      "end": "0x006CCC",
+      "purpose": "Water locomotion with 25% speed scaling, tread water idle, splash SFX 0x500341"
+    },
+    {
+      "name": "ali_water_weapon_attacks",
+      "start": "0x006CCE",
+      "end": "0x006D7A",
+      "purpose": "Water attack triggers: unarmed (0x42), dagger (0x4A), sword (0x4E/0x600377), bow (0x52)"
+    }
+  ],
+  "default_animation_descriptors_3f306": [
+    "0x0013CDFC",
+    "0x000C0000",
+    "0x0003FF7A"
+  ]
+}
