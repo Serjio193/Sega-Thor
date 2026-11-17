@@ -1,0 +1,59 @@
+{
+  "routine": "room_entry_presentation_manager_and_jingle",
+  "start_address": "0x00CD64",
+  "end_address": "0x00CEEA",
+  "size_bytes": 390,
+  "entry_points": {
+    "room_entry_presentation_manager": "0x00CD64",
+    "room_entry_whiteout_flash": "0x00CDEC",
+    "room_entry_palette_crossfade": "0x00CDA8",
+    "room_entry_standard_fade": "0x00CE22",
+    "room_entry_instant_warp_steps": "0x00CD7E",
+    "room_entry_footsteps_jingle": "0x00CE72",
+    "cram_palette_buffer_copy": "0x00CECC"
+  },
+  "target_white_palette": {
+    "address": "0x05D686",
+    "count_words": 64,
+    "all_pure_white": true
+  },
+  "audio_jingle_sequence": [
+    {
+      "step": 1,
+      "sound_id": "0x0090038E",
+      "delay_frames": 14
+    },
+    {
+      "step": 2,
+      "sound_id": "0x0090038F",
+      "delay_frames": 14
+    },
+    {
+      "step": 3,
+      "sound_id": "0x0090038E",
+      "delay_frames": 14
+    },
+    {
+      "step": 4,
+      "sound_id": "0x0090038F",
+      "delay_frames": 14
+    }
+  ],
+  "hardware_and_ram_flags": {
+    "dma_fade_busy": "0xFF164E",
+    "special_fade_mode": "0xFF17BF",
+    "warp_mode_type": "0xFF17BE",
+    "cram_dirty_flags": "0xFF164D",
+    "room_custom_flag": "0xFF16F1",
+    "room_flag_out": "0xFF164F",
+    "warp_sfx_trigger": "0xFF17BB",
+    "warp_sfx_suppress": "0xFF17BC",
+    "saved_stack_pointer": "0xFF1930",
+    "cram_buffer_base": "0xFF134C",
+    "cram_palette_line1": "0xFF138C",
+    "palette_scratch_buffer": "0xFF18A6",
+    "source_palette_ptr": "0xFF179E",
+    "gameplay_loop_dest": "0x008AA6"
+  },
+  "byte_hash": "44357d842d54b84e"
+}

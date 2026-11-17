@@ -1,3 +1,9 @@
+# M15.434 ROM Room Entry Presentation Manager, Palette Crossfader & Footstep Audio Jingle
+- `tools/extract_rom_room_presentation_jingle.py` — extractor for `0x00CD64..0x00CEEA` (presentation manager, whiteout flash, 33-step crossfade, instant warp with footstep audio, and CRAM palette line copy).
+- `tests/rom_room_presentation_jingle_test.py` — `5` unit tests verifying ROM constants and opcode sequence, whiteout flash to pure white, 33-step palette crossfade loop, standard fade vs instant warp with SFX, and footstep jingle sequence.
+- `data/thor-evidence/rom_room_presentation_jingle_m15_434.json` — extracted M15.434 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_434_ROOM_PRESENTATION_JINGLE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.433 ROM Companion Spirit Warp Repositioning, Room Collision Table Loader & BGM Engine Synchronizer
 - `tools/extract_rom_spirit_warp_bgm.py` — extractor for `0x00CC12..0x00CD64` (spirit slot `$FF1AA4` repositioning to `(X, Y-8)`, 32-area collision table `0x04371E`, BGM track sync, and 21-entity ground surface latching).
 - `tests/rom_spirit_warp_bgm_test.py` — `5` unit tests verifying ROM constants, 32 collision table validity, spirit repositioning and type handling, BGM track continue vs change sync, and 21-entity ground surface latch sweep.

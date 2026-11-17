@@ -1,3 +1,6 @@
+# M15.434 ROM Room Entry Presentation Manager, Palette Crossfader & Footstep Audio Jingle (`0x00CD64`..`0x00CEEA`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_room_presentation_jingle.py`, `tests/rom_room_presentation_jingle_test.py` (`5/5 PASS`), `data/thor-evidence/rom_room_presentation_jingle_m15_434.json`, and `docs/handoffs/STANDALONE_M15_434_ROOM_PRESENTATION_JINGLE_HANDOFF.md`.
+
 # M15.433 ROM Companion Spirit Warp Repositioning, Room Collision Table Loader & BGM Engine Synchronizer (`0x00CC12`..`0x00CD64`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_spirit_warp_bgm.py`, `tests/rom_spirit_warp_bgm_test.py` (`5/5 PASS`), `data/thor-evidence/rom_spirit_warp_bgm_m15_433.json`, and `docs/handoffs/STANDALONE_M15_433_SPIRIT_WARP_BGM_HANDOFF.md`.
 
