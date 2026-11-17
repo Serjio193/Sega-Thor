@@ -1,3 +1,9 @@
+# M15.296 ROM V-Int DMA Queue & 64-Frame Input History Ring
+- `tools/extract_rom_vint_and_input_ring.py` — Extracts V-Int DMA queue (`$FF10B4`), soft-reset chord (`0xE0000202`), and 64-entry input ring (`$FF1668`).
+- `tests/rom_vint_and_input_ring_test.py` — Unit tests verifying V-Int & input ring constants and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_vint_and_input_ring_m15_296.json` — Extracted V-Int & input ring evidence.
+- `docs/handoffs/STANDALONE_M15_296_VINT_AND_INPUT_RING_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.295 ROM CRAM Palette Fade Engine
 - `tools/extract_rom_palette_fade.py` — Extracts 64-color CRAM Fade In/Out constants & BGR333 `/ 7` scaling kernel (`0x002FDA`).
 - `tests/rom_palette_fade_test.py` — Unit tests verifying fade constants, `0x0EEE` ramp, and JSON artifact (`2/2 PASS`).

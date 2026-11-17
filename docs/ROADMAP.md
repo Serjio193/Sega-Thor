@@ -1,3 +1,7 @@
+# M15.296 ROM V-Int DMA Queue & 64-Frame Input History Ring (`0x001F76`..`0x002218`) — COMPLETE / VERIFIED
+- Decoded V-Int vector (`0x001F76`), LIFO 8B VDP DMA queue (`$FF10B4..$FF1892`), soft-reset chord (`0xE0000202 -> 0x00020E`), 64-frame input history ring (`$FF1668`, `-2 & 0x7E`, max `0x3F`), and frame counters (`$FF1656`/`$FF1658`/`$FF1654`).
+- Authored `tools/extract_rom_vint_and_input_ring.py`, `tests/rom_vint_and_input_ring_test.py` (`2/2 PASS`), `data/thor-evidence/rom_vint_and_input_ring_m15_296.json`, and `docs/handoffs/STANDALONE_M15_296_VINT_AND_INPUT_RING_HANDOFF.md`.
+
 # M15.295 ROM CRAM Palette Fade Engine (`0x002D58`..`0x00302D`) — COMPLETE / VERIFIED
 - Decoded 64-color CRAM shadow (`$FF134C`, backup `$FF18A6`), blocking/async Fade In (`0x002D84`/`0x002DB6`, steps `0..7`) & Fade Out (`0x002E1E`/`0x002E78`, steps `7..0`), and exact BGR333 channel scaling (`((c & mask) * step / 7) & mask` at `0x002FDA`).
 - Authored `tools/extract_rom_palette_fade.py`, `tests/rom_palette_fade_test.py` (`2/2 PASS`), `data/thor-evidence/rom_palette_fade_m15_295.json`, and `docs/handoffs/STANDALONE_M15_295_PALETTE_FADE_HANDOFF.md`.

@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.296: ROM V-INT DMA QUEUE & 64-FRAME INPUT HISTORY RING (`0x001F76`..`0x002218`) — `$FF10B4` 8B DMA Queue, `0xE0000202` Reset, 64-Frame Input Ring `$FF1668`; Extractor (`tools/extract_rom_vint_and_input_ring.py` <= 500 lines), Tests (`tests/rom_vint_and_input_ring_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_296_VINT_AND_INPUT_RING_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x002112..0x002218` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_vint_and_input_ring.py` and `python tests/rom_vint_and_input_ring_test.py` (2/2 PASS).
+- Next: Commit & push M15.296, await M16.79 completion, and continue.
+
 # 2026-11-17 — Milestone M15.295: ROM CRAM PALETTE FADE ENGINE (`0x002D58`..`0x00302D`) — 64 Colors, Steps `0..7`, `((c & mask) * step / 7) & mask`; Extractor (`tools/extract_rom_palette_fade.py` <= 500 lines), Tests (`tests/rom_palette_fade_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_295_PALETTE_FADE_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x002D58..0x00302D` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_palette_fade.py` and `python tests/rom_palette_fade_test.py` (2/2 PASS).

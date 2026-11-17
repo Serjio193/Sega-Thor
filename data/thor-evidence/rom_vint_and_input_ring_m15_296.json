@@ -1,0 +1,28 @@
+{
+  "milestone": "M15.296",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "vint": {
+    "vector_addr": "0x001F76",
+    "dma_queue_flag_addr": "0xFF164E",
+    "dma_queue_base_addr": "0xFF10B4",
+    "dma_queue_tail_ptr": "0xFF1892",
+    "dma_entry_bytes": 8,
+    "dma_emitter_addr": "0x0027FC",
+    "soft_reset_combo_ff165e": "0xE0000202",
+    "soft_reset_target": "0x00020E"
+  },
+  "input_ring": {
+    "controller_poll_addr": "0x002992",
+    "ring_base_addr": "0xFF1668",
+    "ring_index_addr": "0xFF16E8",
+    "ring_count_addr": "0xFF16EA",
+    "ring_byte_mask": "0x007E",
+    "ring_entries": 64,
+    "ring_max_count": 63,
+    "frame_counter_addr": "0xFF1656",
+    "countdown_timers": [
+      "0xFF1658",
+      "0xFF1654"
+    ]
+  }
+}

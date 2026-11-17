@@ -1,3 +1,7 @@
+# ADR-20261117-M15-296-VINT-AND-INPUT-RING — V-Int DMA Queue & Input History Ring (`0x001F76`..`0x002218`)
+- **Decision:** Model Beyond Oasis's V-Int services in Standalone with the 8-byte LIFO VDP DMA queue (`$FF10B4..$FF1892`), `0xE0000202` soft-reset chord, 64-entry reverse-indexed input history ring (`$FF1668`), and `$FF1656`/`$FF1658`/`$FF1654` frame counters.
+- **Evidence:** Direct Capstone M68K disassembly of `0x002112..0x002218` and vector `0x000078` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-295-PALETTE-FADE — CRAM Palette Fade Engine (`0x002D58`..`0x00302D`)
 - **Decision:** Model Mega Drive 64-color CRAM fading in Standalone via `0x002FDA`'s 8-step (`0..7`) BGR333 scaling formula `((c & mask) * step / 7) & mask` across `$FF134C` / `$FF18A6`.
 - **Evidence:** Direct Capstone M68K disassembly of `0x002D58..0x00302D` in `local-roms/Beyond Oasis (USA).md`.
