@@ -5330,6 +5330,10 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
 - docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).
 
+- tools/extract_rom_ali_somersault_dash_leap.py — M15.393 ROM Ali somersault flip & dash leap motion recognizers extractor.
+- tests/rom_ali_somersault_dash_leap_test.py — M15.393 unit tests for somersault flip and compound dash leap recognizers.
+- data/thor-evidence/rom_ali_somersault_dash_leap_m15_393.json — M15.393 evidence database.
+- docs/handoffs/STANDALONE_M15_393_ALI_SOMERSAULT_DASH_LEAP_HANDOFF.md — M15.393 C++20 Standalone handoff.
 - tools/extract_rom_ali_dpad_slide_recognizer.py — M15.392 ROM Ali 8-direction D-pad velocity resolver & slide recognizer extractor.
 - tests/rom_ali_dpad_slide_recognizer_test.py — M15.392 unit tests for 8-way D-pad velocity and slide motion recognizer.
 - data/thor-evidence/rom_ali_dpad_slide_recognizer_m15_392.json — M15.392 evidence database.

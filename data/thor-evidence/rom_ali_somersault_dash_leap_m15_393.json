@@ -1,0 +1,65 @@
+{
+  "milestone": "M15.393",
+  "description": "ROM Ali Somersault Flip (0x8778) & Compound Dash Leap (0x8814) Motion Recognizers",
+  "address_range": [
+    "0x008778",
+    "0x008910"
+  ],
+  "byte_count": 408,
+  "somersault_table": {
+    "facing_0_up": [
+      1,
+      2,
+      1,
+      0,
+      15,
+      2,
+      15,
+      0
+    ],
+    "facing_1_right": [
+      8,
+      4,
+      8,
+      0,
+      15,
+      4,
+      15,
+      0
+    ],
+    "facing_2_down": [
+      2,
+      1,
+      2,
+      0,
+      15,
+      1,
+      15,
+      0
+    ],
+    "facing_3_left": [
+      4,
+      8,
+      4,
+      0,
+      15,
+      8,
+      15,
+      0
+    ]
+  },
+  "routines": [
+    {
+      "name": "ali_motion_somersault_0x8778",
+      "start": "0x008778",
+      "end": "0x0087F2",
+      "purpose": "Recognizes Somersault flip forward-back-forward motion sequence using table 0x0087F4"
+    },
+    {
+      "name": "ali_motion_dash_leap_0x8814",
+      "start": "0x008814",
+      "end": "0x00890E",
+      "purpose": "Recognizes compound Dash Leap: matches 3-step lead-in from table 0x0087F4 then chains into 360-degree rotational slide sequence"
+    }
+  ]
+}

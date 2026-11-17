@@ -12271,6 +12271,12 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.393: ROM Ali Somersault Flip (0x8778) & Compound Dash Leap (0x8814) Motion Recognizers (0x008778..0x008910)
+
+- Decoded Somersault flip command motion recognizer `0x8778` (`0x008778..0x0087F2`): evaluates facing direction `$16(a6)` against 32-byte table `0x0087F4`, enforcing 3-step Forward -> Backward -> Forward directional motions.
+- Decoded 32-byte 4-direction motion pattern table `0x0087F4..0x008814` across all 4 facings (Up: 1->2->1, Right: 8->4->8, Down: 2->1->2, Left: 4->8->4).
+- Decoded Compound Dash Leap motion recognizer `0x8814` (`0x008814..0x00890E`): matches 3-step lead-in then chains to 360-degree rotational slide sequence, clearing `$FF16EA = 0` on match.
+
 ## 2026-11-17 - Milestone M15.392: ROM Ali 8-Direction D-Pad Velocity Resolver & Slide Motion Recognizer (0x86B4) (0x0085E2..0x008778)
 
 - Decoded 16-entry D-pad jump table `0x0085FA` resolver (`0x0085E2..0x0086B2`): resolves 8-way directional velocity vectors (Up/Down `0x30000`, Left/Right `0x36000`, Diagonals `0x2A000`/`0x25800`), facing `d3`, and movement carry flag.

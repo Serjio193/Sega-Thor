@@ -31418,6 +31418,16 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.393: ROM Ali Somersault Flip (0x8778) & Compound Dash Leap (0x8814) Motion Recognizers (0x008778..0x008910)
+
+- Decoded and tested Somersault flip command motion recognizer `0x8778` (`0x008778..0x0087F2`): evaluates facing direction `$16(a6)` against 32-byte table `0x0087F4`, enforcing 3-step Forward -> Backward -> Forward directional motions.
+- Decoded and extracted 32-byte 4-direction motion pattern table `0x0087F4..0x008814` across all 4 facings (Up: 1->2->1, Right: 8->4->8, Down: 2->1->2, Left: 4->8->4).
+- Decoded and tested Compound Dash Leap motion recognizer `0x8814` (`0x008814..0x00890E`): matches 3-step lead-in then chains to 360-degree rotational slide sequence, clearing `$FF16EA = 0` on match.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_somersault_dash_leap_m15_393.json` (2 routines, 408 bytes).
+- Unit tests: `tests/rom_ali_somersault_dash_leap_test.py` (`3/3 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_393_ALI_SOMERSAULT_DASH_LEAP_HANDOFF.md`.
+- Next Step: Commit and push M15.393 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.392: ROM Ali 8-Direction D-Pad Velocity Resolver & Slide Motion Recognizer (0x86B4) (0x0085E2..0x008778)
 
 - Decoded and tested 16-entry D-pad jump table `0x0085FA` resolver (`0x0085E2..0x0086B2`): resolves 8-way directional velocity vectors (Up/Down `0x30000`, Left/Right `0x36000`, Diagonals `0x2A000`/`0x25800`), facing `d3`, and movement carry flag.
