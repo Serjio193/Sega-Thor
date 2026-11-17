@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/world/vdp_plane_blitter.hpp` / `src/game/world/vdp_plane_blitter.cpp`: Wrap-around VDP Plane A/B blitter (`0x00D800..0x00D94E`, `(64, 32)` vs `(41, 29)` selection and dual-modulo `64x32` nametable copy) (M16.95).
+- `tests/m16_95_vdp_plane_blitter_test.cpp`: Automated M16.95 test qualifying full-plane vs viewport dimension selection and dual-modulo wrap blitting (M16.95).
 - `src/game/entities/entity_anim_sequencer.hpp` / `src/game/entities/entity_anim_sequencer.cpp`: 4-byte entity animation keyframe sequencer (`0x008FF0..0x009041`, `AnimKeyframe4`, `EntityAnimState`, `step_anim_keyframe`, `step_anim_tick`) (M16.94).
 - `tests/m16_94_entity_anim_sequencer_test.cpp`: Automated M16.94 test qualifying keyframe duration math, `swing_hit_once` clear, `last_frame` wrap, and `anim_completed` flag (M16.94).
 - `src/game/world/room_layer_loader.hpp` / `src/game/world/room_layer_loader.cpp`: Room tilemap & collision layer descriptor builder (`0x00D500..0x00D7BF`, `compute_row_shift` `0x00D7B0`, `decode_room_layer_header`) (M16.93).

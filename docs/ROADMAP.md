@@ -1,3 +1,9 @@
+# M16.95 Wrap-Around VDP Plane Blitter (`0x00D800..0x00D94E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `BlitDimensions`, `select_blit_dimensions` (`0x00D820..0x00D846`), and `blit_wrapped_plane_window` (`0x00D8C4..0x00D946`) in `src/game/world/vdp_plane_blitter.hpp/.cpp`.
+- Qualified `oasis_m16_95_vdp_plane_blitter` and full 55-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.94 Entity Animation Frame Sequencer (`0x008FE0..0x0090FC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

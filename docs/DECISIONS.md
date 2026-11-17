@@ -1,3 +1,14 @@
+# ADR-20261117-M16-95-VDP-PLANE-BLITTER — Wrap-Around VDP Plane Blitter
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.311 extracted the wrap-around VDP Plane A/B blitter (`0x00D800..0x00D94E`: `(64, 32)` vs `(41, 29)` window selection and dual-modulo copy into `64x32` nametable `0x1000` bytes).
+
+**Decisions:**
+1. **Dedicated `vdp_plane_blitter` Module:**
+   - Added `src/game/world/vdp_plane_blitter.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-94-ENTITY-ANIM-SEQUENCER — Entity Animation Frame Sequencer
 **Status:** Accepted
 **Date:** 2026-11-17

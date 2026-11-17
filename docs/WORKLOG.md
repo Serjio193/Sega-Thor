@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.95: Wrap-Around VDP Plane Blitter)
+- **Concrete Task**: Implement `src/game/world/vdp_plane_blitter.hpp/.cpp` with `BlitDimensions` (`cols`, `rows`), `select_blit_dimensions(tiles_w, tiles_h, force_full_bit1)` (`0x00D820..0x00D846`: `(64, 32)` vs `(41, 29)`), and `blit_wrapped_plane_window(...)` (`0x00D8C4..0x00D946`: `64x32` VDP nametable `0x1000`B / `0x80`B row stride with dual modulo wrap on source `(tiles_w, tiles_h)` and VDP `(64, 32)`); add `tests/m16_95_vdp_plane_blitter_test.cpp`; qualify full 55-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/vdp_plane_blitter.hpp` / `src/game/world/vdp_plane_blitter.cpp`.
+  * Added `tests/m16_95_vdp_plane_blitter_test.cpp` (registered as `oasis_m16_95_vdp_plane_blitter` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 55/55 regression run.
+  * MSVC Debug (`build-debug`): 55/55 regression run.
+  * Remaining unknowns: Wiring `blit_wrapped_plane_window()` directly into incremental camera-scroll VDP DMA uploads is deferred to future scrolling-plane unification.
+
 # Worklog — 2026-11-17 (M16.94: Entity Animation Frame Sequencer)
 - **Concrete Task**: Implement `src/game/entities/entity_anim_sequencer.hpp/.cpp` with `AnimKeyframe4` (`frame_id`, `flags_dur`, `is_last_frame()` `0x8000`), `EntityAnimState` (`cursor_bytes` `+0x30`, `timer_2e` `+0x2E`, `frame_id_32` `+0x32`, `combat_flags_37` `+0x37`), `step_anim_keyframe(keyframes, state)` (`0x008FF0..0x009041`), and `step_anim_tick(keyframes, state)`; add `tests/m16_94_entity_anim_sequencer_test.cpp`; qualify full 54-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
