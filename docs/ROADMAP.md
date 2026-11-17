@@ -1,3 +1,9 @@
+# M16.83 Ali Command-Input Special Moves (0x0086B4 360° Spin Slash & 0x008778 F-B-F Lunge) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `detect_spin_360` (`0x0086B4` / `0x008768`, CW/CCW 4 cardinal steps) and `detect_fbf_lunge` (`0x008778` / `0x0087F4`, 4 facings + perpendicular abort) in `src/game/player/special_move_inputs.hpp/.cpp` with `InputHistoryRing64::clear_count()`.
+- Qualified `oasis_m16_83_special_move_inputs` and full 43-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.82 Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool (0x00BF26..0x00C060) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

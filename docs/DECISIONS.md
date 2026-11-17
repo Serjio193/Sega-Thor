@@ -1,3 +1,14 @@
+# ADR-20261117-M16-83-SPECIAL-MOVE-INPUTS — Ali Command-Input Special Moves (0x0086B4 & 0x008778)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.299 extracted Ali's 360° Spin Slash (`0x0086B4`, LUT `0x008768`) and Forward-Back-Forward Lunge (`0x008778`, table `0x0087F4`) detectors operating on `InputHistoryRing64` (`$FF1668`).
+
+**Decisions:**
+1. **Dedicated `special_move_inputs` Module:**
+   - Added `src/game/player/special_move_inputs.hpp/.cpp` and `InputHistoryRing64::clear_count()`, keeping `standalone_game_simulation.cpp` untouched at 494 lines.
+
 # ADR-20261117-M16-82-HIT-REACTIONS-AND-SPARKS — Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool
 **Status:** Accepted
 **Date:** 2026-11-17

@@ -57,6 +57,7 @@ public:
 
     [[nodiscard]] std::uint8_t byte_index() const noexcept { return byte_index_; }
     [[nodiscard]] std::uint8_t count() const noexcept { return count_; }
+    void clear_count() noexcept { count_ = 0U; }
 
     // ROM 0x00217C: Checks $FF165E.L == 0xE0000202 (A+B+C+Start soft reset).
     [[nodiscard]] static constexpr bool is_soft_reset_combo(std::uint32_t input_ff165e_l) noexcept {

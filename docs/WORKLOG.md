@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.83: Ali Command-Input Special Moves)
+- **Concrete Task**: Implement `src/game/player/special_move_inputs.hpp/.cpp` with `detect_spin_360(InputHistoryRing64&)` (`0x0086B4`: 30-frame scan, 16-byte LUT `0x008768`, 4 consecutive CW/CCW cardinal steps, clears `ring.count()` on match) and `detect_fbf_lunge(InputHistoryRing64&, uint8_t facing)` (`0x008778` / `0x0087F4`: Up `1,2,1,0`, Right `8,4,8,0`, Down `2,1,2,0`, Left `4,8,4,0`, perpendicular abort, clears `ring.count()` on match); add `clear_count()` to `InputHistoryRing64`; add `tests/m16_83_special_move_inputs_test.cpp`; qualify full 43-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/player/special_move_inputs.hpp` / `src/game/player/special_move_inputs.cpp` and `InputHistoryRing64::clear_count()` in `src/game/video/vint_dma_and_input_ring.hpp`.
+  * Added `tests/m16_83_special_move_inputs_test.cpp` (registered as `oasis_m16_83_special_move_inputs` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 43/43 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_83`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 43/43 regression run.
+  * Remaining unknowns: Wiring `detect_spin_360` and `detect_fbf_lunge` into `PlayerActionState` transitions (`StandaloneGameSimulation::step_frame`) is deferred to future player-combat integration.
+
 # Worklog — 2026-11-17 (M16.82: Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool)
 - **Concrete Task**: Implement `src/game/combat/hit_reactions_and_sparks.hpp/.cpp` with `HitReactionKind` (`0, 2, 4, 6`), `apply_hit_reaction_physics` (4 profiles: `0x300/0x2C0/0` grounded or bit 7 + `4` airborne, `0/0/0x70000`, `0x400/0x3C0/0x28000`, `0x700/0x680/0x30000`), `apply_shield_parry` (`0x00900202`, Ali recoil `0x008530` on weapon `$FF198C` in `{6, 10}`, spark spawn), and `HitSparkPool4` (`$FF19C8` 4 slots, `type = 2`, `timer = 5`, `tick_sparks()`); add `tests/m16_82_hit_reactions_and_sparks_test.cpp`; qualify full 42-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
