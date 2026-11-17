@@ -1,3 +1,9 @@
+# M16.125 Integer Square Root & 256-Step atan2 Angle LUT (`0x00E6BA..0x00E78C`, `0x05D906`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `isqrt_u32` (`0x00E6BA..0x00E6EE`, Heron's method with `0x0400` initial cap), `atan_q1` (`0x00E768..0x00E78C`, 9-word tangent LUT `0x0005D906`), `atan2_256` (`0x00E722..0x00E766`), `atan2_to_point` (`0x00E6F0..0x00E704`), and `atan2_to_player` (`0x00E706..0x00E720`) in `src/game/math/isqrt_atan2.hpp/.cpp`.
+- Qualified `oasis_m16_125_isqrt_atan2` and the 106-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.124 Ali Attack Action & Weapon-Class State Dispatcher (`0x008002..0x00814C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

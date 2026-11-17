@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/math/isqrt_atan2.hpp` / `src/game/math/isqrt_atan2.cpp`: Integer square root (Heron's method, `0x0400` cap, `0x00E6BA..0x00E6EE`) and 256-step `atan2` angle LUT (`0x00E6F0..0x00E78C`, 9-word tangent LUT `0x0005D906`, `0`=Right, `64`=Up, `128`=Left, `192`=Down) (M16.125).
+- `tests/m16_125_isqrt_atan2_test.cpp`: Automated M16.125 test qualifying `isqrt_u32`, 8-step `atan_q1`, 256-step `atan2_256` quadrants/octants, and `atan2_to_point` / `atan2_to_player` (M16.125).
 - `src/game/player/ali_attack_dispatch.hpp` / `src/game/player/ali_attack_dispatch.cpp`: Ali attack action & weapon-class state dispatcher (`0x008002..0x00814C`: ground & airborne attacks for dagger `0x0A`, sword `0x0C`, bow `0x0E`, bomb `0x10`, 21f air-kick stun, bow SFX `0x00600377`, input ring clear) (M16.124).
 - `tests/m16_124_ali_attack_dispatch_test.cpp`: Automated M16.124 test qualifying ground/airborne attack dispatch, sword thrust/spin, bow normal/hyper fire & SFX, bomb throw, active projectile guard, and air-kick stun (M16.124).
 - `src/game/entities/viewport_culler_landing.hpp` / `src/game/entities/viewport_culler_landing.cpp`: Airborne XY integration & `15`-frame landing stun / `0x00800270` thud (`0x00E522..0x00E5AC`, reusing `step_z_gravity()`), `320x224 + margin` viewport cullers (`0x00E5AE..0x00E66C`), and `94`-word `0xBC` entity struct copy (`0x00E66E..0x00E67E`) (M16.123).

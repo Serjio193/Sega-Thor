@@ -1,3 +1,14 @@
+# ADR-20261117-M16-125-ISQRT-ATAN2 — Integer Square Root & 256-Step atan2 Angle LUT
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.341 extracted `0x00E6BA..0x00E78C` and `0x0005D906`: `isqrt_u32` (Heron's method with `0x0400` initial cap), `atan2_to_point` / `atan2_to_player`, and `atan_q1` with 9-threshold tangent LUT (`0x0005D906`).
+
+**Decisions:**
+1. **Dedicated `isqrt_atan2` Module:**
+   - Added `src/game/math/isqrt_atan2.hpp/.cpp` modeling `isqrt_u32`, `atan_q1` with `kTangentLut0x05D906`, `atan2_256`, `atan2_to_point`, and `atan2_to_player` in 256-step angle space (`0`=Right, `64`=Up, `128`=Left, `192`=Down).
+
 # ADR-20261117-M16-124-ALI-ATTACK-DISPATCH — Ali Attack Action & Weapon-Class State Dispatcher
 **Status:** Accepted
 **Date:** 2026-11-17

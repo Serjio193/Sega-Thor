@@ -1,3 +1,15 @@
+# Worklog — 2026-11-17 (M16.125: Integer Square Root & 256-Step atan2 Angle LUT)
+- **Concrete Task**: Implement `src/game/math/isqrt_atan2.hpp/.cpp` with `isqrt_u32(...)` (`0x00E6BA..0x00E6EE`: Heron's method with `0x0400` initial cap), `atan_q1(...)` (`0x00E768..0x00E78C`: 8-step angle 0..64 with 9-threshold tangent LUT `0x0005D906`), `atan2_256(...)` (`0x00E722..0x00E766`: 256-step angle `0`=Right, `64`=Up, `128`=Left, `192`=Down), `atan2_to_point(...)` (`0x00E6F0..0x00E704`), and `atan2_to_player(...)` (`0x00E706..0x00E720`); add `tests/m16_125_isqrt_atan2_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/math/isqrt_atan2.hpp` / `src/game/math/isqrt_atan2.cpp`.
+  * Added `tests/m16_125_isqrt_atan2_test.cpp` (registered as `oasis_m16_125_isqrt_atan2` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 106/106 tests passed (`ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): 106/106 tests passed (`ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: `isqrt_atan2.hpp` (49 lines), `isqrt_atan2.cpp` (79 lines), `m16_125_isqrt_atan2_test.cpp` (81 lines), `CMakeLists.txt` (260 lines), `project_tests_m16.cmake` (397 lines) <= 500 lines.
+  * Remaining unknowns: Wiring `atan2_to_player()` directly into projectile homing / AI direction kernels in `StandaloneGameSimulation` is deferred to future entity-steering unification.
+
 # Worklog — 2026-11-17 (M16.124: Ali Attack Action & Weapon-Class State Dispatcher)
 - **Concrete Task**: Implement `src/game/player/ali_attack_dispatch.hpp/.cpp` with `dispatch_ali_attack(...)` (`0x008002..0x00814C`: ground attack dispatch `0x008002..0x0080D4` and airborne attack dispatch `0x0080D8..0x00814C` for dagger `0x0A`, sword `0x0C`, bow `0x0E`, bomb `0x10`; sword thrust on D-pad, sword spin, bow normal/hyper item 8 + SFX `0x00600377`, bomb throw, active projectile lockout `$FF1B60`, airborne air-kick `0x40`/`0x38` with 21f stun, airborne sword spin, and input ring clearance `$FF16EA=0`) and `dispatch_ground_attack(...)`; add `tests/m16_124_ali_attack_dispatch_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
