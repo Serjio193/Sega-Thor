@@ -1,3 +1,7 @@
+# ADR-20261117-M15-312-VINT-HUD-SLIDE — V-Int Sound Tick & HUD Slide (`0x002380`..`0x0023CA`)
+- **Decision:** Model V-Int tail HUD slide offset (`$FF185A`) in Standalone via `0x002386`'s `2`-pixel step toward `0x20` (forward) or `0x138` (reverse) with `0x158` modular wrap, paired with `0x060000` sound tick.
+- **Evidence:** Direct Capstone M68K disassembly of `0x002380..0x0023CA` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-311-VDP-PLANE-BLITTER — Wrap-Around VDP Plane Blitter (`0x00D800`..`0x00D94E`)
 - **Decision:** Model initial/full-screen VDP nametable blitting in Standalone via `0x00D800`'s `64x32` full-plane vs `41x29` viewport selection and dual modulo wrap-around (`source % room`, `vdp % (64, 32)`).
 - **Evidence:** Direct Capstone M68K disassembly of `0x00D800..0x00D94E` in `local-roms/Beyond Oasis (USA).md`.

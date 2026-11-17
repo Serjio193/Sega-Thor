@@ -1,3 +1,9 @@
+# M15.312 ROM V-Int Sound Tick & HUD Slide Offset
+- `tools/extract_rom_vint_hud_slide.py` — Extracts V-Int sound tick (`0x060000`) & `$FF185A` HUD slide state machine (`0x002380`).
+- `tests/rom_vint_hud_slide_test.py` — Unit tests verifying HUD slide limits/wrap and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_vint_hud_slide_m15_312.json` — Extracted V-Int HUD slide evidence.
+- `docs/handoffs/STANDALONE_M15_312_VINT_HUD_SLIDE_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.311 ROM Wrap-Around VDP Plane Blitter
 - `tools/extract_rom_vdp_plane_blitter.py` — Extracts `41x29` / `64x32` VDP plane blitter dimensions & wrap constants (`0x00D800`).
 - `tests/rom_vdp_plane_blitter_test.py` — Unit tests verifying blitter dimensions and JSON artifact (`2/2 PASS`).

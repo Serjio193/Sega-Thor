@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.312: ROM V-INT SOUND TICK & HUD SLIDE (`0x002380`..`0x0023CA`) — `0x060000` Tick, `0x20`/`0x138`/`0x158` Slide; Extractor (`tools/extract_rom_vint_hud_slide.py` <= 500 lines), Tests (`tests/rom_vint_hud_slide_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_312_VINT_HUD_SLIDE_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x002380..0x0023CA` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_vint_hud_slide.py` and `python tests/rom_vint_hud_slide_test.py` (2/2 PASS).
+- Next: Commit & push M15.312, await M16.95 completion, and continue.
+
 # 2026-11-17 — Milestone M15.311: ROM WRAP-AROUND VDP PLANE BLITTER (`0x00D800`..`0x00D94E`) — `41x29`/`64x32`, Dual Wrap; Extractor (`tools/extract_rom_vdp_plane_blitter.py` <= 500 lines), Tests (`tests/rom_vdp_plane_blitter_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_311_VDP_PLANE_BLITTER_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00D800..0x00D94E` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_vdp_plane_blitter.py` and `python tests/rom_vdp_plane_blitter_test.py` (2/2 PASS).

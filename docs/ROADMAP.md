@@ -1,3 +1,7 @@
+# M15.312 ROM V-Int Sound Tick & HUD Slide Offset (`0x002380`..`0x0023CA`) — COMPLETE / VERIFIED
+- Decoded V-Int tail (`0x002380`: `jsr 0x060000` sound tick and `$FF185A` HUD slide offset with `$FF1859` direction, `0x20`/`0x138` stops, `0x158` wrap).
+- Authored `tools/extract_rom_vint_hud_slide.py`, `tests/rom_vint_hud_slide_test.py` (`2/2 PASS`), `data/thor-evidence/rom_vint_hud_slide_m15_312.json`, and `docs/handoffs/STANDALONE_M15_312_VINT_HUD_SLIDE_HANDOFF.md`.
+
 # M15.311 ROM Wrap-Around VDP Plane Blitter (`0x00D800`..`0x00D94E`) — COMPLETE / VERIFIED
 - Decoded dual-modulo wrap-around VDP Plane A/B blitter (`0x00D800`: `64x32` full-plane vs `41x29` viewport selection, `0x80` row bytes, `0x1000` plane bytes).
 - Authored `tools/extract_rom_vdp_plane_blitter.py`, `tests/rom_vdp_plane_blitter_test.py` (`2/2 PASS`), `data/thor-evidence/rom_vdp_plane_blitter_m15_311.json`, and `docs/handoffs/STANDALONE_M15_311_VDP_PLANE_BLITTER_HANDOFF.md`.

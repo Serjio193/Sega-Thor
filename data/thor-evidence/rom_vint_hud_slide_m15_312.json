@@ -1,0 +1,14 @@
+{
+  "milestone": "M15.312",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "vint_tail": {
+    "entry_addr": "0x002380",
+    "sound_tick_target": "0x060000",
+    "ram_slide_dir": "0xFF1859",
+    "ram_slide_offset": "0xFF185A",
+    "fwd_stop_offset": 32,
+    "rev_stop_offset": 312,
+    "wrap_limit": 344,
+    "step_pixels": 2
+  }
+}
