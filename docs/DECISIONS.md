@@ -1,3 +1,33 @@
+# ADR-20261117-M16-136-RESUMABLE-HITBOX-ITER — Resumable 21-Slot Masked 3D Hitbox Iterator
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.352 extracted `0x00B852..0x00B99E`: `find_first_3d_point_hit` (`0x00B852..0x00B910`), `find_next_3d_point_hit` (`0x00B912..0x00B920`), and `find_first_3d_box_hit` (`0x00B922..0x00B99E`).
+2. Point-hit probe (`0x00B852`):
+   - Computes absolute world probe bounds by combining caller coordinates and elevation bias:
+     * `px1 = caller.x + x1`, `px2 = caller.x + x2`
+     * `py1 = caller.y + elevation + y1`, `py2 = caller.y + elevation + y2`
+     * `pz = caller.z + elevation + z`
+   - Scans 21 entity slots at `$FF19E8` (stride `0xBC` = 188 bytes):
+     * Tests slot bit in `slot_mask` (`lsr.l #1, d0`): skips if clear.
+     * Skips caller self slot (`a0 == a6` / `i == self_index`) and inactive slots (`state <= 0`).
+     * AABB overlap test against candidate entity `(ex, ey, ez, rx, ry, hz)`:
+       `px1 <= ex + rx && px2 >= ex - rx`
+       `py1 <= ey + ry && py2 >= ey - ry`
+       `pz >= ez && pz <= ez + hz`
+     * On hit: saves iterator register state `d0..d7 / a0` to `$FF194A..$FF196A` and returns hit entity pointer/index with carry clear.
+     * On exhaustion: returns carry set.
+3. Next-hit resume (`0x00B912`):
+   - Restores saved `d0..d7 / a0` from `$FF194A..$FF196A`, advances to the next entity slot, and resumes scanning the remaining slots in the 21-slot pool.
+4. Box-hit probe (`0x00B922`):
+   - Full 3D Z-interval probe `[pz1, pz2]`:
+     * Overlaps candidate Z-interval `[ez, ez + hz]` when `!(pz1 > ez + hz || pz2 < ez)`.
+
+**Decisions:**
+1. **Dedicated `resumable_hitbox_iter` Module:**
+   - Added `src/game/combat/resumable_hitbox_iter.hpp/.cpp` modeling `find_first_3d_point_hit`, `find_first_3d_point_hit_abs`, `find_next_3d_hit`, `find_first_3d_box_hit`, `find_first_3d_box_hit_abs`, and `collect_all_3d_point_hits`.
+
 # ADR-20261117-M16-135-ALI-JUMP-PICKUP — Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box
 **Status:** Accepted
 **Date:** 2026-11-17

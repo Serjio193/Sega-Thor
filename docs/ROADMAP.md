@@ -1,3 +1,13 @@
+# M16.136 Resumable 21-Slot Masked 3D Hitbox Iterator (`0x00B852..0x00B99E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `find_first_3d_point_hit`, `find_first_3d_point_hit_abs`, `find_next_3d_hit`, `find_first_3d_box_hit`, `find_first_3d_box_hit_abs`, and `collect_all_3d_point_hits` in `src/game/combat/resumable_hitbox_iter.hpp/.cpp` covering:
+  - 21-slot entity pool iteration at `$FF19E8` (stride `0xBC` = 188B) with 32-bit slot mask filter, self-index exclusion, and inactive entity skip (`state <= 0`).
+  - 3D point-hit probe: caller position & elevation offset calculation, AABB overlap testing `px1 <= ex + rx && px2 >= ex - rx`, `py1 <= ey + ry && py2 >= ey - ry`, `pz >= ez && pz <= ez + hz`.
+  - Resumable iteration state saving and restoration matching M68K register save `$FF194A..$FF196A`.
+  - 3D box-hit probe with full Z-interval overlap `pz1 <= ez + hz && pz2 >= ez`.
+- Qualified `oasis_m16_136_resumable_hitbox_iter` and the 117-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.135 Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box (`0x00822C..0x008350`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
