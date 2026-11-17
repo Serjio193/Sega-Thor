@@ -1,3 +1,6 @@
+# M15.375 ROM Ali Push Physics, Jewel Socket Inserter & Isometric Velocity Scaler (`0x0062E4`..`0x006514`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_push_terrain.py`, `tests/rom_ali_push_terrain_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_push_terrain_m15_375.json`, and `docs/handoffs/STANDALONE_M15_375_ALI_PUSH_TERRAIN_HANDOFF.md`.
+
 # M15.374 ROM Ali Auto-Revive Refill, Item 0x2A Scanner & 1.5x Dash Dispatcher (`0x00611E`..`0x0062CA`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_revive_dash.py`, `tests/rom_ali_revive_dash_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_revive_dash_m15_374.json`, and `docs/handoffs/STANDALONE_M15_374_ALI_REVIVE_DASH_HANDOFF.md`.
 

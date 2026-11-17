@@ -1,3 +1,9 @@
+# M15.375 ROM Ali Push Physics, Jewel Socket Inserter & Isometric Velocity Scaler
+- `tools/extract_rom_ali_push_terrain.py` — extractor for `0x0062E4..0x006514` (walk cycle footstep SFX `0x01500218`, block push half-speed physics & scraping SFX `0x00800390`, jewel socket insert `0x6A` & chime SFX `0x00B00385`, Megadrive 2:1 isometric terrain velocity scaling).
+- `tests/rom_ali_push_terrain_test.py` — `2` unit tests verifying ROM constants, isometric terrain velocity scaling, and block push mechanics.
+- `data/thor-evidence/rom_ali_push_terrain_m15_375.json` — extracted M15.375 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_375_ALI_PUSH_TERRAIN_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.374 ROM Ali Auto-Revive Refill, Item 0x2A Scanner & Dash Dispatcher
 - `tools/extract_rom_ali_revive_dash.py` — extractor for `0x00611E..0x0062CA` (alternating +3 HP/SP auto-revive refill, `$FF0D90` 16-slot item `0x2A` scanner, 1.5x dash velocity & splash/dust footstep SFX).
 - `tests/rom_ali_revive_dash_test.py` — `2` unit tests verifying ROM constants, auto-revive cadence, and 1.5x dash speed multiplier.

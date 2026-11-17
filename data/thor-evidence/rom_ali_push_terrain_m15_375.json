@@ -1,0 +1,36 @@
+{
+  "milestone": "M15.375",
+  "title": "ROM Ali Push Physics, Jewel Socket Inserter & Isometric Velocity Scaler",
+  "routines": {
+    "ali_walk_step_and_footstep_sfx": {
+      "start": "0x0062E4",
+      "end": "0x006336"
+    },
+    "ali_push_trigger_and_state": {
+      "start": "0x006338",
+      "end": "0x00638A"
+    },
+    "ali_push_heavy_block": {
+      "start": "0x00638C",
+      "end": "0x0063D8"
+    },
+    "ali_jewel_socket_insert": {
+      "start": "0x0063DA",
+      "end": "0x0064C2"
+    },
+    "scale_isometric_terrain_velocity": {
+      "start": "0x0064C4",
+      "end": "0x006514"
+    }
+  },
+  "constants": {
+    "footstep_sfx": "0x01500218",
+    "push_block_sfx": "0x00800390",
+    "jewel_toast_frames": 60,
+    "jewel_insert_anim": "0x0036",
+    "jewel_insert_state": "0x006A",
+    "jewel_socket_sfx": "0x00B00385",
+    "pushable_block_type": "0x0046",
+    "movable_stone_pillar_type": "0x007E"
+  }
+}
