@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/video/vdp_dma_exec.hpp` / `src/game/video/vdp_dma_exec.cpp`: Z80-safe VDP DMA command word serializer (`0x0027FC..0x002896`: regs `0x94..0x97` + VRAM command) and HUD portrait DMA descriptor builder (`0x002632..0x002678`, `0x000AA3EC + portrait * 0x60` -> `0xF1C0`, `0x60` words) (M16.99).
+- `tests/m16_99_vdp_dma_exec_test.cpp`: Automated M16.99 test qualifying DMA register sequence, VRAM command words, and HUD portrait dirty-check & address math (M16.99).
 - `src/game/world/terrain_elevation_probe.hpp` / `src/game/world/terrain_elevation_probe.cpp`: Terrain elevation & ledge probe (`0x00938E..0x0096F7`, 16-byte Gray-code LUT `0x0096E8`, span OR/AND aggregation, step-up `bit 5`, blocked `bit 6`, ledge-drop `drop_height`) (M16.98).
 - `tests/m16_98_terrain_elevation_probe_test.cpp`: Automated M16.98 test qualifying the Gray-code LUT, passable flat tiles, mixed/invalid blocking (`bit 6`), step-up blocking (`bit 5`), and ledge-drop `drop_height` (M16.98).
 - `src/game/world/vdp_plane_scroll.hpp` / `src/game/world/vdp_plane_scroll.cpp`: Incremental row/col VDP plane scroller (`0x0023CC..0x002510` 29-tile column streamer & `0x002512..0x002630` 41-tile row streamer with dual source/VDP `64x32` wrap) (M16.97).

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-99-VDP-DMA-EXEC — Z80-Safe VDP DMA Executor & HUD Portrait DMA
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.315 extracted VDP DMA command word serialization (`0x0027FC..0x002896`: regs `0x94..0x97` + VRAM DMA command) and HUD portrait DMA (`0x002632..0x002678`: `$FF183E`/`$FF183F` dirty check, `0x000AA3EC + portrait * 0x60` -> `0xF1C0`, `0x60` words).
+
+**Decisions:**
+1. **Dedicated `vdp_dma_exec` Module:**
+   - Added `src/game/video/vdp_dma_exec.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-98-TERRAIN-ELEVATION-PROBE — Terrain Elevation & Ledge Probe
 **Status:** Accepted
 **Date:** 2026-11-17

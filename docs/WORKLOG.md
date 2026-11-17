@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.99: Z80-Safe VDP DMA Executor & HUD Portrait DMA)
+- **Concrete Task**: Implement `src/game/video/vdp_dma_exec.hpp/.cpp` with `VdpDmaDescriptor`, `VdpDmaCommandSequence`, `serialize_vdp_dma_commands()` (`0x0027FC..0x002896`: regs `0x94`, `0x93`, `0x95`, `0x96`, `0x97`, VRAM DMA command `((vram_dst & 0x3FFF) | 0x4000)` / `((vram_dst >> 14) & 3) | 0x80`), and `HudPortraitDmaState` / `build_hud_portrait_dma()` (`0x002632..0x002678`: `0x000AA3EC + portrait * 0x60` -> VRAM `0xF1C0`, `0x60` words); add `tests/m16_99_vdp_dma_exec_test.cpp`; qualify full 59-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/video/vdp_dma_exec.hpp` / `src/game/video/vdp_dma_exec.cpp`.
+  * Added `tests/m16_99_vdp_dma_exec_test.cpp` (registered as `oasis_m16_99_vdp_dma_exec` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 59/59 regression run.
+  * MSVC Debug (`build-debug`): 59/59 regression run.
+  * Remaining unknowns: Wiring `build_hud_portrait_dma()` directly into live V-Int VRAM portrait uploads is deferred to future HUD-VDP unification.
+
 # Worklog — 2026-11-17 (M16.98: Terrain Elevation & Ledge Probe)
 - **Concrete Task**: Implement `src/game/world/terrain_elevation_probe.hpp/.cpp` with `kElevationNibbleLut16` (`0x0096E8`: `{-1, 0, 2, 1, 4, -1, 3, -1, 6, 7, -1, -1, 5, -1, -1, -1}`), `aggregate_tile_span()`, and `evaluate_terrain_elevation_probe()` (`0x00938E`, `0x0094D2`, `0x0095AA`: passable same-elevation, invalid/mixed blocking `bit 6`, step-up blocking `bit 5`, ledge-drop `bit 5` + `drop_height`); add `tests/m16_98_terrain_elevation_probe_test.cpp`; qualify full 58-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

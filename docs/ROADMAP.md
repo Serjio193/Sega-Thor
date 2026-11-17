@@ -1,3 +1,9 @@
+# M16.99 Z80-Safe VDP DMA Executor & HUD Portrait DMA (`0x002632..0x002678`, `0x0027A6..0x002896`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `VdpDmaDescriptor`, `VdpDmaCommandSequence`, `serialize_vdp_dma_commands` (`0x0027FC..0x002896`), and `HudPortraitDmaState` / `build_hud_portrait_dma` (`0x002632..0x002678`, `0x000AA3EC + portrait * 0x60` -> `0xF1C0`, `0x60` words) in `src/game/video/vdp_dma_exec.hpp/.cpp`.
+- Qualified `oasis_m16_99_vdp_dma_exec` and full 59-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.98 Terrain Elevation & Ledge Probe (`0x00938E..0x0096F7`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
