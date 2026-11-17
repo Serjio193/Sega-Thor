@@ -1,0 +1,48 @@
+{
+  "milestone": "M15.340",
+  "title": "ROM Ali Attack Action & Weapon-Class State Dispatcher",
+  "routine": {
+    "start": "0x008002",
+    "end": "0x00814C"
+  },
+  "dispatch_states": {
+    "dagger_ground": {
+      "weapon_class": "0x0A",
+      "anim": "0x3A",
+      "state": "0x0A"
+    },
+    "dagger_air_kick": {
+      "weapon_class": "0x0A",
+      "anim": "0x40",
+      "state": "0x38",
+      "air_stun": "0x15"
+    },
+    "sword_slash": {
+      "weapon_class": "0x0C",
+      "anim": "0x4E",
+      "state": "0x46"
+    },
+    "sword_thrust": {
+      "weapon_class": "0x0C",
+      "anim": "0x60",
+      "state": "0x54"
+    },
+    "sword_spin": {
+      "weapon_class": "0x0C",
+      "anim": "0x66",
+      "state": "0x5C"
+    },
+    "bow_fire": {
+      "weapon_class": "0x0E",
+      "anim": "0x54",
+      "hyper_anim": "0x5C",
+      "state": "0x4C",
+      "sfx": "0x00600377"
+    },
+    "bomb_throw": {
+      "weapon_class": "0x10",
+      "anim": "0x58",
+      "state": "0x50"
+    }
+  }
+}

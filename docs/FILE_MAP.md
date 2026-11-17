@@ -1,3 +1,9 @@
+# M15.340 ROM Ali Attack Action & Weapon-Class State Dispatcher
+- `tools/extract_rom_ali_attack_dispatch.py` — ROM extractor & verifier for `0x008002..0x00814C` (dagger/sword/bow/bomb attack anim & state dispatch, air-kick `0x40`/`0x38`, bow SFX `0x00600377`).
+- `tests/rom_ali_attack_dispatch_test.py` — Unit tests verifying weapon-class attack dispatch.
+- `data/thor-evidence/rom_ali_attack_dispatch_m15_340.json` — Verified evidence JSON for M15.340.
+- `docs/handoffs/STANDALONE_M15_340_ALI_ATTACK_DISPATCH_HANDOFF.md` — C++20 Standalone handoff for M16.124.
+
 # M15.339 ROM Entity Camera-Viewport Culler & Airborne Landing
 - `tools/extract_rom_viewport_culler_landing.py` — ROM extractor & verifier for `0x00E522..0x00E67E` (airborne landing `15f` stun + `0x00800270`, `320x224` + margin viewport cullers, 94-word `0xBC` struct copy).
 - `tests/rom_viewport_culler_landing_test.py` — Unit tests verifying viewport culling with and without Z-offset.

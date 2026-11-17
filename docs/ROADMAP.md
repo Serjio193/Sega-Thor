@@ -1,3 +1,4 @@
+# M15.340 ROM Ali Attack Action & Weapon-Class State Dispatcher (`0x008002`..`0x00814C`) — COMPLETE / VERIFIED
 # M15.339 ROM Entity Camera-Viewport Culler & Airborne Landing (`0x00E522`..`0x00E67E`) — COMPLETE / VERIFIED
 # M15.338 ROM Spirit Summon Trigger & Weapon Quick-Equip Class Mapper (`0x007E9E`..`0x007F80`) — COMPLETE / VERIFIED
 # M15.337 ROM Debug Stage/Room Warp Menu & Spawn Table (`0x004C9C`..`0x004F20`, `0x005D918`) — COMPLETE / VERIFIED

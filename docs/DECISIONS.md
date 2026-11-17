@@ -1,3 +1,8 @@
+# ADR-20261117-M15-340-ALI-ATTACK-DISPATCH — Ali Attack Action & Weapon-Class State Dispatcher (`0x008002`..`0x00814C`)
+- **Context:** Ali's attack trigger (`0x008002`) switches on weapon class `$FF0D7E` (`0x0A` dagger/air-kick, `0x0C` sword slash/thrust/spin, `0x0E` bow/hyper-bow with `0x00600377`, `0x10` bomb throw) and projectile lock `$FF1B60`.
+- **Decision:** Extracted all `(anim, state)` pairs and SFX constants into `data/thor-evidence/rom_ali_attack_dispatch_m15_340.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.124 can dispatch Ali's weapon-class attack animations and states with exact parity.
+
 # ADR-20261117-M15-339-VIEWPORT-CULLER-LANDING — Entity Camera-Viewport Culler & Airborne Landing (`0x00E522`..`0x00E67E`)
 - **Context:** `0x00E522` integrates airborne velocity and handles landing (`15f` stun, `0x00800270`), while `0x00E5AE` and `0x00E610` cull entities against the `320x224` camera viewport (`$FF1716`/`$FF173E`) plus `margin`, with or without `-z`.
 - **Decision:** Extracted all viewport dimensions, landing parameters, and copy word count (`94`) into `data/thor-evidence/rom_viewport_culler_landing_m15_339.json` with 2/2 passing tests and Standalone handoff.
