@@ -1,3 +1,30 @@
+# ADR-20261117-M16-160-DIALOGUE-SPRITE-SUBSYSTEM — ROM Dialogue Entity Sprite Subsystem & Special Mode Presets (0x00A2F0..0x00A524)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.411 extracted ROM routines `0x00A342..0x00A524` and special preset stubs `0x00A316..0x00A336` governing dialogue box sprite generation, speaker portrait layout, animated cursor DMA queueing, and static SAT reservations:
+   - `0x00A342..0x00A436`: Dialogue & HUD Sprite SAT Compositor:
+     * Reads SAT buffer base `$FF13CC + $FF188C.w` and current hardware sprite link count `$FF188A.w`.
+     * Selects primary template `0x00A438` (if `$FF1858.b == 0`) or secondary template `0x00A480`.
+     * Emits 6 dialogue border sprites with horizontal offset `$FF185A.w`.
+     * If portrait active flag `$FF184F.b != 0`, emits 3 portrait sprites positioned at `0x158 - offset_x`.
+     * If cursor active flag `$FF1856.w != 0` and current link count < 80 (`0x50`), emits cursor sprite at Y=0x118, X=`offset_x + 0x68`, attr=0x85C7, size=0x0A.
+     * If cursor frame changed (`$FF1854.b != $FF1855.b`), enqueues DMA transfer to VRAM `$B8E0` (size `$90` words, source `frame_id * 144 + 0x000AAEEB`) via queue pointer `$FF1892.l`.
+     * Stores updated SAT byte offset into `$FF188C.w` and sprite link count into `$FF188A.w`.
+   - `0x00A4C8..0x00A524`: Static Sprite Reservation Pass:
+     * Reserves 48 bytes / 6 sprites for base dialogue frame.
+     * Reserves +24 bytes / +3 sprites if `$FF184F.b != 0` (speaker portrait).
+     * Reserves +8 bytes / +1 sprite if `$FF1856.w != 0` (cursor).
+   - `0x00A316..0x00A336`: Special Mode Presets:
+     * Evaluates entity type: type -2 with non-null pointer dispatches to script at `+0x22(a6)`, negative type invokes demo hook `0x00A7E6`.
+
+**Decisions:**
+1. **Dedicated `dialogue_sprite_subsystem` Module:**
+   - Added `src/game/render/dialogue_sprite_subsystem.hpp/.cpp` modeling pure `calculate_dialogue_reservations`, `calculate_cursor_dma_command`, `compose_dialogue_sprites`, `evaluate_special_entity_preset`, and raw memory integration `compose_dialogue_sprites_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (140/140 M16 tests).
+
 # ADR-20261117-M16-159-MASTER-SAT-DISPATCHER — ROM Entity Pass A Master SAT Sprite Dispatcher (0x00A196..0x00A2EE)
 **Status:** Accepted
 **Date:** 2026-11-17

@@ -1,3 +1,22 @@
+# M16.160 ROM Dialogue Entity Sprite Subsystem & Special Mode Presets (`0x00A2F0..0x00A524`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `calculate_dialogue_reservations`, `calculate_cursor_dma_command`, `get_primary_dialogue_template`, `get_secondary_dialogue_template`, `compose_dialogue_sprites`, `compose_dialogue_sprites_raw`, and `evaluate_special_entity_preset` in `src/game/render/dialogue_sprite_subsystem.hpp/.cpp`:
+  - `0x00A342..0x00A436`: Dialogue & HUD Sprite SAT Compositor:
+    - Template selection: Primary (`0x00A438`, 9 sprites) vs Secondary (`0x00A480`, 9 sprites) via `$FF1858.b`.
+    - Horizontal positioning offset `$FF185A.w` applied to border sprites.
+    - 6-sprite dialogue border loop emitting Y, size/link, tile attribute, and X into SAT buffer.
+    - 3-sprite speaker portrait loop gated on `$FF184F.b` positioned at `0x158 - offset_x`.
+    - 1-sprite flashing cursor gated on `$FF1856.w` at Y=0x118, X=`offset_x + 0x68`, attr=0x85C7, size=0x0A with 80-sprite hardware limit check.
+    - Cursor frame change detection (`$FF1854 != $FF1855`) and VRAM `$B8E0` DMA queueing (`$FF1892`, length `$90` words, ROM base `frame_id * 144 + 0x000AAEEB`).
+    - Updates SAT byte offset `$FF188C.w` and sprite link count `$FF188A.w`.
+  - `0x00A4C8..0x00A524`: Static Sprite Reservation Pass:
+    - Calculates reservations: base frame (48 bytes, 6 sprites), portrait (+24 bytes, +3 sprites), cursor (+8 bytes, +1 sprite).
+  - `0x00A316..0x00A336`: Special Mode Presets:
+    - Script pointer dispatch at `+0x22(a6)` for special type -2 entities, and demo sprite hook `0x00A7E6` routing.
+  - Raw 64KB RAM window integration helper `compose_dialogue_sprites_raw`.
+- Qualified `oasis_m16_160_dialogue_sprite_subsystem` and the 140-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.159 ROM Entity Pass A Master SAT Sprite Dispatcher (`0x00A196..0x00A2EE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
