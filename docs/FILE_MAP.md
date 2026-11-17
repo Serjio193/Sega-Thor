@@ -1,3 +1,9 @@
+# M15.351 ROM Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box
+- `tools/extract_rom_ali_jump_pickup.py` — ROM extractor & verifier for `0x00822C..0x008350` (running/standing jump `vz=0x00070000` states `22`/`16`, `±6px` pickup probe, 4 directional interact boxes).
+- `tests/rom_ali_jump_pickup_test.py` — Unit tests verifying jump state selection and interact boxes.
+- `data/thor-evidence/rom_ali_jump_pickup_m15_351.json` — Verified evidence JSON for M15.351.
+- `docs/handoffs/STANDALONE_M15_351_ALI_JUMP_PICKUP_HANDOFF.md` — C++20 Standalone handoff for M16.135.
+
 # M15.350 ROM Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher
 - `tools/extract_rom_ali_input_dispatch.py` — ROM extractor & verifier for `0x007D8A..0x007E9C` (5-frame `$FF1668` input buffer, `C > A > B` priority, `SP > 0` summon gate `0x14`/`0x00900359`).
 - `tests/rom_ali_input_dispatch_test.py` — Unit tests verifying 5-frame buffer priority and summon gate.

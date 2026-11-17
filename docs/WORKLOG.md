@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.351: ROM ALI JUMP TRIGGER, PICKUP PROBE & 4-DIR INTERACTION BOX (`0x00822C`..`0x008350`) — `0x00070000` Jump (`22`/`16`), `±6px` Pickup, 4-Dir Boxes; Extractor (`tools/extract_rom_ali_jump_pickup.py` <= 500 lines), Tests (`tests/rom_ali_jump_pickup_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_351_ALI_JUMP_PICKUP_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00822C..0x008350` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_ali_jump_pickup.py`, `python -m unittest tests/rom_ali_jump_pickup_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.351, check M16.118 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.350: ROM ALI 5-FRAME INPUT-BUFFER ACTION & SPIRIT-BALL DISPATCHER (`0x007D8A`..`0x007E9C`) — 5f Ring, `C > A > B`, Summon Gate; Extractor (`tools/extract_rom_ali_input_dispatch.py` <= 500 lines), Tests (`tests/rom_ali_input_dispatch_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_350_ALI_INPUT_DISPATCH_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x007D8A..0x007E9C` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_ali_input_dispatch.py`, `python -m unittest tests/rom_ali_input_dispatch_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

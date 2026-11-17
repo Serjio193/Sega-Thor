@@ -1,0 +1,53 @@
+{
+  "milestone": "M15.351",
+  "title": "ROM Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box",
+  "routines": {
+    "ali_jump_trigger": {
+      "start": "0x00822C",
+      "end": "0x0082AC"
+    },
+    "ali_pickup_probe": {
+      "start": "0x0082AE",
+      "end": "0x0082F6"
+    },
+    "ali_interact_probe": {
+      "start": "0x0082F8",
+      "end": "0x008350"
+    }
+  },
+  "interact_boxes": {
+    "facing_0_up": [
+      -8,
+      -30,
+      8,
+      -4
+    ],
+    "facing_1_right": [
+      4,
+      -8,
+      32,
+      8
+    ],
+    "facing_2_down": [
+      -8,
+      4,
+      8,
+      30
+    ],
+    "facing_3_left": [
+      -32,
+      -8,
+      -4,
+      8
+    ]
+  },
+  "constants": {
+    "jump_z_vel_16_16": "0x00070000",
+    "running_jump_state": 22,
+    "standing_jump_state": 16,
+    "running_jump_boost": 8,
+    "pickup_probe_radius_px": 6,
+    "pickup_entity_type": 8,
+    "collected_item_ram": "0x00FF1976"
+  }
+}

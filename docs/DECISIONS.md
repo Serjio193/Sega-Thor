@@ -1,3 +1,8 @@
+# ADR-20261117-M15-351-ALI-JUMP-PICKUP — Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box (`0x00822C`..`0x008350`)
+- **Context:** Ali's jump (`0x00822C`) launches with `vz = +7.0` (`0x00070000`) into running jump (`22`) or standing jump (`16`), while `0x0082AE` collects `0x08` pickups within `±6px` and `0x0082F8` probes 4 facing-dependent interaction boxes.
+- **Decision:** Extracted all jump parameters, pickup offsets, and 4-dir probe boxes into `data/thor-evidence/rom_ali_jump_pickup_m15_351.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.135 can implement Ali's jump, pickup collection, and directional interaction probes.
+
 # ADR-20261117-M15-350-ALI-INPUT-DISPATCH — Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher (`0x007D8A`..`0x007E9C`)
 - **Context:** Ali's top-level action dispatcher (`0x007DC8`) ORs up to 5 recent frames from the `$FF1668` input ring (when `$FF1983 == 0`) and dispatches in `C (summon) > A (attack) > B (jump)` priority.
 - **Decision:** Extracted the 5-frame window, priority order, and summon preconditions into `data/thor-evidence/rom_ali_input_dispatch_m15_350.json` with 2/2 passing tests and Standalone handoff.

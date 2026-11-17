@@ -1,3 +1,4 @@
+# M15.351 ROM Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box (`0x00822C`..`0x008350`) — COMPLETE / VERIFIED
 # M15.350 ROM Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher (`0x007D8A`..`0x007E9C`) — COMPLETE / VERIFIED
 # M15.349 ROM Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick (`0x00F64C`..`0x00F7CE`) — COMPLETE / VERIFIED
 # M15.348 ROM Enemy Loot / 2-Tier Drop-Table Roller (`0x00F476`..`0x00F53A`) — COMPLETE / VERIFIED
