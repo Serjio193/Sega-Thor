@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.320: ROM PLANE SCROLL DELTA & VDP H/V-SCROLL BUFFER SYNC (`0x00D188`..`0x00D342`) — 8px Tile Crossings, `0x1FF`/`0xFF` Wrap, `$FFFB5C`/`$FF1344`; Extractor (`tools/extract_rom_plane_scroll_sync.py` <= 500 lines), Tests (`tests/rom_plane_scroll_sync_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_320_PLANE_SCROLL_SYNC_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00D188..0x00D342` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_plane_scroll_sync.py`, `python -m unittest tests/rom_plane_scroll_sync_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.320, assign M16.101, and continue.
+
 # 2026-11-17 — Milestone M15.319: ROM CAMERA DEADZONE FOLLOW, SCREEN SHAKE & HUD SLIDE TRIGGER (`0x00CEEA`..`0x00D114`) — `[0x78,0xC8]`/`[0x68,0x80]`, `±3`/`0x1E` Ramp, `0x50`/`0xF0` HUD, `$FF17C4` Shake; Extractor (`tools/extract_rom_camera_follow.py` <= 500 lines), Tests (`tests/rom_camera_follow_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_319_CAMERA_FOLLOW_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00CEEA..0x00D114` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_camera_follow.py`, `python -m unittest tests/rom_camera_follow_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

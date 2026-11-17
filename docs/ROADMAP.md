@@ -1,3 +1,4 @@
+# M15.320 ROM Plane Scroll Delta & VDP H/V-Scroll Buffer Sync (`0x00D188`..`0x00D342`) — COMPLETE / VERIFIED
 # M15.319 ROM Camera Deadzone Follow, Screen Shake & HUD Slide Trigger (`0x00CEEA`..`0x00D114`) — COMPLETE / VERIFIED
 # M15.318 ROM Room Update Hooks & Warp Transition Sequence (`0x00C980`..`0x00CB0A`) — COMPLETE / VERIFIED
 # M15.317 ROM Dialogue Cursor & Border SAT Builder (`0x00C756`..`0x00C84C`) — COMPLETE / VERIFIED

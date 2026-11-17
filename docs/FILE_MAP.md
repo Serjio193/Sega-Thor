@@ -1,3 +1,9 @@
+# M15.320 ROM Plane Scroll Delta & VDP H/V-Scroll Buffer Sync
+- `tools/extract_rom_plane_scroll_sync.py` — ROM extractor & verifier for `0x00D188..0x00D342` (8px tile-crossing deltas, `0x1FF`/`0xFF` VDP scroll wrap, `±10000` anti-overflow, `$FFFB5C`/`$FF1344` HScroll flush).
+- `tests/rom_plane_scroll_sync_test.py` — Unit tests verifying tile-crossing deltas and H/V-scroll wrap masks.
+- `data/thor-evidence/rom_plane_scroll_sync_m15_320.json` — Verified evidence JSON for M15.320.
+- `docs/handoffs/STANDALONE_M15_320_PLANE_SCROLL_SYNC_HANDOFF.md` — C++20 Standalone handoff for M16.104.
+
 # M15.319 ROM Camera Deadzone Follow, Screen Shake & HUD Slide Trigger
 - `tools/extract_rom_camera_follow.py` — ROM extractor & verifier for `0x00CEEA..0x00D114` (X/Y deadzones `[0x78, 0xC8]` / `[0x68, 0x80]`, smooth ramp, HUD slide triggers `0x50`/`0xF0`, shake `$FF17C4`).
 - `tests/rom_camera_follow_test.py` — Unit tests verifying deadzone follow, HUD slide trigger, and screen shake.

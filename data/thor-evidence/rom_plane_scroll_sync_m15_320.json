@@ -1,0 +1,32 @@
+{
+  "milestone": "M15.320",
+  "title": "ROM Plane Scroll Delta & VDP H/V-Scroll Buffer Sync",
+  "routines": {
+    "update_plane_scroll_deltas": {
+      "start": "0x00D188",
+      "end": "0x00D264"
+    },
+    "wrap_camera_to_map_bounds": {
+      "start": "0x00D266",
+      "end": "0x00D2B2"
+    },
+    "flush_hscroll_to_vdp_buffer": {
+      "start": "0x00D2B4",
+      "end": "0x00D342"
+    }
+  },
+  "constants": {
+    "hscroll_mask": "0x01FF",
+    "vscroll_mask": "0x00FF",
+    "overflow_wrap_min": -10000,
+    "overflow_wrap_max": 10000,
+    "dirty_bit_col_stream": 0,
+    "dirty_bit_row_stream": 1,
+    "dirty_bit_hscroll": 2,
+    "dirty_bit_vscroll": 3,
+    "plane_a_struct_ram": "0x00FF1716",
+    "hscroll_line_buf_ram": "0x00FFFB5C",
+    "hscroll_full_ram": "0x00FF1344",
+    "vdp_dirty_flags_ram": "0x00FF16F0"
+  }
+}

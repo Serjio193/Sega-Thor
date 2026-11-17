@@ -1,3 +1,8 @@
+# ADR-20261117-M15-320-PLANE-SCROLL-SYNC — Plane Scroll Delta & VDP H/V-Scroll Buffer Sync (`0x00D188`..`0x00D342`)
+- **Context:** `0x00D188` bridges camera coordinates to M15.313's incremental tile streamers (`0x1C`/`0x1E`) and updates VDP HScroll (`0x1FF`) and VScroll (`0xFF`), while `0x00D2B4` flushes HScroll to `$FFFB5C` or `$FF1344`.
+- **Decision:** Extracted all masks, anti-overflow bounds, dirty bit indices, and RAM buffers into `data/thor-evidence/rom_plane_scroll_sync_m15_320.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.104 can close the loop between camera follow and VDP plane streaming.
+
 # ADR-20261117-M15-319-CAMERA-FOLLOW — Camera Deadzone Follow, Screen Shake & HUD Slide Trigger (`0x00CEEA`..`0x00D114`)
 - **Context:** Camera tracking (`0x00CEEA`) uses `[0x78, 0xC8]` X and `[0x68, 0x80]` Y deadzones with `±3`/`±0x1E` smooth catch-up, triggers HUD slide `$FF1859` at `0x50`/`0xF0` or camera X delta, supports locked-center mode (`$FF16F1 & 8`), and applies alternating Y shake (`$FF17C4`).
 - **Decision:** Extracted all thresholds, RAM addresses, and smooth-follow rules into `data/thor-evidence/rom_camera_follow_m15_319.json` with 2/2 passing tests and Standalone handoff.
