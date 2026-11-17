@@ -1,3 +1,7 @@
+# ADR-20261117-M15-294-SOUND-TEST-OST — Secret Sound Test & 34-Track Named OST (`0x03E7F4`..`0x03F047`)
+- **Decision:** Model the Secret Sound Test menu (`0x03E7F4`) and 34-track named OST catalog (`0x03ED7E` + `0x03EDA0..0x03F047`) in Standalone for authentic track names and BGM command mapping (`0x0100..0x0121`).
+- **Evidence:** Direct Capstone M68K disassembly of `0x03E7F4..0x03E8AE` and raw ROM string/ID table extraction at `0x03ED48..0x03F047` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-293-CHECKPOINT-RETRY — Checkpoint Snapshot & Retry Restore (`0x0017DA`..`0x001900`)
 - **Decision:** Model Beyond Oasis's in-RAM checkpoint snapshot (`0x0017DA`, `596`B `$FF0E52`, skipped in demo) and Game-Over retry restore (`0x001828`, preserves `$FF0D76`/`$FF1A7E`/`MaxHP`, sets `HP = MaxHP`, `30`f invulnerability, `$FF0E3E += 1`) in Standalone.
 - **Evidence:** Direct Capstone M68K disassembly of `0x0017DA..0x001900` in `local-roms/Beyond Oasis (USA).md`.

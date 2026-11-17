@@ -1,3 +1,7 @@
+# M15.294 ROM Secret Sound Test & 34-Track Named OST (`0x03E7F4`..`0x03F047`) — COMPLETE / VERIFIED
+- Decoded Secret Sound Test (`0x03E7F4`, unlocked via `0x90000000`), UI labels (`"SOUND TEST"`, `"BGM"`, `"SFX"`, `"PCM"`, `"EXIT"` at `0x03ED48`), 34-byte BGM ID map (`0x03ED7E`), and all 34 OST track titles (`0x03EDA0..0x03F047`).
+- Authored `tools/extract_rom_sound_test_ost.py`, `tests/rom_sound_test_ost_test.py` (`2/2 PASS`), `data/thor-evidence/rom_sound_test_ost_m15_294.json`, and `docs/handoffs/STANDALONE_M15_294_SOUND_TEST_OST_HANDOFF.md`.
+
 # M15.293 ROM Checkpoint Snapshot & Retry Restore (`0x0017DA`..`0x001900`) — COMPLETE / VERIFIED
 - Decoded room-entry checkpoint snapshot (`0x0017DA`: `$FF0E42`, `376`B Ali+Spirit, `596`B `$FF0E52` retry buffer, skipped in demo) and Game-Over retry restore (`0x001828`: preserves `$FF0D76`/`$FF1A7E`/`$FF1A70` MaxHP, restores `HP = MaxHP`, reloads spirit `0x014522`, increments `$FF0E3E`, sets `30`f invulnerability).
 - Authored `tools/extract_rom_checkpoint_retry.py`, `tests/rom_checkpoint_retry_test.py` (`2/2 PASS`), `data/thor-evidence/rom_checkpoint_retry_m15_293.json`, and `docs/handoffs/STANDALONE_M15_293_CHECKPOINT_RETRY_HANDOFF.md`.

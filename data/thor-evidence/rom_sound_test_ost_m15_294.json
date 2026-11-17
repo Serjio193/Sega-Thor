@@ -1,0 +1,225 @@
+{
+  "milestone": "M15.294",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "sound_test": {
+    "entry_addr": "0x03E7F4",
+    "unlock_chord_ff165e": "0x90000000",
+    "labels_addr": "0x03ED48",
+    "track_id_map_addr": "0x03ED7E",
+    "track_names_addr": "0x03EDA0",
+    "track_count": 34
+  },
+  "labels": {
+    "title": "SOUND TEST",
+    "bgm": "BGM",
+    "sfx": "SFX",
+    "pcm": "PCM",
+    "exit": "EXIT"
+  },
+  "tracks": [
+    {
+      "menu_index": 0,
+      "track_byte": 21,
+      "bgm_cmd": "0x0115",
+      "title": "Introduction"
+    },
+    {
+      "menu_index": 1,
+      "track_byte": 19,
+      "bgm_cmd": "0x0113",
+      "title": "Awakening"
+    },
+    {
+      "menu_index": 2,
+      "track_byte": 28,
+      "bgm_cmd": "0x011C",
+      "title": "To begin"
+    },
+    {
+      "menu_index": 3,
+      "track_byte": 0,
+      "bgm_cmd": "0x0100",
+      "title": "Battle"
+    },
+    {
+      "menu_index": 4,
+      "track_byte": 6,
+      "bgm_cmd": "0x0106",
+      "title": "Peaceful"
+    },
+    {
+      "menu_index": 5,
+      "track_byte": 4,
+      "bgm_cmd": "0x0104",
+      "title": "The Story of Thor"
+    },
+    {
+      "menu_index": 6,
+      "track_byte": 15,
+      "bgm_cmd": "0x010F",
+      "title": "Holiness"
+    },
+    {
+      "menu_index": 7,
+      "track_byte": 12,
+      "bgm_cmd": "0x010C",
+      "title": "Aqua"
+    },
+    {
+      "menu_index": 8,
+      "track_byte": 14,
+      "bgm_cmd": "0x010E",
+      "title": "Burning cave"
+    },
+    {
+      "menu_index": 9,
+      "track_byte": 16,
+      "bgm_cmd": "0x0110",
+      "title": "Fortress"
+    },
+    {
+      "menu_index": 10,
+      "track_byte": 11,
+      "bgm_cmd": "0x010B",
+      "title": "Vessel"
+    },
+    {
+      "menu_index": 11,
+      "track_byte": 1,
+      "bgm_cmd": "0x0101",
+      "title": "Indication"
+    },
+    {
+      "menu_index": 12,
+      "track_byte": 17,
+      "bgm_cmd": "0x0111",
+      "title": "Stone place"
+    },
+    {
+      "menu_index": 13,
+      "track_byte": 9,
+      "bgm_cmd": "0x0109",
+      "title": "Boundless cliff"
+    },
+    {
+      "menu_index": 14,
+      "track_byte": 24,
+      "bgm_cmd": "0x0118",
+      "title": "Raging wind"
+    },
+    {
+      "menu_index": 15,
+      "track_byte": 5,
+      "bgm_cmd": "0x0105",
+      "title": "Abyss"
+    },
+    {
+      "menu_index": 16,
+      "track_byte": 18,
+      "bgm_cmd": "0x0112",
+      "title": "Mysterious green"
+    },
+    {
+      "menu_index": 17,
+      "track_byte": 22,
+      "bgm_cmd": "0x0116",
+      "title": "Chaos"
+    },
+    {
+      "menu_index": 18,
+      "track_byte": 25,
+      "bgm_cmd": "0x0119",
+      "title": "Evil territory"
+    },
+    {
+      "menu_index": 19,
+      "track_byte": 7,
+      "bgm_cmd": "0x0107",
+      "title": "Water cave"
+    },
+    {
+      "menu_index": 20,
+      "track_byte": 2,
+      "bgm_cmd": "0x0102",
+      "title": "The huge creature"
+    },
+    {
+      "menu_index": 21,
+      "track_byte": 23,
+      "bgm_cmd": "0x0117",
+      "title": "Voice from darkside"
+    },
+    {
+      "menu_index": 22,
+      "track_byte": 29,
+      "bgm_cmd": "0x011D",
+      "title": "Last battle"
+    },
+    {
+      "menu_index": 23,
+      "track_byte": 3,
+      "bgm_cmd": "0x0103",
+      "title": "Triumph"
+    },
+    {
+      "menu_index": 24,
+      "track_byte": 8,
+      "bgm_cmd": "0x0108",
+      "title": "Item get!"
+    },
+    {
+      "menu_index": 25,
+      "track_byte": 13,
+      "bgm_cmd": "0x010D",
+      "title": "Magic jewel"
+    },
+    {
+      "menu_index": 26,
+      "track_byte": 10,
+      "bgm_cmd": "0x010A",
+      "title": "Encounter"
+    },
+    {
+      "menu_index": 27,
+      "track_byte": 20,
+      "bgm_cmd": "0x0114",
+      "title": "Requiem"
+    },
+    {
+      "menu_index": 28,
+      "track_byte": 31,
+      "bgm_cmd": "0x011F",
+      "title": "Concentration"
+    },
+    {
+      "menu_index": 29,
+      "track_byte": 30,
+      "bgm_cmd": "0x011E",
+      "title": "Fire ball"
+    },
+    {
+      "menu_index": 30,
+      "track_byte": 32,
+      "bgm_cmd": "0x0120",
+      "title": "Deep hole"
+    },
+    {
+      "menu_index": 31,
+      "track_byte": 26,
+      "bgm_cmd": "0x011A",
+      "title": "Confession"
+    },
+    {
+      "menu_index": 32,
+      "track_byte": 27,
+      "bgm_cmd": "0x011B",
+      "title": "Ending"
+    },
+    {
+      "menu_index": 33,
+      "track_byte": 33,
+      "bgm_cmd": "0x0121",
+      "title": "Master mind"
+    }
+  ]
+}

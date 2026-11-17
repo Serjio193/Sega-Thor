@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.294: ROM SECRET SOUND TEST & 34-TRACK NAMED OST (`0x03E7F4`..`0x03F047`) — `"SOUND TEST"`, 34 BGM IDs & Titles; Extractor (`tools/extract_rom_sound_test_ost.py` <= 500 lines), Tests (`tests/rom_sound_test_ost_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_294_SOUND_TEST_OST_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x03E7F4..0x03E8AE` and extracted `0x03ED48..0x03F047` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_sound_test_ost.py` (34 OST tracks) and `python tests/rom_sound_test_ost_test.py` (2/2 PASS).
+- Next: Commit & push M15.294, await M16.77 completion, and continue.
+
 # 2026-11-17 — Milestone M15.293: ROM CHECKPOINT SNAPSHOT & RETRY RESTORE (`0x0017DA`..`0x001900`) — `596`B `$FF0E52`, `HP=MaxHP`, `$FF0E3E+=1`, `30`f Invuln; Extractor (`tools/extract_rom_checkpoint_retry.py` <= 500 lines), Tests (`tests/rom_checkpoint_retry_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_293_CHECKPOINT_RETRY_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x0017DA..0x001900` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_checkpoint_retry.py` and `python tests/rom_checkpoint_retry_test.py` (2/2 PASS).

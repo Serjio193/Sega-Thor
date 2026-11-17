@@ -1,3 +1,9 @@
+# M15.294 ROM Secret Sound Test & 34-Track Named OST
+- `tools/extract_rom_sound_test_ost.py` — Extracts Sound Test UI labels, 34 BGM IDs (`0x03ED7E`), and all 34 OST track names (`0x03EDA0`).
+- `tests/rom_sound_test_ost_test.py` — Unit tests verifying Sound Test labels, 34 OST tracks, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_sound_test_ost_m15_294.json` — Extracted Sound Test & OST evidence.
+- `docs/handoffs/STANDALONE_M15_294_SOUND_TEST_OST_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.293 ROM Checkpoint Snapshot & Retry Restore
 - `tools/extract_rom_checkpoint_retry.py` — Extracts checkpoint snapshot (`0x0017DA`) & Game-Over retry restore (`0x001828`) constants.
 - `tests/rom_checkpoint_retry_test.py` — Unit tests verifying snapshot/retry sizes and JSON artifact (`2/2 PASS`).
