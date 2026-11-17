@@ -1,3 +1,9 @@
+# M15.304 ROM Terrain Probe LUT & Room Boundary Clamp
+- `tools/extract_rom_terrain_probe_and_clamp.py` — Extracts 16-byte terrain LUT (`0x0096E8`) and 4-side room boundary clamp (`0x009D4E..0x009DD4`).
+- `tests/rom_terrain_probe_and_clamp_test.py` — Unit tests verifying terrain LUT, edge clamping, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_terrain_probe_and_clamp_m15_304.json` — Extracted terrain probe & clamp evidence.
+- `docs/handoffs/STANDALONE_M15_304_TERRAIN_PROBE_AND_CLAMP_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.303 ROM 8-Direction Fixed-Point Velocity Vector & Facing Kernel
 - `tools/extract_rom_velocity_vector_math.py` — Extracts 8-dir jump table (`0x00E2F2`), `0.75` diagonal shift math, and `0x00E338` facing mapper.
 - `tests/rom_velocity_vector_math_test.py` — Unit tests verifying 8-dir velocities, cardinal facing, and JSON artifact (`2/2 PASS`).

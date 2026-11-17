@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.304: ROM TERRAIN PROBE LUT & ROOM BOUNDARY CLAMP (`0x009D00`..`0x009DD5`) — 16B LUT `0x0096E8`, 4-Side Clamp `0x48`; Extractor (`tools/extract_rom_terrain_probe_and_clamp.py` <= 500 lines), Tests (`tests/rom_terrain_probe_and_clamp_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_304_TERRAIN_PROBE_AND_CLAMP_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x009D00..0x009DD5` and extracted `0x0096E8` LUT in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_terrain_probe_and_clamp.py` and `python tests/rom_terrain_probe_and_clamp_test.py` (2/2 PASS).
+- Next: Commit & push M15.304, await M16.87 completion, and continue.
+
 # 2026-11-17 — Milestone M15.303: ROM 8-DIRECTION FIXED-POINT VELOCITY VECTOR (`0x00E2D4`..`0x00E36E`) — 8 Dirs, `0.75` Diagonal, Facing; Extractor (`tools/extract_rom_velocity_vector_math.py` <= 500 lines), Tests (`tests/rom_velocity_vector_math_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_303_VELOCITY_VECTOR_MATH_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00E2D4..0x00E36E` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_velocity_vector_math.py` and `python tests/rom_velocity_vector_math_test.py` (2/2 PASS).

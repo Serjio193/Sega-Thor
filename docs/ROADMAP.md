@@ -1,3 +1,7 @@
+# M15.304 ROM Terrain Probe LUT & Room Boundary Clamp (`0x009D00`..`0x009DD5`) — COMPLETE / VERIFIED
+- Decoded terrain surface probe (`0x009D00`), 16-byte terrain effect LUT (`0x0096E8`), and 4-side room boundary clamp (`0x009D4E..0x009DD4`, `[0, tiles*8-1]`, edge flag `0x48`).
+- Authored `tools/extract_rom_terrain_probe_and_clamp.py`, `tests/rom_terrain_probe_and_clamp_test.py` (`2/2 PASS`), `data/thor-evidence/rom_terrain_probe_and_clamp_m15_304.json`, and `docs/handoffs/STANDALONE_M15_304_TERRAIN_PROBE_AND_CLAMP_HANDOFF.md`.
+
 # M15.303 ROM 8-Direction Fixed-Point Velocity Vector & Facing Kernel (`0x00E2D4`..`0x00E36E`) — COMPLETE / VERIFIED
 - Decoded 8-direction `16.16` fixed-point velocity kernel (`0x00E2D4`: cardinal full speed, diagonal `0.75` `(v >> 1) + (v >> 2)`) and velocity-to-cardinal-facing mapper (`0x00E338`).
 - Authored `tools/extract_rom_velocity_vector_math.py`, `tests/rom_velocity_vector_math_test.py` (`2/2 PASS`), `data/thor-evidence/rom_velocity_vector_math_m15_303.json`, and `docs/handoffs/STANDALONE_M15_303_VELOCITY_VECTOR_MATH_HANDOFF.md`.
