@@ -1,0 +1,204 @@
+{
+  "routine": "companion_spirit_warp_repositioning_and_bgm_sync",
+  "start_address": "0x00CC12",
+  "end_address": "0x00CD64",
+  "size_bytes": 338,
+  "entry_points": {
+    "reposition_spirit_on_room_warp": "0x00CC12",
+    "load_room_collision_table": "0x00CCA4",
+    "init_room_environment_and_sync_bgm": "0x00CCE6",
+    "latch_all_entity_ground_surfaces": "0x00CD4A"
+  },
+  "collision_tables": {
+    "address": "0x04371E",
+    "count": 32,
+    "areas": [
+      {
+        "area_id": 0,
+        "address": "0x04379E",
+        "ptr_val": 276382
+      },
+      {
+        "area_id": 1,
+        "address": "0x046332",
+        "ptr_val": 287538
+      },
+      {
+        "area_id": 2,
+        "address": "0x046B9A",
+        "ptr_val": 289690
+      },
+      {
+        "area_id": 3,
+        "address": "0x04734E",
+        "ptr_val": 291662
+      },
+      {
+        "area_id": 4,
+        "address": "0x04735C",
+        "ptr_val": 291676
+      },
+      {
+        "area_id": 5,
+        "address": "0x047E98",
+        "ptr_val": 294552
+      },
+      {
+        "area_id": 6,
+        "address": "0x049046",
+        "ptr_val": 299078
+      },
+      {
+        "area_id": 7,
+        "address": "0x049DB0",
+        "ptr_val": 302512
+      },
+      {
+        "area_id": 8,
+        "address": "0x04A8CE",
+        "ptr_val": 305358
+      },
+      {
+        "area_id": 9,
+        "address": "0x04B6CE",
+        "ptr_val": 308942
+      },
+      {
+        "area_id": 10,
+        "address": "0x04C520",
+        "ptr_val": 312608
+      },
+      {
+        "area_id": 11,
+        "address": "0x04D5F4",
+        "ptr_val": 316916
+      },
+      {
+        "area_id": 12,
+        "address": "0x04E5E2",
+        "ptr_val": 320994
+      },
+      {
+        "area_id": 13,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 14,
+        "address": "0x05016A",
+        "ptr_val": 328042
+      },
+      {
+        "area_id": 15,
+        "address": "0x0437D8",
+        "ptr_val": 276440
+      },
+      {
+        "area_id": 16,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 17,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 18,
+        "address": "0x050646",
+        "ptr_val": 329286
+      },
+      {
+        "area_id": 19,
+        "address": "0x050648",
+        "ptr_val": 329288
+      },
+      {
+        "area_id": 20,
+        "address": "0x05064A",
+        "ptr_val": 329290
+      },
+      {
+        "area_id": 21,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 22,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 23,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 24,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 25,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 26,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 27,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 28,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 29,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 30,
+        "address": "0x0437F0",
+        "ptr_val": 276464
+      },
+      {
+        "area_id": 31,
+        "address": "0x0437DC",
+        "ptr_val": 276444
+      }
+    ]
+  },
+  "spirit_mechanics": {
+    "slot": "0xFF1AA4",
+    "y_offset_from_player": -8,
+    "type_unsummon_bow": "0x0016",
+    "type_dytto_efreet": "0x001C",
+    "type_shade": "0x001E",
+    "type_reset_state": "0x001A"
+  },
+  "bgm_sync": {
+    "target_track_reg": "0xFF16F4",
+    "current_track_reg": "0xFF16F2",
+    "continue_command": 3
+  },
+  "memory_map": {
+    "FF1AA4": "spirit_entity_slot",
+    "FF19E8": "player_ali_slot",
+    "FF17B2": "active_collision_table_ptr",
+    "FF17B6": "collision_tick_counter",
+    "FF17B7": "collision_tick_cadence",
+    "FF16F1": "room_spirit_forbid_flags",
+    "FF184F": "stale_enemy_hud_tracker",
+    "FF188A": "sat_link_counter",
+    "FF13CC": "sat_buffer_base",
+    "FF164E": "vint_busy_flags"
+  },
+  "code_hex": "43f900ff1aa4422900390c69001c000067480c69001e0000675a0c690016000067322368000800082368000c000c5169000c0c69001a00006658337c00000004337c0000002a51e9009e51e900a242690006603e42690000603848e7fec64bf900ff19e84df900ff1aa461006b0c4cdf637f601e48e7e002202800082228000c342800144df900ff1aa461007b424cdf400708f9000500ff164d48e7f00041f90004371e3400e04ad442d442207020003200024100ffd241d0c1d0d023c800ff17b251f900ff17b613fc000a00ff17b74cdf000f6100fbc208f9000500ff164d0839000000ff16f16706427900ff1aa461002a844a3900ff164e66f8423900ff184f42b900ff188a42b900ff13cc6100fc5e6100c16a6100d46c303900ff16f4b07900ff16f266047003600633c000ff16f24eb9000600044df900ff19e87e143c2e00006f046100cfa64dee00bc51cffff0"
+}

@@ -1,3 +1,6 @@
+# M15.433 ROM Companion Spirit Warp Repositioning, Room Collision Table Loader & BGM Engine Synchronizer (`0x00CC12`..`0x00CD64`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_spirit_warp_bgm.py`, `tests/rom_spirit_warp_bgm_test.py` (`5/5 PASS`), `data/thor-evidence/rom_spirit_warp_bgm_m15_433.json`, and `docs/handoffs/STANDALONE_M15_433_SPIRIT_WARP_BGM_HANDOFF.md`.
+
 # M15.432 ROM Room Warp Controller, Camera Centering, Cutscene Locks & Player Ali Spawn Reset Engine (`0x00C9B2`..`0x00CC12`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_room_warp_engine.py`, `tests/rom_room_warp_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_room_warp_engine_m15_432.json`, and `docs/handoffs/STANDALONE_M15_432_ROOM_WARP_ENGINE_HANDOFF.md`.
 

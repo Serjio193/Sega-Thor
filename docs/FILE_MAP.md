@@ -1,3 +1,9 @@
+# M15.433 ROM Companion Spirit Warp Repositioning, Room Collision Table Loader & BGM Engine Synchronizer
+- `tools/extract_rom_spirit_warp_bgm.py` — extractor for `0x00CC12..0x00CD64` (spirit slot `$FF1AA4` repositioning to `(X, Y-8)`, 32-area collision table `0x04371E`, BGM track sync, and 21-entity ground surface latching).
+- `tests/rom_spirit_warp_bgm_test.py` — `5` unit tests verifying ROM constants, 32 collision table validity, spirit repositioning and type handling, BGM track continue vs change sync, and 21-entity ground surface latch sweep.
+- `data/thor-evidence/rom_spirit_warp_bgm_m15_433.json` — extracted M15.433 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_433_SPIRIT_WARP_BGM_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.432 ROM Room Warp Controller, Camera Centering, Cutscene Locks & Player Ali Spawn Reset Engine
 - `tools/extract_rom_room_warp_engine.py` — extractor for `0x00C9B2..0x00CC12` (cutscene lock checker `check_cutscene_script_lock`, immediate/fade warp setup, camera centering, room 4 override, and Ali sky drop reset).
 - `tests/rom_room_warp_engine_test.py` — `5` unit tests verifying ROM constants, cutscene lock aborts, camera centering coordinate calculation, room 4 override, and Player Ali ground vs sky drop spawn initialization.
