@@ -1,3 +1,16 @@
+# ADR-20261117-M16-131-MASH-TRIPLETAP — Rapid-Mash & Triple-Tap Input Ring Detectors
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.347 extracted `0x008910..0x0089A8`: `detect_rapid_mash` (`0x008910..0x00894E`) and `detect_triple_tap` (`0x008950..0x0089A8`).
+2. Rapid-mash detector scans up to 13 frames backwards in the `$FF1668` ring buffer starting from `$FF16E8`; if bit 4 (Button B) is set on >= 3 frames, clears the ring count `$FF16EA = 0` and signals detection with Carry set.
+3. Triple-tap detector scans up to 25 frames backwards in `$FF1668` (clamped to `$FF16EA`); maps Ali's facing direction via table `0x0087F4` to target D-pad nibble (Up: 0x01, Right: 0x08, Down: 0x02, Left: 0x04); ignores neutral frames (nibble 0); aborts immediately if any non-matching direction appears; on 3 matches, clears `$FF16EA = 0` and signals detection with Carry set.
+
+**Decisions:**
+1. **Dedicated `mash_tripletap_detectors` Module:**
+   - Added `src/game/input/mash_tripletap_detectors.hpp/.cpp` modeling `detect_rapid_mash` and `detect_triple_tap` across both raw spans and `video::InputHistoryRing64`.
+
 # ADR-20261117-M16-130-BOMB-DETONATION — Bomb Detonation Blast Spawner & Screen-Shake
 **Status:** Accepted
 **Date:** 2026-11-17

@@ -94,6 +94,7 @@ add_library(oasis_core
     src/game/player/consumable_effects.cpp
     src/game/player/weapon_equip_summon.cpp
     src/game/player/ali_attack_dispatch.cpp
+    src/game/input/mash_tripletap_detectors.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp
     src/game/render/framebuffer.cpp

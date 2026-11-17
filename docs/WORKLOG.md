@@ -1,3 +1,15 @@
+# Worklog — 2026-11-17 (M16.131: Rapid-Mash & Triple-Tap Input Ring Detectors)
+- **Concrete Task**: Implement `src/game/input/mash_tripletap_detectors.hpp/.cpp` with `detect_rapid_mash(...)` (`0x008910..0x00894E`: scans 13-frame window from `$FF16E8` in `$FF1668` ring buffer, counts frames with button bit 4 set, clears `$FF16EA = 0` and sets Carry if count >= 3), `detect_triple_tap(...)` (`0x008950..0x0089A8`: scans up to 25 frames from `$FF16E8` clamped to `$FF16EA`, matches 3 cardinal D-pad frames according to `0x0087F4` facing direction mapping [Up 0x01, Right 0x08, Down 0x02, Left 0x04], skips neutral 0 frames, aborts on non-matching direction, clears `$FF16EA = 0` and sets Carry on 3 matches); add `tests/m16_131_mash_tripletap_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/input/mash_tripletap_detectors.hpp` / `src/game/input/mash_tripletap_detectors.cpp`.
+  * Added `tests/m16_131_mash_tripletap_test.cpp` (registered as `oasis_m16_131_mash_tripletap` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 112/112 tests passed (`ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): 112/112 tests passed (`ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: `mash_tripletap_detectors.hpp` (64 lines), `mash_tripletap_detectors.cpp` (109 lines), `m16_131_mash_tripletap_test.cpp` (188 lines), `CMakeLists.txt` (266 lines), `project_tests_m16.cmake` (422 lines) <= 500 lines.
+  * Remaining unknowns: Wiring `detect_rapid_mash` and `detect_triple_tap` into Ali combo attack dispatch and special command trees in `player_action_machine.cpp` is deferred to motion command unification.
+
 # Worklog — 2026-11-17 (M16.130: Bomb Detonation Blast Spawner & Screen-Shake)
 - **Concrete Task**: Implement `src/game/combat/bomb_detonation.hpp/.cpp` with `detonate_bomb_slot(...)` (`0x00ED04..0x00EDA8`: sets detonation flag `$FF198F = 0xFF`, clears Ali projectile lock word `Ali +0x06 = 0` / `$FF19EE = 0`, converts bomb entity slot to blast hazard entity type `0x003A` [58], decreases Z by `0x00040000` [4.0 px] and clamps `>= 0`, inherits and masks Ali palette/tile base `Ali +0x5A` with `0x97FF`, sets fire damage word `+0xA8 = 0x8007`, hit-type `+0xA6 = 2`, activates collision `+0x36 |= 8`, render `+0x38 |= 8`, behavior `+0x3C |= 2`, sets sub-action `+0x04 = 8` and entity state `+0x2A = 8`, dispatches dual spatial SFX `0x00B00225` and `0x00600382`, and sets 4-frame screen-shake `$FF17C4 = 4`); add `tests/m16_130_bomb_detonation_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

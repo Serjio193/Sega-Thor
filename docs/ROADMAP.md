@@ -1,3 +1,9 @@
+# M16.131 Rapid-Mash & Triple-Tap Input Ring Detectors (`0x008910..0x0089A8`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `detect_rapid_mash` and `detect_triple_tap` in `src/game/input/mash_tripletap_detectors.hpp/.cpp` covering rapid button-mashing detection (>= 3 presses of bit 4 in last 13 frames), triple-tap directional recognition (3 matching cardinal D-pad frames in up to 25 frames, ignoring neutral 0, aborting immediately on mismatch), facing-to-direction mapping table `0x0087F4`, and ring count clearance on match (`$FF16EA = 0`).
+- Qualified `oasis_m16_131_mash_tripletap` and the 112-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.130 Bomb Detonation Blast Spawner & Screen-Shake (`0x00ED04..0x00EDA8`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
