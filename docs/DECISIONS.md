@@ -1,3 +1,14 @@
+# ADR-20261117-M16-85-SOUND-CHANNELS — Sound Driver 11-Channel FM/PSG/SFX RAM Map & System Fade/Mute
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.301 extracted the 11-channel audio RAM layout (6 FM `0xCA`, 3 PSG `0x8A`, 2 SFX `0xCA` at `$FF0022..$FF07BB`), System Cmd `0x00` (`0x0604E6` stop all), and System Cmd `0x07` (`0x060516` fade all: step `2`, timer `0x7E`, `+0x75` bit 4).
+
+**Decisions:**
+1. **Dedicated `sound_channels` Module:**
+   - Added `src/game/audio/sound_channels.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-84-HUD-GAUGE-BARS — HUD HP/SP/Enemy Gauge Bar VDP Renderer (0x00267C..0x0027A4)
 **Status:** Accepted
 **Date:** 2026-11-17

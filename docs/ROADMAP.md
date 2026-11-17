@@ -1,3 +1,9 @@
+# M16.85 Sound Driver 11-Channel FM/PSG/SFX RAM Map & System Fade/Mute (0x0604E6..0x06064B) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `SoundChannelKind`, `SoundChannelState` (11 channels: 6 FM + 3 PSG + 2 SFX), and `SoundChannelBank` (`stop_all` `0x0604E6`, `start_fade_all` `0x060516` step `2` / timer `0x7E`, `step_frame`) in `src/game/audio/sound_channels.hpp/.cpp`.
+- Qualified `oasis_m16_85_sound_channels` and full 45-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.84 HUD HP/SP/Enemy Gauge Bar VDP Renderer (0x00267C..0x0027A4) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.85: Sound Driver 11-Channel FM/PSG/SFX RAM Map & System Fade/Mute)
+- **Concrete Task**: Implement `src/game/audio/sound_channels.hpp/.cpp` with `SoundChannelKind` (`Fm`, `Psg`, `SfxFm`, `SfxPsg`), `SoundChannelState` (11 channels: 6 FM `$FF0022..$FF0414` stride `0xCA`, 3 PSG `$FF049E..$FF05B2` stride `0x8A`, 2 SFX `$FF0628`/`$FF06F2` stride `0xCA`, `+0x6D` fade rate, `+0x6E` fade counter, `+0x75` bit 4), and `SoundChannelBank` (`stop_all()` `0x0604E6`, `start_fade_all(rate)` `0x060516` step `2` / timer `0x7E`, `step_frame()`); add `tests/m16_85_sound_channels_test.cpp`; qualify full 45-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/audio/sound_channels.hpp` / `src/game/audio/sound_channels.cpp`.
+  * Added `tests/m16_85_sound_channels_test.cpp` (registered as `oasis_m16_85_sound_channels` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 45/45 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_85`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 45/45 regression run.
+  * Remaining unknowns: Actual YM2612/SN76489 register synthesis from the 11-channel RAM map is deferred to the future audio synthesis backend.
+
 # Worklog — 2026-11-17 (M16.84: HUD HP/SP/Enemy Gauge Bar VDP Renderer)
 - **Concrete Task**: Implement `src/game/ui/hud_gauge_bars.hpp/.cpp` with `compute_gauge_fill_rows(cur, max_val)` (`0x00271C`: `0 -> 0`, `cur >= max -> 48`, else `((cur * 47) / max) + 1`), `HudGaugeConfig` (Ali HP `0x70E00003`/`0x4E2222E4`, Ali SP `0x72800003`/`0x4E6666E4`, Enemy HP `0x74200003`/`0xDE4444ED` gated by `$FF184F` & `!demo`, erase mask `0x00EEEE00`), and `HudGaugeState::update_differential(...)` (`0x002744..0x0027A4`); add `tests/m16_84_hud_gauge_bars_test.cpp`; qualify full 44-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

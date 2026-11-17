@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/audio/sound_channels.hpp` / `src/game/audio/sound_channels.cpp`: Sound driver 11-channel FM/PSG/SFX RAM map (`$FF0022..$FF07BB`, `0xCA`/`0x8A` strides), `stop_all` (`0x0604E6`), and `start_fade_all` (`0x060516`, step `2`, timer `0x7E`, `+0x75` bit 4) (M16.85).
+- `tests/m16_85_sound_channels_test.cpp`: Automated M16.85 test qualifying all 11 channel RAM addresses, `start_fade_all` attenuation ramp, and `stop_all` mute/clear (M16.85).
 - `src/game/ui/hud_gauge_bars.hpp` / `src/game/ui/hud_gauge_bars.cpp`: HUD HP/SP/Enemy Gauge Bar VDP Renderer (`0x00267C..0x0027A4`, `compute_gauge_fill_rows`, differential row-delta writes, `0x00EEEE00` erase mask) (M16.84).
 - `tests/m16_84_hud_gauge_bars_test.cpp`: Automated M16.84 test qualifying gauge fill-row math, differential caching, erase OR-mask, and enemy timer/demo gating (M16.84).
 - `src/game/player/special_move_inputs.hpp` / `src/game/player/special_move_inputs.cpp`: Ali command-input special moves (`0x0086B4` 360° Spin Slash via LUT `0x008768` & `0x008778` F-B-F Lunge via `0x0087F4`) (M16.83).

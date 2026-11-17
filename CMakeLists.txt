@@ -52,6 +52,7 @@ add_library(oasis_core
     src/game/enemy/heavy_enemy_dispatch.cpp
     src/game/audio/sound_command_dispatch.cpp
     src/game/audio/sound_test_ost.cpp
+    src/game/audio/sound_channels.cpp
     src/game/spirits/efreet_controller.cpp
     src/game/spirits/shade_bow_controllers.cpp
     src/game/spirits/all_spirits_registry.cpp
