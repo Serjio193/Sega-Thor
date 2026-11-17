@@ -1,3 +1,9 @@
+# M15.410 ROM Master Sprite Composition, Y-Depth Sorter & SAT Dispatcher
+- `tools/extract_rom_sprite_sat_dispatcher.py` — extractor for `0x00A196..0x00A336` (master sprite composition engine, 21-slot descending-Y depth sorter `$FF19E8`, multi-pool dispatching, and VDP SAT terminator `$FF13CC`).
+- `tests/rom_sprite_sat_dispatcher_test.py` — `5` unit tests verifying ROM constants, descending-Y selection sorting order, active masks, and render target selection.
+- `data/thor-evidence/rom_sprite_sat_dispatcher_m15_410.json` — extracted M15.410 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_410_SPRITE_SAT_DISPATCHER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.409 ROM Vertical (±Y) Solid Dynamic Entity Collision Sweeps
 - `tools/extract_rom_vertical_entity_sweeps.py` — extractor for `0x009FA0..0x00A196` (vertical dynamic entity collision sweeps ±Y, Group 2 pool `$FF19E8`, 3D AABB overlap, step clamping, Y collision bit 7 on `$41`, and entity push velocity deltas `±1` on `$76`).
 - `tests/rom_vertical_entity_sweeps_test.py` — `8` unit tests verifying ROM constants, vertical entity sweeps, 3D AABB overlaps, clamping, and directional push behavior.

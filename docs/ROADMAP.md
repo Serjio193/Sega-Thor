@@ -1,3 +1,6 @@
+# M15.410 ROM Master Sprite Composition, Y-Depth Sorter & SAT Dispatcher (`0x00A196`..`0x00A336`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_sprite_sat_dispatcher.py`, `tests/rom_sprite_sat_dispatcher_test.py` (`5/5 PASS`), `data/thor-evidence/rom_sprite_sat_dispatcher_m15_410.json`, and `docs/handoffs/STANDALONE_M15_410_SPRITE_SAT_DISPATCHER_HANDOFF.md`.
+
 # M15.409 ROM Vertical (±Y) Solid Dynamic Entity Collision Sweeps (`0x009FA0`..`0x00A196`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_vertical_entity_sweeps.py`, `tests/rom_vertical_entity_sweeps_test.py` (`8/8 PASS`), `data/thor-evidence/rom_vertical_entity_sweeps_m15_409.json`, and `docs/handoffs/STANDALONE_M15_409_VERTICAL_ENTITY_SWEEPS_HANDOFF.md`.
 
