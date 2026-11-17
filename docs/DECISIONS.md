@@ -1,3 +1,14 @@
+# ADR-20261117-M16-98-TERRAIN-ELEVATION-PROBE — Terrain Elevation & Ledge Probe
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.314 extracted the 16-byte Gray-code elevation LUT (`0x0096E8`), span OR/AND aggregation, and elevation/ledge-drop decision core (`0x00938E`, `0x0094D2`, `0x0095AA`).
+
+**Decisions:**
+1. **Dedicated `terrain_elevation_probe` Module:**
+   - Added `src/game/world/terrain_elevation_probe.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-97-VDP-PLANE-SCROLL — Incremental Row/Col VDP Plane Scroller
 **Status:** Accepted
 **Date:** 2026-11-17

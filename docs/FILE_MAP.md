@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/world/terrain_elevation_probe.hpp` / `src/game/world/terrain_elevation_probe.cpp`: Terrain elevation & ledge probe (`0x00938E..0x0096F7`, 16-byte Gray-code LUT `0x0096E8`, span OR/AND aggregation, step-up `bit 5`, blocked `bit 6`, ledge-drop `drop_height`) (M16.98).
+- `tests/m16_98_terrain_elevation_probe_test.cpp`: Automated M16.98 test qualifying the Gray-code LUT, passable flat tiles, mixed/invalid blocking (`bit 6`), step-up blocking (`bit 5`), and ledge-drop `drop_height` (M16.98).
 - `src/game/world/vdp_plane_scroll.hpp` / `src/game/world/vdp_plane_scroll.cpp`: Incremental row/col VDP plane scroller (`0x0023CC..0x002510` 29-tile column streamer & `0x002512..0x002630` 41-tile row streamer with dual source/VDP `64x32` wrap) (M16.97).
 - `tests/m16_97_vdp_plane_scroll_test.cpp`: Automated M16.97 test qualifying positive/negative column & row scroll deltas and source/VDP nametable wrap-around (M16.97).
 - `src/game/ui/vint_hud_slide.hpp` / `src/game/ui/vint_hud_slide.cpp`: V-Int tail sound driver tick (`0x060000`) and HUD slide offset state machine (`0x002380..0x0023CA`, `$FF1859`/`$FF185A`, stops `0x20`/`0x138`, wrap `0x158`) (M16.96).

@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.98: Terrain Elevation & Ledge Probe)
+- **Concrete Task**: Implement `src/game/world/terrain_elevation_probe.hpp/.cpp` with `kElevationNibbleLut16` (`0x0096E8`: `{-1, 0, 2, 1, 4, -1, 3, -1, 6, 7, -1, -1, 5, -1, -1, -1}`), `aggregate_tile_span()`, and `evaluate_terrain_elevation_probe()` (`0x00938E`, `0x0094D2`, `0x0095AA`: passable same-elevation, invalid/mixed blocking `bit 6`, step-up blocking `bit 5`, ledge-drop `bit 5` + `drop_height`); add `tests/m16_98_terrain_elevation_probe_test.cpp`; qualify full 58-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/terrain_elevation_probe.hpp` / `src/game/world/terrain_elevation_probe.cpp`.
+  * Added `tests/m16_98_terrain_elevation_probe_test.cpp` (registered as `oasis_m16_98_terrain_elevation_probe` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 58/58 regression run.
+  * MSVC Debug (`build-debug`): 58/58 regression run.
+  * Remaining unknowns: Connecting `evaluate_terrain_elevation_probe()` directly into `TerrainCollision` multi-tier room stepping is deferred to future world-physics integration.
+
 # Worklog — 2026-11-17 (M16.97: Incremental Row/Col VDP Plane Scroller)
 - **Concrete Task**: Implement `src/game/world/vdp_plane_scroll.hpp/.cpp` with `VdpPlaneScrollState` (ROM struct `a3` `0x08..0x24`), `stream_plane_column(...)` (`0x0023CC..0x002510`: `29` tiles/col, `+40` cols ahead / `0x0050` bytes, `0x03E8` single-wrap guard), and `stream_plane_row(...)` (`0x002512..0x002630`: `41` tiles/row, `+28` rows ahead / `0x0E00` bytes); add `tests/m16_97_vdp_plane_scroll_test.cpp`; qualify full 57-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

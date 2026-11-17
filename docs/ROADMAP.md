@@ -1,3 +1,9 @@
+# M16.98 Terrain Elevation & Ledge Probe (`0x00938E..0x0096F7`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `kElevationNibbleLut16` (`0x0096E8`), `aggregate_tile_span`, and `evaluate_terrain_elevation_probe` (`0x00938E`/`0x0094D2`/`0x0095AA`) in `src/game/world/terrain_elevation_probe.hpp/.cpp`.
+- Qualified `oasis_m16_98_terrain_elevation_probe` and full 58-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.97 Incremental Row/Col VDP Plane Scroller (`0x0023CC..0x002630`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
