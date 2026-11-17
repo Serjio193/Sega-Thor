@@ -1,3 +1,9 @@
+# M16.77 Continue Game SRAM Load (0x00161C..0x001730) & Checkpoint Snapshot / Retry Restore (0x0017DA..0x001900) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `encode_sram_save_block`, `decode_sram_save_block` (`0x0016F4`), `load_continue_game` (`0x00161C`: primary/backup fallback, `0x00020E` soft-reset, 376B Ali+Spirit, `30` invuln frames), and `CheckpointRetryManager` (`0x0017DA`/`0x001828`) in `src/game/ui/continue_and_checkpoint.hpp/.cpp`.
+- Qualified `oasis_m16_77_continue_and_checkpoint` and full 37-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.76 New Game Initialization & Secret Start Chords (0x001300..0x00144F) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.77: Continue Game SRAM Load & Checkpoint Snapshot / Retry Restore)
+- **Concrete Task**: Implement `src/game/ui/continue_and_checkpoint.hpp/.cpp` with `decode_sram_save_block` (`0x0016F4`: 596-byte `0x12A`-word payload + `u16_be` sum checksum), `load_continue_game` (`0x00161C`: primary fallback to backup, soft-reset `0x00020E` if both corrupt, 376B Ali+Spirit restore, `30` `0x1E` invulnerability frames), and `CheckpointRetryManager` (`capture_checkpoint` `0x0017DA` skipped in demo, `restore_on_retry` `0x001828` preserving `$FF0D76`/`$FF1A7E`/`MaxHP`, `HP = MaxHP`, `continue_count` `$FF0E3E += 1`, `30` invuln frames); add `tests/m16_77_continue_and_checkpoint_test.cpp`; qualify full 37-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/continue_and_checkpoint.hpp` / `src/game/ui/continue_and_checkpoint.cpp`.
+  * Added `tests/m16_77_continue_and_checkpoint_test.cpp` (registered as `oasis_m16_77_continue_and_checkpoint` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 37/37 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_77`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 37/37 regression run.
+  * Remaining unknowns: Full runtime wiring of `CheckpointRetryManager` and `load_continue_game` into `StandaloneGameSimulation` Game-Over Retry / File Select is deferred to frontend/boot-flow integration.
+
 # Worklog — 2026-11-17 (M16.76: New Game Initialization & Secret Start Chords)
 - **Concrete Task**: Implement `src/game/ui/new_game_init.hpp/.cpp` with `NewGameStartState` (`$FF0D80 = 0x01FF`, `entity_id = 2`, `facing = 2`, `max_hp = hp = 200`, `max_sp = sp = 0`, `base_attack = 10`, `active_spirit = 0`, `start_room_id = 0x001B`, `cam = (96, 0)`, `pos = (256, 80)`), `NewGameChordBranch`, and `initialize_new_game(input_ff165e_l)` covering all 4 secret chords (`0xD6000100 -> 0x03C8DE`, `0xC9000200 -> 0x001450`, `0xCA000100 -> 0x001394` `$FF0D7A = 0x80`, `0x90000000 -> 0x03E7F4`); add `tests/m16_76_new_game_init_test.cpp`; qualify full 36-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

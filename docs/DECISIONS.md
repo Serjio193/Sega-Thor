@@ -1,3 +1,14 @@
+# ADR-20261117-M16-77-CONTINUE-AND-CHECKPOINT — Continue Game SRAM Load & Checkpoint Snapshot / Retry Restore
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.292 and M15.293 extracted Continue Game SRAM load (`0x00161C`, `0x0016F4`, primary/backup fallback, `0x00020E` soft-reset, 376B restore, `30` invuln frames) and Checkpoint Snapshot / Retry Restore (`0x0017DA`, `0x001828`).
+
+**Decisions:**
+1. **Dedicated `continue_and_checkpoint` Module:**
+   - Added `src/game/ui/continue_and_checkpoint.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-76-NEW-GAME-INIT — New Game Initialization & Secret Start Chords (0x001300..0x00144F)
 **Status:** Accepted
 **Date:** 2026-11-17

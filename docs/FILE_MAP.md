@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/continue_and_checkpoint.hpp` / `src/game/ui/continue_and_checkpoint.cpp`: Continue Game SRAM load (`0x00161C`/`0x0016F4`, primary/backup fallback, 376B restore, `30` invuln frames) and Checkpoint Snapshot / Retry Restore (`0x0017DA`/`0x001828`) (M16.77).
+- `tests/m16_77_continue_and_checkpoint_test.cpp`: Automated M16.77 test qualifying SRAM primary/backup fallback, soft-reset on double corruption, and checkpoint snapshot/retry restore (M16.77).
 - `src/game/ui/new_game_init.hpp` / `src/game/ui/new_game_init.cpp`: New Game initialization (`0x001300..0x00144F`: `HP=200`, `ATK=10`, `Room=0x001B`, `Pos=(256,80)`) and 4 secret start chords (`0xD6000100`, `0xC9000200`, `0xCA000100`, `0x90000000`) (M16.76).
 - `tests/m16_76_new_game_init_test.cpp`: Automated M16.76 test qualifying normal New Game stats/spawn and all 4 secret start chords (M16.76).
 - `src/game/ui/file_select_menu.hpp` / `src/game/ui/file_select_menu.cpp`: Save/Load File Select Menu (`0x0004C6..0x000D30`), 2x3 grid navigation (`0x0006F6`), New/Continue/Copy/Erase flows (`0x000B04`/`0x000C46`), and `$2025C9` last-slot persistence (M16.75).
