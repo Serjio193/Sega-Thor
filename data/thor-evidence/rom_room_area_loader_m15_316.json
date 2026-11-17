@@ -1,0 +1,48 @@
+{
+  "milestone": "M15.316",
+  "title": "ROM Room & Area Transition Loader",
+  "routines": {
+    "load_room_and_jump": {
+      "start": "0x00C8AA",
+      "end": "0x00C90C"
+    },
+    "get_room_header": {
+      "start": "0x00C90E",
+      "end": "0x00C92A"
+    }
+  },
+  "area_table": {
+    "address": "0x00C92C",
+    "count": 16,
+    "pointers": [
+      "0x0002C6B8",
+      "0x0002E56A",
+      "0x0002F1A4",
+      "0x0002F9B2",
+      "0x0002FF80",
+      "0x00030218",
+      "0x00030E56",
+      "0x00031B50",
+      "0x000328D6",
+      "0x0003361C",
+      "0x000341A4",
+      "0x00035528",
+      "0x00036286",
+      "0x00037B42",
+      "0x00038AAC",
+      "0x0002C6F2"
+    ]
+  },
+  "ram_state": {
+    "current_room_id": "0x00FF0E40",
+    "room_flags_16b": "0x00FF0E2C",
+    "area_flags_16b": "0x00FF0E1C",
+    "area_extra_3b": "0x00FF0DB3",
+    "current_room_header_ptr": "0x00FF16EC"
+  },
+  "constants": {
+    "room_entry_offset": "0x001A",
+    "new_game_room_id": "0x001B",
+    "new_game_room_header": "0x0002E1D8"
+  }
+}

@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.316: ROM ROOM & AREA TRANSITION LOADER (`0x00C8AA`..`0x00C96B`) — 16 Area Pointers (`0x00C92C`), Room/Area Flag Clearing (`$FF0E2C`/`$FF0E1C`), `+0x1A` Entry; Extractor (`tools/extract_rom_room_area_loader.py` <= 500 lines), Tests (`tests/rom_room_area_loader_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_316_ROOM_AREA_LOADER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00C8AA..0x00C92A` and extracted 16 area pointers at `0x00C92C..0x00C96B` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_room_area_loader.py`, `python -m unittest tests/rom_room_area_loader_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.316, await M16.98 completion, and continue.
+
 # 2026-11-17 — Milestone M15.315: ROM Z80-SAFE VDP DMA EXECUTOR & HUD PORTRAIT DMA (`0x002632`..`0x002678`, `0x0027A6`..`0x002896`) — Regs `0x94..0x97`, `$A11100`, `$FF0BF4`, Portrait `0x0AA3EC`->`0xF1C0`; Extractor (`tools/extract_rom_vdp_dma_exec.py` <= 500 lines), Tests (`tests/rom_vdp_dma_exec_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_315_VDP_DMA_EXEC_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x002632..0x002678` and `0x0027A6..0x002896` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_vdp_dma_exec.py`, `python -m unittest tests/rom_vdp_dma_exec_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

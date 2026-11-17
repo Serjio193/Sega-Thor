@@ -1,3 +1,8 @@
+# ADR-20261117-M15-316-ROOM-AREA-LOADER — Room & Area Transition Loader (`0x00C8AA`..`0x00C96B`)
+- **Context:** Room transitions (`0x00C8AA`) clear 16B room flags (`$FF0E2C`) on room change and 16B area flags (`$FF0E1C`) + 3B (`$FF0DB3`) on area change, then resolve the room header via the 16-entry area pointer table (`0x00C92C`) and jump to `+0x1A`.
+- **Decision:** Extracted all 16 area pointers, RAM addresses, and room `0x001B` resolution into `data/thor-evidence/rom_room_area_loader_m15_316.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.100 can implement exact room/area indexing and flag-reset semantics.
+
 # ADR-20261117-M15-315-VDP-DMA-EXEC — Z80-Safe VDP DMA Executor & HUD Portrait DMA (`0x002632`..`0x002896`)
 - **Context:** Direct VDP DMA (`0x0027A6`, `0x0027FC`) masks IRQs (`0x0700`), halts the Z80 (`$A11100`), enables VDP reg 1 bit 4 on `$FF0BF4`, programs regs `0x94..0x97`, and triggers DMA; `0x002632` uploads 96-word HUD portraits from `0x0AA3EC` to VRAM `0xF1C0`.
 - **Decision:** Extracted all hardware ports, register encodings, and HUD portrait constants into `data/thor-evidence/rom_vdp_dma_exec_m15_315.json` with 2/2 passing tests and Standalone handoff.

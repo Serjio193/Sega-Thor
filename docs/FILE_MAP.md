@@ -1,3 +1,9 @@
+# M15.316 ROM Room & Area Transition Loader
+- `tools/extract_rom_room_area_loader.py` — ROM extractor & verifier for `0x00C8AA..0x00C96B` (16-entry area table `0x00C92C`, room header resolver `0x00C90E`, room/area flag clearing).
+- `tests/rom_room_area_loader_test.py` — Unit tests verifying the 16 area pointers, room `0x001B` header resolution, and room/area flag clearing.
+- `data/thor-evidence/rom_room_area_loader_m15_316.json` — Verified evidence JSON for M15.316.
+- `docs/handoffs/STANDALONE_M15_316_ROOM_AREA_LOADER_HANDOFF.md` — C++20 Standalone handoff for M16.100.
+
 # M15.315 ROM Z80-Safe VDP DMA Executor & HUD Portrait DMA
 - `tools/extract_rom_vdp_dma_exec.py` — ROM extractor & verifier for `0x002632..0x002678` (HUD portrait DMA `0x0AA3EC` -> `0xF1C0`) and `0x0027A6..0x002896` (Z80-safe VDP DMA regs `0x94..0x97`).
 - `tests/rom_vdp_dma_exec_test.py` — Unit tests verifying VDP DMA command word encoding and portrait source address calculation.
