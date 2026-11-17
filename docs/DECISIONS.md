@@ -1,3 +1,7 @@
+# ADR-20261117-M15-357-COMMAND-MOTIONS — 360-Spin & F-B-F Command-Motion Recognizers (`0x0086B4`..`0x008813`)
+- **Context:** Ali's special moves (360° spin slash and Forward-Back-Forward dash/thrust) scan the shared `$FF1668` 64x2B D-pad input ring (`$FF16E8` head, `$FF16EA` count) using two distinct state machines (`0x0086B4` and `0x008778`).
+- **Decision:** Extract the exact `0x008768` 16-entry direction LUT, 30-sample spin cap, and `0x0087F4` 4-facing F-B-F sequence/mask table in `tools/extract_rom_command_motions.py` and `docs/handoffs/STANDALONE_M15_357_COMMAND_MOTIONS_HANDOFF.md`.
+
 # ADR-20261117-M15-356-WEAPON-DURABILITY-DPAD — Weapon Durability Decrement & 16-Way D-Pad Velocity (`0x008530`..`0x0086B2`)
 - **Context:** Ali's special-weapon durability consumption (`0x008530`, auto-reverting to Dagger `id=1` with SFX `0x00C00269`), `$FF0E3C > $FF1A70` threshold reset (`0x0085C4`), and 16-state D-pad movement velocity/facing table (`0x0085E2..0x0086B2`) drive core player control and weapon persistence.
 - **Decision:** Extract the exact 16-entry D-pad velocity/facing table (`±0x36000`/`±0x30000` cardinal, `±0x2A000`/`±0x25800` diagonal) and weapon durability revert state writes into `tools/extract_rom_weapon_durability_dpad.py` and `docs/handoffs/STANDALONE_M15_356_WEAPON_DURABILITY_DPAD_HANDOFF.md`.

@@ -1,3 +1,9 @@
+# M15.357 ROM 360-Spin & F-B-F Command-Motion Recognizers
+- `tools/extract_rom_command_motions.py` — extractor for `0x0086B4..0x008813` (`$FF1668` 64-entry ring buffer, `0x008768` 8-dir LUT, 30-frame 360° CW/CCW spin recognizer, `0x0087F4` 4-facing F-B-F patterns).
+- `tests/rom_command_motions_test.py` — `2` unit tests verifying ROM motion tables and CW/CCW 360° spin detection.
+- `data/thor-evidence/rom_command_motions_m15_357.json` — extracted M15.357 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_357_COMMAND_MOTIONS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.356 ROM Weapon Durability Decrement & 16-Way D-Pad Velocity
 - `tools/extract_rom_weapon_durability_dpad.py` — extractor for `0x008530..0x0086B2` (`$FF0D80` weapon durability decrement & Dagger revert, `$FF0E3C > $FF1A70` guard, `0x0085FA` 16-way D-pad 16.16 fixed-point velocity table).
 - `tests/rom_weapon_durability_dpad_test.py` — `2` unit tests verifying ROM 16-way D-pad velocity vectors and weapon durability/revert rules.

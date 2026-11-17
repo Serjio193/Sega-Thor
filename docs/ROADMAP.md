@@ -1,3 +1,6 @@
+# M15.357 ROM 360-Spin & F-B-F Command-Motion Recognizers (`0x0086B4`..`0x008813`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_command_motions.py`, `tests/rom_command_motions_test.py` (`2/2 PASS`), `data/thor-evidence/rom_command_motions_m15_357.json`, and `docs/handoffs/STANDALONE_M15_357_COMMAND_MOTIONS_HANDOFF.md`.
+
 # M15.356 ROM Weapon Durability Decrement, Threshold Reset & 16-Way D-Pad Velocity (`0x008530`..`0x0086B2`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_weapon_durability_dpad.py`, `tests/rom_weapon_durability_dpad_test.py` (`2/2 PASS`), `data/thor-evidence/rom_weapon_durability_dpad_m15_356.json`, and `docs/handoffs/STANDALONE_M15_356_WEAPON_DURABILITY_DPAD_HANDOFF.md`.
 
