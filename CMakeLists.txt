@@ -105,6 +105,7 @@ add_library(oasis_core
     src/game/player/ali_weapon_durability.cpp
     src/game/player/ali_command_motions.cpp
     src/game/player/ali_chained_super_motion.cpp
+    src/game/player/ali_rapid_tripletap_demo.cpp
     src/game/input/mash_tripletap_detectors.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp

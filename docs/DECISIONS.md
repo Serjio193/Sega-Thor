@@ -1,3 +1,30 @@
+# ADR-20261117-M16-143-ALI-RAPID-TRIPLETAP-DEMO — ROM Ali Rapid-Mash, Triple-Tap Motion Detectors & Demo Stream Table (0x008910..0x008AA6)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.394 extracted ROM routines `0x008910..0x008AA6` governing Ali's rapid-mash detection, triple-tap motion recognition, and the title attract demo stream asset table and initializer:
+   - `0x008910..0x00894E`: `rapid_mash_detector`:
+     * Scans 13 frames backwards in the `$FF1668` ring buffer starting from `$FF16E8`.
+     * Tests bit 4 (Button A) across frames.
+     * If >= 3 presses detected, clears `$FF16EA = 0` and sets Carry flag / returns `true`; else returns `false`.
+   - `0x008950..0x0089B0`: `triple_tap_detector`:
+     * Clamps scan to `min($FF16EA, 25)` frames backwards from `$FF16E8`.
+     * Looks up cardinal D-pad target from `0x0087F4` based on Ali's facing direction (`Facing 0 Up: 0x01`, `Facing 1 Right: 0x08`, `Facing 2 Down: 0x02`, `Facing 3 Left: 0x04`).
+     * Skips neutral `0` frames; aborts immediately on non-matching non-zero D-pad inputs.
+     * On 3 matches, clears `$FF16EA = 0` and sets Carry flag / returns `true`.
+   - `0x008A94..0x008AA6`: `demo_asset_offsets_table`:
+     * 9-entry table of 16-bit word offsets: `[0x0000, 0x042C, 0x0BC0, 0x1202, 0x144C, 0x16C8, 0x18E0, 0x1EE8, 0x201E]` relative to ROM base bank `0x1698FE`.
+     * Resolves absolute ROM addresses `[0x1698FE, 0x169D2A, 0x16A4BE, 0x16AB00, 0x16AD4A, 0x16AFC6, 0x16B1DE, 0x16B7E6, 0x16B91C]`.
+     * Cycles demo index `$FF0BFC` (0..8) with wrap: `(idx + 1) <= 8 ? (idx + 1) : 0`.
+     * Performs in-place prefix sum mod 256 delta reconstruction (`0x008A36..0x008A46`) across 0x1FFE words into `$FFDFB2`.
+
+**Decisions:**
+1. **Dedicated `ali_rapid_tripletap_demo` Module:**
+   - Added `src/game/player/ali_rapid_tripletap_demo.hpp/.cpp` modeling `recognize_rapid_mash_direct`, `detect_rapid_mash_motion`, `recognize_triple_tap_direct`, `recognize_triple_tap_dpad`, `detect_triple_tap_motion`, `lookup_demo_asset_offset`, `lookup_demo_stream_rom_addr`, `cycle_demo_index`, `delta_reconstruct_demo_stream`, and `DemoPlaybackState`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-142-CHAINED-SUPER-MOTION — ROM Chained F-B-F + 360-Spin Super-Motion Recognizer (0x008814..0x00890E)
 **Status:** Accepted
 **Date:** 2026-11-17

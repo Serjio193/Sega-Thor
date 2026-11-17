@@ -1,3 +1,12 @@
+# M16.143 ROM Ali Rapid-Mash, Triple-Tap Motion Detectors & Demo Stream Table (`0x008910..0x008AA6`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `recognize_rapid_mash_direct`, `detect_rapid_mash_motion`, `recognize_triple_tap_direct`, `recognize_triple_tap_dpad`, `detect_triple_tap_motion`, `lookup_demo_asset_offset`, `lookup_demo_stream_rom_addr`, `cycle_demo_index`, `delta_reconstruct_demo_stream`, and `DemoPlaybackState` in `src/game/player/ali_rapid_tripletap_demo.hpp/.cpp`:
+  - Rapid-mash detector: scans 13 frames in `$FF1668` ring buffer, counts Button A (bit 4) presses, clearing `$FF16EA = 0` on >= 3 presses.
+  - Triple-tap detector: scans up to 25 frames clamped to `$FF16EA`, matches 3 cardinal D-pad frames according to `0x0087F4` facing direction mapping, skips neutral frames, aborts on mismatched non-zero inputs, and clears `$FF16EA = 0` on 3 matches.
+  - Demo stream asset table: 9 word offsets relative to `0x1698FE`, resolving 9 absolute ROM stream addresses, demo index cycling 0..8 modulo 9, and 0x1FFE-word in-place prefix sum delta reconstruction.
+- Qualified `oasis_m16_143_ali_rapid_tripletap_demo` and the 124-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.142 ROM Chained F-B-F + 360-Spin Super-Motion Recognizer (`0x008814..0x00890E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
