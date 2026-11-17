@@ -1,3 +1,9 @@
+# M15.445 ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem
+- `tools/extract_rom_aabb_force_fields.py` — extractor for `0x00DDA2..0x00DEEC` (21-entity pool traversal, 3D AABB intersection test, force vector displacement, airborne elevation boost, and conveyor immunity flags).
+- `tests/rom_aabb_force_fields_test.py` — `5` unit tests verifying ROM constants, entity pool iteration bounds and status tests, 3D AABB bounding box math, elevation boost doubling, and conveyor immunity bitmask evaluation.
+- `data/thor-evidence/rom_aabb_force_fields_m15_445.json` — extracted M15.445 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_445_AABB_FORCE_FIELDS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.444 ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer
 - `tools/extract_rom_dirty_plane_blitter.py` — extractor for `0x00DC26..0x00DDA2` (viewport bounds clipping, toroidal plane modulo arithmetic, VDP command synthesis, and tile word streaming).
 - `tests/rom_dirty_plane_blitter_test.py` — `5` unit tests verifying ROM constants, clipped mode viewport math, toroidal coordinate wrapping, unclipped streaming path, and interrupt masking parity.

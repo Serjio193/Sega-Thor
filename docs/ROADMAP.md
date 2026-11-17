@@ -1,3 +1,6 @@
+# M15.445 ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem (`0x00DDA2`..`0x00DEEC`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_aabb_force_fields.py`, `tests/rom_aabb_force_fields_test.py` (`5/5 PASS`), `data/thor-evidence/rom_aabb_force_fields_m15_445.json`, and `docs/handoffs/STANDALONE_M15_445_AABB_FORCE_FIELDS_HANDOFF.md`.
+
 # M15.444 ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer (`0x00DC26`..`0x00DDA2`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dirty_plane_blitter.py`, `tests/rom_dirty_plane_blitter_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dirty_plane_blitter_m15_444.json`, and `docs/handoffs/STANDALONE_M15_444_DIRTY_PLANE_BLITTER_HANDOFF.md`.
 
