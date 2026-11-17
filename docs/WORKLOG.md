@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.305: ROM 3D AABB SOLID ENTITY SWEEP & PUSH (`0x009DD6`..`0x009EB8`) — 21 Slots, 3f Push Timer, +1px Nudge; Extractor (`tools/extract_rom_solid_entity_sweep.py` <= 500 lines), Tests (`tests/rom_solid_entity_sweep_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_305_SOLID_ENTITY_SWEEP_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x009DD6..0x009EB8` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_solid_entity_sweep.py` and `python tests/rom_solid_entity_sweep_test.py` (2/2 PASS).
+- Next: Commit & push M15.305, await M16.88 completion, and continue.
+
 # 2026-11-17 — Milestone M15.304: ROM TERRAIN PROBE LUT & ROOM BOUNDARY CLAMP (`0x009D00`..`0x009DD5`) — 16B LUT `0x0096E8`, 4-Side Clamp `0x48`; Extractor (`tools/extract_rom_terrain_probe_and_clamp.py` <= 500 lines), Tests (`tests/rom_terrain_probe_and_clamp_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_304_TERRAIN_PROBE_AND_CLAMP_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x009D00..0x009DD5` and extracted `0x0096E8` LUT in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_terrain_probe_and_clamp.py` and `python tests/rom_terrain_probe_and_clamp_test.py` (2/2 PASS).

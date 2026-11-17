@@ -1,3 +1,7 @@
+# M15.305 ROM 3D AABB Solid Entity Sweep & Push (`0x009DD6`..`0x009EB8`) — COMPLETE / VERIFIED
+- Decoded 21-slot (`$FF19E8`, stride `0xBC`) swept 3D AABB solid collision (`0x009DD6..0x009EB8`), push-contact timer (`3` frames at `$6C`), `$40` bit 7 flag, and `+1px` pushable blocker nudge.
+- Authored `tools/extract_rom_solid_entity_sweep.py`, `tests/rom_solid_entity_sweep_test.py` (`2/2 PASS`), `data/thor-evidence/rom_solid_entity_sweep_m15_305.json`, and `docs/handoffs/STANDALONE_M15_305_SOLID_ENTITY_SWEEP_HANDOFF.md`.
+
 # M15.304 ROM Terrain Probe LUT & Room Boundary Clamp (`0x009D00`..`0x009DD5`) — COMPLETE / VERIFIED
 - Decoded terrain surface probe (`0x009D00`), 16-byte terrain effect LUT (`0x0096E8`), and 4-side room boundary clamp (`0x009D4E..0x009DD4`, `[0, tiles*8-1]`, edge flag `0x48`).
 - Authored `tools/extract_rom_terrain_probe_and_clamp.py`, `tests/rom_terrain_probe_and_clamp_test.py` (`2/2 PASS`), `data/thor-evidence/rom_terrain_probe_and_clamp_m15_304.json`, and `docs/handoffs/STANDALONE_M15_304_TERRAIN_PROBE_AND_CLAMP_HANDOFF.md`.

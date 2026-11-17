@@ -1,3 +1,7 @@
+# ADR-20261117-M15-305-SOLID-ENTITY-SWEEP — 3D AABB Solid Entity Sweep & Push (`0x009DD6`..`0x009EB8`)
+- **Decision:** Model solid entity-vs-entity separation and crate/block pushing in Standalone via `0x009DD6`'s 21-slot swept 3D AABB check, `3`-frame push timer (`$6C`), and `+1px` nudge.
+- **Evidence:** Direct Capstone M68K disassembly of `0x009DD6..0x009EB8` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-304-TERRAIN-PROBE-AND-CLAMP — Terrain Probe LUT & Room Boundary Clamp (`0x009D00`..`0x009DD5`)
 - **Decision:** Model terrain surface effect mapping and room boundary clamping in Standalone via `0x0096E8` 16-byte LUT and `0x009D4E..0x009DD4` (`[0, tiles*8-1]` +/- radius, setting `0x48` edge flag).
 - **Evidence:** Direct Capstone M68K disassembly of `0x009D00..0x009DD5` and LUT `0x0096E8` in `local-roms/Beyond Oasis (USA).md`.

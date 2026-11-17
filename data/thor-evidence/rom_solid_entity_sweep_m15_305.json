@@ -1,0 +1,14 @@
+{
+  "milestone": "M15.305",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "solid_sweep": {
+    "entry_x_pos_addr": "0x009DD6",
+    "entity_table_base": "0xFF19E8",
+    "slot_count": 21,
+    "slot_stride_bytes": 188,
+    "push_contact_timer_frames": 3,
+    "collision_flag_bit": 7,
+    "skip_trait_bit_3a": 1,
+    "skip_render_bit_38": 2
+  }
+}

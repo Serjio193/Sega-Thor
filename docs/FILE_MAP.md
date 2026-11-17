@@ -1,3 +1,9 @@
+# M15.305 ROM 3D AABB Solid Entity Sweep & Push
+- `tools/extract_rom_solid_entity_sweep.py` — Extracts 21-slot 3D AABB solid sweep & 3-frame push-contact kernel (`0x009DD6`).
+- `tests/rom_solid_entity_sweep_test.py` — Unit tests verifying 3D AABB sweep, nudge, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_solid_entity_sweep_m15_305.json` — Extracted solid entity sweep evidence.
+- `docs/handoffs/STANDALONE_M15_305_SOLID_ENTITY_SWEEP_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.304 ROM Terrain Probe LUT & Room Boundary Clamp
 - `tools/extract_rom_terrain_probe_and_clamp.py` — Extracts 16-byte terrain LUT (`0x0096E8`) and 4-side room boundary clamp (`0x009D4E..0x009DD4`).
 - `tests/rom_terrain_probe_and_clamp_test.py` — Unit tests verifying terrain LUT, edge clamping, and JSON artifact (`2/2 PASS`).
