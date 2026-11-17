@@ -1,3 +1,4 @@
+# M15.326 ROM 5-Digit Decimal-to-ASCII Formatter (`0x00C0BE`..`0x00C178`) — COMPLETE / VERIFIED
 # M15.325 ROM 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer (`0x00C222`..`0x00C2EA`) — COMPLETE / VERIFIED
 # M15.324 ROM Inventory/Ring 4x4 Grid UI Layout (`0x0042A6`..`0x004360`) — COMPLETE / VERIFIED
 # M15.323 ROM Player Tile-Box Containment & Overlap Checks (`0x00C17A`..`0x00C220`) — COMPLETE / VERIFIED

@@ -1,3 +1,8 @@
+# ADR-20261117-M15-326-DECIMAL-ASCII — 5-Digit Decimal-to-ASCII Formatter (`0x00C0BE`..`0x00C178`)
+- **Context:** Menu/HUD numeric readouts format `uint16` values into 5-character ASCII strings at `$FF192A` using either zero-padding (`0x00C0BE`) or leading-space padding (`0x00C114`).
+- **Decision:** Extracted the buffer address and divisors (`10000..1`) into `data/thor-evidence/rom_decimal_ascii_m15_326.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.110 can format numeric HUD/menu readouts with exact 5-column alignment.
+
 # ADR-20261117-M15-325-GLYPH-OUTLINER — 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer (`0x00C222`..`0x00C2EA`)
 - **Context:** Dialogue glyphs (`0x16C1CA`, 28B = 14x16 1-bpp) are unpacked to an `18x16` scratch canvas (`$FF3028`), dilated with a 4-neighbor `0x0E` outline, and packed into four `8x8` 4-bpp Mega Drive tiles (`$FF2FA8`, 128B).
 - **Decision:** Extracted all table/buffer addresses and packing constants into `data/thor-evidence/rom_glyph_outliner_m15_325.json` with 2/2 passing tests and Standalone handoff.

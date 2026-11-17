@@ -1,3 +1,9 @@
+# M15.326 ROM 5-Digit Decimal-to-ASCII Formatter
+- `tools/extract_rom_decimal_ascii.py` — ROM extractor & verifier for `0x00C0BE..0x00C178` (5-digit zero-padded & space-padded `uint16` decimal formatters to `$FF192A`).
+- `tests/rom_decimal_ascii_test.py` — Unit tests verifying zero-padded and space-padded formatting.
+- `data/thor-evidence/rom_decimal_ascii_m15_326.json` — Verified evidence JSON for M15.326.
+- `docs/handoffs/STANDALONE_M15_326_DECIMAL_ASCII_HANDOFF.md` — C++20 Standalone handoff for M16.110.
+
 # M15.325 ROM 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer
 - `tools/extract_rom_glyph_outliner.py` — ROM extractor & verifier for `0x00C222..0x00C2EA` (`0x16C1CA` 28B/glyph 1-bpp font, `18x16` scratch canvas `$FF3028`, 4-neighbor `0x0E` outline, 4-tile 4-bpp VDP packing `$FF2FA8`).
 - `tests/rom_glyph_outliner_test.py` — Unit tests verifying outline dilation and 4-bpp VDP tile packing.

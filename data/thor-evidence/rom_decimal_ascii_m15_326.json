@@ -1,0 +1,27 @@
+{
+  "milestone": "M15.326",
+  "title": "ROM 5-Digit Decimal-to-ASCII Formatter",
+  "routines": {
+    "format_u16_dec_zero_padded": {
+      "start": "0x00C0BE",
+      "end": "0x00C112"
+    },
+    "format_u16_dec_space_padded": {
+      "start": "0x00C114",
+      "end": "0x00C178"
+    }
+  },
+  "constants": {
+    "output_buf_ram": "0x00FF192A",
+    "digit_count": 5,
+    "divisors": [
+      10000,
+      1000,
+      100,
+      10,
+      1
+    ],
+    "ascii_zero": "0x30",
+    "ascii_space": "0x20"
+  }
+}

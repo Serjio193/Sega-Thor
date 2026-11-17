@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.326: ROM 5-DIGIT DECIMAL-TO-ASCII FORMATTER (`0x00C0BE`..`0x00C178`) — `$FF192A` Zero-Padded & Space-Padded `uint16` Formatters; Extractor (`tools/extract_rom_decimal_ascii.py` <= 500 lines), Tests (`tests/rom_decimal_ascii_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_326_DECIMAL_ASCII_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00C0BE..0x00C178` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_decimal_ascii.py`, `python -m unittest tests/rom_decimal_ascii_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.326, check M16.104 status, and continue.
+
 # 2026-11-17 — Milestone M15.325: ROM 1-BPP DIALOGUE GLYPH OUTLINER & 4-TILE VDP RASTERIZER (`0x00C222`..`0x00C2EA`) — `0x16C1CA` (28B), `18x16` Canvas, `0x0E` Outline, 128B 4-bpp; Extractor (`tools/extract_rom_glyph_outliner.py` <= 500 lines), Tests (`tests/rom_glyph_outliner_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_325_GLYPH_OUTLINER_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00C222..0x00C2EA` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_glyph_outliner.py`, `python -m unittest tests/rom_glyph_outliner_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
