@@ -1,0 +1,27 @@
+{
+  "milestone": "M15.342",
+  "title": "ROM Spatial 2D Audio Attenuation & Stereo Panning",
+  "routines": {
+    "play_spatial_at_xy": {
+      "start": "0x00E78E",
+      "end": "0x00E7E6"
+    },
+    "play_spatial_at_entity": {
+      "start": "0x00E7E8",
+      "end": "0x00E90C"
+    }
+  },
+  "constants": {
+    "spatial_min_sound_id": "0x0200",
+    "hires_min_sound_id": "0x0300",
+    "hires_attenuate_start_px": 88,
+    "hires_max_drop_steps": 7,
+    "hires_pan_dx_px": 64,
+    "fm_step1_dist_px": 176,
+    "fm_step2_dist_px": 224,
+    "fm_cull_dist_px": 272,
+    "fm_pan_dx_px": 96,
+    "pan_left_flag": "0x40",
+    "pan_right_flag": "0x80"
+  }
+}

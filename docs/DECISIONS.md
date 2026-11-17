@@ -1,3 +1,8 @@
+# ADR-20261117-M15-342-SPATIAL-AUDIO-PAN — Spatial 2D Audio Attenuation & Stereo Panning (`0x00E78E`..`0x00E90C`)
+- **Context:** World-space SFX calls (`0x00E78E`, `0x00E7E8`) attenuate and stereo-pan SFX (`>= 0x200`) by `dist = max(|dx|, |dy| * 1.25)` relative to Ali (`$FF19F0`, `$FF19F4`), culling beyond `272px` (`0x200..0x2FF`) or `7` volume drops (`>= 0x300`).
+- **Decision:** Extracted all distance thresholds, pan flags (`0x40`/`0x80`), and attenuation formulas into `data/thor-evidence/rom_spatial_audio_pan_m15_342.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.126 can implement exact 2D spatial audio attenuation and stereo panning.
+
 # ADR-20261117-M15-341-ISQRT-ATAN2 — Integer Square Root & 256-Step atan2 Angle LUT (`0x00E6BA`..`0x00E78C`, `0x05D906`)
 - **Context:** Fixed-point distance and homing/targeting routines use `0x00E6BA` (Heron's `isqrt_u32` with initial guess `min(val, 0x0400)`) and `0x00E6F0`/`0x00E706` (`0..255` `atan2` in steps of `8` via 9-word tangent LUT `0x0005D906`).
 - **Decision:** Extracted the 9-word tangent LUT and quadrant-folding rules into `data/thor-evidence/rom_isqrt_atan2_m15_341.json` with 2/2 passing tests and Standalone handoff.

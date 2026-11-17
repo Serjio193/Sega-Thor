@@ -1,3 +1,4 @@
+# M15.342 ROM Spatial 2D Audio Attenuation & Stereo Panning (`0x00E78E`..`0x00E90C`) — COMPLETE / VERIFIED
 # M15.341 ROM Integer Square Root & 256-Step atan2 Angle LUT (`0x00E6BA`..`0x00E78C`, `0x05D906`) — COMPLETE / VERIFIED
 # M15.340 ROM Ali Attack Action & Weapon-Class State Dispatcher (`0x008002`..`0x00814C`) — COMPLETE / VERIFIED
 # M15.339 ROM Entity Camera-Viewport Culler & Airborne Landing (`0x00E522`..`0x00E67E`) — COMPLETE / VERIFIED

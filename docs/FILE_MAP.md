@@ -1,3 +1,9 @@
+# M15.342 ROM Spatial 2D Audio Attenuation & Stereo Panning
+- `tools/extract_rom_spatial_audio_pan.py` — ROM extractor & verifier for `0x00E78E..0x00E90C` (`max(|dx|, |dy|*1.25)` distance attenuation, `0x110`/`7`-step cull, `0x40`/`0x60` stereo pan).
+- `tests/rom_spatial_audio_pan_test.py` — Unit tests verifying distance attenuation, stereo panning, and culling.
+- `data/thor-evidence/rom_spatial_audio_pan_m15_342.json` — Verified evidence JSON for M15.342.
+- `docs/handoffs/STANDALONE_M15_342_SPATIAL_AUDIO_PAN_HANDOFF.md` — C++20 Standalone handoff for M16.126.
+
 # M15.341 ROM Integer Square Root & 256-Step atan2 Angle LUT
 - `tools/extract_rom_isqrt_atan2.py` — ROM extractor & verifier for `0x00E6BA..0x00E78C` & `0x0005D906` (Heron `isqrt_u32` with `0x0400` cap, 9-word tangent LUT, 256-step `atan2` in 8-unit increments).
 - `tests/rom_isqrt_atan2_test.py` — Unit tests verifying `isqrt_u32` and all 4 quadrants of `atan2_256`.
