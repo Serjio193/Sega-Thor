@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/ring_menu_drop.hpp` / `src/game/ui/ring_menu_drop.cpp`: Ring menu 4x2 cursor wrap (`0x00462E..0x004670`, SFX `0x006003A6`) and item drop handler (`0x004674..0x0046E2`, `protected_slot` / `terrain_blocked` / `item_id <= 1` guards, `(item_id | 0x80, qty)`) (M16.112).
+- `tests/m16_112_ring_menu_drop_test.cpp`: Automated M16.112 test qualifying 4x2 cursor wrap and item-drop validation (M16.112).
 - `src/game/ui/ring_menu_loop.hpp` / `src/game/ui/ring_menu_loop.cpp`: Ring/spirit menu entry guard (`0x004416..0x004438`, `$FF1A6E == 0 && $FF19EC <= 2`, error SFX `0x00A00253`) and input decoder (`0x004480..0x00455C`, `$FF1996` A/BC swap, close SFX `0x00A00347`) (M16.111).
 - `tests/m16_111_ring_menu_loop_test.cpp`: Automated M16.111 test qualifying entry guard and normal/swapped button decoding (M16.111).
 - `src/game/ui/decimal_ascii.hpp` / `src/game/ui/decimal_ascii.cpp`: 5-digit decimal-to-ASCII formatter (`0x00C0BE..0x00C112` zero-padded `"00000".."65535"`, `0x00C114..0x00C178` space-padded `"    0".."65535"`) (M16.110).

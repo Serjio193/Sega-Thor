@@ -1,3 +1,14 @@
+# ADR-20261117-M16-112-RING-MENU-DROP — Ring Menu 4x2 Cursor Wrap & Item Drop Handler
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.328 extracted `0x00462E..0x0046E2`: `step_cursor_4x2` (`4x2` wrap, SFX `0x006003A6`) and `try_drop_inventory_item` (`protected_slot` / `terrain_blocked` / `item_id <= 1` guards, `(item_id | 0x80, qty)`).
+
+**Decisions:**
+1. **Dedicated `ring_menu_drop` Module:**
+   - Added `src/game/ui/ring_menu_drop.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-111-RING-MENU-LOOP — Ring/Spirit Menu Entry Guard & Input Loop
 **Status:** Accepted
 **Date:** 2026-11-17

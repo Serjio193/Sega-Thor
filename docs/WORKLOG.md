@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.112: Ring Menu 4x2 Cursor Wrap & Item Drop Handler)
+- **Concrete Task**: Implement `src/game/ui/ring_menu_drop.hpp/.cpp` with `step_cursor_4x2(cursor, dcol, drow)` (`0x00462E..0x004670`: 4 cols x 2 rows, `(row << 2) | col`, SFX `0x006003A6`) and `try_drop_inventory_item(...)` (`0x004674..0x0046E2`: guards against `cursor == protected_slot`, `terrain_blocked`, and `item_id <= 1`; clears slot ID/qty and emits `(item_id | 0x80, qty)`); add `tests/m16_112_ring_menu_drop_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/ring_menu_drop.hpp` / `src/game/ui/ring_menu_drop.cpp`.
+  * Added `tests/m16_112_ring_menu_drop_test.cpp` (registered as `oasis_m16_112_ring_menu_drop` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `93/93` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `93/93` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `step_cursor_4x2()` and `try_drop_inventory_item()` directly into `RingMenuState` and `StandaloneGameSimulation` item-drop spawning is deferred to future menu-UI unification.
+
 # Worklog — 2026-11-17 (M16.111: Ring/Spirit Menu Entry Guard & Input Loop)
 - **Concrete Task**: Implement `src/game/ui/ring_menu_loop.hpp/.cpp` with `can_open_ring_menu(menu_block, player_state)` (`0x004416..0x004438`: `$FF1A6E == 0 && $FF19EC <= 2`, error SFX `0x00A00253`) and `decode_ring_menu_action(joypad, button_swap)` (`0x004480..0x00455C`: `$FF1996` A/BC swap, `close` SFX `0x00A00347`, `confirm`, `start`, `up`/`down`/`left`/`right`); add `tests/m16_111_ring_menu_loop_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

@@ -1,3 +1,9 @@
+# M16.112 Ring Menu 4x2 Cursor Wrap & Item Drop Handler (`0x00462E..0x0046E2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_cursor_4x2` (`0x00462E..0x004670`: 4x2 wrap, SFX `0x006003A6`) and `try_drop_inventory_item` (`0x004674..0x0046E2`: `protected_slot` / `terrain_blocked` / `item_id <= 1` guards, `(item_id | 0x80, qty)` output) in `src/game/ui/ring_menu_drop.hpp/.cpp`.
+- Qualified `oasis_m16_112_ring_menu_drop` and the 93-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.111 Ring/Spirit Menu Entry Guard & Input Loop (`0x004416..0x00455C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
