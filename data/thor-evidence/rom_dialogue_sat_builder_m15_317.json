@@ -1,0 +1,36 @@
+{
+  "milestone": "M15.317",
+  "title": "ROM Dialogue Cursor & Border SAT Builder",
+  "routines": {
+    "build_dialogue_sat": {
+      "start": "0x00C756",
+      "end": "0x00C81A"
+    },
+    "emit_8_sprite_bar": {
+      "start": "0x00C81C",
+      "end": "0x00C836"
+    },
+    "append_sat_entry": {
+      "start": "0x00C838",
+      "end": "0x00C84C"
+    }
+  },
+  "constants": {
+    "sat_buffer_ram": "0x00FF13CC",
+    "sat_byte_offset_ram": "0x00FF188C",
+    "sat_count_ram": "0x00FF188A",
+    "sat_max_sprites": 80,
+    "cursor_tile_base": "0x86DC",
+    "cursor_alt_palette_bit": 12,
+    "cursor_x": "0x011C",
+    "cursor_y_base": "0x014C",
+    "cursor_y_step": 12,
+    "blink_bit": 4,
+    "border_palette_base": "0x0C00",
+    "border_start_x": "0x00A0",
+    "border_x_step": "0x0020",
+    "border_y_bias": "0x0110",
+    "border_sprites_per_bar": 8,
+    "border_tile_step": 4
+  }
+}

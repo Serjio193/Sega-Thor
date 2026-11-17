@@ -1,3 +1,4 @@
+# M15.317 ROM Dialogue Cursor & Border SAT Builder (`0x00C756`..`0x00C84C`) — COMPLETE / VERIFIED
 # M15.316 ROM Room & Area Transition Loader (`0x00C8AA`..`0x00C96B`) — COMPLETE / VERIFIED
 # M15.315 ROM Z80-Safe VDP DMA Executor & HUD Portrait DMA (`0x002632`..`0x002678`, `0x0027A6`..`0x002896`) — COMPLETE / VERIFIED
 # M15.314 ROM Terrain Elevation & Ledge Probe (`0x00938E`..`0x0096F7`) — COMPLETE / VERIFIED

@@ -1,3 +1,9 @@
+# M15.317 ROM Dialogue Cursor & Border SAT Builder
+- `tools/extract_rom_dialogue_sat_builder.py` — ROM extractor & verifier for `0x00C756..0x00C84C` (blinking cursor `0x86DC`/`0x96DC` and 4x8 sprite box bars, max 80 sprites).
+- `tests/rom_dialogue_sat_builder_test.py` — Unit tests verifying cursor placement and 8-sprite bar SAT emission.
+- `data/thor-evidence/rom_dialogue_sat_builder_m15_317.json` — Verified evidence JSON for M15.317.
+- `docs/handoffs/STANDALONE_M15_317_DIALOGUE_SAT_BUILDER_HANDOFF.md` — C++20 Standalone handoff for M16.101.
+
 # M15.316 ROM Room & Area Transition Loader
 - `tools/extract_rom_room_area_loader.py` — ROM extractor & verifier for `0x00C8AA..0x00C96B` (16-entry area table `0x00C92C`, room header resolver `0x00C90E`, room/area flag clearing).
 - `tests/rom_room_area_loader_test.py` — Unit tests verifying the 16 area pointers, room `0x001B` header resolution, and room/area flag clearing.

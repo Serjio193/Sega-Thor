@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.317: ROM DIALOGUE CURSOR & BORDER SAT BUILDER (`0x00C756`..`0x00C84C`) — Blinking Cursor `0x86DC`/`0x96DC` & 4x8 Sprite Bars (`0x50` Cap); Extractor (`tools/extract_rom_dialogue_sat_builder.py` <= 500 lines), Tests (`tests/rom_dialogue_sat_builder_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_317_DIALOGUE_SAT_BUILDER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00C756..0x00C84C` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_dialogue_sat_builder.py`, `python -m unittest tests/rom_dialogue_sat_builder_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.317, await M16.99 completion, and continue.
+
 # 2026-11-17 — Milestone M15.316: ROM ROOM & AREA TRANSITION LOADER (`0x00C8AA`..`0x00C96B`) — 16 Area Pointers (`0x00C92C`), Room/Area Flag Clearing (`$FF0E2C`/`$FF0E1C`), `+0x1A` Entry; Extractor (`tools/extract_rom_room_area_loader.py` <= 500 lines), Tests (`tests/rom_room_area_loader_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_316_ROOM_AREA_LOADER_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00C8AA..0x00C92A` and extracted 16 area pointers at `0x00C92C..0x00C96B` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_room_area_loader.py`, `python -m unittest tests/rom_room_area_loader_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

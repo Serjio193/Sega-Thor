@@ -1,3 +1,8 @@
+# ADR-20261117-M15-317-DIALOGUE-SAT-BUILDER — Dialogue Cursor & Border SAT Builder (`0x00C756`..`0x00C84C`)
+- **Context:** Dialogue / choice UI renders a blinking cursor (`0x86DC`/`0x96DC` at X `0x011C`, Y `0x014C - 12 * (3 - min(choice, 3))`) and four 8-sprite horizontal bars (`0x0C00` size/link, X `0x00A0 + 0x20*i`, max 80 SAT entries).
+- **Decision:** Extracted all SAT constants and sprite-emission rules into `data/thor-evidence/rom_dialogue_sat_builder_m15_317.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.101 can render dialogue cursor & border SAT entries with exact hardware parity.
+
 # ADR-20261117-M15-316-ROOM-AREA-LOADER — Room & Area Transition Loader (`0x00C8AA`..`0x00C96B`)
 - **Context:** Room transitions (`0x00C8AA`) clear 16B room flags (`$FF0E2C`) on room change and 16B area flags (`$FF0E1C`) + 3B (`$FF0DB3`) on area change, then resolve the room header via the 16-entry area pointer table (`0x00C92C`) and jump to `+0x1A`.
 - **Decision:** Extracted all 16 area pointers, RAM addresses, and room `0x001B` resolution into `data/thor-evidence/rom_room_area_loader_m15_316.json` with 2/2 passing tests and Standalone handoff.
