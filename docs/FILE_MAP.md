@@ -1,3 +1,9 @@
+# M15.407 ROM 4-Direction World Boundary Clamp Subsystem
+- `tools/extract_rom_boundary_clamps.py` — extractor for `0x009D4E..0x009DD6` (4-direction world boundary clamps ±X, ±Y, map tile dimensions, remaining distance clamps, and wall collision flag mask `0x48`).
+- `tests/rom_boundary_clamps_test.py` — `9` unit tests verifying ROM boundary clamps, step clamping, and collision flag updates across all four cardinal directions.
+- `data/thor-evidence/rom_boundary_clamps_m15_407.json` — extracted M15.407 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_407_BOUNDARY_CLAMPS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.406 ROM 2D Bounding Tile Box Sampler, Type 0x56 Pushable Block Scanner & Ground Latch
 - `tools/extract_rom_bounding_box_pushable_latch.py` — extractor for `0x009BC2..0x009D4E` (2D bounding tile box sampler, 6-slot pool `$FF2D8C` type `0x56` pushable block collision scanner, and ground surface latch).
 - `tests/rom_bounding_box_pushable_latch_test.py` — `4` unit tests verifying ROM constants, bounding box interval calculations, and pushable block collision hits/misses.
