@@ -113,6 +113,7 @@ add_library(oasis_core
     src/game/player/horizontal_raycaster.cpp
     src/game/player/vertical_raycaster.cpp
     src/game/player/horizontal_wall_probe.cpp
+    src/game/player/vertical_wall_probe.cpp
     src/game/input/mash_tripletap_detectors.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp

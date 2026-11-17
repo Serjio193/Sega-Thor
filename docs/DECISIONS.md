@@ -1,3 +1,35 @@
+# ADR-20261117-M16-151-VERTICAL-WALL-PROBE — ROM Vertical Tilemap Wall Collision, Row Sampler & Height Step Subsystem (0x0094D2..0x0096E8)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.402 extracted ROM routines `0x0094D2..0x0096E8` governing vertical (±Y) tilemap wall collision, surface height stepping, ledge drop detection, and tile row solidity scanning:
+   - `0x0094D2..0x0095AA`: `tile_solid_probe_neg_y` (upward tile solid probe):
+     * Checks intangible bit 0 on `+0x38(a6)`; verifies non-void current surface `+0x70(a6)`.
+     * Samples tile row span directly via `0x0096BA` with `a4 = 0`.
+     * Maps target surface type via 16-byte LUT `0x0096E8`.
+     * Evaluates elevation delta `d6 - d7`:
+       - `delta >= 2` or `target < 0`: sets wall collision bit 6 on vertical collision byte `+0x41(a6)` (`ori.b #0x40`), sets Carry (blocked).
+       - `delta == 1`: checks climb disable bit 5 on `+0x38(a6)` and wall bit 4 on `d4`.
+       - `delta == 0`: checks slope/edge bit 7 on `d4` with steep climb disable bit 6 on `+0x38(a6)` and wall bit 4 on `d4`.
+       - `delta <= -2`: ledge drop check (drop capability bit 4 on `+0x38`, ground `+0x10 == 0`, even surface type). Reads elevation table `$FF1706[d7] - $FF1706[d6]`, compares against `a4` (0), records drop height into `$FF196E`, clears Y velocity `+0x76 = 0`, sets ledge drop bit 5 on `+0x41(a6)` (`ori.b #0x20`), and sets Carry.
+       - `delta == -1`: decline, checks wall bit 4 on `d4`.
+   - `0x0095AA..0x009678`: `tile_solid_probe_pos_y` (downward tile solid probe):
+     * Checks intangible bit 0 on `+0x38`; verifies non-void current surface `+0x70(a6)`.
+     * Scans multi-row solidity via `0x009678` across entity X radius `d3`, computing scan extent `a4` up to `0x180` px.
+     * Evaluates elevation delta `d6 - d7`, setting wall hit bit 6 or ledge drop bit 5 on `+0x41(a6)` and setting Carry.
+   - `0x009678..0x0096BA`: `scan_tile_row_solidity`:
+     * Steps across entity X radius `d3` in 8-px increments up to `0x180` px bounds using `0x0096BA`, saving max extent into `a4`.
+   - `0x0096BA..0x0096E8`: `sample_tile_row_span`:
+     * Computes column span `(x - rad) >> 3` to `(x + rad) >> 3`.
+     * Reads layer descriptor `(base, row_stride, row_shift)`, accumulating `or.b` into `d4` and `and.b` into `d5`.
+
+**Decisions:**
+1. **Dedicated `vertical_wall_probe` Module:**
+   - Added `src/game/player/vertical_wall_probe.hpp/.cpp` modeling `evaluate_vertical_solid_probe`, `sample_tile_row_span`, `scan_tile_row_solidity`, `probe_vertical_wall_neg_y`, and `probe_vertical_wall_pos_y` with configurable RAM elevation table `$FF1706` and RAM drop storage `$FF196E`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (131/131 M16 tests).
+
 # ADR-20261117-M16-150-HORIZONTAL-WALL-PROBE — ROM Horizontal Tilemap Wall Collision, Surface Height Step & Ledge Drop Detector (0x00938E..0x0094D2)
 **Status:** Accepted
 **Date:** 2026-11-17

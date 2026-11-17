@@ -1,3 +1,13 @@
+# M16.151 ROM Vertical Tilemap Wall Collision, Row Sampler & Height Step Subsystem (`0x0094D2..0x0096E8`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `evaluate_vertical_solid_probe`, `sample_tile_row_span`, `scan_tile_row_solidity`, `probe_vertical_wall_neg_y`, and `probe_vertical_wall_pos_y` in `src/game/player/vertical_wall_probe.hpp/.cpp`:
+  - Negative Y (-Y) tile solid probe (`0x0094D2..0x0095AA`): upward tile solid probe checking intangible bit 0 on `+0x38`, sampling single row span `0x0096BA` (`a4 = 0`), translating target surface via 16-byte LUT `0x0096E8`, evaluating surface height delta (`delta >= 2` wall hit, `delta == 1` incline with climb disable bit 5 check, `delta == 0` flat step with slope bit 7 check, `delta <= -2` ledge drop with bit 4 drop capability, on-ground `+0x10 == 0`, even surface type, `$FF1706` elevation delta vs `a4`, `$FF196E` drop height write, `+0x76` vel_y clear, and `+0x41 |= 0x20` ledge drop bit trigger).
+  - Positive Y (+Y) tile solid probe (`0x0095AA..0x009678`): downward tile solid probe scanning multi-row solidity `0x009678` across entity X radius `d3` within 0x180 px bounds, computing scan extent `a4`, evaluating height delta, setting wall hit `+0x41 |= 0x40` or ledge drop `+0x41 |= 0x20`.
+  - Tile row solidity scanner (`0x009678..0x0096BA`): steps across entity X radius `d3` in 8-px increments up to `0x180` px bounds using `0x0096BA`, saving max extent into `a4`.
+  - Tile row span sampler (`0x0096BA..0x0096E8`): computes tile column span `(x - rad) >> 3` to `(x + rad) >> 3`, reads layer descriptor `(base, row_stride, row_shift)`, accumulating `d4 |= byte` and `d5 &= byte`.
+- Qualified `oasis_m16_151_vertical_wall_probe` and the 131-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.150 ROM Horizontal Tilemap Wall Collision, Surface Height Step & Ledge Drop Detector (`0x00938E..0x0094D2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
