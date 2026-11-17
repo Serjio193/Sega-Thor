@@ -1,3 +1,7 @@
+# ADR-20261117-M15-370-ALI-LEDGE-VAULT-GATE — Ali Ledge Vault Launch & 12-Frame Climb-Hold Gate (`0x005BA2`..`0x005C80`)
+- **Context:** `0x005BA2..0x005C80` implements Ali's 4-directional ledge vault launch (`state 0x0E`, `anim 6`, `0x00800340` SFX, directional `(vx, vy, vz)` profiles) gated by the 12-frame D-pad hold checker at `0x005C82` (which aborts to idle on D-pad release).
+- **Decision:** Extract exact directional velocities (`±0x2B333` X, `-0x26666`/`+0x21999` Y, `0x20000`/`0x30000` Z), the 12-frame `$FF1970` hold threshold, and vault flags in `tools/extract_rom_ali_ledge_vault_gate.py` and `docs/handoffs/STANDALONE_M15_370_ALI_LEDGE_VAULT_GATE_HANDOFF.md`.
+
 # ADR-20261117-M15-369-ALI-LEDGE-PIT-PUSH — Ali Ledge Climb, Pit Fall & Push Trigger (`0x005A30`..`0x005BA0`)
 - **Context:** `0x005A30..0x005BA0` handles Ali's 4-directional ledge-climb triggers (`0x28/0x2A/0x2C/0x2E`), pit-tile vs moving-platform carry (`0x009C40` / `0x009C7C`, `0x3E` fall state, SFX `0x00B00213`/`0x00B00240`), and pushable-block (`0x30`) entry.
 - **Decision:** Extract all state/anim IDs, tile masks, fall SFX IDs, and push-block entity/pad guards in `tools/extract_rom_ali_ledge_pit_push.py` and `docs/handoffs/STANDALONE_M15_369_ALI_LEDGE_PIT_PUSH_HANDOFF.md`.

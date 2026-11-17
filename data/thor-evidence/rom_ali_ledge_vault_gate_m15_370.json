@@ -1,0 +1,70 @@
+{
+  "milestone": "M15.370",
+  "rom_range": "0x005BA2..0x005C80",
+  "climb_hold_gate": {
+    "helper_addr": "0x005C82",
+    "frame_counter_addr": "0xFF1970",
+    "required_frames": 12,
+    "dpad_addr": "0xFF165E",
+    "cancel_button_bit": 13,
+    "saved_sp_addr": "0xFF1934"
+  },
+  "vault_common": {
+    "target_addr": "0x005C42",
+    "target_state": "0x0E",
+    "target_anim": 6,
+    "flags_38_or_mask": "0x0D",
+    "sfx_id": "0x00800340",
+    "clears_input_ring_count": "0xFF16EA"
+  },
+  "launch_profiles": [
+    {
+      "dir": "up",
+      "entry_addr": "0x005BA2",
+      "dpad_bit": 0,
+      "facing": 0,
+      "vx": 0,
+      "vy": -157286,
+      "vz": 131072,
+      "airborne_state": "0x0E",
+      "anim_id": 6,
+      "sfx_id": "0x00800340"
+    },
+    {
+      "dir": "right",
+      "entry_addr": "0x005BCA",
+      "dpad_bit": 3,
+      "facing": 1,
+      "vx": 176947,
+      "vy": 0,
+      "vz": 196608,
+      "airborne_state": "0x0E",
+      "anim_id": 6,
+      "sfx_id": "0x00800340"
+    },
+    {
+      "dir": "down",
+      "entry_addr": "0x005BE0",
+      "dpad_bit": 1,
+      "facing": 2,
+      "vx": 0,
+      "vy": 137625,
+      "vz": 196608,
+      "airborne_state": "0x0E",
+      "anim_id": 6,
+      "sfx_id": "0x00800340"
+    },
+    {
+      "dir": "left",
+      "entry_addr": "0x005C1A",
+      "dpad_bit": 2,
+      "facing": 3,
+      "vx": -176947,
+      "vy": 0,
+      "vz": 196608,
+      "airborne_state": "0x0E",
+      "anim_id": 6,
+      "sfx_id": "0x00800340"
+    }
+  ]
+}

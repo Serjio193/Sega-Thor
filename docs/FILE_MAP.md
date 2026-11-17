@@ -1,3 +1,9 @@
+# M15.370 ROM Ali Ledge Vault Launch & 12-Frame Climb-Hold Gate
+- `tools/extract_rom_ali_ledge_vault_gate.py` — extractor for `0x005BA2..0x005C80` (4-dir vault velocities `vx/vy/vz`, 12-frame climb hold gate `0x005C82`, state `0x0E` vault trigger & SFX `0x00800340`).
+- `tests/rom_ali_ledge_vault_gate_test.py` — `2` unit tests verifying ROM velocity/SFX constants and 12-frame climb hold gate state transitions.
+- `data/thor-evidence/rom_ali_ledge_vault_gate_m15_370.json` — extracted M15.370 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_370_ALI_LEDGE_VAULT_GATE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.369 ROM Ali Ledge Climb, Pit Fall & Push Trigger
 - `tools/extract_rom_ali_ledge_pit_push.py` — extractor for `0x005A30..0x005BA0` (4-dir ledge climb states `0x28/0x2A/0x2C/0x2E`, pit fall `0x3E` / platform carry, pushable-block `0x30` trigger).
 - `tests/rom_ali_ledge_pit_push_test.py` — `2` unit tests verifying ROM constants, ledge state mapping, and push-block entry guards.

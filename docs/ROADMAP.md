@@ -1,3 +1,6 @@
+# M15.370 ROM Ali 4-Dir Ledge Vault Launch & 12-Frame Climb-Hold Gate (`0x005BA2`..`0x005C80`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_ledge_vault_gate.py`, `tests/rom_ali_ledge_vault_gate_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_ledge_vault_gate_m15_370.json`, and `docs/handoffs/STANDALONE_M15_370_ALI_LEDGE_VAULT_GATE_HANDOFF.md`.
+
 # M15.369 ROM Ali Ledge Climb, Pit Fall/Platform Carry & Push Trigger (`0x005A30`..`0x005BA0`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_ledge_pit_push.py`, `tests/rom_ali_ledge_pit_push_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_ledge_pit_push_m15_369.json`, and `docs/handoffs/STANDALONE_M15_369_ALI_LEDGE_PIT_PUSH_HANDOFF.md`.
 
