@@ -1,0 +1,29 @@
+{
+  "milestone": "M15.388",
+  "description": "ROM Ali Jump Initiation, Weapon Hotkey Swap & Dagger Attack Dispatcher",
+  "address_range": [
+    "0x007E46",
+    "0x00803C"
+  ],
+  "byte_count": 502,
+  "routines": [
+    {
+      "name": "ali_jump_initiation",
+      "start": "0x007E46",
+      "end": "0x007EC2",
+      "purpose": "Jump Button C entry: verifies ground state, sets ledge/jump state 0x14 / anim 0x14, plays SFX 0x900359, unrolls stack"
+    },
+    {
+      "name": "ali_weapon_hotkey_swap",
+      "start": "0x007EC4",
+      "end": "0x007F80",
+      "purpose": "Weapon quick-swap: scans slot at $FF0D80, dispatches weapon type (0x0A Dagger, 0x0C Sword, 0x0E Bow, 0x10 Bomb), HUD toast 60f, SFX 0xC0025D or 0xA00253"
+    },
+    {
+      "name": "ali_attack_weapon_router",
+      "start": "0x007F82",
+      "end": "0x00803C",
+      "purpose": "Evaluates weapon index at $FF0D7E (routes 0x0C Sword, 0x0E Bow, 0x10 Bomb) and initializes Dagger strike (anim 0x3A, state 0x0A, combo timer $FF198B = 4)"
+    }
+  ]
+}

@@ -12271,6 +12271,12 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.388: ROM Ali Jump Initiation, Weapon Hotkey Swap & Dagger Attack Dispatcher (0x007E46..0x00803C)
+
+- Decoded Jump button C initiation (`0x007E46..0x007EC2`): ground state validation, jump/ledge state transition (`state = 0x14, anim = 0x14`), SFX `#$900359`, and stack unroll from `$FF1934.l`.
+- Decoded weapon quick-swap hotkey manager (`0x007EC4..0x007F80`): checks 8 weapon slots at `$FF0D80`, triggers empty buzzer SFX `#$A00253`, categorizes weapons (`0x0A` Dagger, `0x0C` Sword, `0x0E` Bow, `0x10` Bomb), installs 60-frame HUD toast `$FF1856 = 0x3C`, and plays equip chime SFX `#$C0025D`.
+- Decoded Attack button B dispatcher and Dagger strike (`0x007F82..0x00803C`): routes Sword (`0x0C`), Bow (`0x0E`), Bomb (`0x10`); sets Dagger strike state (`state = 0x0A, anim = 0x3A`), combo timer `$FF198B = 4`, and unrolls stack to transition.
+
 ## 2026-11-17 - Milestone M15.387: ROM Ali Item Drop Spawner, 8-Slot Allocation Probe, Input Ring Sampler & Master Button Dispatcher (0x007C3C..0x007E46)
 
 - Decoded item drop world entity allocation (`0x007C3C..0x007CC4`): spawns entity type 8 at player coordinates with 60-frame countdown (`+0x22 = 0x3C`), item ID (`+0x32`), sub-type (`+0x52`), initial state (`+0x4`), flag bit 0 in `+0x39`, and player transition to idle/walk `0x62CC`.

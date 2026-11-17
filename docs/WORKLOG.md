@@ -31418,6 +31418,16 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.388: ROM Ali Jump Initiation, Weapon Hotkey Swap & Dagger Attack Dispatcher (0x007E46..0x00803C)
+
+- Decoded and tested Jump button C initiation (`0x007E46..0x007EC2`): ground state validation, jump/ledge state transition (`state = 0x14, anim = 0x14`), SFX `#$900359`, and stack unroll from `$FF1934.l`.
+- Decoded and tested weapon quick-swap hotkey manager (`0x007EC4..0x007F80`): checks 8 weapon slots at `$FF0D80`, triggers empty buzzer SFX `#$A00253`, categorizes weapons (`0x0A` Dagger, `0x0C` Sword, `0x0E` Bow, `0x10` Bomb), installs 60-frame HUD toast `$FF1856 = 0x3C`, and plays equip chime SFX `#$C0025D`.
+- Decoded and tested Attack button B dispatcher and Dagger strike (`0x007F82..0x00803C`): routes Sword (`0x0C`), Bow (`0x0E`), Bomb (`0x10`); sets Dagger strike state (`state = 0x0A, anim = 0x3A`), combo timer `$FF198B = 4`, and unrolls stack to transition.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_jump_weapon_swap_m15_388.json` (3 routines, 502 bytes).
+- Unit tests: `tests/rom_ali_jump_weapon_swap_test.py` (`5/5 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_388_ALI_JUMP_WEAPON_SWAP_HANDOFF.md`.
+- Next Step: Commit and push M15.388 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.387: ROM Ali Item Drop Spawner, 8-Slot Allocation Probe, Input Ring Sampler & Master Button Dispatcher (0x007C3C..0x007E46)
 
 - Decoded and tested item drop world entity allocation (`0x007C3C..0x007CC4`): spawns entity type 8 at player coordinates with 60-frame initial countdown (`+0x22 = 0x3C`), item ID (`+0x32`), sub-type (`+0x52`), initial state (`+0x4`), flag bit 0 in `+0x39`, and player transition to idle/walk `0x62CC`.
