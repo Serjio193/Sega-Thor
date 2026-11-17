@@ -1,3 +1,8 @@
+# ADR-20261117-M15-338-WEAPON-EQUIP-SUMMON — Spirit Summon Trigger & Weapon Quick-Equip Class Mapper (`0x007E9E`..`0x007F80`)
+- **Context:** `0x007E9E` initiates spirit summoning (Ali state `0x14`, SFX `0x00900359`), while `0x007EC4` quick-equips inventory weapons, toggling back to slot `0` if re-selected, mapping IDs to weapon classes `0x0A`..`0x10` (`$FF0D7E`), and starting a 60-frame toast.
+- **Decision:** Extracted all class mappings, timers, and SFX IDs into `data/thor-evidence/rom_weapon_equip_summon_m15_338.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.122 can implement quick-equip weapon class switching and summon trigger state.
+
 # ADR-20261117-M15-337-DEBUG-WARP-MENU — Debug Stage/Room Warp Menu & Spawn Table (`0x004C9C`..`0x004F20`, `0x005D918`)
 - **Context:** The secret debug warp menu (`0x004C9C`) browses non-empty areas (`0..31`) and rooms in `0x0005D918` with `10f`/`3f` key repeat, reading `(tile_x, tile_y)` and warping via `0x00CA24`.
 - **Decision:** Extracted all active areas, room counts, and spawn coordinates into `data/thor-evidence/rom_debug_warp_menu_m15_337.json` with 2/2 passing tests and Standalone handoff.

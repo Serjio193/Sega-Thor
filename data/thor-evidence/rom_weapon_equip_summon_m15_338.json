@@ -1,0 +1,29 @@
+{
+  "milestone": "M15.338",
+  "title": "ROM Spirit Summon Trigger & Weapon Quick-Equip Class Mapper",
+  "routines": {
+    "start_spirit_summon": {
+      "start": "0x007E9E",
+      "end": "0x007EC2"
+    },
+    "quick_equip_weapon_slot": {
+      "start": "0x007EC4",
+      "end": "0x007F80"
+    }
+  },
+  "weapon_class_map": {
+    "dagger_id_1": "0x0A",
+    "sword_ids_2_to_5": "0x0C",
+    "bow_ids_6_to_8": "0x0E",
+    "bomb_ids_9_to_11": "0x10",
+    "special_id_12": "0x0E",
+    "default_gt_12": "0x0A"
+  },
+  "constants": {
+    "summon_player_state": 20,
+    "summon_sfx": "0x00900359",
+    "equip_sfx": "0x00C0025D",
+    "error_sfx": "0x00A00253",
+    "equip_toast_frames": 60
+  }
+}

@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.338: ROM SPIRIT SUMMON TRIGGER & WEAPON QUICK-EQUIP CLASS MAPPER (`0x007E9E`..`0x007F80`) — State `20` Summon, Class `0x0A..0x10`, `60f` Toast; Extractor (`tools/extract_rom_weapon_equip_summon.py` <= 500 lines), Tests (`tests/rom_weapon_equip_summon_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_338_WEAPON_EQUIP_SUMMON_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x007E9E..0x007F80` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_weapon_equip_summon.py`, `python -m unittest tests/rom_weapon_equip_summon_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.338, check M16.111 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.337: ROM DEBUG STAGE/ROOM WARP MENU & SPAWN TABLE (`0x004C9C`..`0x004F20`, `0x005D918`) — 32-Area Spawn Table, 10f/3f Repeat; Extractor (`tools/extract_rom_debug_warp_menu.py` <= 500 lines), Tests (`tests/rom_debug_warp_menu_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_337_DEBUG_WARP_MENU_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x004C9C..0x004F20` and extracted `0x0005D918` spawn table in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_debug_warp_menu.py`, `python -m unittest tests/rom_debug_warp_menu_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

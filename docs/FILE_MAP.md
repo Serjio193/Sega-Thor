@@ -1,3 +1,9 @@
+# M15.338 ROM Spirit Summon Trigger & Weapon Quick-Equip Class Mapper
+- `tools/extract_rom_weapon_equip_summon.py` — ROM extractor & verifier for `0x007E9E..0x007F80` (summon state `20` `0x00900359`, quick-equip toggle to slot `0`, weapon class `0x0A`/`0x0C`/`0x0E`/`0x10`, `60f` toast).
+- `tests/rom_weapon_equip_summon_test.py` — Unit tests verifying weapon class mapping.
+- `data/thor-evidence/rom_weapon_equip_summon_m15_338.json` — Verified evidence JSON for M15.338.
+- `docs/handoffs/STANDALONE_M15_338_WEAPON_EQUIP_SUMMON_HANDOFF.md` — C++20 Standalone handoff for M16.122.
+
 # M15.337 ROM Debug Stage/Room Warp Menu & Spawn Table
 - `tools/extract_rom_debug_warp_menu.py` — ROM extractor & verifier for `0x004C9C..0x004F20` & `0x0005D918` (32-area debug warp spawn table, 10f/3f repeat delays, `(tile_x, tile_y) << 3` warp).
 - `tests/rom_debug_warp_menu_test.py` — Unit tests verifying active areas and 8px-aligned spawn coordinates.
