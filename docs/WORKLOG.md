@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.92: 16-Bit LFSR PRNG & Bounded Random Helpers)
+- **Concrete Task**: Implement `src/game/entities/prng_lfsr.hpp/.cpp` with `PrngLfsr16` (`seed = 0x7F28` `$FF1928`, `next_rng16()` `0x00E268`, `rand_u16(bound)` `0x00E2A2`, `rand_u8(bound)` `0x00E2BA`), matching the 8 exact ROM outputs from `0x7F28`; add `tests/m16_92_prng_lfsr_test.cpp`; qualify full 52-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/entities/prng_lfsr.hpp` / `src/game/entities/prng_lfsr.cpp`.
+  * Added `tests/m16_92_prng_lfsr_test.cpp` (registered as `oasis_m16_92_prng_lfsr` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 52/52 regression run.
+  * MSVC Debug (`build-debug`): 52/52 regression run.
+  * Remaining unknowns: None for the deterministic PRNG kernel; wiring `$FF1928` into all enemy AI/drop-table consumers is deferred to future per-system integration.
+
 # Worklog — 2026-11-17 (M16.91: WRAM Entity, Effect & Projectile Pool Allocators)
 - **Concrete Task**: Implement `src/game/entities/entity_pool_allocators.hpp/.cpp` with `ObjectPoolKind` (`Effect8`, `Special6`, `FullEntity18`, `EnemyEntity17`), `AllocatedSlot` (`pool`, `index`, `ram_addr`, `vram_tile`), and `EntityPoolAllocators` (capacities `8`/`6`/`18`/`17`, `$FF2ABC`/`$FF2D8C`/`$FF1C1C`/`$FF1CD8`, strides `0x5A`/`0xBC`, Effect8 VRAM tile `0x0694 + idx * 9`, `$FF184F` invalidation when reused enemy slot matches `$FF1850`); add `tests/m16_91_entity_pool_allocators_test.cpp`; qualify full 51-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

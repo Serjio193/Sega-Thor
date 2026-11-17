@@ -1,3 +1,9 @@
+# M16.92 16-Bit LFSR PRNG & Bounded Random Helpers (`0x00E268..0x00E2D3`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `PrngLfsr16` (`0x7F28` `$FF1928`, `next_rng16` `0x00E268`, `rand_u16` `0x00E2A2`, `rand_u8` `0x00E2BA`) in `src/game/entities/prng_lfsr.hpp/.cpp`.
+- Qualified `oasis_m16_92_prng_lfsr` (including exact 8-output parity from `0x7F28`) and full 52-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.91 WRAM Entity, Effect & Projectile Pool Allocators (`0x00D9BE..0x00DA60`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

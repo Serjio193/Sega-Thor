@@ -1,3 +1,14 @@
+# ADR-20261117-M16-92-PRNG-LFSR — 16-Bit LFSR PRNG & Bounded Random Helpers
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.308 extracted the 16-bit LFSR PRNG (`$FF1928`, seed `0x7F28`, `0x00E268` 4-shift step, `0x00E2A2` `rand_u16`, `0x00E2BA` `rand_u8`).
+
+**Decisions:**
+1. **Dedicated `prng_lfsr` Module:**
+   - Added `src/game/entities/prng_lfsr.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-91-ENTITY-POOL-ALLOCATORS — WRAM Entity, Effect & Projectile Pool Allocators
 **Status:** Accepted
 **Date:** 2026-11-17
