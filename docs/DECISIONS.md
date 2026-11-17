@@ -1,3 +1,29 @@
+# ADR-20261117-M16-146-ANIM-PALETTE-ENTITY-STEPPER — ROM Animated Palette CRAM Sequencer & 3-Group Entity Master Stepper (0x008E22..0x008F22)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.397 extracted ROM routines `0x008E22..0x008F22` governing the animated palette CRAM sequencer, 3-group entity master stepper, entity state reset helper, and secondary entity dispatch:
+   - `0x008E22..0x008E8E`: `anim_palette_sequencer`:
+     * Checks palette animation active flag `$FF164F`.
+     * Iterates animated palette headers at `$FF17A2` using stride-to-next until sentinel 0.
+     * Decrements timer at `+0x06` by 2; when timer <= 2, advances frame offset `+0x04` by 4, reads duration/color, loops on sentinel duration 0 back to frame 0 at `+0x08`, writes updated color to target CRAM offset in `$FF134C`, and sets CRAM sync flag `$FF164D` bit 0 on color updates.
+   - `0x008E90..0x008EF6`: `entity_master_stepper`:
+     * Sets recovery return vector in `$FF193C` and processes 3 entity groups:
+       - Group 1 at `$FF2954` (4 slots, stride 90B, recovery `0x008EAA`, secondary dispatch `0x008F12`).
+       - Group 2 at `$FF19E8` (21 slots, stride 188B, recovery `0x008ECC`, primary dispatch `0x008F22`).
+       - Group 3 at `$FF2D8C` (6 slots, stride 90B, recovery `0x008EEE`, secondary dispatch `0x008F12`).
+   - `0x008EF8..0x008F10`: `entity_state_reset`:
+     * Sets state index `+0x2A = d0`, timer `+0x2C = 0xFFFF`, clears flashing `+0x37 &= 0xF9`, and resets subtimers `+0x30 = 0`, `+0x2E = 0`.
+   - `0x008F12..0x008F22`: `secondary_entity_dispatch`:
+     * Sets bit 4 of `+0x37` (`bset.b #4, $37(a6)`) and branches to secondary script engine `0x0039CA` / `0x008FA4`.
+
+**Decisions:**
+1. **Dedicated `anim_palette_entity_stepper` Module:**
+   - Added `src/game/player/anim_palette_entity_stepper.hpp/.cpp` modeling `step_anim_palette_raw`, `create_anim_palette_entry`, `reset_entity_state`, `dispatch_secondary_entity`, and `step_entity_groups_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-145-ENTITY-CONSTRUCTOR-LIFECYCLE — ROM Master Entity Subsystems Clear, Universal Constructor & Spirit Glow Pulse (0x008C5A..0x008E22)
 **Status:** Accepted
 **Date:** 2026-11-17

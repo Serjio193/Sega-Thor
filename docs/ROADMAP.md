@@ -1,3 +1,13 @@
+# M16.146 ROM Animated Palette CRAM Sequencer & 3-Group Entity Master Stepper (`0x008E22..0x008F22`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_anim_palette_raw`, `create_anim_palette_entry`, `reset_entity_state`, `dispatch_secondary_entity`, and `step_entity_groups_raw` in `src/game/player/anim_palette_entity_stepper.hpp/.cpp`:
+  - Animated palette sequencer: checks `$FF164F`, iterates chained palette animation entries, steps timers by 2, advances frames with sentinel loop-back, updates CRAM buffer `$FF134C`, and sets CRAM sync bit 0 in `$FF164D`.
+  - 3-group entity master stepper: sets recovery vector in `$FF193C`, iterating Group 1 (4x90B `$FF2954`), Group 2 (21x188B `$FF19E8`), and Group 3 (6x90B `$FF2D8C`) with secondary and primary entity dispatching.
+  - Entity state reset helper: sets `+0x2A = state`, `+0x2C = 0xFFFF`, `+0x37 &= 0xF9`, `+0x30 = 0`, `+0x2E = 0`.
+  - Secondary entity dispatch: sets active bit 4 on `+0x37` (`bset.b #4, $37(a6)`).
+- Qualified `oasis_m16_146_anim_palette_entity_stepper` and the 126-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.145 ROM Master Entity Subsystems Clear, Universal Constructor & Spirit Glow Pulse (`0x008C5A..0x008E22`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
