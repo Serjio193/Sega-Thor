@@ -1,3 +1,4 @@
+# M15.344 ROM Death Explosion Burst, Latch Follow & Projectile Probe (`0x00EA04`..`0x00EB40`) — COMPLETE / VERIFIED
 # M15.343 ROM Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase (`0x00E90E`..`0x00EA02`) — COMPLETE / VERIFIED
 # M15.342 ROM Spatial 2D Audio Attenuation & Stereo Panning (`0x00E78E`..`0x00E90C`) — COMPLETE / VERIFIED
 # M15.341 ROM Integer Square Root & 256-Step atan2 Angle LUT (`0x00E6BA`..`0x00E78C`, `0x05D906`) — COMPLETE / VERIFIED

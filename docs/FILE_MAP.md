@@ -1,3 +1,9 @@
+# M15.344 ROM Death Explosion Burst, Latch Follow & Projectile Probe
+- `tools/extract_rom_projectile_latch_burst.py` — ROM extractor & verifier for `0x00EA04..0x00EB40` (`0x1F/-16` burst jitter, `0xB4`/`0xB8` carried latch follow, `0x00700378` bounce SFX, `±6px` `0x00B922` projectile probe).
+- `tests/rom_projectile_latch_burst_test.py` — Unit tests verifying death burst jitter and carried latch follow.
+- `data/thor-evidence/rom_projectile_latch_burst_m15_344.json` — Verified evidence JSON for M15.344.
+- `docs/handoffs/STANDALONE_M15_344_PROJECTILE_LATCH_BURST_HANDOFF.md` — C++20 Standalone handoff for M16.128.
+
 # M15.343 ROM Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase
 - `tools/extract_rom_explosion_spawner_cooldown.py` — ROM extractor & verifier for `0x00E90E..0x00EA02` (entity `0x34` / `0x055E` spawner, 7-frame SFX cooldown `0x0090021B`/`0x00600382`, Shade `0x1E` phase flags).
 - `tests/rom_explosion_spawner_cooldown_test.py` — Unit tests verifying 7-frame SFX cooldown and 16-bit frame wraparound.

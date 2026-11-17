@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.344: ROM DEATH EXPLOSION BURST, LATCH FOLLOW & PROJECTILE PROBE (`0x00EA04`..`0x00EB40`) — `±16px` Burst, `0xB4`/`0xB8` Latch, `±6px` `0x00700378`; Extractor (`tools/extract_rom_projectile_latch_burst.py` <= 500 lines), Tests (`tests/rom_projectile_latch_burst_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_344_PROJECTILE_LATCH_BURST_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00EA04..0x00EB40` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_projectile_latch_burst.py`, `python -m unittest tests/rom_projectile_latch_burst_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.344, check M16.115 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.343: ROM EXPLOSION SPAWNER, 7-FRAME SFX COOLDOWN & SHADE PHASE (`0x00E90E`..`0x00EA02`) — `0x34`/`0x055E`, 7f SFX Cooldown, Shade `0x1E`; Extractor (`tools/extract_rom_explosion_spawner_cooldown.py` <= 500 lines), Tests (`tests/rom_explosion_spawner_cooldown_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_343_EXPLOSION_SPAWNER_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00E90E..0x00EA02` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_explosion_spawner_cooldown.py`, `python -m unittest tests/rom_explosion_spawner_cooldown_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

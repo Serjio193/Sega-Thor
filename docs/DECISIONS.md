@@ -1,3 +1,8 @@
+# ADR-20261117-M15-344-PROJECTILE-LATCH-BURST — Death Explosion Burst, Latch Follow & Projectile Probe (`0x00EA04`..`0x00EB40`)
+- **Context:** `0x00EA04..0x00EB40` implements death explosion jitter (`(prng & 0x1F) - 16`, `0x0090021B`/`0x00600382`), carried/latched entity tracking (`0xB4` parent + `0xAE..0xB2` offset, `0xB8` timer), and projectile `±6px` hitbox & wall-bounce (`0x00700378`).
+- **Decision:** Extracted all offsets, jitter bounds, and SFX constants into `data/thor-evidence/rom_projectile_latch_burst_m15_344.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.128 can implement death bursts, latched entities, and projectile wall-bounce parity.
+
 # ADR-20261117-M15-343-EXPLOSION-SPAWNER — Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase (`0x00E90E`..`0x00EA02`)
 - **Context:** Explosion/FX spawns (`0x00E90E`, `0x00E93A`) allocate entity `0x34` (`0x055E`/`0x855E`) and rate-limit dual spatial SFX (`0x0090021B`, `0x00600382`) to once every 7 frames (`$FF199C - $FF1944`), while `0x00E9DE` toggles phase flags for Shade (`$FF1AA4 == 0x1E`).
 - **Decision:** Extracted all entity IDs, cooldown constants, and phase flags into `data/thor-evidence/rom_explosion_spawner_m15_343.json` with 2/2 passing tests and Standalone handoff.

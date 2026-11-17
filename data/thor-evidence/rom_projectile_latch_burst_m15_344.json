@@ -1,0 +1,31 @@
+{
+  "milestone": "M15.344",
+  "title": "ROM Death Explosion Burst, Latch Follow & Projectile Probe",
+  "routines": {
+    "death_explosion_burst": {
+      "start": "0x00EA04",
+      "end": "0x00EA74"
+    },
+    "carried_latch_follow": {
+      "start": "0x00EA76",
+      "end": "0x00EABE"
+    },
+    "projectile_wall_and_hit_probe": {
+      "start": "0x00EAC0",
+      "end": "0x00EB40"
+    }
+  },
+  "constants": {
+    "burst_jitter_mask": "0x1F",
+    "burst_jitter_bias": -16,
+    "burst_sfx_1": "0x0090021B",
+    "burst_sfx_2": "0x00600382",
+    "latch_timer_offset": "0xB8",
+    "latch_parent_offset": "0xB4",
+    "latch_local_xyz_offset": "0xAE",
+    "proj_bounce_sfx": "0x00700378",
+    "proj_probe_half_extent": 6,
+    "proj_payload_src_offset": "0xAA",
+    "target_damage_dst_offset": "0x7E"
+  }
+}
