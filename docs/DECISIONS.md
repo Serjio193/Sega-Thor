@@ -1,3 +1,35 @@
+# ADR-20261117-M16-167-DYNAMIC-FX-RENDERER-P1 — ROM Entity Special Dynamic FX, Aura, Wave & Attachment SAT Renderer (Part 1) (0x00B34C..0x00B56E)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.418 extracted ROM routines `0x00B34C..0x00B56E` governing entity special dynamic FX, aura, wave ring, and ground ripple SAT sprite emission:
+   - `0x00B34C..0x00B382`: Master FX Dispatcher:
+     * Evaluates global FX suppression flag `$FF1927.l` (or byte). If non-zero, skips all dynamic FX.
+     * Evaluates entity FX mode flags `+0x39(a6)`. If zero, skips all dynamic FX.
+   - `0x00B3D2..0x00B45C`: Bit 0 Aura / Spark Emitter:
+     * Frame counter at `+0x9B(a6)` wrapping at 80 (`0x50`).
+     * 16-entry 3-byte offset table at `0x00B42C` with `(tile_or_flag, dx, dy)`.
+     * Flag 255 skips frame emission; valid frames use tiles 7..10 with offsets $\pm 4$.
+     * Positioned relative to entity world coordinates with 3D elevation Z.
+   - `0x00B45C..0x00B4FE`: Bit 3 Wave Ring Emitter:
+     * Frame counter at `+0x98(a6)`.
+     * Shadow preset check on `+0x3D`:
+       - `<= 8`: small wave table `0x00B4C8` (8 entries, wrap at 8, tiles 0..3, dy = -8).
+       - `> 8`: large wave table `0x00B4E0` (10 entries, wrap at 10, tiles 30..34, dy = -12).
+     * Ground plane positioning `world_y + ground_h + dy`.
+   - `0x00B4FE..0x00B56E`: Bit 4 Ground Ripple / Attachment Emitter:
+     * Frame counter at `+0x98(a6)` wrapping at 8 with 8-entry table `0x00B556` (tiles 59..62, dx=0, dy=0).
+     * On reaching count 8, resets counter to 0 and clears bit 4 of `+0x39(a6)` (`bclr.b #4, $39(a6)` at `0x00B54E`).
+   - Screen viewport clipping: `[0x60, 0x160]` for Y and `[0x60, 0x1C0]` for X.
+   - Enforces hardware 80-sprite limit check on `$FF188A.w` before emitting SAT entries into `$FF13CC + $FF188C.w`.
+
+**Decisions:**
+1. **Dedicated `dynamic_fx_renderer_p1` Module:**
+   - Added `src/game/render/dynamic_fx_renderer_p1.hpp/.cpp` and `include/game/render/dynamic_fx_renderer_p1.hpp` modeling master FX suppression, individual emitter step functions, table lookups, viewport clipping, and raw memory integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (147/147 M16 tests).
+
 # ADR-20261117-M16-166-WEAPON-OVERLAY-COMPOSITOR — ROM Entity Secondary Weapon & Auxiliary Overlay SAT Compositor (0x00B15E..0x00B34C)
 **Status:** Accepted
 **Date:** 2026-11-17

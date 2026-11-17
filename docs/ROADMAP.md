@@ -1,3 +1,25 @@
+# M16.167 ROM Entity Special Dynamic FX, Aura, Wave & Attachment SAT Renderer (Part 1) (`0x00B34C..0x00B56E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `should_render_dynamic_fx`, `has_aura_fx`, `has_wave_ring_fx`, `has_ground_ripple_fx`, `is_dynamic_fx_clipped`, `step_aura_fx`, `step_wave_ring_fx`, `step_ground_ripple_fx`, `dispatch_dynamic_fx_p1`, and `dispatch_dynamic_fx_p1_raw` in `src/game/render/dynamic_fx_renderer_p1.hpp/.cpp` and `include/game/render/dynamic_fx_renderer_p1.hpp`:
+  - `0x00B34C..0x00B382`: Master FX Dispatcher evaluating global suppression flag `$FF1927.l` and entity FX mode flags `+0x39(a6)`.
+  - `0x00B3D2..0x00B45C`: Bit 0 Aura / Spark Emitter:
+    - Counter at `+0x9B` wrapping at 80 (`0x50`).
+    - 16-entry table `0x00B42C` with `(tile_or_flag, dx, dy)` (flag 255 skips frame, valid tiles 7..10).
+    - Positioned relative to entity world coordinates with 3D elevation Z.
+  - `0x00B45C..0x00B4FE`: Bit 3 Wave Ring Emitter:
+    - Shadow preset check on `+0x3D`:
+      * `<= 8`: small wave table `0x00B4C8` (8 entries, wrap at 8, tiles 0..3, dy = -8).
+      * `> 8`: large wave table `0x00B4E0` (10 entries, wrap at 10, tiles 30..34, dy = -12).
+    - Ground plane positioning `world_y + ground_h + dy`.
+  - `0x00B4FE..0x00B56E`: Bit 4 Ground Ripple / Attachment Emitter:
+    - 8-entry table `0x00B556` (tiles 59..62, dx=0, dy=0) wrapping at 8.
+    - Upon completion, resets counter to 0 and clears bit 4 of `+0x39` (`0x00B54E`).
+  - Screen viewport clipping: `[0x60, 0x160]` for Y and `[0x60, 0x1C0]` for X.
+  - Hardware 80-sprite limit check on `$FF188A.w`.
+  - Raw 64KB RAM window integration helper `dispatch_dynamic_fx_p1_raw`.
+- Qualified `oasis_m16_167_dynamic_fx_renderer_p1` and the 147-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.166 ROM Entity Secondary Weapon & Auxiliary Overlay SAT Compositor (`0x00B15E..0x00B34C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
