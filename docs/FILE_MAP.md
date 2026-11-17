@@ -5330,6 +5330,10 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
 - docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).
 
+- tools/extract_rom_ali_combo_cartwheel_finisher.py — M15.385 ROM Ali combat combo chains, 6-cartwheel super finisher & ripple stun callback extractor.
+- tests/rom_ali_combo_cartwheel_finisher_test.py — M15.385 unit tests for rapid spin facing, combo chains, cartwheel alternation, and 6-cartwheel super finisher.
+- data/thor-evidence/rom_ali_combo_cartwheel_finisher_m15_385.json — M15.385 evidence database.
+- docs/handoffs/STANDALONE_M15_385_ALI_COMBO_CARTWHEEL_FINISHER_HANDOFF.md — M15.385 C++20 Standalone handoff.
 - tools/extract_rom_ali_command_special_motions.py — M15.384 ROM Ali command motions and button-mash rapid attack extractor.
 - tests/rom_ali_command_special_motions_test.py — M15.384 unit tests for motion dispatch precedence, default combo hits, and button mashing.
 - data/thor-evidence/rom_ali_command_special_motions_m15_384.json — M15.384 evidence database.

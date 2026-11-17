@@ -12271,6 +12271,13 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.385: ROM Ali Combat Combo Chains, 6-Cartwheel Super Finisher & Ripple Stun Callback (0x00780E..0x007A28)
+
+- Decoded rapid spin 360-degree facing rotation (`0x00780E..0x007850`): evaluates frame counter `+0x30(a6)` at thresholds 4, 8, 12, 16 to rotate facing direction `d1 = 3, 2, 1, 0`.
+- Decoded combat combo chain evaluator (`0x007852..0x0078F6`): checks animation complete bit 1 in `+0x37(a6)` and prioritizes motion recognition (`0x8814`, `0x86B4`, `0x8778`, `0x8910`, `0x8950`); dispatches Combo Hit 1 (`state = 8, anim = 0x0A`, SFX `#$7004D3`) or Combo Hit 2 (`state = 0x0A, anim = 0x3A`) based on latched button bit 4 in `$FF165E`.
+- Decoded cartwheel chain counter and 6-cartwheel super finisher (`0x00792A..0x0079FA`): tracks chain counter in `$FF1991`; alternates anim between `0x7C` and `0x7E` for hits 1..5; on 6th consecutive cartwheel, triggers Super Finisher (`vz = 0x40000`, initial elevation 15px, forward speeds `0x800` projected via 8-way directional table `0xE2D4`, `state = 0x26, anim = 0x32`, SFX `#$80025B`).
+- Decoded cartwheel landing ground stop callback (`0x0079FC..0x007A0E`): clears horizontal sub-speeds `+0x4E` and `+0x52` when `vz == 0`.
+
 ## 2026-11-17 - Milestone M15.384: ROM Ali Command Motions & Button-Mash Rapid Attack (0x007656..0x00780E)
 
 - Decoded master special motion recognizer dispatch hierarchy (`0x007656..0x0076C0`): priority checks `0x8814` (Dash Leap `0x62`), `0x86B4` (Slide `0x40`), `0x8778` (Somersault `0x56`), `0x8910` (Cartwheel `0x72`), and `0x8950` (Grand Dash Strike `0x74`); default fallback triggers normal combo hit 1/2 with SFX `#$7004D3`.

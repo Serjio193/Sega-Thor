@@ -1,0 +1,47 @@
+{
+  "milestone": "M15.385",
+  "description": "ROM Ali Combat Combo Chains, 6-Cartwheel Super Finisher & Ripple Stun Callback",
+  "address_range": [
+    "0x00780E",
+    "0x007A28"
+  ],
+  "byte_count": 538,
+  "routines": [
+    {
+      "name": "ali_rapid_spin_facing_rotation",
+      "start": "0x00780E",
+      "end": "0x007850",
+      "purpose": "Calculates Ali 360-degree facing direction (3, 2, 1, 0) at frames 4, 8, 12, 16"
+    },
+    {
+      "name": "ali_combo_chain_evaluator",
+      "start": "0x007852",
+      "end": "0x0078F6",
+      "purpose": "Evaluates command motions and button transitions between Combo Hit 1 (anim 0x0A, state 8) and Combo Hit 2 (anim 0x3A, state 10)"
+    },
+    {
+      "name": "ali_combo_flurry_cleanup",
+      "start": "0x0078F8",
+      "end": "0x007928",
+      "purpose": "Cleans up target enemy stun callback at 0xFF1B60 when anim matches 0x3A"
+    },
+    {
+      "name": "ali_cartwheel_chain_finisher",
+      "start": "0x00792A",
+      "end": "0x0079FA",
+      "purpose": "Tracks cartwheel counter $FF1991 (alternates anim 0x7C/0x7E); on 6th cartwheel triggers Super Finisher (vz 0x40000, elevation 15, state 0x26, anim 0x32, SFX 0x80025B)"
+    },
+    {
+      "name": "ali_cartwheel_landing_callback",
+      "start": "0x0079FC",
+      "end": "0x007A0E",
+      "purpose": "Ground stop callback: clears horizontal speed when vz reaches 0"
+    },
+    {
+      "name": "ali_air_dive_recovery",
+      "start": "0x007A10",
+      "end": "0x007A28",
+      "purpose": "Air dive recovery and frame 24 ground impact shockwave invocation"
+    }
+  ]
+}

@@ -31418,6 +31418,18 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.385: ROM Ali Combat Combo Chains, 6-Cartwheel Super Finisher & Ripple Stun Callback (0x00780E..0x007A28)
+
+- Decoded and tested rapid spin 360-degree facing rotation (`0x00780E..0x007850`): evaluates frame counter `+0x30(a6)` at thresholds 4, 8, 12, 16 to rotate facing direction `d1 = 3, 2, 1, 0`.
+- Decoded and tested combat combo chain evaluator (`0x007852..0x0078F6`): checks animation complete bit 1 in `+0x37(a6)` and prioritizes motion recognition (`0x8814`, `0x86B4`, `0x8778`, `0x8910`, `0x8950`); dispatches Combo Hit 1 (`state = 8, anim = 0x0A`, SFX `#$7004D3`, clears `$FF16EA`) or Combo Hit 2 (`state = 0x0A, anim = 0x3A`) based on latched button bit 4 in `$FF165E`.
+- Decoded and tested combo flurry stun cleanup (`0x0078F8..0x007928`): checks target entity `$FF1B60` for state `0x3A` and binds stun handler `0xBEBA` into `$FF1940.l`.
+- Decoded and tested cartwheel chain counter and 6-cartwheel super finisher (`0x00792A..0x0079FA`): tracks chain counter in `$FF1991`; alternates anim between `0x7C` and `0x7E` for hits 1..5; on 6th consecutive cartwheel, triggers Super Finisher (`vz = 0x40000`, initial elevation 15px, forward speeds `0x800` projected via 8-way directional table `0xE2D4`, `state = 0x26, anim = 0x32`, SFX `#$80025B`).
+- Decoded and tested cartwheel landing ground stop callback (`0x0079FC..0x007A0E`): clears horizontal sub-speeds `+0x4E` and `+0x52` when `vz == 0`.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_combo_cartwheel_finisher_m15_385.json` (6 routines, 538 bytes).
+- Unit tests: `tests/rom_ali_combo_cartwheel_finisher_test.py` (`5/5 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_385_ALI_COMBO_CARTWHEEL_FINISHER_HANDOFF.md`.
+- Next Step: Commit and push M15.385 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.384: ROM Ali Command Motions & Button-Mash Rapid Attack (0x007656..0x00780E)
 
 - Decoded and tested master special motion recognizer dispatch hierarchy (`0x007656..0x0076C0`): priority checks `0x8814` (Dash Leap `0x62`), `0x86B4` (Slide `0x40`), `0x8778` (Somersault `0x56`), `0x8910` (Cartwheel `0x72`), and `0x8950` (Grand Dash Strike `0x74`); default fallback triggers normal combo hit 1/2 with SFX `#$7004D3`.
