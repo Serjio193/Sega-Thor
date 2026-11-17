@@ -1,3 +1,7 @@
+# ADR-20261117-M15-290-FILE-SELECT-MENU — Save/Load File Select Menu (`0x0004C6`..`0x000D30`)
+- **Decision:** Model the File Select screen in Standalone as a 2x3 grid (`$FF10A8`, `0..3` slots, `4` Copy, `5` Erase) with `$FF10AA` occupied-slot bitmask, Copy `dest != src` exclusion (`0x0006F6`), Erase empty-slot guard (`0x00A00253`), and `$2025C9` last-slot persistence.
+- **Evidence:** Direct Capstone M68K disassembly of `0x0004C6..0x0007C0`, `0x000B04..0x000B60`, and `0x000C46..0x000CA0` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-289-ATTRACT-DEMOS — Attract/Demo Stream Table (`0x008A94`, 9 Demos at `0x1698FE`)
 - **Decision:** Model Attract/Demo playback in Standalone using the 9-entry `u16` offset table at `0x008A94` (relative to `0x1698FE`), `0x003820` decompression, `0x1FFF`-byte delta-decoding at `$FFDFB2`, and `(room_id, x, y)` stream header.
 - **Evidence:** Direct Capstone M68K disassembly of `0x0089B2..0x008AA5` in `local-roms/Beyond Oasis (USA).md`.

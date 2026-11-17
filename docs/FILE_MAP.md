@@ -1,3 +1,9 @@
+# M15.290 ROM Save/Load File Select Menu
+- `tools/extract_rom_file_select_menu.py` — Extracts File Select 2x3 grid cursor, Copy/Erase guards, SFX IDs, and SRAM last-slot `$2025C9`.
+- `tests/rom_file_select_menu_test.py` — Unit tests verifying File Select constants and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_file_select_menu_m15_290.json` — Extracted File Select menu evidence.
+- `docs/handoffs/STANDALONE_M15_290_FILE_SELECT_MENU_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.289 ROM Attract/Demo Stream Table
 - `tools/extract_rom_attract_demos.py` — Extracts 9 attract demo stream offsets (`0x008A94` rel to `0x1698FE`) & delta-decode setup.
 - `tests/rom_attract_demos_test.py` — Unit tests verifying demo offsets and JSON artifact (`2/2 PASS`).

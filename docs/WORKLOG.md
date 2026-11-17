@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.290: ROM SAVE/LOAD FILE SELECT MENU (`0x0004C6`..`0x000D30`) — 2x3 Grid (`$FF10A8`), Copy/Erase Guards, SRAM `$2025C9`; Extractor (`tools/extract_rom_file_select_menu.py` <= 500 lines), Tests (`tests/rom_file_select_menu_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_290_FILE_SELECT_MENU_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x0004C6..0x0007C0`, `0x000B04..0x000B60`, and `0x000C46..0x000CA0` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_file_select_menu.py` and `python tests/rom_file_select_menu_test.py` (2/2 PASS).
+- Next: Commit & push M15.290, dispatch M16.75 to Standalone subagent, and continue with M15.291.
+
 # 2026-11-17 — Milestone M15.289: ROM ATTRACT/DEMO STREAM TABLE (`0x008A94`, 9 Demos at `0x1698FE`) — `0x003820` Decomp + `0x1FFF`-Byte Delta-Decode; Extractor (`tools/extract_rom_attract_demos.py` <= 500 lines), Tests (`tests/rom_attract_demos_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_289_ATTRACT_DEMOS_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x0089B2..0x008AA5` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_attract_demos.py` (9 demos) and `python tests/rom_attract_demos_test.py` (2/2 PASS).

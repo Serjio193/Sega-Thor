@@ -1,0 +1,51 @@
+{
+  "milestone": "M15.290",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "file_select": {
+    "entry_addr": "0x0004C6",
+    "grid_nav_addr": "0x0006F6",
+    "copy_flow_addr": "0x000B04",
+    "erase_flow_addr": "0x000C46",
+    "new_game_addr": "0x001300",
+    "continue_game_addr": "0x00161C",
+    "cancel_mode": "0x04",
+    "ram_cursor_ff10a8": "0xFF10A8",
+    "ram_occupied_mask_ff10aa": "0xFF10AA",
+    "ram_copy_src_ff19a8": "0xFF19A8",
+    "sram_last_slot_addr": "0x2025C9",
+    "save_slot_count": 4,
+    "copy_cursor_index": 4,
+    "erase_cursor_index": 5,
+    "confirm_sfx": "0x00A00256",
+    "cursor_move_sfx": "0x006003A6",
+    "invalid_erase_sfx": "0x00A00253"
+  },
+  "grid_options": [
+    {
+      "index": 0,
+      "role": "save_slot_0"
+    },
+    {
+      "index": 1,
+      "role": "save_slot_1"
+    },
+    {
+      "index": 2,
+      "role": "save_slot_2"
+    },
+    {
+      "index": 3,
+      "role": "save_slot_3"
+    },
+    {
+      "index": 4,
+      "role": "copy_slot",
+      "handler_addr": "0x000B04"
+    },
+    {
+      "index": 5,
+      "role": "erase_slot",
+      "handler_addr": "0x000C46"
+    }
+  ]
+}

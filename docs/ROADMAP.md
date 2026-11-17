@@ -1,3 +1,7 @@
+# M15.290 ROM Save/Load File Select Menu (`0x0004C6`..`0x000D30`) — COMPLETE / VERIFIED
+- Decoded 2x3 File Select grid (`$FF10A8`, slots `0..3` + `4` Copy `0x000B04` + `5` Erase `0x000C46`), 2D grid navigation (`0x0006F6`, `d3` exclusion), occupied bitmask (`$FF10AA`), last-slot SRAM `$2025C9`, and SFX (`0x00A00256`, `0x006003A6`, `0x00A00253`).
+- Authored `tools/extract_rom_file_select_menu.py`, `tests/rom_file_select_menu_test.py` (`2/2 PASS`), `data/thor-evidence/rom_file_select_menu_m15_290.json`, and `docs/handoffs/STANDALONE_M15_290_FILE_SELECT_MENU_HANDOFF.md`.
+
 # M15.289 ROM Attract/Demo Stream Table (`0x008A94`, 9 Demos at `0x1698FE`) — COMPLETE / VERIFIED
 - Decoded Attract/Demo playback setup (`0x0089FA..0x008A93`), 9-entry `u16` offset table (`0x008A94`), `0x003820` decompression to `$FFBFAC`, `0x1FFF`-byte delta-decoding at `$FFDFB2`, and `(room_id, player_x, player_y)` header -> `0x00CA24`.
 - Authored `tools/extract_rom_attract_demos.py`, `tests/rom_attract_demos_test.py` (`2/2 PASS`), `data/thor-evidence/rom_attract_demos_m15_289.json`, and `docs/handoffs/STANDALONE_M15_289_ATTRACT_DEMOS_HANDOFF.md`.
