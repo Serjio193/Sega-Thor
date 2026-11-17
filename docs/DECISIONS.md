@@ -1,3 +1,8 @@
+# ADR-20261117-M15-321-ROOM-HEIGHT-TILESET — Room Height-Band Table Builder & Tileset Chunk Loader (`0x00D344`..`0x00D4FE`)
+- **Context:** `0x00D406` builds the 8-entry elevation height LUT `$FF1706` (`0xF000` sentinel) from 4 signed room-header band bytes, zeroes Plane A/B structs (`$FF1716`/`$FF173E`), quantizes camera to 8px, and decompresses 4 tileset chunks (`0x05CE96` -> `0x003820` -> `$FF3FA8`).
+- **Decision:** Extracted all table addresses, constants, and VScroll flush rules into `data/thor-evidence/rom_room_height_tileset_m15_321.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.105 can initialize room height bands (`$FF1706`) and tileset chunks directly from room headers.
+
 # ADR-20261117-M15-320-PLANE-SCROLL-SYNC — Plane Scroll Delta & VDP H/V-Scroll Buffer Sync (`0x00D188`..`0x00D342`)
 - **Context:** `0x00D188` bridges camera coordinates to M15.313's incremental tile streamers (`0x1C`/`0x1E`) and updates VDP HScroll (`0x1FF`) and VScroll (`0xFF`), while `0x00D2B4` flushes HScroll to `$FFFB5C` or `$FF1344`.
 - **Decision:** Extracted all masks, anti-overflow bounds, dirty bit indices, and RAM buffers into `data/thor-evidence/rom_plane_scroll_sync_m15_320.json` with 2/2 passing tests and Standalone handoff.

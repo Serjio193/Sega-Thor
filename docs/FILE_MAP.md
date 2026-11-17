@@ -1,3 +1,9 @@
+# M15.321 ROM Room Height-Band Table Builder & Tileset Chunk Loader
+- `tools/extract_rom_room_height_tileset.py` — ROM extractor & verifier for `0x00D344..0x00D4FE` (`$FF16FE`/`$FF1706` 4-band height LUT with `0xF000` sentinel, 8px camera quantization, 4-slot `0x05CE96` -> `0x003820` -> `$FF3FA8` decompression, and VScroll flush).
+- `tests/rom_room_height_tileset_test.py` — Unit tests verifying height-band table construction and camera quantization.
+- `data/thor-evidence/rom_room_height_tileset_m15_321.json` — Verified evidence JSON for M15.321.
+- `docs/handoffs/STANDALONE_M15_321_ROOM_HEIGHT_TILESET_HANDOFF.md` — C++20 Standalone handoff for M16.105.
+
 # M15.320 ROM Plane Scroll Delta & VDP H/V-Scroll Buffer Sync
 - `tools/extract_rom_plane_scroll_sync.py` — ROM extractor & verifier for `0x00D188..0x00D342` (8px tile-crossing deltas, `0x1FF`/`0xFF` VDP scroll wrap, `±10000` anti-overflow, `$FFFB5C`/`$FF1344` HScroll flush).
 - `tests/rom_plane_scroll_sync_test.py` — Unit tests verifying tile-crossing deltas and H/V-scroll wrap masks.

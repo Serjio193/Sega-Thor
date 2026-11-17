@@ -1,0 +1,37 @@
+{
+  "milestone": "M15.321",
+  "title": "ROM Room Height-Band Table Builder & Tileset Chunk Loader",
+  "routines": {
+    "flush_vscroll_to_vdp_buffer": {
+      "start": "0x00D344",
+      "end": "0x00D396"
+    },
+    "sync_hv_dirty_to_vint": {
+      "start": "0x00D398",
+      "end": "0x00D3B0"
+    },
+    "load_single_chunk_dma": {
+      "start": "0x00D3B2",
+      "end": "0x00D404"
+    },
+    "init_room_bands_and_chunks": {
+      "start": "0x00D406",
+      "end": "0x00D4FE"
+    }
+  },
+  "constants": {
+    "band_count": 4,
+    "height_lut_entries": 8,
+    "height_sentinel": "0xF000",
+    "plane_state_words": 20,
+    "camera_quantize_mask": "0xFFF8FFF8",
+    "chunk_table_rom": "0x0005CE96",
+    "decompressor_rom": "0x00003820",
+    "chunk_ram_base": "0x00FF3FA8",
+    "chunk_ram_stride": "0x1000",
+    "band_steps_ram": "0x00FF16FE",
+    "height_lut_ram": "0x00FF1706",
+    "vscroll_col_buf_ram": "0x00FFFF5C",
+    "vscroll_full_ram": "0x00FF1348"
+  }
+}

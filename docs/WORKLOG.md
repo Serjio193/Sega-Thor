@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.321: ROM ROOM HEIGHT-BAND TABLE BUILDER & TILESET CHUNK LOADER (`0x00D344`..`0x00D4FE`) — `$FF1706` 8-Word LUT (`0xF000`), `0x05CE96`->`0x003820`->`$FF3FA8`, VScroll Flush; Extractor (`tools/extract_rom_room_height_tileset.py` <= 500 lines), Tests (`tests/rom_room_height_tileset_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_321_ROOM_HEIGHT_TILESET_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00D344..0x00D4FE` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_room_height_tileset.py`, `python -m unittest tests/rom_room_height_tileset_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.321, await M16.101 completion, and continue.
+
 # 2026-11-17 — Milestone M15.320: ROM PLANE SCROLL DELTA & VDP H/V-SCROLL BUFFER SYNC (`0x00D188`..`0x00D342`) — 8px Tile Crossings, `0x1FF`/`0xFF` Wrap, `$FFFB5C`/`$FF1344`; Extractor (`tools/extract_rom_plane_scroll_sync.py` <= 500 lines), Tests (`tests/rom_plane_scroll_sync_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_320_PLANE_SCROLL_SYNC_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00D188..0x00D342` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_plane_scroll_sync.py`, `python -m unittest tests/rom_plane_scroll_sync_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
