@@ -1,0 +1,22 @@
+{
+  "milestone": "M15.335",
+  "title": "ROM Entity Sprite-DMA Budget Throttle & Frame Lookup",
+  "routine": {
+    "start": "0x00A9A0",
+    "end": "0x00AAA5"
+  },
+  "constants": {
+    "facing_mirror_val": "0x08000001",
+    "dma_budget_ram": "0x00FF1652",
+    "dma_backlog_flag_ram": "0x00FF1651",
+    "active_frame_ptr_ram": "0x00FF1946",
+    "fallback_size_normal": "0x0200",
+    "fallback_size_large": "0x0300",
+    "entity_facing_offset": "0x16",
+    "entity_frame_offset": "0x32",
+    "entity_cached_frame_offset": "0x34",
+    "entity_dma_cost_offset": "0x4C",
+    "entity_shadow_flags_offset": "0x36",
+    "entity_shadow_id_offset": "0x3D"
+  }
+}

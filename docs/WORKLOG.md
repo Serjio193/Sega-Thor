@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.335: ROM ENTITY SPRITE-DMA BUDGET THROTTLE & FRAME LOOKUP (`0x00A9A0`..`0x00AAA5`) — `$FF1652` Budget, `$FF1651` Throttle, Shadow Rule; Extractor (`tools/extract_rom_sprite_dma_throttle.py` <= 500 lines), Tests (`tests/rom_sprite_dma_throttle_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_335_SPRITE_DMA_THROTTLE_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00A9A0..0x00AAA5` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_sprite_dma_throttle.py`, `python -m unittest tests/rom_sprite_dma_throttle_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.335, check M16.109 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.334: ROM HUD FRAME SAT & ITEM-TOAST DMA EMITTER (`0x00A342`..`0x00A436`) — 6 HUD + 3 Enemy (`0x0158-X`) + Toast `0x85C7` (`0x000AAEBB`->`0xB8E0`); Extractor (`tools/extract_rom_hud_sat_emitter.py` <= 500 lines), Tests (`tests/rom_hud_sat_emitter_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_334_HUD_SAT_EMITTER_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00A342..0x00A436` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_hud_sat_emitter.py`, `python -m unittest tests/rom_hud_sat_emitter_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

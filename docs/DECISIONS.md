@@ -1,3 +1,8 @@
+# ADR-20261117-M15-335-SPRITE-DMA-THROTTLE — Entity Sprite-DMA Budget Throttle & Frame Lookup (`0x00A9A0`..`0x00AAA5`)
+- **Context:** Entity rendering (`0x00A9A0`) gates sprite tile DMA uploads against `$FF1652` (remaining V-Int DMA words), falling back to the cached frame (`0x34(a6)`) and setting `$FF1651` when over budget, and evaluates shadow visibility from `Z` (`0x10(a6)`) and `0x36(a6)`.
+- **Decision:** Extracted all throttle offsets, RAM flags, and shadow rules into `data/thor-evidence/rom_sprite_dma_throttle_m15_335.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.119 can replicate V-Int DMA bandwidth throttling and shadow visibility.
+
 # ADR-20261117-M15-334-HUD-SAT-EMITTER — HUD Frame SAT & Item-Toast DMA Emitter (`0x00A342`..`0x00A436`)
 - **Context:** Every render frame (`0x00A342`) emits 6 primary HUD sprites (`+$FF185A`), 3 enemy-gauge sprites mirrored at `0x0158 - $FF185A`, and an item-use toast (`0x85C7` at `($FF185A + 0x68, 0x0118)`) with `0x90`-word icon DMA (`0x000AAEBB` -> `0xB8E0`).
 - **Decision:** Extracted all SAT offsets, mirror constants, and DMA addresses into `data/thor-evidence/rom_hud_sat_emitter_m15_334.json` with 2/2 passing tests and Standalone handoff.

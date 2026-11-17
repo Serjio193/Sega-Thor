@@ -1,3 +1,9 @@
+# M15.335 ROM Entity Sprite-DMA Budget Throttle & Frame Lookup
+- `tools/extract_rom_sprite_dma_throttle.py` — ROM extractor & verifier for `0x00A9A0..0x00AAA5` (V-Int DMA budget `$FF1652` throttle, `$FF1651` backlog flag, `0x0200`/`0x0300` fallback, shadow visibility rule).
+- `tests/rom_sprite_dma_throttle_test.py` — Unit tests verifying DMA budget throttling and shadow visibility predicates.
+- `data/thor-evidence/rom_sprite_dma_throttle_m15_335.json` — Verified evidence JSON for M15.335.
+- `docs/handoffs/STANDALONE_M15_335_SPRITE_DMA_THROTTLE_HANDOFF.md` — C++20 Standalone handoff for M16.119.
+
 # M15.334 ROM HUD Frame SAT & Item-Toast DMA Emitter
 - `tools/extract_rom_hud_sat_emitter.py` — ROM extractor & verifier for `0x00A342..0x00A436` (6 primary HUD sprites, 3 mirrored enemy-gauge sprites at `0x0158 - slide_x`, item-toast sprite `0x85C7` + `0x90`-word DMA `0x000AAEBB` -> `0xB8E0`).
 - `tests/rom_hud_sat_emitter_test.py` — Unit tests verifying HUD mirror math and toast DMA offset.

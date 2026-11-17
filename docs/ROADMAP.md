@@ -1,3 +1,4 @@
+# M15.335 ROM Entity Sprite-DMA Budget Throttle & Frame Lookup (`0x00A9A0`..`0x00AAA5`) — COMPLETE / VERIFIED
 # M15.334 ROM HUD Frame SAT & Item-Toast DMA Emitter (`0x00A342`..`0x00A436`) — COMPLETE / VERIFIED
 # M15.333 ROM Master Y-Sorted SAT Render Pipeline (`0x00A196`..`0x00A27E`) — COMPLETE / VERIFIED
 # M15.332 ROM 3D AABB Solid Sweep (-X, +Y, -Y) (`0x009EBA`..`0x00A194`) — COMPLETE / VERIFIED
