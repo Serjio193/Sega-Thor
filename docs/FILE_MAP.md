@@ -1,3 +1,9 @@
+# M15.403 ROM Flying/Projectile Dual-Axis (±X, ±Y) Tilemap Raycaster & Point Collision Dispatcher
+- `tools/extract_rom_flying_raycaster.py` — extractor for `0x009708..0x0098EC` (flying/projectile ±X/±Y point raycaster, 8-px tile step loop, point solidity check `0x0098EC`, wall hit bits on `$40`/`$41`, surface height sample, exit to return dispatcher `0x009382`).
+- `tests/rom_flying_raycaster_test.py` — `4` unit tests verifying ROM constants, horizontal/vertical point raycasting sweeps, and collision detections.
+- `data/thor-evidence/rom_flying_raycaster_m15_403.json` — extracted M15.403 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_403_FLYING_RAYCASTER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.402 ROM Vertical Tilemap Wall Collision, Row Sampler & Height Step Subsystem
 - `tools/extract_rom_vertical_wall_probe.py` — extractor for `0x0094D2..0x0096E8` (vertical tile solid probes ±Y, Y-collision byte `$41` updates, row solidity scanner, and row span sampler).
 - `tests/rom_vertical_wall_probe_test.py` — `4` unit tests verifying ROM constants, steep wall collisions on `$41`, climb disabling, and vertical ledge drops.

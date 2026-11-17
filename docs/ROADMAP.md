@@ -1,3 +1,6 @@
+# M15.403 ROM Flying/Projectile Dual-Axis (±X, ±Y) Tilemap Raycaster & Point Collision Dispatcher (`0x009708`..`0x0098EC`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_flying_raycaster.py`, `tests/rom_flying_raycaster_test.py` (`4/4 PASS`), `data/thor-evidence/rom_flying_raycaster_m15_403.json`, and `docs/handoffs/STANDALONE_M15_403_FLYING_RAYCASTER_HANDOFF.md`.
+
 # M15.402 ROM Vertical Tilemap Wall Collision, Row Sampler & Height Step Subsystem (`0x0094D2`..`0x0096E8`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_vertical_wall_probe.py`, `tests/rom_vertical_wall_probe_test.py` (`4/4 PASS`), `data/thor-evidence/rom_vertical_wall_probe_m15_402.json`, and `docs/handoffs/STANDALONE_M15_402_VERTICAL_WALL_PROBE_HANDOFF.md`.
 

@@ -1,0 +1,42 @@
+{
+  "milestone": "M15.403",
+  "title": "ROM Flying/Projectile Dual-Axis (\u00b1X, \u00b1Y) Tilemap Raycaster & Point Collision Dispatcher",
+  "routines": {
+    "flying_horizontal_raycast": {
+      "start": "0x009708",
+      "end": "0x0097E6",
+      "bytes": 222,
+      "pos_x_dir": "0x11",
+      "neg_x_dir": "0x13",
+      "boundary_clamp_pos": "0x009D4E",
+      "solid_entity_sweep_pos": "0x009DD6",
+      "boundary_clamp_neg": "0x009D70",
+      "solid_entity_sweep_neg": "0x009EBA",
+      "point_wall_probe": "0x0098EC",
+      "wall_hit_flag_bit": 6,
+      "collision_flags_offset": "0x40"
+    },
+    "flying_vertical_raycast": {
+      "start": "0x0097E6",
+      "end": "0x0098C2",
+      "bytes": 220,
+      "pos_y_dir": "0x12",
+      "neg_y_dir": "0x10",
+      "boundary_clamp_pos": "0x009D92",
+      "solid_entity_sweep_pos": "0x009FA0",
+      "boundary_clamp_neg": "0x009DB4",
+      "solid_entity_sweep_neg": "0x00A09A",
+      "point_wall_probe": "0x0098EC",
+      "wall_hit_flag_bit": 6,
+      "collision_flags_offset": "0x41"
+    },
+    "flying_surface_sample_and_exit": {
+      "start": "0x0098C2",
+      "end": "0x0098EC",
+      "bytes": 42,
+      "surface_height_probe": "0x009BF2",
+      "surface_height_store": "0x009AD6",
+      "exit_target": "0x009382"
+    }
+  }
+}
