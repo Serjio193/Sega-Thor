@@ -1,3 +1,9 @@
+# M15.428 ROM Dialogue Script Virtual Machine & Message Window Presentation Controller
+- `tools/extract_rom_dialogue_script_vm.py` — extractor for `0x00C2EC..0x00C566` (universal entrypoint `display_dialogue_message`, 98-entry string table at `0x051514`, bytecode interpreter, interactive button wait `0x00C536`, and entity lifecycle).
+- `tests/rom_dialogue_script_vm_test.py` — `6` unit tests verifying ROM constants, debug test condition branching, string table offset resolution, bytecode interpreter execution, button wait loops, and multi-page prologue text.
+- `data/thor-evidence/rom_dialogue_script_vm_m15_428.json` — extracted M15.428 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_428_DIALOGUE_SCRIPT_VM_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.427 ROM Dynamic 1-Bit Font Glyph Expansion, 4-Neighbor Outline Filter & 4bpp Tile Packer
 - `tools/extract_rom_font_glyph_tile_packer.py` — extractor for `0x00C222..0x00C2EC` (1-bit glyph expansion from ROM `0x0016C1CA`, 18x16 byte canvas `$FF3028`, 4-neighbor outline filter, and 4bpp tile packing into `$FF2FA8`).
 - `tests/rom_font_glyph_tile_packer_test.py` — `5` unit tests verifying ROM constants, 1-bit scanline expansion to canvas, 4-neighbor cardinal outline filtering, 4bpp Genesis planar tile packing, and actual ROM font glyph rendering.

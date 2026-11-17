@@ -1,0 +1,4819 @@
+{
+  "routine": "dialogue_script_vm_and_presentation_controller",
+  "start_address": "0x00C2EC",
+  "end_address": "0x00C566",
+  "size_bytes": 634,
+  "entry_points": {
+    "display_dialogue_message": "0x00C2EC",
+    "dialogue_box_exec_window": "0x00C326",
+    "dialogue_wait_button": "0x00C536",
+    "dialogue_close_window": "0x00C45C"
+  },
+  "string_table": {
+    "address": "0x051514",
+    "count": 98
+  },
+  "opcodes": {
+    "0x00": "OP_TERMINATE",
+    "0x01": "OP_NEWLINE",
+    "0x02": "OP_PROMPT_NEWLINE",
+    "0x03": "OP_DELAY_FRAMES",
+    "0x05": "OP_PROMPT_WAIT",
+    "0x06": "OP_CLEAR_PAGE",
+    "0x07": "OP_PROMPT_CLEAR_PAGE"
+  },
+  "strings": [
+    {
+      "id": 0,
+      "address": "0x0515FC",
+      "offset": 232,
+      "byte_len": 208,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I am Dytto, a water spirit."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Water has the power to purify"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "and can wash away evil.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#I swear that I am devoted to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "my master.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#I will come to serve you when"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "I see the light ball on the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "surface of the water.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "address": "0x0516CC",
+      "offset": 438,
+      "byte_len": 11,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Hi, Ali!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "address": "0x0516D8",
+      "offset": 448,
+      "byte_len": 52,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Hi, Ali.  What kind of junk"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "did you dig up today?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "address": "0x05170C",
+      "offset": 498,
+      "byte_len": 79,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Digging in the mud again, Ali?"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Excavations, you say?  What's"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the difference?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "address": "0x05175C",
+      "offset": 576,
+      "byte_len": 47,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Oh, Ali.  Nice armlet.  Where'd"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "you find it?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "address": "0x05178C",
+      "offset": 622,
+      "byte_len": 165,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Prince Ali, are you all right?"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "I don't know who they were,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "but you were their target.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#They may have attacked the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "castle as well.  You must check"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "on your family.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "address": "0x051832",
+      "offset": 786,
+      "byte_len": 58,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali, I have a special today!"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Why don't you take a look?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "address": "0x05186C",
+      "offset": 842,
+      "byte_len": 83,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "Ali defeated the hostile group"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "which attacked him, and"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "hurried to see his teacher."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "address": "0x0518C0",
+      "offset": 924,
+      "byte_len": 77,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He found Dytto, a spirit of"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "water who had been sleeping in"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the Water Shrine."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "address": "0x05190E",
+      "offset": 1000,
+      "byte_len": 98,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Efreet is my name.  I am fire"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "which burns away anything"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "unclean.  The Gold Armlet is"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "my master.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "address": "0x051970",
+      "offset": 1096,
+      "byte_len": 48,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Hey, take me to the ruins next"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "time!  Please!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "address": "0x0519A0",
+      "offset": 1142,
+      "byte_len": 73,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#There have been many strangers"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "around here lately.  I don't"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "like them.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "address": "0x0519EA",
+      "offset": 1214,
+      "byte_len": 158,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I appear from the void to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "become your shadow.  My name is"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Shade.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#I pledge my allegiance to you,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Gold Armlet.  You may summon me"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "from your own reflection.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "address": "0x051A88",
+      "offset": 1370,
+      "byte_len": 95,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I'm Bow!  You are my master."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "I can be found inside plants."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Call me when there's lots to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "eat!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "address": "0x051AE8",
+      "offset": 1464,
+      "byte_len": 81,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He found Efreet, a spirit of"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "fire who had been sleeping"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "in the Waterfall Shrine."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "address": "0x051B3A",
+      "offset": 1544,
+      "byte_len": 74,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He captured the enemy base and"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "sneaked onto a ship staying in"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the harbor."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "address": "0x051B84",
+      "offset": 1616,
+      "byte_len": 98,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "Ali defeated the gargoyles.  He"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "headed his boat in the direction"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "where Silver Armlet disappeared."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "address": "0x051BE6",
+      "offset": 1712,
+      "byte_len": 95,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He defeated the monsters in the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "cave and picked up a necklace"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "which had a mysterious radiance."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "address": "0x051C46",
+      "offset": 1806,
+      "byte_len": 63,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He left for the wall fortress"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to continue after Silver Armlet."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "address": "0x051C86",
+      "offset": 1868,
+      "byte_len": 66,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He defeated the monsters in the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "fortress and got the Warp"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Device."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "address": "0x051CC8",
+      "offset": 1932,
+      "byte_len": 104,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He defeated the old dragon"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "in the crater and found Shade,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "a spirit of shadow in the Shrine"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "of Darkness."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "address": "0x051D30",
+      "offset": 2034,
+      "byte_len": 114,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#It is said that there is a"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "hidden Shrine where a Spirit"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "sleeps.  Ali, go up along the"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "river to find the Shrine.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "address": "0x051DA2",
+      "offset": 2146,
+      "byte_len": 73,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He found Bow, a spirit of plants"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "who had been sleeping in Forest"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Shrine."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "address": "0x051DEC",
+      "offset": 2218,
+      "byte_len": 49,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "The stream lead into a"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "dungeon under the castle."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "address": "0x051E1E",
+      "offset": 2266,
+      "byte_len": 28,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He obtained the Large Cube."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "address": "0x051E3A",
+      "offset": 2292,
+      "byte_len": 91,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali, did you find out who they"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "are?  It is our responsibility"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to deal with these rebels.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "address": "0x051E96",
+      "offset": 2382,
+      "byte_len": 81,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "Ali defeated the monster in"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the non-entity, and fell into"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "a depth of darkness..."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "address": "0x051EE8",
+      "offset": 2462,
+      "byte_len": 413,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "Many ages ago, a devastating"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "battle was waged in the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "shadowlands of the Kingdom of"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Oasis.  It was between two"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "powerful sorcerers, Reharl and"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Agito."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "CLEAR_PAGE",
+          "code": 6
+        },
+        {
+          "type": "text",
+          "text": "Both sorcerers drew special"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "powers from their magical"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Armlets.  Reharl used his Gold"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Armlet to govern the spirits."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Agito used his Silver Armlet to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "create chaos and destruction."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "CLEAR_PAGE",
+          "code": 6
+        },
+        {
+          "type": "text",
+          "text": "The epic battle destroyed them"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "both.  The Armlets were"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "presumed to be lost as well."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "CLEAR_PAGE",
+          "code": 6
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "address": "0x052086",
+      "offset": 2874,
+      "byte_len": 48,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali, I am calling to you."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Please, pick me up.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "address": "0x0520B6",
+      "offset": 2920,
+      "byte_len": 446,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I am what remains of this Gold"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Armlet.  I now entrust its"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "power to you, for you have been"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "chosen to undergo a difficult"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "task.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "CLEAR_PAGE",
+          "code": 6
+        },
+        {
+          "type": "text",
+          "text": "#The Gold Armlet has its pair:"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "a Silver Armlet, which has"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "possessed the soul of another."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "He will lead Oasis to ruin if"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "you do not stop him.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "CLEAR_PAGE",
+          "code": 6
+        },
+        {
+          "type": "text",
+          "text": "#The powers of the Gold Armlet"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "are now yours to wield.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "opcode",
+          "op": "CLEAR_PAGE",
+          "code": 6
+        },
+        {
+          "type": "text",
+          "text": "#Find the four spirits this"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Gold Armlet governs, and stop"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the evil ambition of the one"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "with the Silver Armlet.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "address": "0x052274",
+      "offset": 3364,
+      "byte_len": 25,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Prince Ali, good luck!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "address": "0x05228E",
+      "offset": 3388,
+      "byte_len": 124,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali, have you been to the Water"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Shrine? Go to the east through"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the village.  The Spirit is a"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "trustworthy partner for you.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "address": "0x05230A",
+      "offset": 3510,
+      "byte_len": 51,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#My master, Gold Armlet, show"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "me your light ball.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "address": "0x05233E",
+      "offset": 3560,
+      "byte_len": 29,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Prince Ali!  Welcome back!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "address": "0x05235C",
+      "offset": 3588,
+      "byte_len": 80,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#The King and the Princess are"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "waiting for you in the main"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "hall up the stairs.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "address": "0x0523AC",
+      "offset": 3666,
+      "byte_len": 105,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali, please go and read the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "books hidden in the back room"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "before you go.  I'm sure they"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "will help you.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "address": "0x052416",
+      "offset": 3770,
+      "byte_len": 279,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Welcome back, my son!  Let me"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "see what you found.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Hmmm, I've heard this story"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "before...if this is really the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Gold Armlet, then IT was the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "reason for that strange attack"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "today.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#The Gold Armlet governs the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "wild spirits.  Ali, go find the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "spirit sleeping in the Water"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Shrine.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "address": "0x05252E",
+      "offset": 4048,
+      "byte_len": 332,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#So you found the Water Spirit?"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Then the story must be true!#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#I have instructed the soldiers"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to find out who these strangers"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "are.  I will receive a report"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "sometime later.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Ali, you must go to the East"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Waterfall before the soldiers"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "come back.  There must be"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "another Shrine where a spirit"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "sleeps.  Find it to fulfill"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "your destiny.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "address": "0x05267A",
+      "offset": 4378,
+      "byte_len": 177,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali, the soldiers reported"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "that some strange groups are"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "camped out in the field"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "northeast of the Water Shrine.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#You must investigate the area"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "before they hurt the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "villagers.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "address": "0x05272C",
+      "offset": 4554,
+      "byte_len": 172,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Gold Armlet, you are brave to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "come here.  But unfortunately, I"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "have no time to fool with you.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#I am Silver Armlet.  You cannot"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "stop me, and you will be sorry"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "you tried!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "address": "0x0527D8",
+      "offset": 4724,
+      "byte_len": 157,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "He caught a faint conversation"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "from downstairs."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#...is it to the north?#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Yes, in the wall fortress."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "It is the key to go to the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "west crater to see Shade...#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "address": "0x052876",
+      "offset": 4880,
+      "byte_len": 34,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali, what did you dig up"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "today?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "address": "0x052898",
+      "offset": 4912,
+      "byte_len": 79,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali, it's you!  It has been a"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "long time!  Did you find"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "anything interesting?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "address": "0x0528E8",
+      "offset": 4990,
+      "byte_len": 133,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Are you all right, Ali?  I saw"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "a strange group in the village"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "and I was worried about you."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "It's not safe to wander around"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "outside.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "address": "0x05296E",
+      "offset": 5122,
+      "byte_len": 57,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I have not seen you lately,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Ali.  Where have you been?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "address": "0x0529A8",
+      "offset": 5178,
+      "byte_len": 50,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Hello, Ali.  Do excavations"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "still interest you?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "address": "0x0529DA",
+      "offset": 5226,
+      "byte_len": 312,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#You've caught up with me much"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "earlier than I expected.  Well,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "let me reward you.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Somewhere in this castle, there"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "is a device which can move you"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "through a warp of time and"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "space.  I don't need it, but"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "you will.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Show me your power, Gold"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Armlet.  You must defeat my"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "minions to gain access to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the Warp Device!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "address": "0x052B12",
+      "offset": 5536,
+      "byte_len": 94,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Welcome, Prince.  Yes, I know"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "everything.  This is yours."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "That ring is a great help to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "you.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "address": "0x052B70",
+      "offset": 5628,
+      "byte_len": 278,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#The necklace you found belongs"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to Princess Gwyn, your elder"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "sister.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#As you know, she's been missing"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "for over ten years.  This may"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "mean she is still alive.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Now, go back to the castle."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Silver Armlet wants something"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "from inside it, and you must"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "hurry to protect your family.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "address": "0x052C86",
+      "offset": 5904,
+      "byte_len": 50,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#It was a sudden attack!  Is the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "King all right?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "address": "0x052CB8",
+      "offset": 5952,
+      "byte_len": 110,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#The underground passage there"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "leads to the dungeons of the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "castle, but the entrance is"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "blocked by a grille.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "address": "0x052D26",
+      "offset": 6060,
+      "byte_len": 113,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#My grandpa said that there is"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "a Shrine in the northeast"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "forest.  Inside it is a monster"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "that eats up anything!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "address": "0x052D98",
+      "offset": 6172,
+      "byte_len": 16,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "..............."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "address": "0x052DA8",
+      "offset": 6186,
+      "byte_len": 81,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Go north once past the East"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Gate.  You will find a large"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "cave in the mountain.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "address": "0x052DFA",
+      "offset": 6266,
+      "byte_len": 7,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "address": "0x052E02",
+      "offset": 6272,
+      "byte_len": 199,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ha-ha-ha!  Hello, Gold Armlet."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "I'll trade you a Princess for a"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Large Cube hidden somewhere"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "inside this castle.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Come to Mt. Allat with the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Large Cube and I will trade you"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "for your younger sister.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "address": "0x052ECA",
+      "offset": 6470,
+      "byte_len": 124,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#You broke my Seal.  I am the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "origin of Agito's power and the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "keeper of his soul.  His ancient"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "evil can be awakened by me.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "address": "0x052F46",
+      "offset": 6592,
+      "byte_len": 200,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Oh, Ali...it's you.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#You found the Large Cube?"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "It is evil, and I hoped it"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "would never be recovered from"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the dungeon.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Ali, you must do what you"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "think is right.  We...we are"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "all counting on you...#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "address": "0x05300E",
+      "offset": 6790,
+      "byte_len": 57,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Prince Ali, we will get to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the cave as soon as we can.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "address": "0x053048",
+      "offset": 6846,
+      "byte_len": 72,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Love is beautiful, isn't it?"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Ha-ha-ha!  Give me the Large"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Cube first.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "address": "0x053090",
+      "offset": 6916,
+      "byte_len": 101,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "Good.  Now the Princess is"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "yours.  Take care of your"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "precious sister, she tends to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "get lost easily!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "address": "0x0530F6",
+      "offset": 7016,
+      "byte_len": 222,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I'm sorry, you were unable"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to do anything against that"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "foul creature because of"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "me...#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#I know that nothing I can"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "say will stop you from"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "following, but...#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Please take this for good luck."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Come back safe and sound, Ali.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "address": "0x0531D4",
+      "offset": 7236,
+      "byte_len": 111,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Prince!  Princess!  Are you"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "all right?  It's dangerous"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "around here.  Please go back"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to the castle, Princess.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "address": "0x053244",
+      "offset": 7346,
+      "byte_len": 179,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Welcome to the non-entity,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Gold Armlet.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#This is the border between"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the shadow and the human"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "world.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#You cannot use the Armlet's"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "power here.  This is the end"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "of your journey!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "address": "0x0532F8",
+      "offset": 7524,
+      "byte_len": 181,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I have been waiting for you.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#It's been an interesting"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "game...but now it's time to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "finish it.  You cannot stop"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the revival of the Creator"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "of the Silver Armlet, my"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "master, Agito!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "address": "0x0533AE",
+      "offset": 7704,
+      "byte_len": 99,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Well done.  I must reward you"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "for your persistence, Gold"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Armlet!#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#I reward you with your death!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "address": "0x053412",
+      "offset": 7802,
+      "byte_len": 127,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#You...won.  I misjudged your"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "superior...abilities.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#But...you will not defeat"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Agito.  He has returned to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "resume his throne!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "address": "0x053492",
+      "offset": 7928,
+      "byte_len": 175,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Oh...oh...It's you, Ali."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "It's me, your elder sister,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Gwyn.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#I...heard your voice..."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "but...I could do nothing..."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "I was possessed.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Finally, I got back my..."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "my...memories.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "address": "0x053542",
+      "offset": 8102,
+      "byte_len": 96,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I feel the power filling the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "world.  Thank you, my master,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Gold Armlet.  You saved our"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "world.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 69,
+      "address": "0x0535A2",
+      "offset": 8196,
+      "byte_len": 31,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#But now we must remain here.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 70,
+      "address": "0x0535C2",
+      "offset": 8226,
+      "byte_len": 91,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I am proud to have both fought"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "for you and beside you.  You"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "shall be remembered forever.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 71,
+      "address": "0x05361E",
+      "offset": 8316,
+      "byte_len": 77,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Bow had fun time! Now this"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Warp will bring you home."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Good-bye, friend Ali!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 72,
+      "address": "0x05366C",
+      "offset": 8392,
+      "byte_len": 270,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali...wait.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#I destroyed things and killed"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "people...#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Even though I was possessed"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "and controlled...I must make"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "atonement for my sin.#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Ali, tell this to everyone."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Agito and the Silver Armlet"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "minion have been destroyed"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "forever.  They will never"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "endanger Oasis again.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 73,
+      "address": "0x05377A",
+      "offset": 8660,
+      "byte_len": 60,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Now, let me say good-bye..."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "and...thank you...my brother.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 74,
+      "address": "0x0537B6",
+      "offset": 8718,
+      "byte_len": 140,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Big Attack/Small Attack#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "Press or tap Button B to attack"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the enemies.  Ali jumps when"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "C button is tapped, and"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "ducks when Button C is held."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 75,
+      "address": "0x053842",
+      "offset": 8856,
+      "byte_len": 115,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Run#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "Ali runs to the direction of the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "D-Pad.  Ali jumps when Button"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "C is tapped, and ducks when"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Button C is held."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 76,
+      "address": "0x0538B6",
+      "offset": 8970,
+      "byte_len": 107,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Spin Attack#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "One of the special attacks with"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "a dagger.  D-Pad Forward, Left,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Back, Right + Button B held."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 77,
+      "address": "0x053922",
+      "offset": 9076,
+      "byte_len": 96,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Rolling Slash#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "A special attack with the"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "dagger."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "D-Pad Forward, Back, Forward"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "+ Button B held."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 78,
+      "address": "0x053982",
+      "offset": 9170,
+      "byte_len": 59,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Double Rolling Slash#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "Enhanced attack of #Rolling"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Slash#."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "address": "0x0539BE",
+      "offset": 9228,
+      "byte_len": 127,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Chaotic Sword Slash#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "A special attack with a sword."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "D-Pad Forward, Left, Back,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Right, Forward, Back, Forward +"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Button B held."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 80,
+      "address": "0x053A3E",
+      "offset": 9354,
+      "byte_len": 262,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "          Instructions"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Magic Bubble#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Tap Button A to generate a"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "bubble that stuns enemies."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Healing#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Tap Button A twice."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Magic Storm#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Hold Button A for 1 second"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to attack all enemies with"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "a water tornado."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "Press A,B and C buttons together"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to cancel the summons"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 81,
+      "address": "0x053B44",
+      "offset": 9614,
+      "byte_len": 280,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "          Instructions"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Flame Breath#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Tap Button A to create"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "a stream of fiery breath."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Fireball Attack#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Tap Button A twice to turn"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Efreet into a fireball."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Melt Bomber#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Hold Button A for 1 second"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to cause a fire inundation."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "Press A,B and C buttons together"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to cancel the summons"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 82,
+      "address": "0x053C5C",
+      "offset": 9892,
+      "byte_len": 313,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "          Instructions"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Dark Claw#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Tap Button A.  Shade attacks"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "enemies with his claws."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "Also can be used to grapple"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "out of reach items."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Doppelganger#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Hold Button A for 1 second"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to generate a duplicate which"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "can move around the area."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "Ali becomes invincible."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "Press A,B and C buttons together"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to cancel the summons"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 83,
+      "address": "0x053D96",
+      "offset": 10204,
+      "byte_len": 351,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "          Instructions"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Bite Attack#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Tap Button A to make Bow bite"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "his enemies."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Move Underground#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Tap Button A twice to call Bow"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to where Ali is standing."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Bow moves underground silently."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#Poison Pollen#"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Hold Button A for 1 second."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Bow blows up, scattering"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "poison pollen which stuns"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_NEWLINE",
+          "code": 2
+        },
+        {
+          "type": "text",
+          "text": "the enemies."
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "Press A,B and C buttons together"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to cancel the summons"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 84,
+      "address": "0x053EF6",
+      "offset": 10554,
+      "byte_len": 73,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#You have something nice, Ali."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Give it to me in return for "
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "this, okay?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 85,
+      "address": "0x053F40",
+      "offset": 10626,
+      "byte_len": 29,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Ali, you sure showed them!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 86,
+      "address": "0x053F5E",
+      "offset": 10654,
+      "byte_len": 18,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Thank you, Ali.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 87,
+      "address": "0x053F70",
+      "offset": 10670,
+      "byte_len": 20,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#What unsafe days!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 88,
+      "address": "0x053F84",
+      "offset": 10688,
+      "byte_len": 41,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I'm so afraid...I cannot go out"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "alone.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 89,
+      "address": "0x053FAE",
+      "offset": 10728,
+      "byte_len": 138,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Prince Ali.  I'm relieved to"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "see you safe! Have you returned"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "to your castle yet?#"
+        },
+        {
+          "type": "opcode",
+          "op": "PROMPT_CLEAR_PAGE",
+          "code": 7
+        },
+        {
+          "type": "text",
+          "text": "#The King and the Princess must"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "be worried about you.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 90,
+      "address": "0x054038",
+      "offset": 10864,
+      "byte_len": 17,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#What was that?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 91,
+      "address": "0x05404A",
+      "offset": 10880,
+      "byte_len": 48,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Teach me how to use a dagger"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "next time, okay?#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 92,
+      "address": "0x05407A",
+      "offset": 10926,
+      "byte_len": 45,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Too many strange things happen"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "these days!#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 93,
+      "address": "0x0540A8",
+      "offset": 10970,
+      "byte_len": 51,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Prince Ali, I pray for your"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "safety.  Be careful.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 94,
+      "address": "0x0540DC",
+      "offset": 11020,
+      "byte_len": 47,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#My bubbles can open this water"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "gate, master.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 95,
+      "address": "0x05410C",
+      "offset": 11066,
+      "byte_len": 73,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#I trust the soldiers guarding"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "the castle.  Please be"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "careful, brother.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 96,
+      "address": "0x054156",
+      "offset": 11138,
+      "byte_len": 88,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "#Father is very worried about"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "you...I am too.  Take care"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "and come back safe and sound.#"
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    },
+    {
+      "id": 97,
+      "address": "0x0541AE",
+      "offset": 11224,
+      "byte_len": 79,
+      "tokens": [
+        {
+          "type": "text",
+          "text": "I know you're very tough,"
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "but I'm still so worried."
+        },
+        {
+          "type": "opcode",
+          "op": "NEWLINE",
+          "code": 1
+        },
+        {
+          "type": "text",
+          "text": "Please, please be careful."
+        },
+        {
+          "type": "opcode",
+          "op": "TERMINATE",
+          "code": 0
+        }
+      ]
+    }
+  ],
+  "code_hex": "0839000700ff0d7a67300cb91010050000ff165e6624303c00006100001e52400c40001b67f80c40001c67f20c40001d67ec0c40006266e24e7548e7fffe33c000ff187033c600ff187233c700ff187423c500ff188233fc000c00ff187633fc001800ff187833fc002400ff187a33fc003000ff187c427900ff187e427900ff188051f900ff188641f900ff3ba8303c00ff720020c151c8fffc41f90016943c43f900ff2fa824494eb9000038203006610003963006064004006100038c3007610003863007064004006100037c08f9000100ff164e0839000100ff164e66f66100165c640000084df900ff1c1c3d7cffff00002d7c0000c75600223d7c1388000c23ce00ff186c61000458303900ff187041f900051514d040d0c0d0d061000442424010180c0000206500000a610002a26000ffea4a00670000840c0000016700008e0c000002670000920c000003670000900c0000056700009e0c0000066700009e0c000007670000da6000ffb02c7900ff186c426e0000610003e60839000600ff165e66f20839000400ff165e66e80839000500ff165e66de0839000000ff164e66f651f900ff185d427900ff165451f900ff18554cdf7fff4e7550f900ff18876100008451f900ff188760a0610000a86100038c6000ff446100006c60ee101848e78000610003784cdf0001530066f06000ff28610000506000ff206100007861000074610000706100006c61000350427900ff187e427900ff188033fc000c00ff187633fc001800ff187833fc002400ff187a33fc003000ff187c6000fedc6100000460b650f900ff1886610003100839000600ff165f66140839000400ff165f660a0839000500ff165f67de51f900ff18864e75"
+}

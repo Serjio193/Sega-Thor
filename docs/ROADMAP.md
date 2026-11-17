@@ -1,3 +1,6 @@
+# M15.428 ROM Dialogue Script Virtual Machine & Message Window Presentation Controller (`0x00C2EC`..`0x00C566`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dialogue_script_vm.py`, `tests/rom_dialogue_script_vm_test.py` (`6/6 PASS`), `data/thor-evidence/rom_dialogue_script_vm_m15_428.json`, and `docs/handoffs/STANDALONE_M15_428_DIALOGUE_SCRIPT_VM_HANDOFF.md`.
+
 # M15.427 ROM Dynamic 1-Bit Font Glyph Expansion, 4-Neighbor Outline Filter & 4bpp Tile Packer (`0x00C222`..`0x00C2EC`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_font_glyph_tile_packer.py`, `tests/rom_font_glyph_tile_packer_test.py` (`5/5 PASS`), `data/thor-evidence/rom_font_glyph_tile_packer_m15_427.json`, and `docs/handoffs/STANDALONE_M15_427_FONT_GLYPH_TILE_PACKER_HANDOFF.md`.
 
