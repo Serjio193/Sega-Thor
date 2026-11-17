@@ -1,3 +1,9 @@
+# M15.411 ROM Dialogue & HUD Sprite SAT Compositor and Allocation Subsystem
+- `tools/extract_rom_dialogue_sprite_subsystem.py` — extractor for `0x00A342..0x00A524` (dialogue frame 6-sprite emitter, portrait 3-sprite emitter, cursor DMA to VRAM `$B8E0`, template tables `0x00A438`/`0x00A480`, and static SAT reservation pass).
+- `tests/rom_dialogue_sprite_subsystem_test.py` — `4` unit tests verifying ROM constants, reservation byte calculations, cursor DMA address formulas, and dialogue sprite positioning.
+- `data/thor-evidence/rom_dialogue_sprite_subsystem_m15_411.json` — extracted M15.411 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_411_DIALOGUE_SPRITE_SUBSYSTEM_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.410 ROM Master Sprite Composition, Y-Depth Sorter & SAT Dispatcher
 - `tools/extract_rom_sprite_sat_dispatcher.py` — extractor for `0x00A196..0x00A336` (master sprite composition engine, 21-slot descending-Y depth sorter `$FF19E8`, multi-pool dispatching, and VDP SAT terminator `$FF13CC`).
 - `tests/rom_sprite_sat_dispatcher_test.py` — `5` unit tests verifying ROM constants, descending-Y selection sorting order, active masks, and render target selection.

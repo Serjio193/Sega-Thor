@@ -1,0 +1,137 @@
+{
+  "milestone": "M15.411",
+  "title": "ROM Dialogue & HUD Sprite SAT Compositor and Allocation Subsystem",
+  "address_range": {
+    "start": "0x00A342",
+    "end": "0x00A524",
+    "bytes": 482
+  },
+  "vram_cursor_dma": {
+    "vram_dest": "0xB8E0",
+    "rom_base": "0x000AAEEB",
+    "entry_size": 144,
+    "dma_len_words": "0x90"
+  },
+  "reservations": {
+    "dialogue_frame_bytes": 48,
+    "dialogue_frame_sprites": 6,
+    "portrait_bytes": 24,
+    "portrait_sprites": 3,
+    "cursor_bytes": 8,
+    "cursor_sprites": 1
+  },
+  "tables": {
+    "primary_template_a438": [
+      {
+        "y": 136,
+        "link_size": 2305,
+        "attr": 34689,
+        "x": 104
+      },
+      {
+        "y": 152,
+        "link_size": 770,
+        "attr": 34695,
+        "x": 112
+      },
+      {
+        "y": 184,
+        "link_size": 515,
+        "attr": 34699,
+        "x": 112
+      },
+      {
+        "y": 208,
+        "link_size": 2308,
+        "attr": 34702,
+        "x": 104
+      },
+      {
+        "y": 224,
+        "link_size": 773,
+        "attr": 34708,
+        "x": 112
+      },
+      {
+        "y": 256,
+        "link_size": 518,
+        "attr": 34712,
+        "x": 112
+      },
+      {
+        "y": 136,
+        "link_size": 2311,
+        "attr": 34715,
+        "x": 104
+      },
+      {
+        "y": 152,
+        "link_size": 776,
+        "attr": 34721,
+        "x": 112
+      },
+      {
+        "y": 184,
+        "link_size": 521,
+        "attr": 34725,
+        "x": 112
+      }
+    ],
+    "secondary_template_a480": [
+      {
+        "y": 136,
+        "link_size": 1,
+        "attr": 34688,
+        "x": 104
+      },
+      {
+        "y": 152,
+        "link_size": 2,
+        "attr": 34688,
+        "x": 112
+      },
+      {
+        "y": 184,
+        "link_size": 3,
+        "attr": 34688,
+        "x": 112
+      },
+      {
+        "y": 208,
+        "link_size": 4,
+        "attr": 34688,
+        "x": 104
+      },
+      {
+        "y": 224,
+        "link_size": 5,
+        "attr": 34688,
+        "x": 112
+      },
+      {
+        "y": 256,
+        "link_size": 6,
+        "attr": 34688,
+        "x": 112
+      },
+      {
+        "y": 136,
+        "link_size": 7,
+        "attr": 34688,
+        "x": 104
+      },
+      {
+        "y": 152,
+        "link_size": 8,
+        "attr": 34688,
+        "x": 112
+      },
+      {
+        "y": 184,
+        "link_size": 9,
+        "attr": 34688,
+        "x": 112
+      }
+    ]
+  }
+}

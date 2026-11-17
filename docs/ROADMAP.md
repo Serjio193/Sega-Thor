@@ -1,3 +1,6 @@
+# M15.411 ROM Dialogue & HUD Sprite SAT Compositor and Allocation Subsystem (`0x00A342`..`0x00A524`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dialogue_sprite_subsystem.py`, `tests/rom_dialogue_sprite_subsystem_test.py` (`4/4 PASS`), `data/thor-evidence/rom_dialogue_sprite_subsystem_m15_411.json`, and `docs/handoffs/STANDALONE_M15_411_DIALOGUE_SPRITE_SUBSYSTEM_HANDOFF.md`.
+
 # M15.410 ROM Master Sprite Composition, Y-Depth Sorter & SAT Dispatcher (`0x00A196`..`0x00A336`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_sprite_sat_dispatcher.py`, `tests/rom_sprite_sat_dispatcher_test.py` (`5/5 PASS`), `data/thor-evidence/rom_sprite_sat_dispatcher_m15_410.json`, and `docs/handoffs/STANDALONE_M15_410_SPRITE_SAT_DISPATCHER_HANDOFF.md`.
 
