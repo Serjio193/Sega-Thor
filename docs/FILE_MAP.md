@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/player/weapon_equip_summon.hpp` / `src/game/player/weapon_equip_summon.cpp`: Spirit summon trigger (`0x007E9E..0x007EC2`: state `0x14`, SFX `0x00900359`) and weapon quick-equip class mapper (`0x007EC4..0x007F80`: `0x0A`/`0x0C`/`0x0E`/`0x10`, 60f toast, `0x00C0025D`/`0x00A00253`), reusing `secondary_weapon.hpp` (M16.122).
+- `tests/m16_122_weapon_equip_summon_test.cpp`: Automated M16.122 test qualifying `start_spirit_summon`, weapon class mapping `1..13`, slot toggle-to-0, 60f toast, and empty-slot error SFX (M16.122).
 - `src/game/ui/debug_warp_menu.hpp` / `src/game/ui/debug_warp_menu.cpp`: Debug stage/room warp menu (`0x004C9C..0x004F42`, `10f`/`3f` key repeat, non-empty area skip, room clamp, `0x006003A6` / `0x00A00256` / `0x00A00347` SFX) and `0x0005D918` 32-area ROM spawn table parser (`(tile_x, tile_y) << 3`) (M16.121).
 - `tests/m16_121_debug_warp_menu_test.cpp`: Automated M16.121 test qualifying ROM spawn table parsing, room/area wrap, empty-area skip, key repeat, confirm, and cancel (M16.121).
 - `src/game/entities/ai_steering_gravity.hpp` / `src/game/entities/ai_steering_gravity.cpp`: Enemy AI steering (`0x00E398..0x00E45C`), 16.16 normalized `2.0 px/frame` aim (`0x00E45E..0x00E4CE`), knockback launch (`0x00E4D0..0x00E500`), and Z-gravity (`0x00E502..0x00E520`), reusing `velocity_vector_math.hpp` (M16.120).

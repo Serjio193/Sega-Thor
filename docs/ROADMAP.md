@@ -1,3 +1,9 @@
+# M16.122 Spirit Summon Trigger & Weapon Quick-Equip Class Mapper (`0x007E9E..0x007F80`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `start_spirit_summon` (`0x007E9E..0x007EC2`: state `0x14`, SFX `0x00900359`), `map_weapon_item_to_class` (`0x0A`/`0x0C`/`0x0E`/`0x10`), and `quick_equip_weapon_slot` (`0x007EC4..0x007F80`: slot toggle, 60f HUD toast, `0x00C0025D`/`0x00A00253` SFX) in `src/game/player/weapon_equip_summon.hpp/.cpp` (reusing `secondary_weapon.hpp`).
+- Qualified `oasis_m16_122_weapon_equip_summon` and the 103-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.121 Debug Stage/Room Warp Menu & Spawn Table (`0x004C9C..0x004F20`, `0x005D918`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

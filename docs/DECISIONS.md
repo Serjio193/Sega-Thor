@@ -1,3 +1,14 @@
+# ADR-20261117-M16-122-WEAPON-EQUIP-SUMMON — Spirit Summon Trigger & Weapon Quick-Equip Class Mapper
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.338 extracted `0x007E9E..0x007EC2` (`start_spirit_summon`) and `0x007EC4..0x007F80` (`quick_equip_weapon_slot` + weapon class mapper `0x0A`/`0x0C`/`0x0E`/`0x10`).
+
+**Decisions:**
+1. **Dedicated `weapon_equip_summon` Module:**
+   - Added `src/game/player/weapon_equip_summon.hpp/.cpp` reusing `WeaponInventory` from `secondary_weapon.hpp`.
+
 # ADR-20261117-M16-121-DEBUG-WARP-MENU — Debug Stage/Room Warp Menu & Spawn Table
 **Status:** Accepted
 **Date:** 2026-11-17

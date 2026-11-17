@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.122: Spirit Summon Trigger & Weapon Quick-Equip Class Mapper)
+- **Concrete Task**: Implement `src/game/player/weapon_equip_summon.hpp/.cpp` with `start_spirit_summon()` (`0x007E9E..0x007EC2`: state `0x14`, `$FF1990 = 0xFF`, SFX `0x00900359`), `map_weapon_item_to_class(item_id)` (`0x007F10..0x007F80`: `0x0A`/`0x0C`/`0x0E`/`0x10`), and `quick_equip_weapon_slot(...)` (`0x007EC4..0x007F80`: toggles to slot `0` if re-selecting equipped slot, 60-frame HUD toast, `0x00C0025D` equip SFX, `0x00A00253` error SFX), reusing `WeaponInventory` from `secondary_weapon.hpp`; add `tests/m16_122_weapon_equip_summon_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/player/weapon_equip_summon.hpp` / `src/game/player/weapon_equip_summon.cpp`.
+  * Added `tests/m16_122_weapon_equip_summon_test.cpp` (registered as `oasis_m16_122_weapon_equip_summon` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `103/103` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `103/103` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `start_spirit_summon()` and `quick_equip_weapon_slot()` into `PlayerActionMachine` / `StandaloneGameSimulation` live input handlers is deferred to future player-input unification.
+
 # Worklog — 2026-11-17 (M16.121: Debug Stage/Room Warp Menu & Spawn Table)
 - **Concrete Task**: Implement `src/game/ui/debug_warp_menu.hpp/.cpp` with `DebugWarpSpawnTable::parse_from_rom(...)` (`0x0005D918`: 32 area slots -> room offset list -> `(tile_x, tile_y) << 3` pixel spawn) and `step_debug_warp_menu(...)` (`0x004C9C..0x004F42`: Up/Down room wrap, Left/Right non-empty area wrap with room clamping, `10f`/`3f` key repeat, `A` confirm `0x00A00256`, `B/C` cancel `0x00A00347`, move SFX `0x006003A6`); add `tests/m16_121_debug_warp_menu_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

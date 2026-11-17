@@ -85,6 +85,7 @@ add_library(oasis_core
     src/game/player/special_move_inputs.cpp
     src/game/player/secondary_weapon.cpp
     src/game/player/consumable_effects.cpp
+    src/game/player/weapon_equip_summon.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp
     src/game/render/framebuffer.cpp
