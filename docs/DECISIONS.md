@@ -1,3 +1,39 @@
+# ADR-20261117-M16-156-WORLD-BOUNDARY-CLAMPS — ROM 4-Direction World Boundary Clamp Subsystem (0x009D4E..0x009DD6)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.407 extracted ROM routines `0x009D4E..0x009DD6` governing 4-direction world boundary clamping across tilemap boundaries for horizontal (±X) and vertical (±Y) raycasters and flying entities:
+   - `0x009D4E..0x009D70`: `clamp_step_pos_x`:
+     * Computes right bounding edge `d7 = x + radius (+0x46)`.
+     * Calculates maximum world boundary `d3 = (width_tiles << 3) - 1`.
+     * Computes remaining distance `d3 = d3 - d7`.
+     * Compares `dx <= d3` (`bls`). If within, returns `dx`.
+     * Otherwise clamps `dx = d3`. If `dx == 0`, sets `flags_x (+0x40) |= 0x48`.
+   - `0x009D70..0x009D92`: `clamp_step_neg_x`:
+     * Computes left bounding edge `d3 = x - radius (+0x46)`.
+     * If `d3 < 0` (`bmi`), sets `dx = 0`, sets `flags_x (+0x40) |= 0x48`.
+     * Compares `dx <= d3` (`bls`). If within, returns `dx`.
+     * Otherwise clamps `dx = d3`. If `dx == 0`, sets `flags_x (+0x40) |= 0x48`.
+   - `0x009D92..0x009DB4`: `clamp_step_pos_y`:
+     * Computes bottom bounding edge `d7 = y + radius (+0x46)`.
+     * Calculates maximum world boundary `d3 = (height_tiles << 3) - 1`.
+     * Computes remaining distance `d3 = d3 - d7`.
+     * Compares `dy <= d3` (`bls`). If within, returns `dy`.
+     * Otherwise clamps `dy = d3`. If `dy == 0`, sets `flags_y (+0x41) |= 0x48`.
+   - `0x009DB4..0x009DD6`: `clamp_step_neg_y`:
+     * Computes top bounding edge `d3 = y - radius (+0x46)`.
+     * If `d3 < 0` (`bmi`), sets `dy = 0`, sets `flags_y (+0x41) |= 0x48`.
+     * Compares `dy <= d3` (`bls`). If within, returns `dy`.
+     * Otherwise clamps `dy = d3`. If `dy == 0`, sets `flags_y (+0x41) |= 0x48`.
+2. Collision flag `0x48` represents bit 6 (`0x40`, wall obstacle collision) and bit 3 (`0x08`, world boundary boundary limit hit).
+
+**Decisions:**
+1. **Dedicated `world_boundary_clamps` Module:**
+   - Added `src/game/player/world_boundary_clamps.hpp/.cpp` modeling pure clamping functions `clamp_step_pos_x`, `clamp_step_neg_x`, `clamp_step_pos_y`, and `clamp_step_neg_y`, alongside slot-stepping integration helpers.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (136/136 M16 tests).
+
 # ADR-20261117-M16-155-BOUNDING-BOX-PUSHABLE-LATCH — ROM 2D Bounding Tile Box Sampler, Type 0x56 Pushable Block Scanner & Ground Latch (0x009BC2..0x009D4E)
 **Status:** Accepted
 **Date:** 2026-11-17

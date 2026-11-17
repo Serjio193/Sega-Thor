@@ -1,3 +1,13 @@
+# M16.156 ROM 4-Direction World Boundary Clamp Subsystem (`0x009D4E..0x009DD6`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `clamp_step_pos_x`, `clamp_step_neg_x`, `clamp_step_pos_y`, `clamp_step_neg_y`, `step_entity_clamp_pos_x`, `step_entity_clamp_neg_x`, `step_entity_clamp_pos_y`, and `step_entity_clamp_neg_y` in `src/game/player/world_boundary_clamps.hpp/.cpp`:
+  - `clamp_step_pos_x` (`0x009D4E..0x009D70`): reads right edge `x + rad_x`; calculates max map width `(width_tiles << 3) - 1`; computes remaining distance `remaining = max_x - right_edge`; compares `dx <= remaining` (unsigned `bls`); if within remaining, returns `dx`; else clamps `dx = remaining`; if clamped `dx == 0`, sets `flags_x |= 0x48` (bit 6 wall hit | bit 3 boundary hit).
+  - `clamp_step_neg_x` (`0x009D70..0x009D92`): computes left edge `x - rad_x`; if negative (`bmi`), sets `dx = 0`, sets `flags_x |= 0x48`; else compares `dx <= left_edge`; if within edge, returns `dx`; else clamps `dx = left_edge`; if clamped `dx == 0`, sets `flags_x |= 0x48`.
+  - `clamp_step_pos_y` (`0x009D92..0x009DB4`): reads bottom edge `y + rad_y`; calculates max map height `(height_tiles << 3) - 1`; computes remaining distance `remaining = max_y - bottom_edge`; compares `dy <= remaining` (unsigned `bls`); if within remaining, returns `dy`; else clamps `dy = remaining`; if clamped `dy == 0`, sets `flags_y |= 0x48` (bit 6 wall hit | bit 3 boundary hit).
+  - `clamp_step_neg_y` (`0x009DB4..0x009DD6`): computes top edge `y - rad_y`; if negative (`bmi`), sets `dy = 0`, sets `flags_y |= 0x48`; else compares `dy <= top_edge`; if within edge, returns `dy`; else clamps `dy = top_edge`; if clamped `dy == 0`, sets `flags_y |= 0x48`.
+- Qualified `oasis_m16_156_world_boundary_clamps` and the 136-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.155 ROM 2D Bounding Tile Box Sampler, Type 0x56 Pushable Block Scanner & Ground Latch (`0x009BC2..0x009D4E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
