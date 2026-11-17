@@ -59,6 +59,7 @@ add_library(oasis_core
     src/game/ui/decimal_ascii.cpp
     src/game/ui/ring_menu_loop.cpp
     src/game/ui/ring_menu_drop.cpp
+    src/game/ui/food_menu.cpp
     src/game/video/palette_fade.cpp
     src/game/video/vdp_clear_and_palette_cycle.cpp
     src/game/video/vdp_dma_exec.cpp

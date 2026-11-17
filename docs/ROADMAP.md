@@ -1,3 +1,9 @@
+# M16.113 4x4 Food/Consumable Menu Use & Drop (`0x00474E..0x00494A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_cursor_4x4` (`0x004906..0x00494A`: 4x4 wrap) and `try_drop_food_item` (`0x004896..0x004904`: `terrain_blocked` / `item_id != 0` / bit 5 undroppable flag `0x05CE16` guards) plus consume timer constants (`0x005A` = 90 frames, SFX `0x00A00256`) in `src/game/ui/food_menu.hpp/.cpp`.
+- Qualified `oasis_m16_113_food_menu` and the 94-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.112 Ring Menu 4x2 Cursor Wrap & Item Drop Handler (`0x00462E..0x0046E2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

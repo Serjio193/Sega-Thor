@@ -343,3 +343,7 @@ add_test(NAME oasis_m16_111_ring_menu_loop COMMAND oasis_m16_111_ring_menu_loop_
 add_executable(oasis_m16_112_ring_menu_drop_test tests/m16_112_ring_menu_drop_test.cpp)
 target_link_libraries(oasis_m16_112_ring_menu_drop_test PRIVATE oasis_core)
 add_test(NAME oasis_m16_112_ring_menu_drop COMMAND oasis_m16_112_ring_menu_drop_test)
+
+add_executable(oasis_m16_113_food_menu_test tests/m16_113_food_menu_test.cpp)
+target_link_libraries(oasis_m16_113_food_menu_test PRIVATE oasis_core)
+add_test(NAME oasis_m16_113_food_menu COMMAND oasis_m16_113_food_menu_test)

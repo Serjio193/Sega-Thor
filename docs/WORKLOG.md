@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.113: 4x4 Food/Consumable Menu Use & Drop)
+- **Concrete Task**: Implement `src/game/ui/food_menu.hpp/.cpp` with `step_cursor_4x4(cursor, dcol, drow)` (`0x004906..0x00494A`: 4 cols x 4 rows, `(row << 2) | col`) and `try_drop_food_item(inventory, cursor, item_flags_table, terrain_blocked)` (`0x004896..0x004904`: checks `terrain_blocked`, `item_id != 0`, and bit 5 undroppable flag from `0x05CE16`) plus consume timer constants (`0x005A` = 90 frames, SFX `0x00A00256`); add `tests/m16_113_food_menu_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/food_menu.hpp` / `src/game/ui/food_menu.cpp`.
+  * Added `tests/m16_113_food_menu_test.cpp` (registered as `oasis_m16_113_food_menu` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `94/94` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `94/94` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `step_cursor_4x4()` and `try_drop_food_item()` directly into `RingMenuState` / `StandaloneGameSimulation` consumable use/drop flow is deferred to future menu-UI unification.
+
 # Worklog — 2026-11-17 (M16.112: Ring Menu 4x2 Cursor Wrap & Item Drop Handler)
 - **Concrete Task**: Implement `src/game/ui/ring_menu_drop.hpp/.cpp` with `step_cursor_4x2(cursor, dcol, drow)` (`0x00462E..0x004670`: 4 cols x 2 rows, `(row << 2) | col`, SFX `0x006003A6`) and `try_drop_inventory_item(...)` (`0x004674..0x0046E2`: guards against `cursor == protected_slot`, `terrain_blocked`, and `item_id <= 1`; clears slot ID/qty and emits `(item_id | 0x80, qty)`); add `tests/m16_112_ring_menu_drop_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

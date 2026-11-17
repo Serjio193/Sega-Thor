@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/food_menu.hpp` / `src/game/ui/food_menu.cpp`: 4x4 food/consumable menu cursor wrap (`0x004906..0x00494A`), drop guards (`0x004896..0x004904`, `terrain_blocked`, `item_id != 0`, `0x05CE16` bit 5 undroppable), and consume timer constants (`90` frames, SFX `0x00A00256`) (M16.113).
+- `tests/m16_113_food_menu_test.cpp`: Automated M16.113 test qualifying 4x4 cursor wrap and undroppable/terrain drop guards (M16.113).
 - `src/game/ui/ring_menu_drop.hpp` / `src/game/ui/ring_menu_drop.cpp`: Ring menu 4x2 cursor wrap (`0x00462E..0x004670`, SFX `0x006003A6`) and item drop handler (`0x004674..0x0046E2`, `protected_slot` / `terrain_blocked` / `item_id <= 1` guards, `(item_id | 0x80, qty)`) (M16.112).
 - `tests/m16_112_ring_menu_drop_test.cpp`: Automated M16.112 test qualifying 4x2 cursor wrap and item-drop validation (M16.112).
 - `src/game/ui/ring_menu_loop.hpp` / `src/game/ui/ring_menu_loop.cpp`: Ring/spirit menu entry guard (`0x004416..0x004438`, `$FF1A6E == 0 && $FF19EC <= 2`, error SFX `0x00A00253`) and input decoder (`0x004480..0x00455C`, `$FF1996` A/BC swap, close SFX `0x00A00347`) (M16.111).

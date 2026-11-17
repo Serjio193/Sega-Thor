@@ -1,3 +1,14 @@
+# ADR-20261117-M16-113-FOOD-MENU — 4x4 Food/Consumable Menu Use & Drop
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.329 extracted `0x00474E..0x00494A`: `step_cursor_4x4` (`4x4` wrap), `try_drop_food_item` (`terrain_blocked` / `item_id != 0` / bit 5 undroppable `0x05CE16`), and consume timer constants (`90` frames `0x005A`, SFX `0x00A00256`).
+
+**Decisions:**
+1. **Dedicated `food_menu` Module:**
+   - Added `src/game/ui/food_menu.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`, reusing `InventorySlotPair` and `InventoryDropResult` from `ring_menu_drop.hpp`.
+
 # ADR-20261117-M16-112-RING-MENU-DROP — Ring Menu 4x2 Cursor Wrap & Item Drop Handler
 **Status:** Accepted
 **Date:** 2026-11-17
