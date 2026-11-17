@@ -1,0 +1,27 @@
+{
+  "milestone": "M15.404",
+  "title": "ROM Point Tile Solidity, Air/Elevation Integrator & Tile Attribute Sampler",
+  "routines": {
+    "point_tile_solidity_probe": {
+      "start": "0x0098EC",
+      "end": "0x0099B8",
+      "bytes": 204,
+      "ground_height_offset": "0x14",
+      "air_height_offset": "0x10",
+      "y_pos_offset": "0x0C",
+      "elevation_probe_call": "0x009AD0",
+      "ramp_climb_flag_mask": "0x90"
+    },
+    "sample_point_tile_attr": {
+      "start": "0x0099B8",
+      "end": "0x0099D6",
+      "bytes": 30,
+      "attribute_mask": "0x0F"
+    },
+    "read_point_tile_raw": {
+      "start": "0x0099D6",
+      "end": "0x0099F0",
+      "bytes": 26
+    }
+  }
+}

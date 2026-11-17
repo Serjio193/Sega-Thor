@@ -1,3 +1,6 @@
+# M15.404 ROM Point Tile Solidity, Air/Elevation Integrator & Tile Attribute Sampler (`0x0098EC`..`0x0099EE`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_point_tile_integrator.py`, `tests/rom_point_tile_integrator_test.py` (`4/4 PASS`), `data/thor-evidence/rom_point_tile_integrator_m15_404.json`, and `docs/handoffs/STANDALONE_M15_404_POINT_TILE_INTEGRATOR_HANDOFF.md`.
+
 # M15.403 ROM Flying/Projectile Dual-Axis (±X, ±Y) Tilemap Raycaster & Point Collision Dispatcher (`0x009708`..`0x0098EC`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_flying_raycaster.py`, `tests/rom_flying_raycaster_test.py` (`4/4 PASS`), `data/thor-evidence/rom_flying_raycaster_m15_403.json`, and `docs/handoffs/STANDALONE_M15_403_FLYING_RAYCASTER_HANDOFF.md`.
 

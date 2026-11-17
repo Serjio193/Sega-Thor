@@ -1,3 +1,9 @@
+# M15.404 ROM Point Tile Solidity, Air/Elevation Integrator & Tile Attribute Sampler
+- `tools/extract_rom_point_tile_integrator.py` — extractor for `0x0098EC..0x0099EE` (point tile solidity probe, slope air-height integration, tile attribute sampler `0x0099B8`, and raw tile reader `0x0099D6`).
+- `tests/rom_point_tile_integrator_test.py` — `4` unit tests verifying ROM constants, descending/ascending slope integrations, and steep wall blockage.
+- `data/thor-evidence/rom_point_tile_integrator_m15_404.json` — extracted M15.404 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_404_POINT_TILE_INTEGRATOR_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.403 ROM Flying/Projectile Dual-Axis (±X, ±Y) Tilemap Raycaster & Point Collision Dispatcher
 - `tools/extract_rom_flying_raycaster.py` — extractor for `0x009708..0x0098EC` (flying/projectile ±X/±Y point raycaster, 8-px tile step loop, point solidity check `0x0098EC`, wall hit bits on `$40`/`$41`, surface height sample, exit to return dispatcher `0x009382`).
 - `tests/rom_flying_raycaster_test.py` — `4` unit tests verifying ROM constants, horizontal/vertical point raycasting sweeps, and collision detections.
