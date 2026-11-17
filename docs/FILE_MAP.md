@@ -1,3 +1,9 @@
+# M15.349 ROM Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick
+- `tools/extract_rom_kill_counter_vm_tick.py` — ROM extractor & verifier for `0x00F64C..0x00F7CE` (`$FF2ABC` 8-slot pickup reclaim, `0x1101` bonus drop, `$FF1A7C` saturating kill counter, `$FF17B6` VM wait-tick).
+- `tests/rom_kill_counter_vm_tick_test.py` — Unit tests verifying kill-counter saturation and VM wait-tick.
+- `data/thor-evidence/rom_kill_counter_vm_tick_m15_349.json` — Verified evidence JSON for M15.349.
+- `docs/handoffs/STANDALONE_M15_349_KILL_COUNTER_VM_TICK_HANDOFF.md` — C++20 Standalone handoff for M16.133.
+
 # M15.348 ROM Enemy Loot / 2-Tier Drop-Table Roller
 - `tools/extract_rom_enemy_loot_drop.py` — ROM extractor & verifier for `0x00F476..0x00F53A` (fixed drop `0x8C`, `0xFFFF` no-drop, 2-tier PRNG drop table, pickup `0x0008` pop `vz=0x00080000`).
 - `tests/rom_enemy_loot_drop_test.py` — Unit tests verifying fixed overrides and 2-tier PRNG loot rolls.

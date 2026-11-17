@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.349: ROM PICKUP OVERFLOW RECLAIMER, KILL-COUNTER & EVENT VM WAIT-TICK (`0x00F64C`..`0x00F7CE`) — `$FF2ABC`, `0x1101`, `$FF1A7C` Sat, `$FF17B6` VM Tick; Extractor (`tools/extract_rom_kill_counter_vm_tick.py` <= 500 lines), Tests (`tests/rom_kill_counter_vm_tick_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_349_KILL_COUNTER_VM_TICK_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00F64C..0x00F7CE` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_kill_counter_vm_tick.py`, `python -m unittest tests/rom_kill_counter_vm_tick_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.349, check M16.117 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.348: ROM ENEMY LOOT / 2-TIER DROP-TABLE ROLLER (`0x00F476`..`0x00F53A`) — Fixed `0x8C`, 2-Tier PRNG, Pickup `0x0008` (`0x00080000`); Extractor (`tools/extract_rom_enemy_loot_drop.py` <= 500 lines), Tests (`tests/rom_enemy_loot_drop_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_348_ENEMY_LOOT_DROP_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00F476..0x00F53A` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_enemy_loot_drop.py`, `python -m unittest tests/rom_enemy_loot_drop_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

@@ -1,3 +1,8 @@
+# ADR-20261117-M15-349-KILL-COUNTER-VM-TICK — Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick (`0x00F64C`..`0x00F7CE`)
+- **Context:** `0x00F64C..0x00F7CE` reclaims `$FF2ABC` pickup slots (`0x0694 + 9*i`), promotes `$FF0DBB` guaranteed drops (`0x1101`), saturates Ali's kill count (`$FF1A7C`) at `0xFFFF`, and gates Event VM execution on `$FF17B8` bit 1 and `$FF17B6` wait-timer.
+- **Decision:** Extracted all constants and RAM addresses into `data/thor-evidence/rom_kill_counter_vm_tick_m15_349.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.133 can implement exact kill-counter saturation, pickup reclaim, and VM wait-tick gating.
+
 # ADR-20261117-M15-348-ENEMY-LOOT-DROP — Enemy Loot / 2-Tier Drop-Table Roller (`0x00F476`..`0x00F53A`)
 - **Context:** Defeated enemies (`0x00F476`) either drop a fixed override (`0x8C`, `0xFFFF` = none) or evaluate a 2-tier PRNG probability table `(prob1, item1, prob2, item2)`, spawning pickup entity `0x0008` with `vz = +8.0 px/frame` (`0x00080000`) and `0..63` frame jitter.
 - **Decision:** Extracted all drop-table offsets, sentinels, and pickup spawn constants into `data/thor-evidence/rom_enemy_loot_drop_m15_348.json` with 2/2 passing tests and Standalone handoff.

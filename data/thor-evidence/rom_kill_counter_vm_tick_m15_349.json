@@ -1,0 +1,28 @@
+{
+  "milestone": "M15.349",
+  "title": "ROM Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick",
+  "routines": {
+    "reclaim_pickup_slot": {
+      "start": "0x00F64C",
+      "end": "0x00F6E0"
+    },
+    "update_kill_counter_and_bonus_drop": {
+      "start": "0x00F740",
+      "end": "0x00F786"
+    },
+    "step_event_vm_tick": {
+      "start": "0x00F788",
+      "end": "0x00F7CE"
+    }
+  },
+  "constants": {
+    "pickup_pool_ram": "0x00FF2ABC",
+    "pickup_pool_slots": 8,
+    "pickup_vram_base_tile": "0x0694",
+    "pickup_vram_tile_stride": 9,
+    "guaranteed_drop_item": "0x1101",
+    "kill_counter_ram": "0x00FF1A7C",
+    "vm_wait_timer_ram": "0x00FF17B6",
+    "vm_pc_ram": "0x00FF17B2"
+  }
+}
