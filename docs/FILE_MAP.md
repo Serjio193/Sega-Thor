@@ -1,3 +1,9 @@
+# M15.396 ROM Master Entity Subsystems Clear, Universal Constructor & Spirit Glow Pulse
+- `tools/extract_rom_entity_constructor_lifecycle.py` — extractor for `0x008C5A..0x008E22` (clear 5 entity pools, universal entity constructor with descriptor table `0x0003F2FA`, pointer re-init, and spirit glow pulse `$FF183E`).
+- `tests/rom_entity_constructor_lifecycle_test.py` — `3` unit tests verifying ROM constants, pool sizes/strides, and spirit glow pulse ramp/pulse/fade transitions.
+- `data/thor-evidence/rom_entity_constructor_lifecycle_m15_396.json` — extracted M15.396 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_396_ENTITY_CONSTRUCTOR_LIFECYCLE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.395 ROM Master Gameplay Frame Sequencer, Screen Shake Dispatcher & Joypad Menu Hotkeys
 - `tools/extract_rom_master_frame_sequencer.py` — extractor for `0x008AA6..0x008C5A` (15-phase frame pipeline, screen shake bit 7 dispatch to `0x530C`/`0x7CC6`, and joypad hotkey menu triggers `0x3B3E`).
 - `tests/rom_master_frame_sequencer_test.py` — `3` unit tests verifying ROM constants, screen shake dispatcher, and joypad menu hotkeys.

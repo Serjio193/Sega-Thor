@@ -1,3 +1,6 @@
+# M15.396 ROM Master Entity Subsystems Clear, Universal Constructor & Spirit Glow Pulse (`0x008C5A`..`0x008E22`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_constructor_lifecycle.py`, `tests/rom_entity_constructor_lifecycle_test.py` (`3/3 PASS`), `data/thor-evidence/rom_entity_constructor_lifecycle_m15_396.json`, and `docs/handoffs/STANDALONE_M15_396_ENTITY_CONSTRUCTOR_LIFECYCLE_HANDOFF.md`.
+
 # M15.395 ROM Master Gameplay Frame Sequencer, Screen Shake Dispatcher & Joypad Menu Hotkeys (`0x008AA6`..`0x008C5A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_master_frame_sequencer.py`, `tests/rom_master_frame_sequencer_test.py` (`3/3 PASS`), `data/thor-evidence/rom_master_frame_sequencer_m15_395.json`, and `docs/handoffs/STANDALONE_M15_395_MASTER_FRAME_SEQUENCER_HANDOFF.md`.
 

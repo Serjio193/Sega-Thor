@@ -1,0 +1,75 @@
+{
+  "milestone": "M15.396",
+  "title": "ROM Master Entity Subsystems Clear, Universal Constructor & Spirit Glow Pulse",
+  "routines": {
+    "master_entity_subsystems_clear": {
+      "start": "0x008C5A",
+      "end": "0x008D04",
+      "bytes": 172,
+      "pools": [
+        {
+          "base": "0x00FF2954",
+          "slots": 4,
+          "stride": 90,
+          "clear_type": "0x8CAC"
+        },
+        {
+          "base": "0x00FF2D8C",
+          "slots": 6,
+          "stride": 90,
+          "clear_type": "0x8CAC"
+        },
+        {
+          "base": "0x00FF2ABC",
+          "slots": 8,
+          "stride": 90,
+          "clear_type": "0x8CAC"
+        },
+        {
+          "base": "0x00FF19C8",
+          "slots": 4,
+          "stride": 8,
+          "clear_type": "0x8CD0"
+        },
+        {
+          "base": "0x00FF1B60",
+          "slots": 19,
+          "stride": 188,
+          "clear_type": "0x8CDC"
+        }
+      ]
+    },
+    "universal_entity_constructor": {
+      "start": "0x008D06",
+      "end": "0x008DA2",
+      "bytes": 158,
+      "descriptor_table_rom": "0x0003F2FA",
+      "descriptor_stride_bytes": 16,
+      "small_entity_threshold_ram": "0x00FF2954",
+      "small_entity_clear_words": 44,
+      "large_entity_clear_words": 93
+    },
+    "entity_script_pointers_reinit": {
+      "start": "0x008DA4",
+      "end": "0x008DD2",
+      "bytes": 48,
+      "descriptor_table_rom": "0x0003F2FA",
+      "reloaded_pointers": [
+        "+0x1A",
+        "+0x1E",
+        "+0x26",
+        "+0x22",
+        "+0x5E"
+      ]
+    },
+    "spirit_glow_pulse_controller": {
+      "start": "0x008DD4",
+      "end": "0x008E22",
+      "bytes": 78,
+      "glow_level_ram": "0x00FF183E",
+      "active_spirit_ram": "0x00FF1AA4",
+      "timer_word_ram": "0x00FF199E",
+      "timer_subbyte_ram": "0x00FF199F"
+    }
+  }
+}
