@@ -1,0 +1,24 @@
+{
+  "milestone": "M15.327",
+  "title": "ROM Ring/Spirit Menu Entry Guard & Input Loop",
+  "routines": {
+    "try_open_ring_menu": {
+      "start": "0x004416",
+      "end": "0x004438"
+    },
+    "ring_menu_input_poll": {
+      "start": "0x004480",
+      "end": "0x00455C"
+    }
+  },
+  "constants": {
+    "menu_block_ram": "0x00FF1A6E",
+    "player_state_ram": "0x00FF19EC",
+    "max_open_player_state": 2,
+    "error_sfx_cmd": "0x00A00253",
+    "close_sfx_cmd": "0x00A00347",
+    "cursor_ram": "0x00FF0E50",
+    "button_swap_ram": "0x00FF1996",
+    "joypad_ram": "0x00FF165E"
+  }
+}

@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.327: ROM RING/SPIRIT MENU ENTRY GUARD & INPUT LOOP (`0x004416`..`0x00455C`) — `$FF1A6E`/`$FF19EC <= 2`, `$FF1996` A/BC Swap, `0x00A00253`/`0x00A00347`; Extractor (`tools/extract_rom_ring_menu_loop.py` <= 500 lines), Tests (`tests/rom_ring_menu_loop_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_327_RING_MENU_LOOP_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x004416..0x00455C` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_ring_menu_loop.py`, `python -m unittest tests/rom_ring_menu_loop_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.327, assign M16.105, and continue.
+
 # 2026-11-17 — Milestone M15.326: ROM 5-DIGIT DECIMAL-TO-ASCII FORMATTER (`0x00C0BE`..`0x00C178`) — `$FF192A` Zero-Padded & Space-Padded `uint16` Formatters; Extractor (`tools/extract_rom_decimal_ascii.py` <= 500 lines), Tests (`tests/rom_decimal_ascii_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_326_DECIMAL_ASCII_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00C0BE..0x00C178` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_decimal_ascii.py`, `python -m unittest tests/rom_decimal_ascii_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

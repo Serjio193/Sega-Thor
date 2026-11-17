@@ -1,3 +1,8 @@
+# ADR-20261117-M15-327-RING-MENU-LOOP — Ring/Spirit Menu Entry Guard & Input Loop (`0x004416`..`0x00455C`)
+- **Context:** Opening the ring/spirit menu (`0x004416`) checks `$FF1A6E == 0` and Ali's action state `$FF19EC <= 2` (playing `0x00A00253` on error), and its input poll (`0x004480`) honors the A/BC button-swap flag `$FF1996`.
+- **Decision:** Extracted the guard, SFX IDs, and button-swap mappings into `data/thor-evidence/rom_ring_menu_loop_m15_327.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.111 can implement ring-menu gating and control-scheme parity.
+
 # ADR-20261117-M15-326-DECIMAL-ASCII — 5-Digit Decimal-to-ASCII Formatter (`0x00C0BE`..`0x00C178`)
 - **Context:** Menu/HUD numeric readouts format `uint16` values into 5-character ASCII strings at `$FF192A` using either zero-padding (`0x00C0BE`) or leading-space padding (`0x00C114`).
 - **Decision:** Extracted the buffer address and divisors (`10000..1`) into `data/thor-evidence/rom_decimal_ascii_m15_326.json` with 2/2 passing tests and Standalone handoff.

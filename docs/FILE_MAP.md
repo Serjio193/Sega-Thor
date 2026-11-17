@@ -1,3 +1,9 @@
+# M15.327 ROM Ring/Spirit Menu Entry Guard & Input Loop
+- `tools/extract_rom_ring_menu_loop.py` — ROM extractor & verifier for `0x004416..0x00455C` (entry guard `$FF1A6E == 0 && $FF19EC <= 2`, `$FF1996` A/BC swap, SFX `0x00A00253`/`0x00A00347`).
+- `tests/rom_ring_menu_loop_test.py` — Unit tests verifying menu entry guard and A/BC button-swap decoding.
+- `data/thor-evidence/rom_ring_menu_loop_m15_327.json` — Verified evidence JSON for M15.327.
+- `docs/handoffs/STANDALONE_M15_327_RING_MENU_LOOP_HANDOFF.md` — C++20 Standalone handoff for M16.111.
+
 # M15.326 ROM 5-Digit Decimal-to-ASCII Formatter
 - `tools/extract_rom_decimal_ascii.py` — ROM extractor & verifier for `0x00C0BE..0x00C178` (5-digit zero-padded & space-padded `uint16` decimal formatters to `$FF192A`).
 - `tests/rom_decimal_ascii_test.py` — Unit tests verifying zero-padded and space-padded formatting.
