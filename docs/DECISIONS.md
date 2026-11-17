@@ -1,3 +1,35 @@
+# ADR-20261117-M16-148-HORIZONTAL-RAYCASTER — ROM Horizontal (±X) Tilemap Raycaster, Surface Height Probe & Terrain LUT (0x009084..0x0091F6)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.399 extracted ROM routines `0x009084..0x0091F6` governing horizontal (±X) tilemap raycasting, surface height probing, and terrain type translation:
+   - `0x009084..0x009128`: `horizontal_raycast_positive_x`:
+     * Sets direction code `0x11` into entity slot offset `+0x40`.
+     * Integrates 32-bit subpixel X position (`+0x0A` accum, integer displacement in `d0`).
+     * Clamps displacement against world boundary clamp (`0x009D4E`) and sweeps solid entities (`0x009DD6`).
+     * Iterates in 8-pixel increments checking wall collisions (`0x00938E`); on hit, halts raycast before entering solid tile.
+     * Probes surface height (`0x009BF2`) and translates surface type using 16-byte LUT `0x0096E8` into `+0x70`.
+     * Stores surface height into entity slot offset `+0x14`.
+   - `0x009128..0x0091C6`: `horizontal_raycast_negative_x`:
+     * Sets direction code `0x13` into entity slot offset `+0x40`.
+     * Integrates 32-bit subpixel X position.
+     * Clamps displacement against left boundary clamp (`0x009D70`) and sweeps solid entities (`0x009EBA`).
+     * Iterates in 8-pixel increments checking wall collisions; on hit, halts raycast before entering solid tile.
+     * Probes surface height and translates surface type via LUT `0x0096E8`.
+   - `0x0091C6..0x0091F6`: `horizontal_raycast_cleanup`:
+     * Writes final X position to `+0x08`.
+     * If no tile boundary was stepped (`tiles_stepped == 0`), probes resting tile height and terrain type.
+     * Clears X velocity/step: `clr.l $72(a6)`.
+   - `0x0096E8..0x0096F8`: 16-byte terrain surface type LUT:
+     * Table: `[0xFF, 0x00, 0x02, 0x01, 0x04, 0xFF, 0x03, 0xFF, 0x06, 0x07, 0xFF, 0xFF, 0x05, 0xFF, 0xFF, 0xFF]` indexed by `raw_terrain & 0x0F`.
+
+**Decisions:**
+1. **Dedicated `horizontal_raycaster` Module:**
+   - Added `src/game/player/horizontal_raycaster.hpp/.cpp` modeling `calculate_horizontal_raycast` and `step_horizontal_raycast` with customizable `RaycastEnvironment` hooks for solid wall checks, surface probes, boundary clamping, and entity sweeps.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-147-ENTITY-SIM-ANIM-PREFLIGHT — ROM Universal Entity Simulation Machine, Animation Frame Stepper & Terrain Pre-flight (0x008F22..0x009084)
 **Status:** Accepted
 **Date:** 2026-11-17

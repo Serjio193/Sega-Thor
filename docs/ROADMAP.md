@@ -1,3 +1,13 @@
+# M16.148 ROM Horizontal (±X) Tilemap Raycaster, Surface Height Probe & Terrain LUT (`0x009084..0x0091F6`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `calculate_horizontal_raycast` and `step_horizontal_raycast` in `src/game/player/horizontal_raycaster.hpp/.cpp`:
+  - Positive X (+X) raycaster (`0x009084..0x009128`): sets direction code `0x11` at `+0x40`, accumulates 32-bit subpixel X, clamps displacement, sweeps solid entities, steps in 8-pixel tile increments checking wall collisions, probes surface height, translates surface type via LUT `0x0096E8` into `+0x70`, and stores surface height into `+0x14`.
+  - Negative X (-X) raycaster (`0x009128..0x0091C6`): sets direction code `0x13` at `+0x40`, accumulates subpixel X, clamps displacement, sweeps solid entities, steps in 8-pixel tile increments checking wall collisions, probes surface height, and translates surface type via LUT `0x0096E8`.
+  - Final X position write & cleanup (`0x0091C6..0x0091F6`): writes final X position to `+0x08`, probes resting position if no tile stepped, and clears X velocity `+0x72 = 0`.
+  - 16-byte terrain surface type translation LUT at `0x0096E8`: `[0xFF, 0x00, 0x02, 0x01, 0x04, 0xFF, 0x03, 0xFF, 0x06, 0x07, 0xFF, 0xFF, 0x05, 0xFF, 0xFF, 0xFF]`.
+- Qualified `oasis_m16_148_horizontal_raycaster` and the 128-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.147 ROM Universal Entity Simulation Machine, Animation Frame Stepper & Terrain Pre-flight (`0x008F22..0x009084`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
