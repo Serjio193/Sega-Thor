@@ -1,3 +1,8 @@
+# ADR-20261117-M15-329-FOOD-MENU — 4x4 Food/Consumable Menu Use & Drop (`0x00474E`..`0x00494A`)
+- **Context:** The 4x4 consumable menu (`$FF0E51`, `$FF0D90`) validates consumption via `0x005236` (playing `0x00A00256` and setting a 90-frame timer at `$FF1856`) and guards item drops against `0x009C40` terrain bit 7 and `0x05CE16[id]` bit 5 (undroppable).
+- **Decision:** Extracted all table/RAM addresses, timers, and drop guards into `data/thor-evidence/rom_food_menu_m15_329.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.113 can implement 4x4 food-menu navigation, consume gating, and undroppable guards.
+
 # ADR-20261117-M15-328-RING-MENU-DROP — Ring Menu 4x2 Cursor Wrap & Item Drop Handler (`0x00462E`..`0x0046E2`)
 - **Context:** The 4x2 weapon/item ring menu wraps cursor coordinates modulo `(4, 2)` (`$FF0E50`) with SFX `0x006003A6`, and dropping an item checks `cursor != $FF0DB0`, `0x009C40` terrain bit 7, and `item_id >= 2` before emitting `(id | 0x80, qty)` to `$FF1864`/`$FF1865`.
 - **Decision:** Extracted all masks, guards, and RAM addresses into `data/thor-evidence/rom_ring_menu_drop_m15_328.json` with 2/2 passing tests and Standalone handoff.

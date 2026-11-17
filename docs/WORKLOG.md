@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.329: ROM 4X4 FOOD/CONSUMABLE MENU USE & DROP (`0x00474E`..`0x00494A`) — `$FF0E51`/`$FF0D90`, `0x005236` Consume (`90f`), `0x05CE16` Bit-5 Guard; Extractor (`tools/extract_rom_food_menu.py` <= 500 lines), Tests (`tests/rom_food_menu_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_329_FOOD_MENU_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00474E..0x00494A` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_food_menu.py`, `python -m unittest tests/rom_food_menu_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.329, monitor M16.106, and continue.
+
 # 2026-11-17 — Milestone M15.328: ROM RING MENU 4X2 CURSOR WRAP & ITEM DROP HANDLER (`0x00462E`..`0x0046E2`) — 4x2 Wrap `0x006003A6`, Drop Guard (`$FF0DB0`/`0x009C40`/`id>=2`); Extractor (`tools/extract_rom_ring_menu_drop.py` <= 500 lines), Tests (`tests/rom_ring_menu_drop_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_328_RING_MENU_DROP_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00462E..0x0046E2` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_ring_menu_drop.py`, `python -m unittest tests/rom_ring_menu_drop_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

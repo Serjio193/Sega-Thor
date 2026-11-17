@@ -1,3 +1,9 @@
+# M15.329 ROM 4x4 Food/Consumable Menu Use & Drop
+- `tools/extract_rom_food_menu.py` — ROM extractor & verifier for `0x00474E..0x00494A` (4x4 cursor `$FF0E51`, 16-slot food inventory `$FF0D90`, `0x005236` consume check + 90f timer `$FF1856`, `0x05CE16` bit-5 undroppable guard).
+- `tests/rom_food_menu_test.py` — Unit tests verifying 4x4 cursor wrap and undroppable/terrain drop guards.
+- `data/thor-evidence/rom_food_menu_m15_329.json` — Verified evidence JSON for M15.329.
+- `docs/handoffs/STANDALONE_M15_329_FOOD_MENU_HANDOFF.md` — C++20 Standalone handoff for M16.113.
+
 # M15.328 ROM Ring Menu 4x2 Cursor Wrap & Item Drop Handler
 - `tools/extract_rom_ring_menu_drop.py` — ROM extractor & verifier for `0x00462E..0x0046E2` (4x2 cursor wrap `$FF0E50`, SFX `0x006003A6`, item drop guard & `$FF1864`/`$FF1865` emission).
 - `tests/rom_ring_menu_drop_test.py` — Unit tests verifying 4x2 cursor wrap and item-drop validation.

@@ -1,0 +1,33 @@
+{
+  "milestone": "M15.329",
+  "title": "ROM 4x4 Food/Consumable Menu Use & Drop",
+  "routines": {
+    "food_menu_loop": {
+      "start": "0x00474E",
+      "end": "0x004828"
+    },
+    "use_food_item": {
+      "start": "0x00482A",
+      "end": "0x004894"
+    },
+    "drop_food_item": {
+      "start": "0x004896",
+      "end": "0x004904"
+    },
+    "step_cursor_4x4": {
+      "start": "0x004906",
+      "end": "0x00494A"
+    }
+  },
+  "constants": {
+    "cursor_ram": "0x00FF0E51",
+    "food_inventory_ram": "0x00FF0D90",
+    "item_flags_table_rom": "0x0005CE16",
+    "undroppable_flag_bit": 5,
+    "consume_check_routine": "0x00005236",
+    "consume_sfx": "0x00A00256",
+    "consume_timer_frames": 90,
+    "col_mask": 3,
+    "row_mask": 3
+  }
+}
