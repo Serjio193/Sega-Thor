@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.347: ROM RAPID-MASH & TRIPLE-TAP INPUT RING DETECTORS (`0x008910`..`0x0089A8`) — `13f`/`3x` Mash, `25f`/`3x` Tap on `$FF1668`; Extractor (`tools/extract_rom_mash_tripletap.py` <= 500 lines), Tests (`tests/rom_mash_tripletap_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_347_MASH_TRIPLETAP_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x008910..0x0089A8` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_mash_tripletap.py`, `python -m unittest tests/rom_mash_tripletap_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.347, check M16.116 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.346: ROM BOMB DETONATION BLAST SPAWNER & SCREEN-SHAKE (`0x00ED04`..`0x00EDA8`) — Entity `0x3A`, `0x8007` Dmg, `4f` Shake `$FF17C4`; Extractor (`tools/extract_rom_bomb_detonation.py` <= 500 lines), Tests (`tests/rom_bomb_detonation_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_346_BOMB_DETONATION_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00ED04..0x00EDA8` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_bomb_detonation.py`, `python -m unittest tests/rom_bomb_detonation_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

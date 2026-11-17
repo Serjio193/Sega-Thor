@@ -1,3 +1,9 @@
+# M15.347 ROM Rapid-Mash & Triple-Tap Input Ring Detectors
+- `tools/extract_rom_mash_tripletap.py` — ROM extractor & verifier for `0x008910..0x0089A8` (`13f` rapid-mash `>=3` bit-4 detector, `25f` triple-tap `3`-match facing detector on `$FF1668` ring).
+- `tests/rom_mash_tripletap_test.py` — Unit tests verifying rapid-mash and triple-tap ring detection.
+- `data/thor-evidence/rom_mash_tripletap_m15_347.json` — Verified evidence JSON for M15.347.
+- `docs/handoffs/STANDALONE_M15_347_MASH_TRIPLETAP_HANDOFF.md` — C++20 Standalone handoff for M16.131.
+
 # M15.346 ROM Bomb Detonation Blast Spawner & Screen-Shake Trigger
 - `tools/extract_rom_bomb_detonation.py` — ROM extractor & verifier for `0x00ED04..0x00EDA8` (entity `0x3A` blast, `0x00040000` Z drop, `0x8007` damage, `4f` screen shake `$FF17C4`, SFX `0x00B00225`/`0x00600382`).
 - `tests/rom_bomb_detonation_test.py` — Unit tests verifying Z-clamp and blast parameters.

@@ -1,3 +1,8 @@
+# ADR-20261117-M15-347-MASH-TRIPLETAP — Rapid-Mash & Triple-Tap Input Ring Detectors (`0x008910`..`0x0089A8`)
+- **Context:** Ali's special-input ring (`$FF1668`, 64 frames) also detects rapid button mashes (`>= 3` bit-4 presses within `13` frames at `0x008910`) and triple-tap facing dashes (`3` matching direction nibbles within `25` frames at `0x008950`).
+- **Decision:** Extracted both ring-window sizes and match thresholds into `data/thor-evidence/rom_mash_tripletap_m15_347.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.131 can complete Ali's special-input command recognizer suite.
+
 # ADR-20261117-M15-346-BOMB-DETONATION — Bomb Detonation Blast Spawner & Screen-Shake Trigger (`0x00ED04`..`0x00EDA8`)
 - **Context:** Bomb detonation (`0x00ED04`) converts/spawns blast entity `0x3A`, drops `z` by `4.0 px` (`0x00040000`, clamped `>= 0`), sets damage `0x8007`, plays `0x00B00225`/`0x00600382`, and triggers `4`-frame screen shake (`$FF17C4`).
 - **Decision:** Extracted all blast parameters, SFX IDs, and screen-shake constants into `data/thor-evidence/rom_bomb_detonation_m15_346.json` with 2/2 passing tests and Standalone handoff.

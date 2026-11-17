@@ -1,0 +1,25 @@
+{
+  "milestone": "M15.347",
+  "title": "ROM Rapid-Mash & Triple-Tap Input Ring Detectors",
+  "routines": {
+    "detect_rapid_mash": {
+      "start": "0x008910",
+      "end": "0x00894E"
+    },
+    "detect_triple_tap": {
+      "start": "0x008950",
+      "end": "0x0089A8"
+    }
+  },
+  "constants": {
+    "input_ring_ram": "0x00FF1668",
+    "ring_head_ram": "0x00FF16E8",
+    "ring_count_ram": "0x00FF16EA",
+    "ring_byte_mask": "0x7E",
+    "mash_window_frames": 13,
+    "mash_min_presses": 3,
+    "mash_button_bit": 4,
+    "tap_max_window_frames": 25,
+    "tap_required_matches": 3
+  }
+}
