@@ -1,3 +1,9 @@
+# M16.79 CRAM Palette Fade Engine (0x002D58..0x00302D) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `scale_bgr333_color` (`0x002FDA`) and `PaletteFadeEngine` (64-entry `$FF134C`/`$FF18A6`, `start_fade_in`/`start_fade_out`, `delay + 1` frames/step, `$FF164D` bits 0/1) in `src/game/video/palette_fade.hpp/.cpp`.
+- Qualified `oasis_m16_79_palette_fade` and full 39-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.78 Secret Sound Test & 34-Track Named OST (0x03E7F4..0x03F047) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

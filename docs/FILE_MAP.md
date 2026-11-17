@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/video/palette_fade.hpp` / `src/game/video/palette_fade.cpp`: CRAM Palette Fade Engine (`0x002D58..0x00302D`), `scale_bgr333_color` (`0x002FDA`), 64-entry `$FF134C`/`$FF18A6` fade-in/fade-out, and `$FF164D` CRAM DMA / unblank flags (M16.79).
+- `tests/m16_79_palette_fade_test.cpp`: Automated M16.79 test qualifying `0x0EEE` BGR333 ramp, fade-in delay/unblank, and fade-out backup restoration (M16.79).
 - `src/game/audio/sound_test_ost.hpp` / `src/game/audio/sound_test_ost.cpp`: Secret Sound Test (`0x03E7F4..0x03F047`), 34-track Yuzo Koshiro named OST registry (`0x03ED7E`), and `SoundTestMenuState` (`BGM`/`SFX`/`PCM`/`EXIT`) (M16.78).
 - `tests/m16_78_sound_test_ost_test.cpp`: Automated M16.78 test qualifying all 34 OST tracks, unlock chord `0x90000000`, and `SoundCommandQueue` dispatch (M16.78).
 - `src/game/ui/continue_and_checkpoint.hpp` / `src/game/ui/continue_and_checkpoint.cpp`: Continue Game SRAM load (`0x00161C`/`0x0016F4`, primary/backup fallback, 376B restore, `30` invuln frames) and Checkpoint Snapshot / Retry Restore (`0x0017DA`/`0x001828`) (M16.77).

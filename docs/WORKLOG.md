@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.79: CRAM Palette Fade Engine)
+- **Concrete Task**: Implement `src/game/video/palette_fade.hpp/.cpp` with `scale_bgr333_color(color, step)` (`0x002FDA`: `r/g/b` `/ 7` & nibble masks `0x00E/0x0E0/0xE00`) and `PaletteFadeEngine` (64-entry CRAM shadow `$FF134C` & backup `$FF18A6`, `start_fade_in(delay)` steps `0..7` + unblank `$FF164D` bit 1, `start_fade_out(delay)` steps `7..0` + backup restore, `step_frame()` `delay + 1` frames/step + CRAM DMA dirty `$FF164D` bit 0); add `tests/m16_79_palette_fade_test.cpp`; qualify full 39-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/video/palette_fade.hpp` / `src/game/video/palette_fade.cpp`.
+  * Added `tests/m16_79_palette_fade_test.cpp` (registered as `oasis_m16_79_palette_fade` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 39/39 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_79`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 39/39 regression run.
+  * Remaining unknowns: Wiring `PaletteFadeEngine::cram_shadow()` directly into `VdpState::cram` during mode transitions is deferred to frontend/boot-flow integration.
+
 # Worklog — 2026-11-17 (M16.78: Secret Sound Test & 34-Track Named OST)
 - **Concrete Task**: Implement `src/game/audio/sound_test_ost.hpp/.cpp` with `SoundTestTrackEntry`, `kSoundTestTracks` (all 34 Yuzo Koshiro OST tracks `0x03ED7E` + `0x03EDA0..0x03F047`), `lookup_sound_test_track(rom, menu_index)`, and `SoundTestMenuState` (`BGM`, `SFX`, `PCM`, `EXIT`, `SoundCommandQueue` emission, unlock chord `0x90000000`); add `tests/m16_78_sound_test_ost_test.cpp`; qualify full 38-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

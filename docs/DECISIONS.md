@@ -1,3 +1,14 @@
+# ADR-20261117-M16-79-PALETTE-FADE — CRAM Palette Fade Engine (0x002D58..0x00302D)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.295 extracted the 64-color CRAM fade engine (`$FF134C` shadow, `$FF18A6` backup, `0x002FDA` BGR333 `/ 7` channel scaling, `delay + 1` frames/step, `$FF164D` bits 0/1).
+
+**Decisions:**
+1. **Dedicated `palette_fade` Module:**
+   - Added `src/game/video/palette_fade.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-78-SOUND-TEST-OST — Secret Sound Test & 34-Track Named OST (0x03E7F4..0x03F047)
 **Status:** Accepted
 **Date:** 2026-11-17
