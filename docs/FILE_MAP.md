@@ -1,3 +1,9 @@
+# M15.333 ROM Master Y-Sorted SAT Render Pipeline
+- `tools/extract_rom_ysort_sat_pipeline.py` — ROM extractor & verifier for `0x00A196..0x00A27E` (5-pass SAT pipeline: 4 high-prio FX `$FF2954`, 4 hit-sparks `$FF19C8`, 21 Y-sorted entities `$FF19E8`, 8 ground FX `$FF2ABC`, 6 floor FX `$FF2D8C`).
+- `tests/rom_ysort_sat_pipeline_test.py` — Unit tests verifying descending-Y entity sort and `-1` Y sentinel.
+- `data/thor-evidence/rom_ysort_sat_pipeline_m15_333.json` — Verified evidence JSON for M15.333.
+- `docs/handoffs/STANDALONE_M15_333_YSORT_SAT_PIPELINE_HANDOFF.md` — C++20 Standalone handoff for M16.117.
+
 # M15.332 ROM 3D AABB Solid Sweep (-X, +Y, -Y)
 - `tools/extract_rom_aabb_solid_sweep_3axis.py` — ROM extractor & verifier for `0x009EBA..0x00A194` (21-slot `0x00BC` entity pool `-X`, `+Y`, `-Y` 3D AABB sweeps and zero-gap push).
 - `tests/rom_aabb_solid_sweep_3axis_test.py` — Unit tests verifying `-X`, `+Y`, `-Y` gap clamping and push deltas.

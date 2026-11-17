@@ -1,3 +1,4 @@
+# M15.333 ROM Master Y-Sorted SAT Render Pipeline (`0x00A196`..`0x00A27E`) — COMPLETE / VERIFIED
 # M15.332 ROM 3D AABB Solid Sweep (-X, +Y, -Y) (`0x009EBA`..`0x00A194`) — COMPLETE / VERIFIED
 # M15.331 ROM In-Game Save Prompt & Save-Allowed Guard (`0x005472`..`0x005578`) — COMPLETE / VERIFIED
 # M15.330 ROM Consumable Item Validation & HP/SP/Spirit Restore (`0x005236`..`0x005472`) — COMPLETE / VERIFIED

@@ -1,3 +1,8 @@
+# ADR-20261117-M15-333-YSORT-SAT-PIPELINE — Master Y-Sorted SAT Render Pipeline (`0x00A196`..`0x00A27E`)
+- **Context:** Mega Drive SAT draws lower-index sprites on top, so `0x00A196` emits 4 high-priority FX (`$FF2954`), 4 hit-sparks (`$FF19C8`), 21 entities (`$FF19E8`) sorted by descending Y (`> -1`), 8 ground FX (`$FF2ABC`), and 6 floor FX (`$FF2D8C`).
+- **Decision:** Extracted all 5 pass buffers, counts, strides, and Y-sort sentinel into `data/thor-evidence/rom_ysort_sat_pipeline_m15_333.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.117 can implement exact hardware sprite-layering and Y-sort order.
+
 # ADR-20261117-M15-332-AABB-SOLID-SWEEP-3AXIS — 3D AABB Solid Sweep (-X, +Y, -Y) (`0x009EBA`..`0x00A194`)
 - **Context:** Companion to M15.305 (`+X` sweep `0x009DD6`): `0x009EBA` (`-X`), `0x009FA0` (`+Y`), and `0x00A09A` (`-Y`) sweep the 21-slot `0x00BC`-stride entity pool (`0x00FF19E8`), clamp movement to the nearest 3D AABB gap, and push `0x72(a5)`/`0x76(a5)` by `±1` at zero gap.
 - **Decision:** Extracted all pool parameters, flag offsets, and push instructions into `data/thor-evidence/rom_aabb_solid_sweep_3axis_m15_332.json` with 2/2 passing tests and Standalone handoff.

@@ -1,0 +1,45 @@
+{
+  "milestone": "M15.333",
+  "title": "ROM Master Y-Sorted SAT Render Pipeline",
+  "routine": {
+    "start": "0x00A196",
+    "end": "0x00A27E"
+  },
+  "render_passes": [
+    {
+      "name": "high_priority_fx",
+      "ram": "0x00FF2954",
+      "count": 4,
+      "stride": "0x5A"
+    },
+    {
+      "name": "hit_sparks",
+      "ram": "0x00FF19C8",
+      "count": 4,
+      "stride": "0x08"
+    },
+    {
+      "name": "y_sorted_entities_desc",
+      "ram": "0x00FF19E8",
+      "count": 21,
+      "stride": "0xBC"
+    },
+    {
+      "name": "ground_shadow_fx",
+      "ram": "0x00FF2ABC",
+      "count": 8,
+      "stride": "0x5A"
+    },
+    {
+      "name": "floor_fx",
+      "ram": "0x00FF2D8C",
+      "count": 6,
+      "stride": "0x5A"
+    }
+  ],
+  "constants": {
+    "entity_done_mask_ram": "0x00FF188E",
+    "entity_y_offset": "0x0C",
+    "initial_max_y_sentinel": -1
+  }
+}
