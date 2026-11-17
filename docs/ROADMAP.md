@@ -1,3 +1,25 @@
+# M16.165 ROM Static Entity & Shadowless Fast SAT Sprite Compositors (`0x00AD76..0x00B15E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `select_sat_compositor_tier`, `is_static_entity_visible`, `is_static_viewport_clipped_y`, `is_static_viewport_clipped_x`, `is_static_viewport_clipped`, `compose_static_entity_sat`, `compose_fast_shadowless_sat`, `compose_static_entity_sat_raw`, and `compose_fast_shadowless_sat_raw` in `src/game/render/static_fast_sat_compositor.hpp/.cpp` and `include/game/render/static_fast_sat_compositor.hpp`:
+  - `0x00AD76..0x00B022`: Static Entity SAT Compositor:
+    - Visibility check on `flags_36` bit 1 (`0x00AD76`), early exiting to RTS `0x00B010` on invisible entity.
+    - Dynamic tail calls `0x00B012`: `bsr.w $b34c; bra.w $aee6`.
+    - Skips dynamic DMA tile quota checks and queueing.
+    - Evaluates 3D elevation Z at `+0x10` (`screen_x = world_x - cam_x + 128`, `screen_y = (world_y - cam_y + 128) - elev_z`).
+    - Applies screen viewport clipping: `[0x60, 0x160]` for Y and `[0x60, 0x1C0]` for X.
+    - Generates dynamic shadows via table `0x00ACFE` at ground plane `y + ground_h` when shadow flag bit 2 on `+0x3A` is set.
+    - Hardware 80-sprite limit check on `$FF188A.w`.
+  - `0x00B022..0x00B15E`: Shadowless Fast SAT Compositor:
+    - Minimalist sprite emitter for background objects, pickups, and simple visual effects.
+    - Zero stack frame overhead, no shadow generation logic.
+    - Fast viewport clipping against `[0x60, 0x160]` Y and `[0x60, 0x1C0]` X.
+    - Buffer base subtraction `suba.l #$FF13CC, a1` at `0x00B14A`, updating `$FF188C.w` and `$FF188A.w`.
+  - SAT Engine Tier Mode Selection:
+    - In SAT passes, `btst.b #0, $36(a6)` decides the engine tier: `0` selects Static Entity Compositor (`0x00AD76`), `1` selects Dynamic DMA Compositor (`0x00A9A0`).
+  - Raw 64KB RAM window integration helpers `compose_static_entity_sat_raw` and `compose_fast_shadowless_sat_raw`.
+- Qualified `oasis_m16_165_static_fast_sat_compositor` and the 145-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.164 ROM Master Entity SAT Sprite Compositor, Screen Clipping & Dynamic Shadow Blitter (`0x00A9A0..0x00AD76`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -139,6 +139,7 @@ add_library(oasis_core
     src/game/render/shadow_sat_pass.cpp
     src/game/render/demo_hud_spark_generator.cpp
     src/game/render/master_sat_compositor.cpp
+    src/game/render/static_fast_sat_compositor.cpp
     src/game/render/vdp_dma_queue.cpp
     src/game/render/town_combat_sat.cpp
     src/game/camera/camera_controller.cpp
@@ -175,7 +176,7 @@ add_library(oasis_core
     src/game/combat/attack_controller.cpp
     src/game/standalone_game_simulation.cpp
 )
-target_include_directories(oasis_core PUBLIC src)
+target_include_directories(oasis_core PUBLIC src include)
 get_target_property(oasis_core_links oasis_core LINK_LIBRARIES)
 if(oasis_core_links)
     message(FATAL_ERROR "oasis_core must not link to developer-only or platform targets: ${oasis_core_links}")

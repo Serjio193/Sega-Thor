@@ -1,3 +1,33 @@
+# ADR-20261117-M16-165-STATIC-FAST-SAT-COMPOSITOR — ROM Static Entity & Shadowless Fast SAT Sprite Compositors (0x00AD76..0x00B15E)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.416 extracted ROM routines `0x00AD76..0x00B15E` governing static entity and shadowless fast SAT sprite composition:
+   - `0x00AD76..0x00B022`: Static Entity SAT Compositor:
+     * Visibility check testing `flags_36` bit 1 (`btst.b #1, $36(a6)`). Branches directly to RTS exit `0x00B010` if bit 1 is set.
+     * Dynamic tail calls `0x00B012`: `bsr.w $b34c; bra.w $aee6`.
+     * Skips dynamic DMA tile quota checks and queueing.
+     * Evaluates 3D elevation Z (`+0x10`) and transforms coordinates: `screen_x = world_x - cam_x + 128`, `screen_y = (world_y - cam_y + 128) - elev_z`.
+     * Applies screen viewport clipping: `[0x60, 0x160]` for Y and `[0x60, 0x1C0]` for X.
+     * Generates dynamic shadows via table `0x00ACFE` at ground plane `y + ground_h` when shadow flag bit 2 on `+0x3A` is set.
+     * Enforces hardware 80-sprite limit check on `$FF188A.w` before emitting SAT entries into `$FF13CC + $FF188C.w`.
+   - `0x00B022..0x00B15E`: Shadowless Fast SAT Compositor:
+     * Minimalist sprite emitter for background objects, pickups, and simple visual effects.
+     * Zero stack frame overhead, no shadow generation logic.
+     * Fast viewport clipping against `[0x60, 0x160]` Y and `[0x60, 0x1C0]` X.
+     * Hardware 80-sprite limit check.
+     * Buffer base subtraction `suba.l #$FF13CC, a1` at `0x00B14A` to calculate relative buffer offset, updating `$FF188C.w` and `$FF188A.w`.
+     * RTS at `0x00B15C`.
+   - SAT Engine Tier Mode Selection:
+     * In SAT passes, `btst.b #0, $36(a6)` decides the engine tier: `0` selects Static Entity Compositor (`0x00AD76`), `1` selects Dynamic DMA Compositor (`0x00A9A0`).
+
+**Decisions:**
+1. **Dedicated `static_fast_sat_compositor` Module:**
+   - Added `src/game/render/static_fast_sat_compositor.hpp/.cpp` and `include/game/render/static_fast_sat_compositor.hpp` modeling pure tier selection, visibility testing, viewport clipping, static entity SAT composition, shadowless fast SAT composition, and raw memory integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (145/145 M16 tests).
+
 # ADR-20261117-M16-164-MASTER-SAT-COMPOSITOR — ROM Master Entity SAT Sprite Compositor, Screen Clipping & Dynamic Shadow Blitter (0x00A9A0..0x00AD76)
 **Status:** Accepted
 **Date:** 2026-11-17
