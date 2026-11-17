@@ -1,3 +1,6 @@
+# M15.368 ROM Ali HP Damage, Death-Arc Trigger & Hitstun/Knockdown States (`0x005850`..`0x0059B8`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_damage_death.py`, `tests/rom_ali_damage_death_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_damage_death_m15_368.json`, and `docs/handoffs/STANDALONE_M15_368_ALI_DAMAGE_DEATH_HANDOFF.md`.
+
 # M15.367 ROM Ali Passive HP/SP Regen & Mount Damage Redirect (`0x0056D8`..`0x00584E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_regen_mount_redirect.py`, `tests/rom_ali_regen_mount_redirect_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_regen_mount_redirect_m15_367.json`, and `docs/handoffs/STANDALONE_M15_367_ALI_REGEN_MOUNT_REDIRECT_HANDOFF.md`.
 

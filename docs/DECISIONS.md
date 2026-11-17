@@ -1,3 +1,7 @@
+# ADR-20261117-M15-368-ALI-DAMAGE-DEATH — Ali HP Damage, Death Trigger & Hitstun/Knockdown States (`0x005850`..`0x0059B8`)
+- **Context:** `0x005850..0x0059B8` resolves pending damage on Ali (`0x0FFF` mask minus `+0x92` defense, clamped to `[1, HP]`), updates `$FF0E3C`, triggers `$FF1987` death + spirit dismissal (`0x1A`) on 0 HP, and selects `0x18` light hitstun or `0x1A`/`0x20` knockdown.
+- **Decision:** Extract all damage clamps, death-flag transitions, and hitstun/knockdown state/anim rules in `tools/extract_rom_ali_damage_death.py` and `docs/handoffs/STANDALONE_M15_368_ALI_DAMAGE_DEATH_HANDOFF.md`.
+
 # ADR-20261117-M15-367-ALI-REGEN-MOUNT-REDIRECT — Ali Passive HP/SP Regen & Mount Damage Redirect (`0x0056D8`..`0x00584E`)
 - **Context:** `0x0056D8..0x00584E` implements accessory/water-driven HP (`0x0F`/`0x07` frame mask) and SP (`0x07`/`0x03` frame mask) passive regeneration, `0x28` height sync, and `$FF1989` mount (`type == 0x1C` at `Ali + 0xBC`) damage forwarding.
 - **Decision:** Extract all accessory/terrain bit guards, cadence masks, and mount redirect fields in `tools/extract_rom_ali_regen_mount_redirect.py` and `docs/handoffs/STANDALONE_M15_367_ALI_REGEN_MOUNT_REDIRECT_HANDOFF.md`.

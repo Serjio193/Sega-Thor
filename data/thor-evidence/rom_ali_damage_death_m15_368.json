@@ -1,0 +1,36 @@
+{
+  "milestone": "M15.368",
+  "rom_range": "0x005850..0x0059B8",
+  "mount_redirect_invuln_frames": 7,
+  "damage_calc": {
+    "damage_mask": "0x0FFF",
+    "defense_offset": "0x92",
+    "min_damage": 1,
+    "hp_offset": "0x8A",
+    "damage_accum_addr": "0xFF0E3C",
+    "damage_clamp_helper": "0x0085C4"
+  },
+  "death_trigger": {
+    "launch_arc_helper": "0x00E4D0",
+    "forced_knockdown_mask": "0xC000",
+    "dead_flag_addr": "0xFF1987",
+    "sp_offset": "0x8E",
+    "spirit_dismiss_state": "0x1A"
+  },
+  "hit_reactions": {
+    "light_hitstun": {
+      "state": "0x18",
+      "anim_base": "0x18"
+    },
+    "knockdown_front": {
+      "state": "0x1A",
+      "anim_id": "0x26"
+    },
+    "knockdown_back": {
+      "state": "0x20",
+      "anim_id": "0x2C"
+    },
+    "knockdown_z_lift": 16
+  },
+  "ali_state_jump_table": "0x0059BA"
+}

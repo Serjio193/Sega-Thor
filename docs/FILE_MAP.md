@@ -1,3 +1,9 @@
+# M15.368 ROM Ali HP Damage, Death Trigger & Hitstun/Knockdown States
+- `tools/extract_rom_ali_damage_death.py` — extractor for `0x005850..0x0059B8` (defense-subtracted HP damage with min-1 clamp, `$FF1987` death-arc trigger, `0x18` hitstun vs `0x1A`/`0x20` knockdown states).
+- `tests/rom_ali_damage_death_test.py` — `2` unit tests verifying ROM constants, min-1 damage clamp, facing-flipped knockdown, and death trigger.
+- `data/thor-evidence/rom_ali_damage_death_m15_368.json` — extracted M15.368 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_368_ALI_DAMAGE_DEATH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.367 ROM Ali Passive HP/SP Regen & Mount Damage Redirect
 - `tools/extract_rom_ali_regen_mount_redirect.py` — extractor for `0x0056D8..0x00584E` (water/accessory HP & SP passive regen cadence, `0x28` default height, `$FF1989` / `0x1C` mount damage redirect).
 - `tests/rom_ali_regen_mount_redirect_test.py` — `2` unit tests verifying ROM constants and HP/SP passive regeneration cadence.
