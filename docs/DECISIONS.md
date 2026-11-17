@@ -12271,6 +12271,13 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.383: ROM Ali Water Combat Ripple Physics & Air Dive (0x0074A4..0x007656)
+
+- Decoded water ripple directional impulse physics (`0x0074A4..0x00751E`): sets horizontal speeds `(0x800, 0x780)` and vertical jump impulse `+0x56 = 0x00020000` (+2.0 px/frame) based on relative player orientation.
+- Decoded weapon durability/level index table `0x007548`: `[0x0000, 0x0001, 0xFFFF, 0x2003]` with 1..6 PRNG roll on negative value.
+- Decoded dagger air somersault & high dive (`0x007584..0x007630`): launches high dive impulse `+0x56 = 0x00080000` (+8.0 px/frame) and splash SFX `#$500341` at keyframe 36, applies `0xC000` gravity acceleration, and recovers into `0x005E78` with 72-frame landing timer `+0x30 = 0x48`.
+- Decoded target hitstun callback `0x00763C`: zeroes horizontal speed and applies 12-frame hitstun timer `+0x83 = 0x0C` to non-airborne targets.
+
 ## 2026-11-17 - Milestone M15.382: ROM Ali Sword Spin, Elemental Blade & Bow Arrow Dispatcher (0x007262..0x0074A4)
 
 - Decoded Ground & Water Sword 360-Spin attacks (`0x007262..0x007362`): allows 25% steering movement (`d1 >>= 2, d2 >>= 2`) while holding Button A during charge frames 13..16; plays spin SFX `#$600379` upon release; dispatches elemental blade payload to spawner `0x0000F258` / `0x0000F26A` for Fire Sword (`0x8000001C` / `0x8000000D`), Omega Sword (`0x4000001C` / `0x4000000D`), and Hyper Sword (`0x2000001C` / `0x2000000D`).

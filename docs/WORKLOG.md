@@ -31418,6 +31418,18 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.383: ROM Ali Water Combat Ripple Physics & Air Dive (0x0074A4..0x007656)
+
+- Decoded and tested water ripple directional impulse physics (`0x0074A4..0x00751E`): sets horizontal speeds `(0x800, 0x780)` and vertical jump impulse `+0x56 = 0x00020000` (+2.0 px/frame) based on relative player orientation.
+- Decoded and tested weapon durability/level index table `0x007548`: `[0x0000, 0x0001, 0xFFFF, 0x2003]` with 1..6 PRNG roll on negative value.
+- Decoded and tested water dagger strike at frame 8 (`0x007550..0x007582`) with SFX `#$800223` and ripple mode 6.
+- Decoded and tested dagger air somersault & high dive (`0x007584..0x007630`): launches high dive impulse `+0x56 = 0x00080000` (+8.0 px/frame) and splash SFX `#$500341` at keyframe 36, applies `0xC000` gravity acceleration, and recovers into `0x005E78` with 72-frame landing timer `+0x30 = 0x48`.
+- Decoded and tested target hitstun callback `0x00763C`: zeroes horizontal speed and applies 12-frame hitstun timer `+0x83 = 0x0C` to non-airborne targets.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_water_combat_ripple_dive_m15_383.json` (5 routines, 434 bytes).
+- Unit tests: `tests/rom_ali_water_combat_ripple_dive_test.py` (`5/5 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_383_ALI_WATER_COMBAT_RIPPLE_DIVE_HANDOFF.md`.
+- Next Step: Commit and push M15.383 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.382: ROM Ali Sword Spin, Elemental Blade & Bow Arrow Dispatcher (0x007262..0x0074A4)
 
 - Decoded and tested Ground & Water Sword 360-spin attacks (`0x007262..0x007362`): 25% steering movement (`d1 >>= 2, d2 >>= 2`) during charge frames 13..16 with Button A held, sword spin SFX `#$600379` upon release, elemental blade spawner dispatch (`0x0000F258` ground / `0x0000F26A` water) for Fire Sword (`0x8000001C` / `0x8000000D`), Omega Sword (`0x4000001C` / `0x4000000D`), and Hyper Sword (`0x2000001C` / `0x2000000D`).
