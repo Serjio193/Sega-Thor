@@ -1,3 +1,14 @@
+# ADR-20261117-M16-78-SOUND-TEST-OST — Secret Sound Test & 34-Track Named OST (0x03E7F4..0x03F047)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.294 extracted the Secret Sound Test (`0x03E7F4`, unlock chord `0x90000000`) and all 34 Yuzo Koshiro OST tracks (`0x03ED7E` + `0x03EDA0..0x03F047`).
+
+**Decisions:**
+1. **Dedicated `sound_test_ost` Module:**
+   - Added `src/game/audio/sound_test_ost.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-77-CONTINUE-AND-CHECKPOINT — Continue Game SRAM Load & Checkpoint Snapshot / Retry Restore
 **Status:** Accepted
 **Date:** 2026-11-17

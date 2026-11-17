@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/audio/sound_test_ost.hpp` / `src/game/audio/sound_test_ost.cpp`: Secret Sound Test (`0x03E7F4..0x03F047`), 34-track Yuzo Koshiro named OST registry (`0x03ED7E`), and `SoundTestMenuState` (`BGM`/`SFX`/`PCM`/`EXIT`) (M16.78).
+- `tests/m16_78_sound_test_ost_test.cpp`: Automated M16.78 test qualifying all 34 OST tracks, unlock chord `0x90000000`, and `SoundCommandQueue` dispatch (M16.78).
 - `src/game/ui/continue_and_checkpoint.hpp` / `src/game/ui/continue_and_checkpoint.cpp`: Continue Game SRAM load (`0x00161C`/`0x0016F4`, primary/backup fallback, 376B restore, `30` invuln frames) and Checkpoint Snapshot / Retry Restore (`0x0017DA`/`0x001828`) (M16.77).
 - `tests/m16_77_continue_and_checkpoint_test.cpp`: Automated M16.77 test qualifying SRAM primary/backup fallback, soft-reset on double corruption, and checkpoint snapshot/retry restore (M16.77).
 - `src/game/ui/new_game_init.hpp` / `src/game/ui/new_game_init.cpp`: New Game initialization (`0x001300..0x00144F`: `HP=200`, `ATK=10`, `Room=0x001B`, `Pos=(256,80)`) and 4 secret start chords (`0xD6000100`, `0xC9000200`, `0xCA000100`, `0x90000000`) (M16.76).

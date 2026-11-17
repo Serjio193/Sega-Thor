@@ -1,3 +1,9 @@
+# M16.78 Secret Sound Test & 34-Track Named OST (0x03E7F4..0x03F047) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `SoundTestTrackEntry`, `kSoundTestTracks` (all 34 Yuzo Koshiro OST tracks `0x03ED7E` + `0x03EDA0..0x03F047`), `lookup_sound_test_track`, and `SoundTestMenuState` (`BGM`/`SFX`/`PCM`/`EXIT`, `SoundCommandQueue` emission, unlock chord `0x90000000`) in `src/game/audio/sound_test_ost.hpp/.cpp`.
+- Qualified `oasis_m16_78_sound_test_ost` and full 38-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.77 Continue Game SRAM Load (0x00161C..0x001730) & Checkpoint Snapshot / Retry Restore (0x0017DA..0x001900) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

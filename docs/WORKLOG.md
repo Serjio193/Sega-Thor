@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.78: Secret Sound Test & 34-Track Named OST)
+- **Concrete Task**: Implement `src/game/audio/sound_test_ost.hpp/.cpp` with `SoundTestTrackEntry`, `kSoundTestTracks` (all 34 Yuzo Koshiro OST tracks `0x03ED7E` + `0x03EDA0..0x03F047`), `lookup_sound_test_track(rom, menu_index)`, and `SoundTestMenuState` (`BGM`, `SFX`, `PCM`, `EXIT`, `SoundCommandQueue` emission, unlock chord `0x90000000`); add `tests/m16_78_sound_test_ost_test.cpp`; qualify full 38-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/audio/sound_test_ost.hpp` / `src/game/audio/sound_test_ost.cpp`.
+  * Added `tests/m16_78_sound_test_ost_test.cpp` (registered as `oasis_m16_78_sound_test_ost` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 38/38 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_78`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 38/38 regression run.
+  * Remaining unknowns: Visual VDP Plane A rendering of `"SOUND TEST"` (`0x03E7F4`) is deferred to frontend/boot-flow integration.
+
 # Worklog — 2026-11-17 (M16.77: Continue Game SRAM Load & Checkpoint Snapshot / Retry Restore)
 - **Concrete Task**: Implement `src/game/ui/continue_and_checkpoint.hpp/.cpp` with `decode_sram_save_block` (`0x0016F4`: 596-byte `0x12A`-word payload + `u16_be` sum checksum), `load_continue_game` (`0x00161C`: primary fallback to backup, soft-reset `0x00020E` if both corrupt, 376B Ali+Spirit restore, `30` `0x1E` invulnerability frames), and `CheckpointRetryManager` (`capture_checkpoint` `0x0017DA` skipped in demo, `restore_on_retry` `0x001828` preserving `$FF0D76`/`$FF1A7E`/`MaxHP`, `HP = MaxHP`, `continue_count` `$FF0E3E += 1`, `30` invuln frames); add `tests/m16_77_continue_and_checkpoint_test.cpp`; qualify full 37-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
