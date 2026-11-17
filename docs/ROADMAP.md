@@ -1,3 +1,9 @@
+# M16.97 Incremental Row/Col VDP Plane Scroller (`0x0023CC..0x002630`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `VdpPlaneScrollState`, `stream_plane_column` (`0x0023CC..0x002510`, 29 tiles, `+40` cols ahead, `0x03E8` wrap guard), and `stream_plane_row` (`0x002512..0x002630`, 41 tiles, `+28` rows ahead) in `src/game/world/vdp_plane_scroll.hpp/.cpp`.
+- Qualified `oasis_m16_97_vdp_plane_scroll` and full 57-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.96 V-Int Sound Tick & HUD Slide (`0x002380..0x0023CA`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

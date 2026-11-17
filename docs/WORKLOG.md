@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.97: Incremental Row/Col VDP Plane Scroller)
+- **Concrete Task**: Implement `src/game/world/vdp_plane_scroll.hpp/.cpp` with `VdpPlaneScrollState` (ROM struct `a3` `0x08..0x24`), `stream_plane_column(...)` (`0x0023CC..0x002510`: `29` tiles/col, `+40` cols ahead / `0x0050` bytes, `0x03E8` single-wrap guard), and `stream_plane_row(...)` (`0x002512..0x002630`: `41` tiles/row, `+28` rows ahead / `0x0E00` bytes); add `tests/m16_97_vdp_plane_scroll_test.cpp`; qualify full 57-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/vdp_plane_scroll.hpp` / `src/game/world/vdp_plane_scroll.cpp`.
+  * Added `tests/m16_97_vdp_plane_scroll_test.cpp` (registered as `oasis_m16_97_vdp_plane_scroll` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 57/57 regression run.
+  * MSVC Debug (`build-debug`): 57/57 regression run.
+  * Remaining unknowns: Connecting `stream_plane_column` / `stream_plane_row` directly into the per-frame camera scroll loop of `StandaloneGameSimulation` is deferred to future scrolling-plane unification.
+
 # Worklog — 2026-11-17 (M16.96: V-Int Sound Tick & HUD Slide)
 - **Concrete Task**: Implement `src/game/ui/vint_hud_slide.hpp/.cpp` with `step_hud_slide_offset(offset, reverse_dir)` (`0x002380..0x0023CA`: step `2` px, `dir == 0` stops at `0x20` wrapping `>= 0x158 -> 0`, `dir != 0` stops at `0x138` wrapping `< 0 -> 0x158`) and `VintTailState` / `step_vint_tail()` (`0x060000` sound tick); add `tests/m16_96_vint_hud_slide_test.cpp`; qualify full 56-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/world/vdp_plane_scroll.hpp` / `src/game/world/vdp_plane_scroll.cpp`: Incremental row/col VDP plane scroller (`0x0023CC..0x002510` 29-tile column streamer & `0x002512..0x002630` 41-tile row streamer with dual source/VDP `64x32` wrap) (M16.97).
+- `tests/m16_97_vdp_plane_scroll_test.cpp`: Automated M16.97 test qualifying positive/negative column & row scroll deltas and source/VDP nametable wrap-around (M16.97).
 - `src/game/ui/vint_hud_slide.hpp` / `src/game/ui/vint_hud_slide.cpp`: V-Int tail sound driver tick (`0x060000`) and HUD slide offset state machine (`0x002380..0x0023CA`, `$FF1859`/`$FF185A`, stops `0x20`/`0x138`, wrap `0x158`) (M16.96).
 - `tests/m16_96_vint_hud_slide_test.cpp`: Automated M16.96 test qualifying constants, forward/reverse HUD slide stops and wraps, and `VintTailState` tick (M16.96).
 - `src/game/world/vdp_plane_blitter.hpp` / `src/game/world/vdp_plane_blitter.cpp`: Wrap-around VDP Plane A/B blitter (`0x00D800..0x00D94E`, `(64, 32)` vs `(41, 29)` selection and dual-modulo `64x32` nametable copy) (M16.95).

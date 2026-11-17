@@ -1,3 +1,14 @@
+# ADR-20261117-M16-97-VDP-PLANE-SCROLL — Incremental Row/Col VDP Plane Scroller
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.313 extracted the incremental column streamer (`0x0023CC..0x002510`, 29 tiles, `+40` ahead, `0x03E8` wrap guard) and row streamer (`0x002512..0x002630`, 41 tiles, `+28` ahead) operating on `64x32` VDP nametables (`0x1000` bytes).
+
+**Decisions:**
+1. **Dedicated `vdp_plane_scroll` Module:**
+   - Added `src/game/world/vdp_plane_scroll.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-96-VINT-HUD-SLIDE — V-Int Sound Tick & HUD Slide
 **Status:** Accepted
 **Date:** 2026-11-17

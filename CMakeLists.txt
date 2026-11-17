@@ -89,6 +89,7 @@ add_library(oasis_core
     src/game/world/terrain_probe_and_clamp.cpp
     src/game/world/room_layer_loader.cpp
     src/game/world/vdp_plane_blitter.cpp
+    src/game/world/vdp_plane_scroll.cpp
     src/game/world/tilemap_streamer.cpp
     src/game/world/town_scene_loader.cpp
     src/game/world/world_graph.cpp
