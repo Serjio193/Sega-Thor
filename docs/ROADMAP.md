@@ -1,3 +1,9 @@
+# M16.88 Terrain Probe LUT & 4-Side Room Boundary Clamp (`0x009D00..0x009DD5`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `kTerrainSurfaceLut16` (`0x0096E8`), `lookup_terrain_surface_effect`, `select_terrain_layer_desc` (`$FF1766`/`$FF1770`), and `clamp_entity_to_room_bounds` (`0x009D4E..0x009DD4`, `0x48` edge-wall flag) in `src/game/world/terrain_probe_and_clamp.hpp/.cpp`.
+- Qualified `oasis_m16_88_terrain_probe_and_clamp` and full 48-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.87 8-Direction Fixed-Point Velocity Vector & Cardinal Facing Kernel (`0x00E2D4..0x00E36E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

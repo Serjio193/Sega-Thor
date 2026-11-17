@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/world/terrain_probe_and_clamp.hpp` / `src/game/world/terrain_probe_and_clamp.cpp`: Terrain surface effect LUT (`0x0096E8`, `kTerrainSurfaceLut16`), layer descriptor selector (`$FF1766`/`$FF1770`), and 4-side room boundary clamp (`0x009D4E..0x009DD4`, `0x48` edge-wall flag) (M16.88).
+- `tests/m16_88_terrain_probe_and_clamp_test.cpp`: Automated M16.88 test qualifying all 16 LUT entries and 4-side + corner room boundary clamping (M16.88).
 - `src/game/entities/velocity_vector_math.hpp` / `src/game/entities/velocity_vector_math.cpp`: 8-direction 16.16 fixed-point velocity vector (`0x00E2D4`, `0.75` diagonal `(v >> 1) + (v >> 2)`) and cardinal facing resolver (`0x00E338`) (M16.87).
 - `tests/m16_87_velocity_vector_math_test.cpp`: Automated M16.87 test qualifying all 8 velocity directions, mod-8 wrapping, and cardinal facing tie-breaking (M16.87).
 - `src/game/entities/entity_struct_layout.hpp` / `src/game/entities/entity_struct_layout.cpp`: Universal entity constructor (`0x008D06`), pointer re-init (`0x008DA4`), and `0x03F2FA` 32-byte master descriptor decoder (`EntityDescriptor32`, `EntityConstructorState`, `0x5D`/`0x2C` clear words, `< $FF2954` `secondary_ai_ptr` gating) (M16.86).

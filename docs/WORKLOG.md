@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.88: Terrain Probe LUT & 4-Side Room Boundary Clamp)
+- **Concrete Task**: Implement `src/game/world/terrain_probe_and_clamp.hpp/.cpp` with `kTerrainSurfaceLut16` (`0x0096E8`: `{0xFF, 0, 2, 1, 4, 0xFF, 3, 0xFF, 6, 7, 0xFF, 0xFF, 5, 0xFF, 0xFF, 0xFF}`), `lookup_terrain_surface_effect(tile_byte)`, `select_terrain_layer_desc(alt_layer_bit7)` (`$FF1766`/`$FF1770`), `RoomClampResult`, and `clamp_entity_to_room_bounds(x, y, dx, dy, radius, room_tiles_w, room_tiles_h)` (`0x009D4E..0x009DD4`, `[0, tiles * 8 - 1]` +/- `radius`, `0x48` edge-wall flag); add `tests/m16_88_terrain_probe_and_clamp_test.cpp`; qualify full 48-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/terrain_probe_and_clamp.hpp` / `src/game/world/terrain_probe_and_clamp.cpp`.
+  * Added `tests/m16_88_terrain_probe_and_clamp_test.cpp` (registered as `oasis_m16_88_terrain_probe_and_clamp` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 48/48 regression run.
+  * MSVC Debug (`build-debug`): 48/48 regression run.
+  * Remaining unknowns: Full integration of `$70(a6)` surface effects (ice/conveyor/lava/water) into `EntityPhysics` is deferred to future world-physics integration.
+
 # Worklog — 2026-11-17 (M16.87: 8-Direction Fixed-Point Velocity Vector & Cardinal Facing Kernel)
 - **Concrete Task**: Implement `src/game/entities/velocity_vector_math.hpp/.cpp` with `VelocityFixed16_16`, `compute_8dir_velocity(speed_x, speed_y, direction)` (`0x00E2D4`: `(sx << 8, sy << 8)`, N/E/S/W full speed, NE/SE/SW/NW scaled by `(v >> 1) + (v >> 2)` = `0.75`), and `compute_cardinal_facing(vx, vy)` (`0x00E338`: `|vx| <= |vy| -> vy < 0 ? 0 : 2`; else `vx < 0 ? 3 : 1`); add `tests/m16_87_velocity_vector_math_test.cpp`; qualify full 47-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

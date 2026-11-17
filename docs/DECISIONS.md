@@ -1,3 +1,14 @@
+# ADR-20261117-M16-88-TERRAIN-PROBE-AND-CLAMP — Terrain Probe LUT & 4-Side Room Boundary Clamp
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.304 extracted the terrain surface probe (`0x009D00`, LUT `0x0096E8`, `$FF1766`/`$FF1770` layer selector) and 4-side room boundary clamp (`0x009D4E..0x009DD4`, `[0, tiles * 8 - 1]` +/- `radius`, `0x48` edge-wall flag).
+
+**Decisions:**
+1. **Dedicated `terrain_probe_and_clamp` Module:**
+   - Added `src/game/world/terrain_probe_and_clamp.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-87-VELOCITY-VECTOR-MATH — 8-Direction Fixed-Point Velocity Vector & Cardinal Facing Kernel
 **Status:** Accepted
 **Date:** 2026-11-17
