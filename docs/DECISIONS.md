@@ -1,3 +1,14 @@
+# ADR-20261117-M16-80-VINT-DMA-INPUT-RING — V-Int LIFO DMA Queue & 64-Frame Input History Ring (0x001F76..0x002218)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.296 extracted V-Int's LIFO DMA queue (`0x002112`, `$FF164E` bit 1), 64-frame reverse-indexed input history ring (`0x0021B2`, `$FF1668`, `0xE0000202` soft-reset), and frame/countdown timers (`0x0021EC`).
+
+**Decisions:**
+1. **Dedicated `vint_dma_and_input_ring` Module:**
+   - Added `src/game/video/vint_dma_and_input_ring.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-79-PALETTE-FADE — CRAM Palette Fade Engine (0x002D58..0x00302D)
 **Status:** Accepted
 **Date:** 2026-11-17

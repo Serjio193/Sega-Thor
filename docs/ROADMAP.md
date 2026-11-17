@@ -1,3 +1,9 @@
+# M16.80 V-Int LIFO DMA Queue & 64-Frame Input History Ring (0x001F76..0x002218) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `VdpDmaQueue` (LIFO flush gated by `$FF164E` bit 1), `InputHistoryRing64` (`$FF1668` 64-word reverse-indexed ring, `count <= 0x3F`, `frames_ago`, `0xE0000202` soft-reset combo), and `VintFrameTimers` (`$FF1656`/`$FF1658`/`$FF1654`) in `src/game/video/vint_dma_and_input_ring.hpp/.cpp`.
+- Qualified `oasis_m16_80_vint_dma_and_input_ring` and full 40-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.79 CRAM Palette Fade Engine (0x002D58..0x00302D) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

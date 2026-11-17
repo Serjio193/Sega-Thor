@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/video/vint_dma_and_input_ring.hpp` / `src/game/video/vint_dma_and_input_ring.cpp`: V-Int LIFO DMA queue (`0x002112`, `$FF164E` bit 1), 64-frame input history ring (`0x0021B2`, `$FF1668`, `0xE0000202` soft-reset), and V-Int frame/countdown timers (`0x0021EC`) (M16.80).
+- `tests/m16_80_vint_dma_and_input_ring_test.cpp`: Automated M16.80 test qualifying LIFO DMA flush, 64-frame input ring wrap/clamp, soft-reset combo, and frame timers (M16.80).
 - `src/game/video/palette_fade.hpp` / `src/game/video/palette_fade.cpp`: CRAM Palette Fade Engine (`0x002D58..0x00302D`), `scale_bgr333_color` (`0x002FDA`), 64-entry `$FF134C`/`$FF18A6` fade-in/fade-out, and `$FF164D` CRAM DMA / unblank flags (M16.79).
 - `tests/m16_79_palette_fade_test.cpp`: Automated M16.79 test qualifying `0x0EEE` BGR333 ramp, fade-in delay/unblank, and fade-out backup restoration (M16.79).
 - `src/game/audio/sound_test_ost.hpp` / `src/game/audio/sound_test_ost.cpp`: Secret Sound Test (`0x03E7F4..0x03F047`), 34-track Yuzo Koshiro named OST registry (`0x03ED7E`), and `SoundTestMenuState` (`BGM`/`SFX`/`PCM`/`EXIT`) (M16.78).

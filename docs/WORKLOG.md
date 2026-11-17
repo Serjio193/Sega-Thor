@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.80: V-Int LIFO DMA Queue & 64-Frame Input History Ring)
+- **Concrete Task**: Implement `src/game/video/vint_dma_and_input_ring.hpp/.cpp` with `VdpDmaEntry` / `VdpDmaQueue` (LIFO flush from tail down to base `$FF10B4` gated by `$FF164E` bit 1), `InputHistoryRing64` (`$FF1668` 64-word ring, `(index - 2) & 0x7E`, `count` clamped to `0x3F`, `frames_ago(0..63)`, `is_soft_reset_combo` `0xE0000202`), and `VintFrameTimers` (`$FF1656 += 1`, `$FF1658`/`$FF1654` countdown); add `tests/m16_80_vint_dma_and_input_ring_test.cpp`; qualify full 40-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/video/vint_dma_and_input_ring.hpp` / `src/game/video/vint_dma_and_input_ring.cpp`.
+  * Added `tests/m16_80_vint_dma_and_input_ring_test.cpp` (registered as `oasis_m16_80_vint_dma_and_input_ring` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 40/40 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_80`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 40/40 regression run.
+  * Remaining unknowns: Wiring `InputHistoryRing64` into command-move / combo detection and `VdpDmaQueue` into live VDP hardware DMA is deferred to future gameplay/VDP integration.
+
 # Worklog — 2026-11-17 (M16.79: CRAM Palette Fade Engine)
 - **Concrete Task**: Implement `src/game/video/palette_fade.hpp/.cpp` with `scale_bgr333_color(color, step)` (`0x002FDA`: `r/g/b` `/ 7` & nibble masks `0x00E/0x0E0/0xE00`) and `PaletteFadeEngine` (64-entry CRAM shadow `$FF134C` & backup `$FF18A6`, `start_fade_in(delay)` steps `0..7` + unblank `$FF164D` bit 1, `start_fade_out(delay)` steps `7..0` + backup restore, `step_frame()` `delay + 1` frames/step + CRAM DMA dirty `$FF164D` bit 0); add `tests/m16_79_palette_fade_test.cpp`; qualify full 39-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
