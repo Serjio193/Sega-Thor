@@ -1,3 +1,14 @@
+# ADR-20261117-M16-120-AI-STEERING-GRAVITY — Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.336 extracted `0x00E398..0x00E520`: `facing_and_manhattan_to_player`, `steer_4way_toward_player`, `aim_fixed_point_vector`, `launch_knockback_arc`, and `step_z_gravity`.
+
+**Decisions:**
+1. **Dedicated `ai_steering_gravity` Module:**
+   - Added `src/game/entities/ai_steering_gravity.hpp/.cpp` reusing `compute_8dir_velocity` and `compute_cardinal_facing` from `velocity_vector_math.hpp`.
+
 # ADR-20261117-M16-119-SPRITE-DMA-THROTTLE — Entity Sprite-DMA Budget Throttle & Frame Lookup
 **Status:** Accepted
 **Date:** 2026-11-17

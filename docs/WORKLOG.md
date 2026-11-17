@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.120: Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics)
+- **Concrete Task**: Implement `src/game/entities/ai_steering_gravity.hpp/.cpp` with `facing_and_manhattan_to_player(...)` (`0x00E398..0x00E3E6`), `steer_4way_toward_player(...)` (`0x00E3E8..0x00E45C`: `max(16, max(|dx|, |dy|))` chase timer), `aim_fixed_point_vector(...)` (`0x00E45E..0x00E4CE`: 16.16 normalized `2.0 px/frame` major-axis step), `launch_knockback_arc(...)` (`0x00E4D0..0x00E500`: `0x300`/`0x2E0` XY + `0x00060000` Z), and `step_z_gravity(...)` (`0x00E502..0x00E520`: `vz -= 0x0000C000`, skips exact `0` via `-1`, lands at `z < 0`), reusing `velocity_vector_math.hpp`; add `tests/m16_120_ai_steering_gravity_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/entities/ai_steering_gravity.hpp` / `src/game/entities/ai_steering_gravity.cpp`.
+  * Added `tests/m16_120_ai_steering_gravity_test.cpp` (registered as `oasis_m16_120_ai_steering_gravity` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `101/101` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `101/101` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `steer_4way_toward_player()`, `aim_fixed_point_vector()`, and `step_z_gravity()` directly into enemy AI controllers in `StandaloneGameSimulation` is deferred to future AI-physics unification.
+
 # Worklog — 2026-11-17 (M16.119: Entity Sprite-DMA Budget Throttle & Frame Lookup)
 - **Concrete Task**: Implement `src/game/video/sprite_dma_throttle.hpp/.cpp` with `select_entity_frame_with_dma_budget(facing, anim_frame, cached_frame, dma_cost, dma_budget)` (`0x00A9AE..0x00A9F8`: facing `3` -> `1`, throttles back to `cached_frame` and sets `$FF1651 = 0xFF` when `cached_frame >= 0 && dma_cost > dma_budget`) and `should_draw_entity_shadow(z, flags_36)` (`0x00AA78..0x00AAA5`: `!(flags_36 & 8) && (z > 0 || (z == 0 && (flags_36 & 4)))`); add `tests/m16_119_sprite_dma_throttle_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

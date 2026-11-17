@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/entities/ai_steering_gravity.hpp` / `src/game/entities/ai_steering_gravity.cpp`: Enemy AI steering (`0x00E398..0x00E45C`), 16.16 normalized `2.0 px/frame` aim (`0x00E45E..0x00E4CE`), knockback launch (`0x00E4D0..0x00E500`), and Z-gravity (`0x00E502..0x00E520`), reusing `velocity_vector_math.hpp` (M16.120).
+- `tests/m16_120_ai_steering_gravity_test.cpp`: Automated M16.120 test qualifying Manhattan/4-way steering, 16.16 aim vector, knockback launch, and Z-gravity `0 -> -1` skip & landing (M16.120).
 - `src/game/video/sprite_dma_throttle.hpp` / `src/game/video/sprite_dma_throttle.cpp`: Entity sprite-DMA budget throttle (`0x00A9AE..0x00A9F8`, facing `3` -> `1`, `$FF1651 = 0xFF` throttle) and shadow visibility (`0x00AA78..0x00AAA5`) (M16.119).
 - `tests/m16_119_sprite_dma_throttle_test.cpp`: Automated M16.119 test qualifying uncached force-DMA, over-budget throttling, facing-3 mirror mapping, and shadow visibility (M16.119).
 - `src/game/ui/hud_sat_emitter.hpp` / `src/game/ui/hud_sat_emitter.cpp`: HUD frame SAT & item-toast DMA emitter (`0x00A342..0x00A436`: 6 primary HUD sprites, 3 enemy-gauge sprites mirrored at `0x0158 - slide_x`, 3x3 toast sprite `0x85C7`, 80-sprite cap, and `0x90`-word DMA from `0x000AAEBB + item_id * 0x90` to `0xB8E0`) (M16.118).

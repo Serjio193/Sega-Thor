@@ -1,3 +1,9 @@
+# M16.120 Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics (`0x00E398..0x00E520`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `facing_and_manhattan_to_player`, `steer_4way_toward_player`, `aim_fixed_point_vector` (16.16 `2.0 px/frame`), `launch_knockback_arc` (`0x300`/`0x2E0`/`0x00060000`), and `step_z_gravity` (`0x0000C000` gravity, `0 -> -1` skip, `z < 0` land) in `src/game/entities/ai_steering_gravity.hpp/.cpp` (reusing `velocity_vector_math.hpp`).
+- Qualified `oasis_m16_120_ai_steering_gravity` and the 101-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.119 Entity Sprite-DMA Budget Throttle & Frame Lookup (`0x00A9A0..0x00AAA5`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
