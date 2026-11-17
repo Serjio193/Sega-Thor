@@ -1,3 +1,14 @@
+# ADR-20261117-M16-107-PLAYER-TILE-BOX — Player Tile-Box Containment & Overlap Checks
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.323 extracted `0x00C17A..0x00C220`: `player_inside_tile_box` (`0x00C17A..0x00C1CC`) and `player_overlaps_tile_box` (`0x00C1CE..0x00C220`) using `8px` tile shift and `+7px` inclusive tile max bias (`0x00070007`).
+
+**Decisions:**
+1. **Dedicated `player_tile_box` Module:**
+   - Added `src/game/world/player_tile_box.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-106-MENU-SPRITE-DMA — Inventory/Menu Sprite & Font DMA Strip Emitter
 **Status:** Accepted
 **Date:** 2026-11-17

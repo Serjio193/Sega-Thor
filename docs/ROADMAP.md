@@ -1,3 +1,9 @@
+# M16.107 Player Tile-Box Containment & Overlap Checks (`0x00C17A..0x00C220`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `player_inside_tile_box` (`0x00C17A..0x00C1CC`) and `player_overlaps_tile_box` (`0x00C1CE..0x00C220`) using `8px` tile shift and `+7px` inclusive tile max bias (`0x00070007`) in `src/game/world/player_tile_box.hpp/.cpp`.
+- Qualified `oasis_m16_107_player_tile_box` and the 88-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.106 Inventory/Menu Sprite & Font DMA Strip Emitter (`0x004000..0x00417A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

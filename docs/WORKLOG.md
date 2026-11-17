@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.107: Player Tile-Box Containment & Overlap Checks)
+- **Concrete Task**: Implement `src/game/world/player_tile_box.hpp/.cpp` with `player_inside_tile_box(px, py, half_extent, tx1, ty1, tx2, ty2)` (`0x00C17A..0x00C1CC`) and `player_overlaps_tile_box(px, py, half_extent, tx1, ty1, tx2, ty2)` (`0x00C1CE..0x00C220`) using `8px` tile shift (`kTileShift = 3`) and `+7px` inclusive tile max bias (`0x00070007`); add `tests/m16_107_player_tile_box_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/player_tile_box.hpp` / `src/game/world/player_tile_box.cpp`.
+  * Added `tests/m16_107_player_tile_box_test.cpp` (registered as `oasis_m16_107_player_tile_box` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `88/88` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `88/88` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `player_inside_tile_box()` / `player_overlaps_tile_box()` into room trigger/event zones inside `StandaloneGameSimulation` is deferred to future world-trigger unification.
+
 # Worklog — 2026-11-17 (M16.106: Inventory/Menu Sprite & Font DMA Strip Emitter)
 - **Concrete Task**: Implement `src/game/ui/menu_sprite_dma.hpp/.cpp` with the 16-byte sprite-tile-count LUT `kSpriteTileCountLut16` (`0x0040CE`: `{1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16}`), `remap_menu_ascii(ch)` (`0x2B..0x2F` -> `+0x30`), `append_menu_sat_sprite()` (`0x004066..0x0040A4`: `+0x80` bias, 80-sprite cap), `emit_item_and_digit_pair()` (`0x004026..0x00405C`: `0x86DD` icon + `0x85D0 + min(qty, 9)` digit at `Y + 16`), and `emit_font_strip_plan()` (`0x0040E2..0x004156`: `<= 4`-tile horizontal SAT chunks + 16-word glyph DMA descriptors from `0x152F5A` / `0x15375A`); add `tests/m16_106_menu_sprite_dma_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
