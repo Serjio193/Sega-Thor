@@ -1,0 +1,113 @@
+{
+  "subsystem": "ROM Master Entity SAT Sprite Compositor, Screen Clipping & Dynamic Shadow Blitter",
+  "milestone": "M15.415",
+  "rom_range": {
+    "start": "0x00A9A0",
+    "end": "0x00AD76",
+    "size_bytes": 982,
+    "sha256": "6da5db62165ef796b301e97ba763db217d7796faa01f9010cff1a0d641b11b6b"
+  },
+  "embedded_tables": {
+    "shadow_table": {
+      "address": "0x00ACFE",
+      "entries": [
+        {
+          "index": 0,
+          "rom_offset": "0x00ACFE",
+          "y_offset": 3,
+          "sprite_size": "0x0000",
+          "tile_index": "0x0548",
+          "x_offset": 3
+        },
+        {
+          "index": 1,
+          "rom_offset": "0x00AD06",
+          "y_offset": 3,
+          "sprite_size": "0x0400",
+          "tile_index": "0x0549",
+          "x_offset": 8
+        },
+        {
+          "index": 2,
+          "rom_offset": "0x00AD0E",
+          "y_offset": 3,
+          "sprite_size": "0x0800",
+          "tile_index": "0x054B",
+          "x_offset": 11
+        },
+        {
+          "index": 3,
+          "rom_offset": "0x00AD16",
+          "y_offset": 8,
+          "sprite_size": "0x0D00",
+          "tile_index": "0x054E",
+          "x_offset": 16
+        }
+      ]
+    },
+    "tile_count_table_4x4": {
+      "address": "0x00AD56",
+      "grid_w_by_h": [
+        [
+          1,
+          2,
+          3,
+          4
+        ],
+        [
+          2,
+          4,
+          6,
+          8
+        ],
+        [
+          3,
+          6,
+          9,
+          12
+        ],
+        [
+          4,
+          8,
+          12,
+          16
+        ]
+      ]
+    }
+  },
+  "registers_and_offsets": {
+    "entity": {
+      "frame_mode": "0x06",
+      "world_x": "0x08",
+      "world_y": "0x0C",
+      "elevation_z": "0x10",
+      "status_code": "0x16",
+      "screen_mode_flags": "0x17",
+      "vram_tile_base": "0x18",
+      "frame_table_ptr": "0x1A",
+      "graphic_src_ptr": "0x1E",
+      "frame_counter": "0x32",
+      "cached_frame": "0x34",
+      "flags": "0x36",
+      "dynamic_render_mode": "0x39",
+      "shadow_preset": "0x3D",
+      "flash_palette_counter": "0x3E",
+      "priority_depth": "0x4C",
+      "secondary_anim_ptr": "0x5E"
+    },
+    "global_ram": {
+      "cache_invalidate_flag": "0xFF1651",
+      "remaining_tile_quota": "0xFF1652",
+      "camera_active_flag": "0xFF16F0",
+      "camera_plane_a": "0xFF1716",
+      "camera_plane_b": "0xFF173E",
+      "sat_buffer_base": "0xFF13CC",
+      "sat_buffer_offset": "0xFF188C",
+      "sat_sprite_count": "0xFF188A",
+      "dma_queue_ptr": "0xFF1892",
+      "shadow_suppress_flag": "0xFF1927",
+      "cached_secondary_header": "0xFF1946",
+      "subpixel_jitter": "0xFF1971"
+    }
+  }
+}

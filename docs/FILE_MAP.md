@@ -1,3 +1,9 @@
+# M15.415 ROM Master Entity SAT Sprite Compositor, Screen Clipping & Dynamic Shadow Blitter
+- `tools/extract_rom_master_sat_compositor.py` — extractor for `0x00A9A0..0x00AD76` (master entity SAT sprite compositor, frame cache validation, VRAM quota check, viewport clipping `0x60..0x160`/`0x60..0x1C0`, 4x4 tile count table `0x00AD56`, and dynamic shadow generator `0x00ACFE`).
+- `tests/rom_master_sat_compositor_test.py` — `6` unit tests verifying ROM constants, frame caching, camera coordinate projection, viewport clipping, 4x4 tile count table, and shadow generator presets.
+- `data/thor-evidence/rom_master_sat_compositor_m15_415.json` — extracted M15.415 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_415_MASTER_SAT_COMPOSITOR_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.414 ROM Demo Mode Overlay SAT Compositor & Camera Particle Spark Generator
 - `tools/extract_rom_demo_hud_spark_generator.py` — extractor for `0x00A7E6..0x00A9A0` (demo mode overlay SAT compositor, DMA queue to VRAM `$F360`, and camera-relative particle spark sprite generator).
 - `tests/rom_demo_hud_spark_generator_test.py` — `6` unit tests verifying ROM constants, demo overlay mode selection, DMA transfers, spark lifetime expiration, and screen clipping.

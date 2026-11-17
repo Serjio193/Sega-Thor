@@ -1,3 +1,6 @@
+# M15.415 ROM Master Entity SAT Sprite Compositor, Screen Clipping & Dynamic Shadow Blitter (`0x00A9A0`..`0x00AD76`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_master_sat_compositor.py`, `tests/rom_master_sat_compositor_test.py` (`6/6 PASS`), `data/thor-evidence/rom_master_sat_compositor_m15_415.json`, and `docs/handoffs/STANDALONE_M15_415_MASTER_SAT_COMPOSITOR_HANDOFF.md`.
+
 # M15.414 ROM Demo Mode Overlay SAT Compositor & Camera Particle Spark Generator (`0x00A7E6`..`0x00A9A0`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_demo_hud_spark_generator.py`, `tests/rom_demo_hud_spark_generator_test.py` (`6/6 PASS`), `data/thor-evidence/rom_demo_hud_spark_generator_m15_414.json`, and `docs/handoffs/STANDALONE_M15_414_DEMO_HUD_SPARK_GENERATOR_HANDOFF.md`.
 
