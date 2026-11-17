@@ -1,3 +1,9 @@
+# M15.401 ROM Horizontal Tilemap Wall Collision, Surface Height Step & Ledge Drop Detector
+- `tools/extract_rom_horizontal_wall_probe.py` — extractor for `0x00938E..0x0094D2` (horizontal tile solid probe, surface elevation deltas, ledge drop capability & elevation table `$FF1706`, column solidity scanner).
+- `tests/rom_horizontal_wall_probe_test.py` — `5` unit tests verifying ROM constants, intangible pass-through, steep wall collision, void collision, and ledge drop triggers.
+- `data/thor-evidence/rom_horizontal_wall_probe_m15_401.json` — extracted M15.401 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_401_HORIZONTAL_WALL_PROBE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.400 ROM Vertical (±Y) Tilemap Raycaster, Collision Sweep & Entity Return Dispatcher
 - `tools/extract_rom_vertical_raycaster.py` — extractor for `0x0091F6..0x00938E` (positive/negative Y raycaster, subpixel Y integration, 8-px row step distances, boundary/entity clamps, and recovery return vector `$FF193C`).
 - `tests/rom_vertical_raycaster_test.py` — `5` unit tests verifying ROM constants, LUT mappings, tile row distances, and vertical raycasting sweeps.

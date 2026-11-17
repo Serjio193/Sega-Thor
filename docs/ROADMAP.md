@@ -1,3 +1,6 @@
+# M15.401 ROM Horizontal Tilemap Wall Collision, Surface Height Step & Ledge Drop Detector (`0x00938E`..`0x0094D2`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_horizontal_wall_probe.py`, `tests/rom_horizontal_wall_probe_test.py` (`5/5 PASS`), `data/thor-evidence/rom_horizontal_wall_probe_m15_401.json`, and `docs/handoffs/STANDALONE_M15_401_HORIZONTAL_WALL_PROBE_HANDOFF.md`.
+
 # M15.400 ROM Vertical (±Y) Tilemap Raycaster, Collision Sweep & Entity Return Dispatcher (`0x0091F6`..`0x00938E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_vertical_raycaster.py`, `tests/rom_vertical_raycaster_test.py` (`5/5 PASS`), `data/thor-evidence/rom_vertical_raycaster_m15_400.json`, and `docs/handoffs/STANDALONE_M15_400_VERTICAL_RAYCASTER_HANDOFF.md`.
 
