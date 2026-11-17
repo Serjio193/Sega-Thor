@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/dialogue_sat_builder.hpp` / `src/game/ui/dialogue_sat_builder.cpp`: Dialogue cursor & 4x8 border SAT builder (`0x00C756..0x00C84C`, `0x86DC`/`0x96DC` blinking cursor, `0x0C00` border bars, `80`-sprite cap) (M16.101).
+- `tests/m16_101_dialogue_sat_builder_test.cpp`: Automated M16.101 test qualifying cursor blinking/choice positioning, 8-sprite bar emission, and 80-sprite SAT cap (M16.101).
 - `src/game/world/room_area_loader.hpp` / `src/game/world/room_area_loader.cpp`: Room & area transition loader (`0x00C8AA..0x00C96B`, 16-entry Area Table, `resolve_room_header_addr`, `transition_room_flags`) (M16.100).
 - `tests/m16_100_room_area_loader_test.cpp`: Automated M16.100 test qualifying the 16 area pointers, `entry + int16_be` header resolution, same/cross-area flag clearing, and `0x001B` ROM parity (M16.100).
 - `src/game/video/vdp_dma_exec.hpp` / `src/game/video/vdp_dma_exec.cpp`: Z80-safe VDP DMA command word serializer (`0x0027FC..0x002896`: regs `0x94..0x97` + VRAM command) and HUD portrait DMA descriptor builder (`0x002632..0x002678`, `0x000AA3EC + portrait * 0x60` -> `0xF1C0`, `0x60` words) (M16.99).

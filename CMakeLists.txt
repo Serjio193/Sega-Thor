@@ -52,6 +52,7 @@ add_library(oasis_core
     src/game/ui/continue_and_checkpoint.cpp
     src/game/ui/hud_gauge_bars.cpp
     src/game/ui/vint_hud_slide.cpp
+    src/game/ui/dialogue_sat_builder.cpp
     src/game/video/palette_fade.cpp
     src/game/video/vdp_clear_and_palette_cycle.cpp
     src/game/video/vdp_dma_exec.cpp

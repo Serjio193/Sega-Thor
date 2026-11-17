@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.101: Dialogue Cursor & Border SAT Builder)
+- **Concrete Task**: Implement `src/game/ui/dialogue_sat_builder.hpp/.cpp` with `DialogueSatEntry`, `DialogueSatInput`, `append_dialogue_sat_entry()` (`0x00C838..0x00C84C`, 80-sprite cap), `emit_8_sprite_bar()` (`0x00C81C..0x00C836`: `X=0x00A0 + 0x20*i`, `Y=bar_y + 0x0110`, `0x0C00` link base, `tile += 4`), and `build_dialogue_sat()` (`0x00C756..0x00C81A`: blinking cursor `0x86DC`/`0x96DC` at `X=0x011C`, `Y=0x014C - 12*(3 - min(choice,3))`); add `tests/m16_101_dialogue_sat_builder_test.cpp`; qualify full 61-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/dialogue_sat_builder.hpp` / `src/game/ui/dialogue_sat_builder.cpp`.
+  * Added `tests/m16_101_dialogue_sat_builder_test.cpp` (registered as `oasis_m16_101_dialogue_sat_builder` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 61/61 regression run.
+  * MSVC Debug (`build-debug`): 61/61 regression run.
+  * Remaining unknowns: Wiring `build_dialogue_sat()` directly into `DialogueWindow` live SAT frame emission is deferred to future dialogue-UI unification.
+
 # Worklog — 2026-11-17 (M16.100: Room & Area Transition Loader)
 - **Concrete Task**: Implement `src/game/world/room_area_loader.hpp/.cpp` with the 16-entry Area Pointer Table (`0x00C92C..0x00C96B`), `resolve_room_header_addr(rom, area_ptrs, room_id)` (`0x00C90E..0x00C92A`: `entry_addr + int16_be`), and `transition_room_flags(state, new_room_id)` (`0x00C8AA..0x00C90C`: 16B `$FF0E2C` room flags, 16B `$FF0E1C` area flags + 3B `$FF0DB3` extra, `$FF0E40`); add `tests/m16_100_room_area_loader_test.cpp`; qualify full 60-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

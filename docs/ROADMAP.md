@@ -1,3 +1,9 @@
+# M16.101 Dialogue Cursor & Border SAT Builder (`0x00C756..0x00C84C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `DialogueSatEntry`, `DialogueSatInput`, `append_dialogue_sat_entry`, `emit_8_sprite_bar`, and `build_dialogue_sat` (`0x86DC`/`0x96DC` blinking cursor, 4x8 border bars, 80-sprite SAT cap) in `src/game/ui/dialogue_sat_builder.hpp/.cpp`.
+- Qualified `oasis_m16_101_dialogue_sat_builder` and full 61-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.100 Room & Area Transition Loader (`0x00C8AA..0x00C96B`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-101-DIALOGUE-SAT-BUILDER — Dialogue Cursor & Border SAT Builder
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.317 extracted the dialogue choice cursor (`0x86DC`/`0x96DC` at `X=0x011C`, `Y=0x014C - 12*(3 - min(choice,3))`) and 4x8 border bar SAT emitter (`0x00C756..0x00C84C`, 80-sprite cap).
+
+**Decisions:**
+1. **Dedicated `dialogue_sat_builder` Module:**
+   - Added `src/game/ui/dialogue_sat_builder.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-100-ROOM-AREA-LOADER — Room & Area Transition Loader
 **Status:** Accepted
 **Date:** 2026-11-17
