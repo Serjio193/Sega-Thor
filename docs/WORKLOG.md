@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.345: ROM PROJECTILE HIT KNOCKBACK, ENEMY GAUGE TIMER & GRAVITY (`0x00EB40`..`0x00EC58`) — `10f` Stun, `90f` Gauge, `0x00006000` Gravity; Extractor (`tools/extract_rom_projectile_hit_knockback.py` <= 500 lines), Tests (`tests/rom_projectile_hit_knockback_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_345_PROJECTILE_HIT_KNOCKBACK_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00EB40..0x00EC58` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_projectile_hit_knockback.py`, `python -m unittest tests/rom_projectile_hit_knockback_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.345, check M16.115 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.344: ROM DEATH EXPLOSION BURST, LATCH FOLLOW & PROJECTILE PROBE (`0x00EA04`..`0x00EB40`) — `±16px` Burst, `0xB4`/`0xB8` Latch, `±6px` `0x00700378`; Extractor (`tools/extract_rom_projectile_latch_burst.py` <= 500 lines), Tests (`tests/rom_projectile_latch_burst_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_344_PROJECTILE_LATCH_BURST_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00EA04..0x00EB40` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_projectile_latch_burst.py`, `python -m unittest tests/rom_projectile_latch_burst_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

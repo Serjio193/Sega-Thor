@@ -1,3 +1,9 @@
+# M15.345 ROM Projectile Hit Knockback, Enemy Gauge Timer & Gravity
+- `tools/extract_rom_projectile_hit_knockback.py` — ROM extractor & verifier for `0x00EB40..0x00EC58` (`10f` stun, `0x400`/`0x3C0` & `0x200`/`0x1E0` KB, `90f` enemy gauge `$FF184F`, `0x00006000` Z-gravity, `10px` cull).
+- `tests/rom_projectile_hit_knockback_test.py` — Unit tests verifying projectile Z-gravity and ground clamp.
+- `data/thor-evidence/rom_projectile_hit_knockback_m15_345.json` — Verified evidence JSON for M15.345.
+- `docs/handoffs/STANDALONE_M15_345_PROJECTILE_HIT_KNOCKBACK_HANDOFF.md` — C++20 Standalone handoff for M16.129.
+
 # M15.344 ROM Death Explosion Burst, Latch Follow & Projectile Probe
 - `tools/extract_rom_projectile_latch_burst.py` — ROM extractor & verifier for `0x00EA04..0x00EB40` (`0x1F/-16` burst jitter, `0xB4`/`0xB8` carried latch follow, `0x00700378` bounce SFX, `±6px` `0x00B922` projectile probe).
 - `tests/rom_projectile_latch_burst_test.py` — Unit tests verifying death burst jitter and carried latch follow.

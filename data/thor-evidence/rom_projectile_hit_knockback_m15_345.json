@@ -1,0 +1,26 @@
+{
+  "milestone": "M15.345",
+  "title": "ROM Projectile Hit Knockback, Enemy Gauge Timer & Gravity",
+  "routine": {
+    "start": "0x00EB40",
+    "end": "0x00EC58"
+  },
+  "constants": {
+    "target_hit_stun_frames": 10,
+    "kb_normal_speed_xy": [
+      "0x0400",
+      "0x03C0"
+    ],
+    "kb_light_speed_xy": [
+      "0x0200",
+      "0x01E0"
+    ],
+    "kb_z_vel_16_16": "0x00020000",
+    "enemy_gauge_timer_frames": 90,
+    "projectile_hit_sfx": "0x00800210",
+    "projectile_gravity_16_16": "0x00006000",
+    "projectile_cull_margin_px": 10,
+    "latch_hit_timer_frames": 8,
+    "drop_timer_frames": 5
+  }
+}

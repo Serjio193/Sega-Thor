@@ -1,3 +1,8 @@
+# ADR-20261117-M15-345-PROJECTILE-HIT-KNOCKBACK — Projectile Hit Knockback, Enemy Gauge Timer & Gravity (`0x00EB40`..`0x00EC58`)
+- **Context:** Projectile hits (`0x00EB40`) inflict `10f` stun (`0x83`), `(0x400, 0x3C0)`/`(0x200, 0x1E0)` knockback + `vz = 0x00020000`, trigger the `90f` enemy HP gauge (`$FF184F`) for Ali attacks, play `0x00800210`, and step projectile flight with `0x00006000` gravity & `10px` cull margin.
+- **Decision:** Extracted all physics and HUD constants into `data/thor-evidence/rom_projectile_hit_knockback_m15_345.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.129 can implement projectile flight, knockback, and enemy HP gauge activation.
+
 # ADR-20261117-M15-344-PROJECTILE-LATCH-BURST — Death Explosion Burst, Latch Follow & Projectile Probe (`0x00EA04`..`0x00EB40`)
 - **Context:** `0x00EA04..0x00EB40` implements death explosion jitter (`(prng & 0x1F) - 16`, `0x0090021B`/`0x00600382`), carried/latched entity tracking (`0xB4` parent + `0xAE..0xB2` offset, `0xB8` timer), and projectile `±6px` hitbox & wall-bounce (`0x00700378`).
 - **Decision:** Extracted all offsets, jitter bounds, and SFX constants into `data/thor-evidence/rom_projectile_latch_burst_m15_344.json` with 2/2 passing tests and Standalone handoff.
