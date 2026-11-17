@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.115: In-Game Save Prompt & Save-Allowed Guard)
+- **Concrete Task**: Implement `src/game/ui/save_prompt.hpp/.cpp` with `can_open_save_prompt(...)` (`0x005488..0x0054C6`: `$FF1996 == 0`, `$FF17C1 == 0`, `$FF19EC <= 2`, and `room_save_allowed || debug_override`, error SFX `0x00A00253`) and `step_save_prompt(choice, joypad)` (`0x0054E2..0x00555E`: `3=YES`, `4=NO`, Up/Down toggle SFX `0x006003A5`, A on YES confirm SFX `0x00A003AA`, cancel SFX `0x00A00347`); add `tests/m16_115_save_prompt_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/save_prompt.hpp` / `src/game/ui/save_prompt.cpp`.
+  * Added `tests/m16_115_save_prompt_test.cpp` (registered as `oasis_m16_115_save_prompt` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `96/96` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `96/96` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `can_open_save_prompt()` and `step_save_prompt()` directly into `StandaloneGameSimulation` pause/save-shrine flow and SRAM save (`0x001726`) is deferred to future menu-UI unification.
+
 # Worklog — 2026-11-17 (M16.114: Consumable Item Validation & HP/SP/Spirit Restore)
 - **Concrete Task**: Implement `src/game/player/consumable_effects.hpp/.cpp` with `can_use_consumable(...)` (`0x005236..0x00530A`: Area `0x10` block, Spirit Gems `0x1A..0x1D`, HP Foods `0x1E..0x21`, SP Foods `0x22..0x25`, Elixirs `0x26..0x2A`) and `apply_consumable_effect(...)` (`0x00530C..0x005472`: 25%/50%/75%/100% HP/SP restore tiers clamped to Max, Spirit Gem SP refill + summon trigger, heal SFX `0x00A00234`), delegating to `oasis::game::items`; add `tests/m16_114_consumable_effects_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

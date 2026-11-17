@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/save_prompt.hpp` / `src/game/ui/save_prompt.cpp`: In-game save prompt & save-allowed guard (`0x005472..0x005578`, `can_open_save_prompt`, `step_save_prompt` `3=YES`/`4=NO`, toggle `0x006003A5`, confirm `0x00A003AA`, cancel `0x00A00347`, error `0x00A00253`) (M16.115).
+- `tests/m16_115_save_prompt_test.cpp`: Automated M16.115 test qualifying the save-allowed guard and YES/NO prompt state machine (M16.115).
 - `src/game/player/consumable_effects.hpp` / `src/game/player/consumable_effects.cpp`: Player-facing consumable item validation (`0x005236..0x00530A`) and HP/SP/Spirit restore (`0x00530C..0x005472`) delegating to `oasis::game::items` (M16.114).
 - `tests/m16_114_consumable_effects_test.cpp`: Automated M16.114 test qualifying Area `0x10` block, Spirit Gem unlock/SP/active checks, and 25%/50%/75%/100% HP/SP/Elixir restore (M16.114).
 - `src/game/ui/food_menu.hpp` / `src/game/ui/food_menu.cpp`: 4x4 food/consumable menu cursor wrap (`0x004906..0x00494A`), drop guards (`0x004896..0x004904`, `terrain_blocked`, `item_id != 0`, `0x05CE16` bit 5 undroppable), and consume timer constants (`90` frames, SFX `0x00A00256`) (M16.113).

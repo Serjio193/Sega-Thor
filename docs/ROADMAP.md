@@ -1,3 +1,9 @@
+# M16.115 In-Game Save Prompt & Save-Allowed Guard (`0x005472..0x005578`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `can_open_save_prompt` (`0x005488..0x0054C6`: `$FF1996 == 0`, `$FF17C1 == 0`, `$FF19EC <= 2`, `room_save_allowed || debug_override`, error SFX `0x00A00253`) and `step_save_prompt` (`0x0054E2..0x00555E`: `3=YES`/`4=NO`, toggle `0x006003A5`, confirm `0x00A003AA`, cancel `0x00A00347`) in `src/game/ui/save_prompt.hpp/.cpp`.
+- Qualified `oasis_m16_115_save_prompt` and the 96-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.114 Consumable Item Validation & HP/SP/Spirit Restore (`0x005236..0x005472`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

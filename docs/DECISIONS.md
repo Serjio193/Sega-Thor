@@ -1,3 +1,14 @@
+# ADR-20261117-M16-115-SAVE-PROMPT — In-Game Save Prompt & Save-Allowed Guard
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.331 extracted `0x005472..0x005578`: `can_open_save_prompt` (`$FF1996 == 0`, `$FF17C1 == 0`, `$FF19EC <= 2`, `room_save_allowed || debug_override`) and `step_save_prompt` (`3=YES`, `4=NO`, toggle `0x006003A5`, confirm `0x00A003AA`, cancel `0x00A00347`).
+
+**Decisions:**
+1. **Dedicated `save_prompt` Module:**
+   - Added `src/game/ui/save_prompt.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-114-CONSUMABLE-EFFECTS — Consumable Item Validation & HP/SP/Spirit Restore
 **Status:** Accepted
 **Date:** 2026-11-17
