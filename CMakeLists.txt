@@ -28,6 +28,7 @@ add_library(oasis_core
     src/game/entities/entity_struct_layout.cpp
     src/game/entities/velocity_vector_math.cpp
     src/game/entities/ai_steering_gravity.cpp
+    src/game/entities/viewport_culler_landing.cpp
     src/game/entities/solid_entity_sweep.cpp
     src/game/entities/entity_pool_allocators.cpp
     src/game/entities/prng_lfsr.cpp

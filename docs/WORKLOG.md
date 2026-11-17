@@ -1,3 +1,15 @@
+# Worklog — 2026-11-17 (M16.123: Entity Camera-Viewport Culler & Airborne Landing)
+- **Concrete Task**: Implement `src/game/entities/viewport_culler_landing.hpp/.cpp` with `step_airborne_move_and_land(...)` (`0x00E522..0x00E5AC`, reusing `step_z_gravity()` from `ai_steering_gravity.hpp`: XY integration, idle spin, `15`-frame landing stun `0x9A=0x0F` + thud SFX `0x00800270`, grounded codes `0`/`3`), `is_offscreen_with_z(...)` (`0x00E5AE..0x00E60E`), `is_offscreen_ground(...)` (`0x00E610..0x00E66C`: `320x224 + margin`), and `copy_entity_struct_0xbc(...)` (`0x00E66E..0x00E67E`: `94` words / `0xBC` bytes); add `tests/m16_123_viewport_culler_landing_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/entities/viewport_culler_landing.hpp` / `src/game/entities/viewport_culler_landing.cpp`.
+  * Added `tests/m16_123_viewport_culler_landing_test.cpp` (registered as `oasis_m16_123_viewport_culler_landing` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 104/104 tests passed (`ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): 104/104 tests passed (`ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: `viewport_culler_landing.hpp` (78 lines), `viewport_culler_landing.cpp` (93 lines), `m16_123_viewport_culler_landing_test.cpp` (102 lines), `CMakeLists.txt` (258 lines), `project_tests_m16.cmake` (389 lines) <= 500 lines.
+  * Remaining unknowns: Wiring `step_airborne_move_and_land()` and `is_offscreen_with_z()`/`is_offscreen_ground()` directly into `StandaloneGameSimulation` entity culling/physics loops is deferred to future entity-loop unification.
+
 # Worklog — 2026-11-17 (M16.122: Spirit Summon Trigger & Weapon Quick-Equip Class Mapper)
 - **Concrete Task**: Implement `src/game/player/weapon_equip_summon.hpp/.cpp` with `start_spirit_summon()` (`0x007E9E..0x007EC2`: state `0x14`, `$FF1990 = 0xFF`, SFX `0x00900359`), `map_weapon_item_to_class(item_id)` (`0x007F10..0x007F80`: `0x0A`/`0x0C`/`0x0E`/`0x10`), and `quick_equip_weapon_slot(...)` (`0x007EC4..0x007F80`: toggles to slot `0` if re-selecting equipped slot, 60-frame HUD toast, `0x00C0025D` equip SFX, `0x00A00253` error SFX), reusing `WeaponInventory` from `secondary_weapon.hpp`; add `tests/m16_122_weapon_equip_summon_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

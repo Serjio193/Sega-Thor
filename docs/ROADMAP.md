@@ -1,3 +1,9 @@
+# M16.123 Entity Camera-Viewport Culler & Airborne Landing (`0x00E522..0x00E67E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_airborne_move_and_land` (`0x00E522..0x00E5AC`, reusing `step_z_gravity()`), `is_offscreen_with_z` (`0x00E5AE..0x00E60E`), `is_offscreen_ground` (`0x00E610..0x00E66C`), and `copy_entity_struct_0xbc` (`0x00E66E..0x00E67E`) in `src/game/entities/viewport_culler_landing.hpp/.cpp`.
+- Qualified `oasis_m16_123_viewport_culler_landing` and the 104-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.122 Spirit Summon Trigger & Weapon Quick-Equip Class Mapper (`0x007E9E..0x007F80`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

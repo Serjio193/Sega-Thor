@@ -1,3 +1,14 @@
+# ADR-20261117-M16-123-VIEWPORT-CULLER-LANDING — Entity Camera-Viewport Culler & Airborne Landing
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.339 extracted `0x00E522..0x00E67E`: `airborne_move_and_land`, `is_offscreen_with_z`, `is_offscreen_ground` (`320x224 + margin`), and `copy_entity_struct_0xbc` (`94` words).
+
+**Decisions:**
+1. **Dedicated `viewport_culler_landing` Module:**
+   - Added `src/game/entities/viewport_culler_landing.hpp/.cpp` reusing `step_z_gravity()` from `ai_steering_gravity.hpp` and sharing `is_point_offscreen()` across both viewport culler entry points.
+
 # ADR-20261117-M16-122-WEAPON-EQUIP-SUMMON — Spirit Summon Trigger & Weapon Quick-Equip Class Mapper
 **Status:** Accepted
 **Date:** 2026-11-17

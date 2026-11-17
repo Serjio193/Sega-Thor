@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/entities/viewport_culler_landing.hpp` / `src/game/entities/viewport_culler_landing.cpp`: Airborne XY integration & `15`-frame landing stun / `0x00800270` thud (`0x00E522..0x00E5AC`, reusing `step_z_gravity()`), `320x224 + margin` viewport cullers (`0x00E5AE..0x00E66C`), and `94`-word `0xBC` entity struct copy (`0x00E66E..0x00E67E`) (M16.123).
+- `tests/m16_123_viewport_culler_landing_test.cpp`: Automated M16.123 test qualifying airborne XY/spin, landing stun & thud SFX, grounded codes `0`/`3`, `320x224 + margin` cullers, and `0xBC` struct copy (M16.123).
 - `src/game/player/weapon_equip_summon.hpp` / `src/game/player/weapon_equip_summon.cpp`: Spirit summon trigger (`0x007E9E..0x007EC2`: state `0x14`, SFX `0x00900359`) and weapon quick-equip class mapper (`0x007EC4..0x007F80`: `0x0A`/`0x0C`/`0x0E`/`0x10`, 60f toast, `0x00C0025D`/`0x00A00253`), reusing `secondary_weapon.hpp` (M16.122).
 - `tests/m16_122_weapon_equip_summon_test.cpp`: Automated M16.122 test qualifying `start_spirit_summon`, weapon class mapping `1..13`, slot toggle-to-0, 60f toast, and empty-slot error SFX (M16.122).
 - `src/game/ui/debug_warp_menu.hpp` / `src/game/ui/debug_warp_menu.cpp`: Debug stage/room warp menu (`0x004C9C..0x004F42`, `10f`/`3f` key repeat, non-empty area skip, room clamp, `0x006003A6` / `0x00A00256` / `0x00A00347` SFX) and `0x0005D918` 32-area ROM spawn table parser (`(tile_x, tile_y) << 3`) (M16.121).
