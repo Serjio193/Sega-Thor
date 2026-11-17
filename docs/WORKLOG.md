@@ -31418,6 +31418,17 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.380: ROM Ali Water Dive, Air Combat, Splash & Shoreline Exit (0x006D7A..0x007074)
+
+- Decoded and tested ROM Ali water stroke paddle and coast transitions (`0x006D7A..0x006DD0`), stroke counter increment `$FF1980`, and ripple effects via `0x00BCBA`.
+- Decoded and tested water dive jump gravity arc (`0x006DD2..0x006E78`) with `0xC000` gravity acceleration, horizontal trajectory steering, and landing transition (`0x005E78`) with 12-frame timer `+0x30 = 0x0C`.
+- Decoded and tested mid-air weapon attack triggers from water jumps (`0x006E7A..0x006ED4`): sword air slash (`anim = 0x32, state = 0x26`, SFX `#$700209`) and dagger air slash/dive (`anim = 0x50` or `0x62`, `state = 0x48`, SFX `#$800223` / `#$800222`).
+- Decoded and tested water surface splash landing (`0x006F8C..0x006FE2`) with SFX `#$600343`, and shoreline boundary exit triggers (`0x006FE4..0x007074`) launching Ali out of water with vertical impulses `0x40000` (`state = 0x64, anim = 0x72`) and `0x50000` (`state = 0x66, anim = 0x74`) and exit splash SFX `#$500341`.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_water_dive_shoreline_m15_380.json` (5 routines, 762 bytes).
+- Unit tests: `tests/rom_ali_water_dive_shoreline_test.py` (`5/5 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_380_ALI_WATER_DIVE_SHORELINE_HANDOFF.md`.
+- Next Step: Commit and push M15.380 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.379: ROM Ali Pit Respawn Interpolation & Water Swimming Combat (0x006B2A..0x006D7A)
 
 - Decoded and tested ROM Ali pit respawn coordinate interpolation step in State 0x38 (`0x006B48..0x006C38`), companion notification at `$FF1AA4`, default animation descriptor restore from `$03F306`, post-respawn invulnerability timers (`+0x32 = 0x3F`, `$FF198E = 12`), and pit lock clear `bit 2 of $FF17B8`.

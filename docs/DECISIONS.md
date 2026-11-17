@@ -12271,6 +12271,12 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.380: ROM Ali Water Dive, Air Combat, Splash & Shoreline Exit (0x006D7A..0x007074)
+
+- Decoded Ali water dive airborne gravity arc (`0x006DD2..0x006E78`): applies standard `0xC000` gravity acceleration to vertical velocity `+0x56`, integrates deltas `+0x4E` and `+0x52`, and transitions to landing recovery (`0x005E78`) with 12-frame timer `+0x30 = 0x0C` on water/ground impact.
+- Decoded mid-air attack dispatch from water jump (`0x006E7A..0x006ED4`): Button A triggers sword air slash (`anim = 0x32, state = 0x26`, SFX `#$700209`) and dagger air slash/dive (`anim = 0x50` or `0x62`, `state = 0x48`, SFX `#$800223` / `#$800222`).
+- Decoded water surface splash landing (`0x006F8C..0x006FE2`) with SFX `#$600343`, and shoreline boundary exit triggers (`0x006FE4..0x007074`) launching Ali from water to land with vertical jump impulses `0x40000` (`state = 0x64, anim = 0x72`) and `0x50000` (`state = 0x66, anim = 0x74`) and splash exit SFX `#$500341`.
+
 ## 2026-11-17 - Milestone M15.379: ROM Ali Pit Respawn Interpolation & Water Swimming Combat (0x006B2A..0x006D7A)
 
 - Decoded Ali pit respawn per-frame interpolation step in State 0x38 (`0x006B48..0x006C38`): advances timer up to 8, steps coordinate interpolation 2px per frame per axis towards anchor `$FF1972`, updates companion entity at `$FF1AA4` via `0x0001378A`, resets facing to down (2), loads animation descriptors from `$03F306`, and clears pit lock flag `bit 2 of $FF17B8`.

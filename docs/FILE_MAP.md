@@ -5330,6 +5330,10 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
 - docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).
 
+- tools/extract_rom_ali_water_dive_shoreline.py — M15.380 ROM Ali water dive, splash, and shoreline exit extractor.
+- tests/rom_ali_water_dive_shoreline_test.py — M15.380 unit tests for water dive jump, in-air attacks, splash landing, and shoreline impulses.
+- data/thor-evidence/rom_ali_water_dive_shoreline_m15_380.json — M15.380 evidence database.
+- docs/handoffs/STANDALONE_M15_380_ALI_WATER_DIVE_SHORELINE_HANDOFF.md — M15.380 C++20 Standalone handoff.
 - tools/extract_rom_ali_water_swim.py — M15.379 ROM Ali water swimming and pit respawn extractor.
 - tests/rom_ali_water_swim_test.py — M15.379 unit tests for water locomotion, speed scaling, tread splash, and weapon attacks.
 - data/thor-evidence/rom_ali_water_swim_m15_379.json — M15.379 evidence database.

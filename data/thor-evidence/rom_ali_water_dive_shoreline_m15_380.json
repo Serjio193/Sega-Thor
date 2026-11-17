@@ -1,0 +1,41 @@
+{
+  "milestone": "M15.380",
+  "description": "ROM Ali Water Dive, Air Combat, Splash & Shoreline Exit",
+  "address_range": [
+    "0x006D7A",
+    "0x007074"
+  ],
+  "byte_count": 762,
+  "routines": [
+    {
+      "name": "ali_water_paddle_coast",
+      "start": "0x006D7A",
+      "end": "0x006DD0",
+      "purpose": "Advance stroke counter $FF1980 and transition to anim 0x24 / state 0x10 on anim end"
+    },
+    {
+      "name": "ali_water_dive_jump_arc",
+      "start": "0x006DD2",
+      "end": "0x006E78",
+      "purpose": "Airborne gravity arc (subi.l #0xC000) for water dive jumps and landing recovery"
+    },
+    {
+      "name": "ali_air_attack_dispatch_from_water",
+      "start": "0x006E7A",
+      "end": "0x006ED4",
+      "purpose": "In-air weapon dispatch on Button A (sword anim 0x32, dagger anim 0x50/0x62)"
+    },
+    {
+      "name": "ali_water_splash_landing",
+      "start": "0x006F8C",
+      "end": "0x006FE2",
+      "purpose": "Water surface landing reset, height clear, and splash SFX 0x600343"
+    },
+    {
+      "name": "ali_shoreline_boundary_exit_triggers",
+      "start": "0x006FE4",
+      "end": "0x007074",
+      "purpose": "Shoreline climb-out jump impulse (0x40000/0x50000), splash SFX 0x500341, anims 0x72/0x74/0x76"
+    }
+  ]
+}
