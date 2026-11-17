@@ -1,3 +1,39 @@
+# ADR-20261117-M16-149-VERTICAL-RAYCASTER — ROM Vertical (±Y) Tilemap Raycaster, Collision Sweep & Entity Return Dispatcher (0x0091F6..0x00938E)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.400 extracted ROM routines `0x0091F6..0x00938E` governing vertical (±Y) tilemap raycasting, surface height probing, and entity return dispatching:
+   - `0x0091F6`: entry velocity clear: clears X velocity `clr.l $72(a6)`.
+   - `0x00920C..0x0092B0`: `vertical_raycast_positive_y`:
+     * Sets direction code `0x12` into entity slot offset `+0x41`.
+     * Integrates 32-bit subpixel Y position (`+0x0E` accum, integer displacement in `d0`).
+     * Clamps displacement against bottom world boundary (`0x009D92`) and sweeps solid dynamic entities (`0x009FA0`).
+     * Iterates across 8-pixel tile rows checking wall collisions (`0x0095AA`); on hit, halts raycast before entering solid tile.
+     * Probes surface height (`0x009BF2`) and translates surface type using 16-byte LUT `0x0096E8` into `+0x70`.
+     * Stores surface height into entity slot offset `+0x14`.
+   - `0x0092B0..0x00934E`: `vertical_raycast_negative_y`:
+     * Sets direction code `0x10` into entity slot offset `+0x41`.
+     * Integrates 32-bit subpixel Y position into `+0x0E`.
+     * Clamps displacement against top boundary clamp (`0x009DB4`) and sweeps solid dynamic entities (`0x00A09A`).
+     * Iterates across 8-pixel tile rows checking wall collisions (`0x0094D2`); on hit, halts raycast before entering solid tile.
+     * Probes surface height and translates surface type via LUT `0x0096E8`.
+   - `0x00934E..0x009382`: `vertical_raycast_cleanup`:
+     * Writes final Y position to `+0x0C`.
+     * If no tile boundary was stepped or partial step cleared stepped count, probes resting tile height and terrain type (`0x009352..0x00937A`).
+     * Clears Y velocity/step: `clr.l $76(a6)`.
+   - `0x009382..0x00938E`: `entity_return_dispatcher`:
+     * Restores saved register `d7` from stack: `movem.l (a7)+, d7`.
+     * Indirectly jumps to the caller's recovery return address stored in `$FF193C.l` (`jmp (a0)`), returning to Group 1 (`0x8EAA`), Group 2 (`0x8ECC`), or Group 3 (`0x8EEE`) stepper loops.
+
+**Decisions:**
+1. **Dedicated `vertical_raycaster` Module:**
+   - Added `src/game/player/vertical_raycaster.hpp/.cpp` modeling `calculate_vertical_raycast`, `step_vertical_raycast`, and `dispatch_entity_return` with customizable `VerticalRaycastEnvironment` hooks.
+2. **CMake File Split for Source Size Policy Compliance:**
+   - Split `cmake/project_tests_m16.cmake` into `project_tests_m16.cmake` (253 lines) and `project_tests_m16_b.cmake` (241 lines) to strictly maintain all build scripts below the 500-line policy limit.
+3. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-148-HORIZONTAL-RAYCASTER — ROM Horizontal (±X) Tilemap Raycaster, Surface Height Probe & Terrain LUT (0x009084..0x0091F6)
 **Status:** Accepted
 **Date:** 2026-11-17

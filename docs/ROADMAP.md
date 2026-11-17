@@ -1,3 +1,14 @@
+# M16.149 ROM Vertical (±Y) Tilemap Raycaster, Collision Sweep & Entity Return Dispatcher (`0x0091F6..0x00938E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `calculate_vertical_raycast`, `step_vertical_raycast`, and `dispatch_entity_return` in `src/game/player/vertical_raycaster.hpp/.cpp`:
+  - Positive Y (+Y) vertical raycaster (`0x00920C..0x0092B0`): sets direction code `0x12` at `+0x41`, accumulates 32-bit subpixel Y into `+0x0E`, clamps displacement against bottom boundary, sweeps dynamic entities, steps in 8-pixel tile rows checking wall collisions, probes surface height, translates surface type via LUT `0x0096E8` into `+0x70`, and stores surface height into `+0x14`.
+  - Negative Y (-Y) vertical raycaster (`0x0092B0..0x00934E`): sets direction code `0x10` at `+0x41`, accumulates subpixel Y into `+0x0E`, clamps displacement against top boundary, sweeps dynamic entities, steps in 8-pixel tile rows checking wall collisions, probes surface height, and translates surface type via LUT `0x0096E8`.
+  - Final Y position write & cleanup (`0x00934E..0x009382`): writes final Y position to `+0x0C`, probes resting position if no tile stepped or partial step cleared stepped count, and clears Y velocity `+0x76 = 0`.
+  - Entity return dispatcher (`0x009382..0x00938E`): restores `d7` and jumps to recovery vector stored in `$FF193C.l`.
+  - Split `cmake/project_tests_m16.cmake` into `project_tests_m16.cmake` and `project_tests_m16_b.cmake` to maintain all CMake files strictly below 500 lines.
+- Qualified `oasis_m16_149_vertical_raycaster` and the 129-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.148 ROM Horizontal (±X) Tilemap Raycaster, Surface Height Probe & Terrain LUT (`0x009084..0x0091F6`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

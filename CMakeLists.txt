@@ -111,6 +111,7 @@ add_library(oasis_core
     src/game/player/anim_palette_entity_stepper.cpp
     src/game/player/entity_sim_anim_preflight.cpp
     src/game/player/horizontal_raycaster.cpp
+    src/game/player/vertical_raycaster.cpp
     src/game/input/mash_tripletap_detectors.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp

@@ -139,6 +139,7 @@ target_link_libraries(oasis_m16_26_continuous_ambush_combat_test PRIVATE oasis_c
 add_test(NAME oasis_m16_26_continuous_ambush_combat COMMAND oasis_m16_26_continuous_ambush_combat_test)
 
 include(${CMAKE_CURRENT_LIST_DIR}/project_tests_m16.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/project_tests_m16_b.cmake)
 add_executable(oasis_differential_oracle_comparison_test tests/differential_oracle_comparison_test.cpp)
 target_link_libraries(oasis_differential_oracle_comparison_test PRIVATE oasis_core)
 add_test(NAME oasis_differential_oracle_comparison COMMAND oasis_differential_oracle_comparison_test)
