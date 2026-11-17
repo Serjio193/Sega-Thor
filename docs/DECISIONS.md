@@ -1,3 +1,14 @@
+# ADR-20261117-M16-109-GLYPH-OUTLINER — 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.325 extracted `0x00C222..0x00C2EA`: 14-row 1-bpp glyph unpacking into `18x17` (306B) canvas, 4-neighbor `0x0E` outline dilation, and column-major 4-tile 4-bpp VDP packing (TL `0x13`, BL `0xA3`, TR `0x1B`, BR `0xAB`).
+
+**Decisions:**
+1. **Dedicated `glyph_outliner` Module:**
+   - Added `src/game/ui/glyph_outliner.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-108-INVENTORY-GRID-UI — Inventory/Ring 4x4 Grid UI Layout
 **Status:** Accepted
 **Date:** 2026-11-17

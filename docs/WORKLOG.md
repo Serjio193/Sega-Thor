@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.109: 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer)
+- **Concrete Task**: Implement `src/game/ui/glyph_outliner.hpp/.cpp` with `rasterize_outlined_glyph(std::span<const std::uint16_t, 14> rows)` (`0x00C222..0x00C2EA`: unpack 14 `uint16_be` rows into `18x17` 306-byte scratch canvas, 4-neighbor outline pass setting empty cells orthogonally adjacent to `bit 7` set to `0x0E`, and column-major 4-tile 4-bpp VDP packing TL `0x13`, BL `0xA3`, TR `0x1B`, BR `0xAB` = 128 bytes); add `tests/m16_109_glyph_outliner_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/glyph_outliner.hpp` / `src/game/ui/glyph_outliner.cpp`.
+  * Added `tests/m16_109_glyph_outliner_test.cpp` (registered as `oasis_m16_109_glyph_outliner` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `90/90` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `90/90` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `rasterize_outlined_glyph()` directly into `DialogueEngine` / `DialogueWindow` live VDP font DMA is deferred to future dialogue-UI unification.
+
 # Worklog — 2026-11-17 (M16.108: Inventory/Ring 4x4 Grid UI Layout)
 - **Concrete Task**: Implement `src/game/ui/inventory_grid_ui.hpp/.cpp` with `grid_slot_to_xy(slot)` (`0x0042A6..0x0042D0`: `(0x70 + (slot & 3) * 24, 0x40 + ((slot & 0xC) >> 2) * 24)`) and `build_inventory_grid_icon_plan(...)` (`0x0042E8..0x004360`: 8 inventory slots from `$FF0D80`, `9`-tile icon stride from `0x155D76`, `+0x18` Y bias, spirit slot `0x20` & special slot `0x29` in `$FF2FA8`); add `tests/m16_108_inventory_grid_ui_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

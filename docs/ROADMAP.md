@@ -1,3 +1,9 @@
+# M16.109 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer (`0x00C222..0x00C2EA`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `rasterize_outlined_glyph` (`0x00C222..0x00C2EA`: `18x17` 306B canvas, 4-neighbor `0x0E` outline dilation, column-major 4-tile 128B 4-bpp VDP packing TL `0x13` / BL `0xA3` / TR `0x1B` / BR `0xAB`) in `src/game/ui/glyph_outliner.hpp/.cpp`.
+- Qualified `oasis_m16_109_glyph_outliner` and the 90-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.108 Inventory/Ring 4x4 Grid UI Layout (`0x0042A6..0x004360`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

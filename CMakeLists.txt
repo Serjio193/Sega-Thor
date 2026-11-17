@@ -55,6 +55,7 @@ add_library(oasis_core
     src/game/ui/dialogue_sat_builder.cpp
     src/game/ui/menu_sprite_dma.cpp
     src/game/ui/inventory_grid_ui.cpp
+    src/game/ui/glyph_outliner.cpp
     src/game/video/palette_fade.cpp
     src/game/video/vdp_clear_and_palette_cycle.cpp
     src/game/video/vdp_dma_exec.cpp
