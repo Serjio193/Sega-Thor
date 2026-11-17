@@ -31418,6 +31418,16 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.382: ROM Ali Sword Spin, Elemental Blade & Bow Arrow Dispatcher (0x007262..0x0074A4)
+
+- Decoded and tested Ground & Water Sword 360-spin attacks (`0x007262..0x007362`): 25% steering movement (`d1 >>= 2, d2 >>= 2`) during charge frames 13..16 with Button A held, sword spin SFX `#$600379` upon release, elemental blade spawner dispatch (`0x0000F258` ground / `0x0000F26A` water) for Fire Sword (`0x8000001C` / `0x8000000D`), Omega Sword (`0x4000001C` / `0x4000000D`), and Hyper Sword (`0x2000001C` / `0x2000000D`).
+- Decoded and tested Ground & Water Bow Arrow dispatchers (`0x007364..0x00743A`): 25% steering during frames 5..8, bow release SFX `#$7004D3`, direction-dependent fire timing (frame 12 for facing down, frame 16 for other facings), arrow spawner calls (`0x0000F396` ground / `0x0000F3A8` water), and shot flag `+0x5C = 0xFFFF`.
+- Decoded and tested water dagger flurry (`0x00743C..0x0074A4`) with strike SFX `#$800222` and shoreline transition to state `0x54`.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_sword_spin_bow_fire_m15_382.json` (5 routines, 578 bytes).
+- Unit tests: `tests/rom_ali_sword_spin_bow_fire_test.py` (`5/5 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_382_ALI_SWORD_SPIN_BOW_FIRE_HANDOFF.md`.
+- Next Step: Commit and push M15.382 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.381: ROM Ali Shoreline Stepper, Water 3/4 Scaler & Landing Gate (0x007074..0x007262)
 
 - Decoded and tested shoreline exit airborne stepper (`0x007074..0x0070F6`): integrates horizontal deltas, applies `0xC000` gravity, triggers surface splash landing SFX `#$600343` on water/ground impact (`height <= 0`), and validates animation completion `bit 1 of +0x37` when airborne speed zeroes.

@@ -12271,6 +12271,11 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.382: ROM Ali Sword Spin, Elemental Blade & Bow Arrow Dispatcher (0x007262..0x0074A4)
+
+- Decoded Ground & Water Sword 360-Spin attacks (`0x007262..0x007362`): allows 25% steering movement (`d1 >>= 2, d2 >>= 2`) while holding Button A during charge frames 13..16; plays spin SFX `#$600379` upon release; dispatches elemental blade payload to spawner `0x0000F258` / `0x0000F26A` for Fire Sword (`0x8000001C` / `0x8000000D`), Omega Sword (`0x4000001C` / `0x4000000D`), and Hyper Sword (`0x2000001C` / `0x2000000D`).
+- Decoded Ground & Water Bow Arrow dispatchers (`0x007364..0x00743A`): allows 25% steering during frames 5..8, plays bow release SFX `#$7004D3`, fires at frame 12 for facing down (2) or frame 16 for other facings, computes payload `(bow_type - 9)` into spawner `0x0000F396` / `0x0000F3A8`, and sets arrow shot flag `+0x5C = 0xFFFF`.
+
 ## 2026-11-17 - Milestone M15.381: ROM Ali Shoreline Stepper, Water 3/4 Scaler & Landing Gate (0x007074..0x007262)
 
 - Decoded shoreline exit airborne stepper (`0x007074..0x0070F6`): applies `0xC000` gravity acceleration to vertical velocity `+0x56`, integrates position deltas, and triggers surface splash landing SFX `#$600343` on water/ground impact (`height <= 0`).

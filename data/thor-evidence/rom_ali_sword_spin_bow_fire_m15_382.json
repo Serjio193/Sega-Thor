@@ -1,0 +1,41 @@
+{
+  "milestone": "M15.382",
+  "description": "ROM Ali Sword Spin, Elemental Blade & Bow Arrow Dispatcher",
+  "address_range": [
+    "0x007262",
+    "0x0074A4"
+  ],
+  "byte_count": 578,
+  "routines": [
+    {
+      "name": "ali_ground_sword_spin",
+      "start": "0x007262",
+      "end": "0x0072E8",
+      "purpose": "Ground 360-spin attack, 25% steering, sword spin SFX 0x600379, elemental blade 0xF258"
+    },
+    {
+      "name": "ali_water_sword_spin",
+      "start": "0x0072EA",
+      "end": "0x007362",
+      "purpose": "Water 360-spin attack at frame 12, elemental payload, water blade 0xF26A"
+    },
+    {
+      "name": "ali_ground_bow_fire",
+      "start": "0x007364",
+      "end": "0x0073EA",
+      "purpose": "Ground bow release SFX 0x7004D3, facing 2 fire at frame 12 / others at frame 16, arrow spawner 0xF396"
+    },
+    {
+      "name": "ali_water_bow_fire",
+      "start": "0x0073EC",
+      "end": "0x00743A",
+      "purpose": "Water bow fire at frame 12, water arrow spawner 0xF3A8"
+    },
+    {
+      "name": "ali_water_dagger_flurry",
+      "start": "0x00743C",
+      "end": "0x0074A4",
+      "purpose": "Water dagger strike SFX 0x800222, shoreline transition to state 0x54 on land probe"
+    }
+  ]
+}
