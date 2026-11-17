@@ -1,3 +1,6 @@
+# M15.369 ROM Ali Ledge Climb, Pit Fall/Platform Carry & Push Trigger (`0x005A30`..`0x005BA0`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_ledge_pit_push.py`, `tests/rom_ali_ledge_pit_push_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_ledge_pit_push_m15_369.json`, and `docs/handoffs/STANDALONE_M15_369_ALI_LEDGE_PIT_PUSH_HANDOFF.md`.
+
 # M15.368 ROM Ali HP Damage, Death-Arc Trigger & Hitstun/Knockdown States (`0x005850`..`0x0059B8`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_damage_death.py`, `tests/rom_ali_damage_death_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_damage_death_m15_368.json`, and `docs/handoffs/STANDALONE_M15_368_ALI_DAMAGE_DEATH_HANDOFF.md`.
 

@@ -1,3 +1,7 @@
+# ADR-20261117-M15-369-ALI-LEDGE-PIT-PUSH — Ali Ledge Climb, Pit Fall & Push Trigger (`0x005A30`..`0x005BA0`)
+- **Context:** `0x005A30..0x005BA0` handles Ali's 4-directional ledge-climb triggers (`0x28/0x2A/0x2C/0x2E`), pit-tile vs moving-platform carry (`0x009C40` / `0x009C7C`, `0x3E` fall state, SFX `0x00B00213`/`0x00B00240`), and pushable-block (`0x30`) entry.
+- **Decision:** Extract all state/anim IDs, tile masks, fall SFX IDs, and push-block entity/pad guards in `tools/extract_rom_ali_ledge_pit_push.py` and `docs/handoffs/STANDALONE_M15_369_ALI_LEDGE_PIT_PUSH_HANDOFF.md`.
+
 # ADR-20261117-M15-368-ALI-DAMAGE-DEATH — Ali HP Damage, Death Trigger & Hitstun/Knockdown States (`0x005850`..`0x0059B8`)
 - **Context:** `0x005850..0x0059B8` resolves pending damage on Ali (`0x0FFF` mask minus `+0x92` defense, clamped to `[1, HP]`), updates `$FF0E3C`, triggers `$FF1987` death + spirit dismissal (`0x1A`) on 0 HP, and selects `0x18` light hitstun or `0x1A`/`0x20` knockdown.
 - **Decision:** Extract all damage clamps, death-flag transitions, and hitstun/knockdown state/anim rules in `tools/extract_rom_ali_damage_death.py` and `docs/handoffs/STANDALONE_M15_368_ALI_DAMAGE_DEATH_HANDOFF.md`.

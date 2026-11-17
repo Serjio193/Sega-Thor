@@ -1,3 +1,9 @@
+# M15.369 ROM Ali Ledge Climb, Pit Fall & Push Trigger
+- `tools/extract_rom_ali_ledge_pit_push.py` — extractor for `0x005A30..0x005BA0` (4-dir ledge climb states `0x28/0x2A/0x2C/0x2E`, pit fall `0x3E` / platform carry, pushable-block `0x30` trigger).
+- `tests/rom_ali_ledge_pit_push_test.py` — `2` unit tests verifying ROM constants, ledge state mapping, and push-block entry guards.
+- `data/thor-evidence/rom_ali_ledge_pit_push_m15_369.json` — extracted M15.369 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_369_ALI_LEDGE_PIT_PUSH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.368 ROM Ali HP Damage, Death Trigger & Hitstun/Knockdown States
 - `tools/extract_rom_ali_damage_death.py` — extractor for `0x005850..0x0059B8` (defense-subtracted HP damage with min-1 clamp, `$FF1987` death-arc trigger, `0x18` hitstun vs `0x1A`/`0x20` knockdown states).
 - `tests/rom_ali_damage_death_test.py` — `2` unit tests verifying ROM constants, min-1 damage clamp, facing-flipped knockdown, and death trigger.

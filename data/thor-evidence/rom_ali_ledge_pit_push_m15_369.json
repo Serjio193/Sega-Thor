@@ -1,0 +1,30 @@
+{
+  "milestone": "M15.369",
+  "rom_range": "0x005A30..0x005BA0",
+  "ledge_climb": {
+    "x_pos_state": "0x2A",
+    "x_neg_state": "0x2E",
+    "y_neg_state": "0x28",
+    "y_pos_state": "0x2C",
+    "anim_id": "0x34",
+    "counter_reset_addr": "0xFF1970"
+  },
+  "pit_fall_and_platform": {
+    "tile_mask": "0x90",
+    "tile_match": "0x80",
+    "pit_state": "0x3E",
+    "pit_anim_id": "0x38",
+    "pit_flag_addr": "0xFF1995",
+    "fall_sfx_normal": "0x00B00213",
+    "fall_sfx_alt": "0x00B00240"
+  },
+  "push_block_trigger": {
+    "contact_ptr_offset": "0x68",
+    "pool_min_addr": "0xFF19E8",
+    "pool_max_addr": "0xFF2954",
+    "pushable_flag_offset": "0x38",
+    "pushable_flag_bit": 7,
+    "push_state": "0x30",
+    "push_anim_id": "0x36"
+  }
+}
