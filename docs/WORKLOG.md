@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.313: ROM INCREMENTAL ROW/COL VDP PLANE SCROLLER (`0x0023CC`..`0x002630`) — 29-Tile Col (`0x8F80`, `+40`) & 41-Tile Row (`+28`) Streamers; Extractor (`tools/extract_rom_vdp_plane_scroll.py` <= 500 lines), Tests (`tests/rom_vdp_plane_scroll_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_313_VDP_PLANE_SCROLL_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x0023CC..0x002630` in `local-roms/Beyond Oasis (USA).md` (`0x0023CC..0x002510` column streamer, `0x002512..0x002630` row streamer).
+- Verified `python tools/extract_rom_vdp_plane_scroll.py`, `python -m unittest tests/rom_vdp_plane_scroll_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake` (`2624 governed files <= 500 lines`).
+- Next: Commit & push M15.313, proceed to M15.314, and await M16.96 completion.
+
 # 2026-11-17 — Milestone M15.312: ROM V-INT SOUND TICK & HUD SLIDE (`0x002380`..`0x0023CA`) — `0x060000` Tick, `0x20`/`0x138`/`0x158` Slide; Extractor (`tools/extract_rom_vint_hud_slide.py` <= 500 lines), Tests (`tests/rom_vint_hud_slide_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_312_VINT_HUD_SLIDE_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x002380..0x0023CA` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_vint_hud_slide.py` and `python tests/rom_vint_hud_slide_test.py` (2/2 PASS).

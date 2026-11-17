@@ -1,3 +1,9 @@
+# M15.313 ROM Incremental Row/Col VDP Plane Scroller
+- `tools/extract_rom_vdp_plane_scroll.py` — ROM extractor & verifier for `0x0023CC..0x002510` (29-tile column streamer) and `0x002512..0x002630` (41-tile row streamer).
+- `tests/rom_vdp_plane_scroll_test.py` — Unit tests verifying ROM constants and wrap-around row/col streaming simulation.
+- `data/thor-evidence/rom_vdp_plane_scroll_m15_313.json` — Verified evidence JSON for M15.313.
+- `docs/handoffs/STANDALONE_M15_313_VDP_PLANE_SCROLL_HANDOFF.md` — C++20 Standalone handoff for M16.97.
+
 # M15.312 ROM V-Int Sound Tick & HUD Slide Offset
 - `tools/extract_rom_vint_hud_slide.py` — Extracts V-Int sound tick (`0x060000`) & `$FF185A` HUD slide state machine (`0x002380`).
 - `tests/rom_vint_hud_slide_test.py` — Unit tests verifying HUD slide limits/wrap and JSON artifact (`2/2 PASS`).

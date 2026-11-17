@@ -1,3 +1,8 @@
+# ADR-20261117-M15-313-VDP-PLANE-SCROLL — Incremental Row/Col VDP Plane Scroller (`0x0023CC`..`0x002630`)
+- **Context:** Scrolling large tilemaps into the `64x32` (`0x1000` byte) VDP nametable streams one 29-tile column (`0x0023CC`, VDP auto-inc `0x8F80` -> `0x8F02`, `+40` tiles ahead) or one 41-tile row (`0x002512`, `+28` rows ahead) per step.
+- **Decision:** Extracted both routines' exact struct offsets (`0x08..0x24`), wrap masks (`0x7E` col, `0xF80` row), and single-wrap sentinel (`0x03E8`) into `data/thor-evidence/rom_vdp_plane_scroll_m15_313.json` with a 2/2 passing Python reference test and Standalone handoff.
+- **Consequences:** Standalone M16.97 can implement incremental scrolling with exact hardware nametable wrap parity.
+
 # ADR-20261117-M15-312-VINT-HUD-SLIDE — V-Int Sound Tick & HUD Slide (`0x002380`..`0x0023CA`)
 - **Decision:** Model V-Int tail HUD slide offset (`$FF185A`) in Standalone via `0x002386`'s `2`-pixel step toward `0x20` (forward) or `0x138` (reverse) with `0x158` modular wrap, paired with `0x060000` sound tick.
 - **Evidence:** Direct Capstone M68K disassembly of `0x002380..0x0023CA` in `local-roms/Beyond Oasis (USA).md`.

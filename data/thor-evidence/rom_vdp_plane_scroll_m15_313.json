@@ -1,0 +1,47 @@
+{
+  "milestone": "M15.313",
+  "title": "ROM Incremental Row/Col VDP Plane Scroller",
+  "routines": {
+    "stream_column": {
+      "start": "0x0023CC",
+      "end": "0x002510",
+      "vdp_auto_inc_setup": "0x8F80",
+      "vdp_auto_inc_restore": "0x8F02",
+      "forward_ahead_tiles": 40,
+      "forward_ahead_bytes": "0x0050",
+      "dbra_count": 28,
+      "tiles_per_column": 29,
+      "wrap_sentinel_height": 1000,
+      "vdp_plane_rows": 32
+    },
+    "stream_row": {
+      "start": "0x002512",
+      "end": "0x002630",
+      "forward_ahead_tiles": 28,
+      "forward_ahead_bytes": "0x0E00",
+      "dbra_count": 40,
+      "tiles_per_row": 41,
+      "vdp_plane_cols": 64
+    }
+  },
+  "plane_state_offsets": {
+    "src_col": "0x08",
+    "src_row": "0x0A",
+    "vram_offset": "0x0C",
+    "tilemap_ptr": "0x16",
+    "vram_base": "0x1A",
+    "pending_dx_tiles": "0x1C",
+    "pending_dy_tiles": "0x1E",
+    "map_width_tiles": "0x20",
+    "map_height_tiles": "0x22",
+    "row_shift": "0x24"
+  },
+  "vdp_nametable": {
+    "data_port": "0x00C00000",
+    "ctrl_port": "0x00C00004",
+    "col_byte_mask": "0x007E",
+    "row_byte_mask": "0x0F80",
+    "row_stride_bytes": "0x0080",
+    "plane_size_bytes": "0x1000"
+  }
+}
