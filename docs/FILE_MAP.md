@@ -1,3 +1,9 @@
+# M15.447 ROM Spark Effect Dispatcher, Projectile Gravity Fall, Lifetime Blink & Despawn Subsystem
+- `tools/extract_rom_projectile_physics.py` — extractor for `0x00E0BA..0x00E25C` (spark effect sweep, projectile entity sweep, gravity integration, landing parent unlatch, lifetime blink, and despawn).
+- `tests/rom_projectile_physics_test.py` — `5` unit tests verifying ROM constants, spark effect slot checks, projectile state jump table, gravity landing clamps, and lifetime blinking intervals.
+- `data/thor-evidence/rom_projectile_physics_m15_447.json` — extracted M15.447 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_447_PROJECTILE_PHYSICS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.446 ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Function Pointer Table
 - `tools/extract_rom_entity_dispatcher.py` — extractor for `0x00DEEC..0x00E0BA` (Group 2 entity sweep, 89-entry action jump table, and post-tick isometric footprint calculation).
 - `tests/rom_entity_dispatcher_test.py` — `5` unit tests verifying ROM constants, pool traversal bounds, jump table target addresses, 3/4 isometric projection math, and dummy handler parity.

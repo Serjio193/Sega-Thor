@@ -1,3 +1,6 @@
+# M15.447 ROM Spark Effect Dispatcher, Projectile Gravity Fall, Lifetime Blink & Despawn Subsystem (`0x00E0BA`..`0x00E25C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_projectile_physics.py`, `tests/rom_projectile_physics_test.py` (`5/5 PASS`), `data/thor-evidence/rom_projectile_physics_m15_447.json`, and `docs/handoffs/STANDALONE_M15_447_PROJECTILE_PHYSICS_HANDOFF.md`.
+
 # M15.446 ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Function Pointer Table (`0x00DEEC`..`0x00E0BA`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_dispatcher.py`, `tests/rom_entity_dispatcher_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_dispatcher_m15_446.json`, and `docs/handoffs/STANDALONE_M15_446_ENTITY_DISPATCHER_HANDOFF.md`.
 
