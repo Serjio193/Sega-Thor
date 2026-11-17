@@ -1,0 +1,40 @@
+{
+  "routine": "plane_a_scroll_integrator_and_toroidal_normalizer",
+  "start_address": "0x00D146",
+  "end_address": "0x00D2B4",
+  "size_bytes": 366,
+  "entry_points": {
+    "accumulate_long_delta_and_integrate": "0x00D146",
+    "accumulate_word_delta_and_integrate": "0x00D168",
+    "check_enable_and_integrate": "0x00D17E",
+    "integrate_scroll_deltas": "0x00D188",
+    "normalize_toroidal_map_coords": "0x00D266"
+  },
+  "camera_struct_layout": {
+    "cam_x": "0x00",
+    "cam_sub_x": "0x02",
+    "cam_y": "0x04",
+    "cam_sub_y": "0x06",
+    "vdp_hscroll_plane_a": "0x0E",
+    "vdp_vscroll_plane_a": "0x10",
+    "pixel_delta_x": "0x12",
+    "pixel_delta_y": "0x14",
+    "tile_column_step": "0x1C",
+    "tile_row_step": "0x1E",
+    "map_width_tiles": "0x20",
+    "map_height_tiles": "0x22",
+    "dirty_status_flags": "0x26",
+    "control_flags": "0x27"
+  },
+  "dirty_status_bits": {
+    "h_tile_column_strip": "bit 0 (0x01)",
+    "v_tile_row_strip": "bit 1 (0x02)",
+    "vdp_hscroll_dirty": "bit 2 (0x04)",
+    "vdp_vscroll_dirty": "bit 3 (0x08)"
+  },
+  "vdp_ring_buffer_masks": {
+    "hscroll_ring_mask": 511,
+    "vscroll_ring_mask": 255
+  },
+  "byte_hash": "-3082e46f40405e80"
+}

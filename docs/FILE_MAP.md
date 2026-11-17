@@ -1,3 +1,9 @@
+# M15.436 ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer
+- `tools/extract_rom_scroll_integrator.py` — extractor for `0x00D146..0x00D2B4` (scroll delta integration, VDP Plane A ring-buffer tracking, tile strip dirty flagging, and toroidal modulo wrapping).
+- `tests/rom_scroll_integrator_test.py` — `5` unit tests verifying ROM constants, fixed-point and word accumulator entrypoints, horizontal delta and 512-px VDP scroll ring buffer, vertical delta and 256-px VDP scroll ring buffer, and toroidal coordinate normalization.
+- `data/thor-evidence/rom_scroll_integrator_m15_436.json` — extracted M15.436 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_436_SCROLL_INTEGRATOR_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.435 ROM Camera Deadzone Tracking, Boundary Clamp & Screen Shake Controller
 - `tools/extract_rom_camera_controller.py` — extractor for `0x00CEEA..0x00D146` (camera deadzone tracking, left/right edge panning, top/bottom edge panning, screen shake oscillation, direct follow mode, and viewport boundary clamp).
 - `tests/rom_camera_controller_test.py` — `5` unit tests verifying ROM constants, horizontal deadzone [120..200] and panning speed clamps, vertical deadzone [104..128] and speed clamps, screen shake oscillation, and direct follow with tilemap clamp.

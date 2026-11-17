@@ -1,3 +1,6 @@
+# M15.436 ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer (`0x00D146`..`0x00D2B4`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_scroll_integrator.py`, `tests/rom_scroll_integrator_test.py` (`5/5 PASS`), `data/thor-evidence/rom_scroll_integrator_m15_436.json`, and `docs/handoffs/STANDALONE_M15_436_SCROLL_INTEGRATOR_HANDOFF.md`.
+
 # M15.435 ROM Camera Deadzone Tracking, Boundary Clamp & Screen Shake Controller (`0x00CEEA`..`0x00D146`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_camera_controller.py`, `tests/rom_camera_controller_test.py` (`5/5 PASS`), `data/thor-evidence/rom_camera_controller_m15_435.json`, and `docs/handoffs/STANDALONE_M15_435_CAMERA_CONTROLLER_HANDOFF.md`.
 
