@@ -1,3 +1,29 @@
+# ADR-20261117-M16-141-COMMAND-MOTIONS — ROM 360-Spin & F-B-F Command-Motion Recognizers (0x0086B4..0x008813)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.357 extracted ROM routines `0x0086B4..0x008813` governing 360° spin-slash recognition, Forward-Back-Forward (F-B-F) lunge command recognition, and shared input ring buffer mutation:
+   - `0x0086B4..0x008777`: `detect_spin_360_motion`:
+     * Reads head offset `$FF16E8` and frame count `$FF16EA` from 64-entry input ring buffer at `$FF1668` (mod `0x80` addressing).
+     * Scans backwards up to `min(count, 30)` frames from head.
+     * Maps low nibbles through 16-entry LUT `0x008768` (`pad_to_dir8_lut`), ignoring neutral/invalid (`-1`) and odd diagonals (`1, 3, 5, 7`).
+     * Stage 0 locks initial cardinal direction (`0=Up, 2=Right, 4=Down, 6=Left`).
+     * Stage 1 evaluates CW (`(start + 2) & 7`) vs CCW (`(start - 2) & 7`).
+     * Stages 2 and 3 require the subsequent two 90° cardinal steps in the locked rotational direction.
+     * On match, clears frame counter `$FF16EA = 0` and sets carry (returns `true`).
+   - `0x008778..0x008813`: `detect_fbf_motion`:
+     * Checks Ali's facing direction (`0..3`) at offset `+0x16`.
+     * Inspects sample window for perpendicular D-pad inputs (`4/8` Left/Right for Up/Down facings, `1/2` Up/Down for Left/Right facings); rejects immediately if encountered.
+     * Matches 3-step sequence per facing: Facing 0 Up `1->2->1`, Facing 1 Right `8->4->8`, Facing 2 Down `2->1->2`, Facing 3 Left `4->8->4`.
+     * On match, clears frame counter `$FF16EA = 0` and sets carry (returns `true`).
+
+**Decisions:**
+1. **Dedicated `ali_command_motions` Module:**
+   - Added `src/game/player/ali_command_motions.hpp/.cpp` modeling `recognize_spin_360_dpad`, `recognize_spin_360_direct`, `recognize_fbf_dpad`, `recognize_fbf_direct`, `detect_spin_360_motion`, and `detect_fbf_motion`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-140-WEAPON-DURABILITY-DPAD — ROM Weapon Durability Decrement, Auto-Revert to Dagger & 16-Way D-Pad Velocity Resolver (0x008530..0x0086B2)
 **Status:** Accepted
 **Date:** 2026-11-17

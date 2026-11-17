@@ -1,3 +1,11 @@
+# M16.141 ROM 360-Spin & F-B-F Command-Motion Recognizers (`0x0086B4..0x008813`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `recognize_spin_360_dpad`, `recognize_spin_360_direct`, `recognize_fbf_dpad`, `recognize_fbf_direct`, `detect_spin_360_motion`, and `detect_fbf_motion` in `src/game/player/ali_command_motions.hpp/.cpp`:
+  - 360° spin-slash recognizer: evaluates backwards scan up to `min(count, 30)` samples, mapping D-pad nibbles via 16-entry LUT `0x008768` (`0=Up, 2=Right, 4=Down, 6=Left`), ignoring neutral and diagonals, matching 4 consecutive 90° cardinal steps in either CW or CCW direction, and clearing `$FF16EA = 0` on match.
+  - Forward-Back-Forward (F-B-F) command recognizer: checks sample window for perpendicular inputs (`4/8` Left/Right for Up/Down facings, `1/2` Up/Down for Left/Right facings) with immediate abort, matching 3-step sequence per facing direction (`0: 1->2->1`, `1: 8->4->8`, `2: 2->1->2`, `3: 4->8->4`), and clearing `$FF16EA = 0` on match.
+- Qualified `oasis_m16_141_command_motions` and the 122-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.140 ROM Weapon Durability Decrement, Auto-Revert to Dagger & 16-Way D-Pad Velocity Resolver (`0x008530..0x0086B2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
