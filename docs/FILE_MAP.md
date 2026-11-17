@@ -1,3 +1,9 @@
+# M15.303 ROM 8-Direction Fixed-Point Velocity Vector & Facing Kernel
+- `tools/extract_rom_velocity_vector_math.py` — Extracts 8-dir jump table (`0x00E2F2`), `0.75` diagonal shift math, and `0x00E338` facing mapper.
+- `tests/rom_velocity_vector_math_test.py` — Unit tests verifying 8-dir velocities, cardinal facing, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_velocity_vector_math_m15_303.json` — Extracted velocity vector math evidence.
+- `docs/handoffs/STANDALONE_M15_303_VELOCITY_VECTOR_MATH_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.302 ROM Entity Struct Constructor & `0x03F2FA` Field Map
 - `tools/extract_rom_entity_struct_layout.py` — Extracts `0x008D06` constructor & all 16 fields of the 32B `0x03F2FA` descriptor.
 - `tests/rom_entity_struct_layout_test.py` — Unit tests verifying table/threshold constants and Ali sample (`2/2 PASS`).

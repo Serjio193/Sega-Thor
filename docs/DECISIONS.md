@@ -1,3 +1,7 @@
+# ADR-20261117-M15-303-VELOCITY-VECTOR-MATH — 8-Direction Fixed-Point Velocity Vector (`0x00E2D4`..`0x00E36E`)
+- **Decision:** Model 8-direction movement & knockback velocity conversion in Standalone via `0x00E2D4` (`16.16` fixed-point `(sx << 8, sy << 8)` with exact `0.75` `(v >> 1) + (v >> 2)` diagonal scaling) and `0x00E338` cardinal facing.
+- **Evidence:** Direct Capstone M68K disassembly of `0x00E2D4..0x00E36E` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-302-ENTITY-STRUCT-LAYOUT — Entity Struct Constructor & `0x03F2FA` Field Map (`0x008D06`)
 - **Decision:** Model entity construction in Standalone directly from `0x008D06`'s 16-field 32-byte descriptor unpacker (`0x03F2FA`, `$FF2954` lightweight threshold).
 - **Evidence:** Direct Capstone M68K disassembly of `0x008D06..0x008DC0` in `local-roms/Beyond Oasis (USA).md`.

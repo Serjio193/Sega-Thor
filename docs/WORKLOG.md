@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.303: ROM 8-DIRECTION FIXED-POINT VELOCITY VECTOR (`0x00E2D4`..`0x00E36E`) — 8 Dirs, `0.75` Diagonal, Facing; Extractor (`tools/extract_rom_velocity_vector_math.py` <= 500 lines), Tests (`tests/rom_velocity_vector_math_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_303_VELOCITY_VECTOR_MATH_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00E2D4..0x00E36E` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_velocity_vector_math.py` and `python tests/rom_velocity_vector_math_test.py` (2/2 PASS).
+- Next: Commit & push M15.303, await M16.86 completion, and continue.
+
 # 2026-11-17 — Milestone M15.302: ROM ENTITY STRUCT CONSTRUCTOR & `0x03F2FA` FIELD MAP (`0x008D06`) — 16 Descriptor Fields -> `0xBC` Struct; Extractor (`tools/extract_rom_entity_struct_layout.py` <= 500 lines), Tests (`tests/rom_entity_struct_layout_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_302_ENTITY_STRUCT_LAYOUT_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x008D06..0x008DC0` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_entity_struct_layout.py` and `python tests/rom_entity_struct_layout_test.py` (2/2 PASS).

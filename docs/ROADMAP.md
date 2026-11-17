@@ -1,3 +1,7 @@
+# M15.303 ROM 8-Direction Fixed-Point Velocity Vector & Facing Kernel (`0x00E2D4`..`0x00E36E`) — COMPLETE / VERIFIED
+- Decoded 8-direction `16.16` fixed-point velocity kernel (`0x00E2D4`: cardinal full speed, diagonal `0.75` `(v >> 1) + (v >> 2)`) and velocity-to-cardinal-facing mapper (`0x00E338`).
+- Authored `tools/extract_rom_velocity_vector_math.py`, `tests/rom_velocity_vector_math_test.py` (`2/2 PASS`), `data/thor-evidence/rom_velocity_vector_math_m15_303.json`, and `docs/handoffs/STANDALONE_M15_303_VELOCITY_VECTOR_MATH_HANDOFF.md`.
+
 # M15.302 ROM Entity Struct Constructor & `0x03F2FA` Field Map (`0x008D06`) — COMPLETE / VERIFIED
 - Decoded universal entity constructor (`0x008D06`, `0x5D` vs `0x2C` words clear at `$FF2954` threshold) and all 16 fields of the 32-byte `0x03F2FA` master descriptor -> `0xBC`-byte entity struct.
 - Authored `tools/extract_rom_entity_struct_layout.py`, `tests/rom_entity_struct_layout_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_struct_layout_m15_302.json`, and `docs/handoffs/STANDALONE_M15_302_ENTITY_STRUCT_LAYOUT_HANDOFF.md`.

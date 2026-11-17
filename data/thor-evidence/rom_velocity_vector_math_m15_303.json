@@ -1,0 +1,60 @@
+{
+  "milestone": "M15.303",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "velocity_math": {
+    "entry_addr": "0x00E2D4",
+    "dir_table_addr": "0x00E2F2",
+    "diagonal_scale": "(v >> 1) + (v >> 2) [0.75]",
+    "facing_from_vel_addr": "0x00E338"
+  },
+  "directions": [
+    {
+      "dir": 0,
+      "name": "N",
+      "entry_addr": "0x00E2F2",
+      "target_addr": "0x00E302"
+    },
+    {
+      "dir": 1,
+      "name": "E",
+      "entry_addr": "0x00E2F4",
+      "target_addr": "0x00E308"
+    },
+    {
+      "dir": 2,
+      "name": "S",
+      "entry_addr": "0x00E2F6",
+      "target_addr": "0x00E30C"
+    },
+    {
+      "dir": 3,
+      "name": "W",
+      "entry_addr": "0x00E2F8",
+      "target_addr": "0x00E310"
+    },
+    {
+      "dir": 4,
+      "name": "NE",
+      "entry_addr": "0x00E2FA",
+      "target_addr": "0x00E316"
+    },
+    {
+      "dir": 5,
+      "name": "SE",
+      "entry_addr": "0x00E2FC",
+      "target_addr": "0x00E322"
+    },
+    {
+      "dir": 6,
+      "name": "SW",
+      "entry_addr": "0x00E2FE",
+      "target_addr": "0x00E31A"
+    },
+    {
+      "dir": 7,
+      "name": "NW",
+      "entry_addr": "0x00E300",
+      "target_addr": "0x00E31E"
+    }
+  ]
+}
