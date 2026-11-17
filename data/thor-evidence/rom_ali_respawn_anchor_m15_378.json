@@ -1,0 +1,29 @@
+{
+  "milestone": "M15.378",
+  "title": "ROM Ali Pit-Fall Damage, Safe Respawn Anchor & 3px Coordinate Interpolator",
+  "routines": {
+    "ali_pit_damage_and_fatal_check": {
+      "start": "0x00693C",
+      "end": "0x006996"
+    },
+    "ali_safe_anchor_respawn_loop": {
+      "start": "0x006998",
+      "end": "0x006B10"
+    },
+    "step_1px_coordinate_interpolator": {
+      "start": "0x006B12",
+      "end": "0x006B28"
+    }
+  },
+  "constants": {
+    "pit_damage_timer_threshold": 10,
+    "pit_fall_damage_hp": 20,
+    "fatal_death_state": "0x0070",
+    "game_over_fade_frames": 40,
+    "respawn_invuln_timer_frames": 63,
+    "post_respawn_invuln_frames": 12,
+    "safe_respawn_anchor_addr": "0x00FF1972",
+    "auto_revive_item_id": "0x002A",
+    "interpolator_steps_per_axis": 3
+  }
+}

@@ -1,3 +1,9 @@
+# M15.378 ROM Ali Pit-Fall Damage, Safe Respawn Anchor & 3px Coordinate Interpolator
+- `tools/extract_rom_ali_respawn_anchor.py` — extractor for `0x00693C..0x006B28` (20 HP pit damage at timer 10, fatal death state `0x70` & 40f fade, safe respawn anchor `$FF1972`, 63f/12f invulnerability timers, 3px/frame coordinate interpolator `0x006B12`).
+- `tests/rom_ali_respawn_anchor_test.py` — `2` unit tests verifying ROM constants, pit damage application/revive rules, and 1px/3px coordinate interpolator.
+- `data/thor-evidence/rom_ali_respawn_anchor_m15_378.json` — extracted M15.378 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_378_ALI_RESPAWN_ANCHOR_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.377 ROM Ali Cartwheel Evade Hitbox, Ledge-Catch Probe & Standup Sync
 - `tools/extract_rom_ali_cartwheel_ledge.py` — extractor for `0x006738..0x00693A` (cartwheel damage `14`/`16`, spin SFX `0x1B400344`, contact frame reset, `0x8000` friction, ledge pull-up `0xCA24`, `-0xC000` gravity, foot probe offset `+14`, ledge catch state `0x32`, standup state `0x34` 20f timer, standup SFX `0x0080037A`).
 - `tests/rom_ali_cartwheel_ledge_test.py` — `2` unit tests verifying ROM constants, cartwheel damage/contact logic, and pit edge probe transitions.

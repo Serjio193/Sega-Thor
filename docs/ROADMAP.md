@@ -1,3 +1,6 @@
+# M15.378 ROM Ali Pit-Fall Damage, Safe Respawn Anchor & 3px Coordinate Interpolator (`0x00693C`..`0x006B28`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_respawn_anchor.py`, `tests/rom_ali_respawn_anchor_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_respawn_anchor_m15_378.json`, and `docs/handoffs/STANDALONE_M15_378_ALI_RESPAWN_ANCHOR_HANDOFF.md`.
+
 # M15.377 ROM Ali Cartwheel Evade Hitbox, Ledge-Catch Probe & Standup Sync (`0x006738`..`0x00693A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_cartwheel_ledge.py`, `tests/rom_ali_cartwheel_ledge_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_cartwheel_ledge_m15_377.json`, and `docs/handoffs/STANDALONE_M15_377_ALI_CARTWHEEL_LEDGE_HANDOFF.md`.
 
