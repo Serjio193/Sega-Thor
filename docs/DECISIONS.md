@@ -1,3 +1,14 @@
+# ADR-20261117-M16-119-SPRITE-DMA-THROTTLE — Entity Sprite-DMA Budget Throttle & Frame Lookup
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.335 extracted `0x00A9A0..0x00AAA5`: `select_entity_frame_with_dma_budget` (`0x00A9AE..0x00A9F8`) and `should_draw_entity_shadow` (`0x00AA78..0x00AAA5`).
+
+**Decisions:**
+1. **Dedicated `sprite_dma_throttle` Module:**
+   - Added `src/game/video/sprite_dma_throttle.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-118-HUD-SAT-EMITTER — HUD Frame SAT & Item-Toast DMA Emitter
 **Status:** Accepted
 **Date:** 2026-11-17

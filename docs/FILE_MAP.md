@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/video/sprite_dma_throttle.hpp` / `src/game/video/sprite_dma_throttle.cpp`: Entity sprite-DMA budget throttle (`0x00A9AE..0x00A9F8`, facing `3` -> `1`, `$FF1651 = 0xFF` throttle) and shadow visibility (`0x00AA78..0x00AAA5`) (M16.119).
+- `tests/m16_119_sprite_dma_throttle_test.cpp`: Automated M16.119 test qualifying uncached force-DMA, over-budget throttling, facing-3 mirror mapping, and shadow visibility (M16.119).
 - `src/game/ui/hud_sat_emitter.hpp` / `src/game/ui/hud_sat_emitter.cpp`: HUD frame SAT & item-toast DMA emitter (`0x00A342..0x00A436`: 6 primary HUD sprites, 3 enemy-gauge sprites mirrored at `0x0158 - slide_x`, 3x3 toast sprite `0x85C7`, 80-sprite cap, and `0x90`-word DMA from `0x000AAEBB + item_id * 0x90` to `0xB8E0`) (M16.118).
 - `tests/m16_118_hud_sat_emitter_test.cpp`: Automated M16.118 test qualifying HUD slide mirror math, toast sprite coordinates, 80-sprite cap, and toast icon DMA descriptor (M16.118).
 - `src/game/video/ysort_sat_pipeline.hpp` / `src/game/video/ysort_sat_pipeline.cpp`: Master Y-sorted SAT render pipeline (`0x00A196..0x00A27E`: 5 passes — 4 high-prio FX, 4 hit-sparks, 21 descending-Y `> -1` entities, 8 ground/shadow FX, 6 floor FX) (M16.117).

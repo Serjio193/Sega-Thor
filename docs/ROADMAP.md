@@ -1,3 +1,9 @@
+# M16.119 Entity Sprite-DMA Budget Throttle & Frame Lookup (`0x00A9A0..0x00AAA5`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `select_entity_frame_with_dma_budget` (`0x00A9AE..0x00A9F8`: facing `3` -> `1`, `$FF1651 = 0xFF` over-budget throttle) and `should_draw_entity_shadow` (`0x00AA78..0x00AAA5`) in `src/game/video/sprite_dma_throttle.hpp/.cpp`.
+- Qualified `oasis_m16_119_sprite_dma_throttle` and the 100-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.118 HUD Frame SAT & Item-Toast DMA Emitter (`0x00A342..0x00A436`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

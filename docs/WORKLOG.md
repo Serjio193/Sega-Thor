@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.119: Entity Sprite-DMA Budget Throttle & Frame Lookup)
+- **Concrete Task**: Implement `src/game/video/sprite_dma_throttle.hpp/.cpp` with `select_entity_frame_with_dma_budget(facing, anim_frame, cached_frame, dma_cost, dma_budget)` (`0x00A9AE..0x00A9F8`: facing `3` -> `1`, throttles back to `cached_frame` and sets `$FF1651 = 0xFF` when `cached_frame >= 0 && dma_cost > dma_budget`) and `should_draw_entity_shadow(z, flags_36)` (`0x00AA78..0x00AAA5`: `!(flags_36 & 8) && (z > 0 || (z == 0 && (flags_36 & 4)))`); add `tests/m16_119_sprite_dma_throttle_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/video/sprite_dma_throttle.hpp` / `src/game/video/sprite_dma_throttle.cpp`.
+  * Added `tests/m16_119_sprite_dma_throttle_test.cpp` (registered as `oasis_m16_119_sprite_dma_throttle` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `100/100` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `100/100` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `select_entity_frame_with_dma_budget()` and `should_draw_entity_shadow()` directly into `SpriteCompositor` / `StandaloneGameSimulation` live per-entity DMA scheduling is deferred to future SAT-DMA unification.
+
 # Worklog — 2026-11-17 (M16.118: HUD Frame SAT & Item-Toast DMA Emitter)
 - **Concrete Task**: Implement `src/game/ui/hud_sat_emitter.hpp/.cpp` with `compute_hud_sat_and_toast_plan(slide_x, enemy_gauge_active, toast_timer, toast_item_id, cached_toast_item_id, current_sat_count)` (`0x00A342..0x00A436`: 6 primary HUD sprites shifted by `slide_x`, 3 enemy-gauge sprites shifted by `0x0158 - slide_x`, 3x3 toast sprite `0x85C7` at `(slide_x + 0x68, 0x0118)` when `toast_timer != 0 && sat_count < 80`, plus `0x90`-word DMA from `0x000AAEBB + item_id * 0x90` to VRAM `0xB8E0` when `toast_item_id != cached_toast_item_id`); add `tests/m16_118_hud_sat_emitter_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
