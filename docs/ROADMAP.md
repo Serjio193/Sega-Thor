@@ -1,3 +1,9 @@
+# M16.108 Inventory/Ring 4x4 Grid UI Layout (`0x0042A6..0x004360`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `grid_slot_to_xy` (`0x0042A6..0x0042D0`) and `build_inventory_grid_icon_plan` (`0x0042E8..0x004360`: 8 inventory slots, `9`-tile stride, `+0x18` Y bias, spirit slot `0x20` & special slot `0x29` in `$FF2FA8`) in `src/game/ui/inventory_grid_ui.hpp/.cpp`.
+- Qualified `oasis_m16_108_inventory_grid_ui` and the 89-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.107 Player Tile-Box Containment & Overlap Checks (`0x00C17A..0x00C220`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

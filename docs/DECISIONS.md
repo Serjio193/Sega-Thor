@@ -1,3 +1,14 @@
+# ADR-20261117-M16-108-INVENTORY-GRID-UI — Inventory/Ring 4x4 Grid UI Layout
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.324 extracted `0x0042A6..0x004360`: `grid_slot_to_xy` (`0x0042A6..0x0042D0`) and `render_inventory_grid` (`0x0042E8..0x004360`: 8 inventory slots, `9`-tile stride, `+0x18` Y bias, spirit slot `0x20` & special slot `0x29` in `$FF2FA8`).
+
+**Decisions:**
+1. **Dedicated `inventory_grid_ui` Module:**
+   - Added `src/game/ui/inventory_grid_ui.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-107-PLAYER-TILE-BOX — Player Tile-Box Containment & Overlap Checks
 **Status:** Accepted
 **Date:** 2026-11-17

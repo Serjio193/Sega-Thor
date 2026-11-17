@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/inventory_grid_ui.hpp` / `src/game/ui/inventory_grid_ui.cpp`: Inventory/Ring 4x4 grid UI layout (`0x0042A6..0x004360`, `grid_slot_to_xy`, `build_inventory_grid_icon_plan` with 8 inventory slots, `9`-tile stride, `+0x18` Y bias, spirit `0x20` & special `0x29` in `$FF2FA8`) (M16.108).
+- `tests/m16_108_inventory_grid_ui_test.cpp`: Automated M16.108 test qualifying 4x4 grid slot coordinates (`0`, `3`, `4`, `7`, `15`) and icon layout plan (M16.108).
 - `src/game/world/player_tile_box.hpp` / `src/game/world/player_tile_box.cpp`: Player tile-box containment (`0x00C17A..0x00C1CC`) and overlap (`0x00C1CE..0x00C220`) checks with `8px` tile shift and `+7px` inclusive tile max bias (`0x00070007`) (M16.107).
 - `tests/m16_107_player_tile_box_test.cpp`: Automated M16.107 test qualifying containment and overlap boundaries including exact `+7px` edge cases (M16.107).
 - `src/game/ui/menu_sprite_dma.hpp` / `src/game/ui/menu_sprite_dma.cpp`: Inventory/menu sprite & font DMA strip emitter (`0x004000..0x00417A`, `kSpriteTileCountLut16` `0x0040CE`, `remap_menu_ascii`, `append_menu_sat_sprite` 80-sprite cap, `emit_item_and_digit_pair` `0x86DD`/`0x85D0`, `emit_font_strip_plan` `<= 4`-tile chunks + `0x152F5A`/`0x15375A` DMA descriptors) (M16.106).

@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.108: Inventory/Ring 4x4 Grid UI Layout)
+- **Concrete Task**: Implement `src/game/ui/inventory_grid_ui.hpp/.cpp` with `grid_slot_to_xy(slot)` (`0x0042A6..0x0042D0`: `(0x70 + (slot & 3) * 24, 0x40 + ((slot & 0xC) >> 2) * 24)`) and `build_inventory_grid_icon_plan(...)` (`0x0042E8..0x004360`: 8 inventory slots from `$FF0D80`, `9`-tile icon stride from `0x155D76`, `+0x18` Y bias, spirit slot `0x20` & special slot `0x29` in `$FF2FA8`); add `tests/m16_108_inventory_grid_ui_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/inventory_grid_ui.hpp` / `src/game/ui/inventory_grid_ui.cpp`.
+  * Added `tests/m16_108_inventory_grid_ui_test.cpp` (registered as `oasis_m16_108_inventory_grid_ui` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `89/89` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `89/89` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `build_inventory_grid_icon_plan()` directly into `RingMenuState` / live inventory VDP rendering is deferred to future menu-UI unification.
+
 # Worklog — 2026-11-17 (M16.107: Player Tile-Box Containment & Overlap Checks)
 - **Concrete Task**: Implement `src/game/world/player_tile_box.hpp/.cpp` with `player_inside_tile_box(px, py, half_extent, tx1, ty1, tx2, ty2)` (`0x00C17A..0x00C1CC`) and `player_overlaps_tile_box(px, py, half_extent, tx1, ty1, tx2, ty2)` (`0x00C1CE..0x00C220`) using `8px` tile shift (`kTileShift = 3`) and `+7px` inclusive tile max bias (`0x00070007`); add `tests/m16_107_player_tile_box_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
