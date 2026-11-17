@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.104: Plane Scroll Delta & VDP H/V-Scroll Buffer Sync)
+- **Concrete Task**: Implement `src/game/world/plane_scroll_sync.hpp/.cpp` with `update_plane_scroll_deltas()` (`0x00D188..0x00D264`: 8px tile-crossing deltas `pending_dx_tiles`/`pending_dy_tiles`, `0x1FF`/`0xFF` H/V-scroll wrap, dirty bits `0..3`, `±10000` anti-overflow wrap), `wrap_camera_to_map_bounds()` (`0x00D266..0x00D2B2`), and `flush_hscroll_to_vdp_buffer()` (`0x00D2B4..0x00D342`: `$FFFB5C` per-line / `$FF1344` full-screen, Plane A `+0` / Plane B `+2`); add `tests/m16_104_plane_scroll_sync_test.cpp`; qualify full 64-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/plane_scroll_sync.hpp` / `src/game/world/plane_scroll_sync.cpp`.
+  * Added `tests/m16_104_plane_scroll_sync_test.cpp` (registered as `oasis_m16_104_plane_scroll_sync` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 64/64 regression run.
+  * MSVC Debug (`build-debug`): 64/64 regression run.
+  * Remaining unknowns: Connecting `update_plane_scroll_deltas()` + `flush_hscroll_to_vdp_buffer()` directly into `VdpState::hscroll` / `VdpPlaneScrollState` in `StandaloneGameSimulation` is deferred to future scrolling-plane unification.
+
 # Worklog — 2026-11-17 (M16.103: Camera Deadzone Follow, Screen Shake & HUD Slide Trigger)
 - **Concrete Task**: Implement `src/game/camera/camera_follow.hpp/.cpp` with `CameraFollowState` and `step_camera_follow(state)` (`0x00CEEA..0x00D114`: deadzone `X in [0x78, 0xC8]`, `Y in [0x68, 0x80]`, smooth `±3` / `±0x1E` ramp with upward Y clamp `>= -6`, HUD slide triggers `rel_x <= 0x50` / `>= 0xF0` + `0x0138`/`0x0020` snap, locked-center mode `$FF16F1 & 8`, and `$FF17C4` screen shake); add `tests/m16_103_camera_follow_test.cpp`; qualify full 63-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

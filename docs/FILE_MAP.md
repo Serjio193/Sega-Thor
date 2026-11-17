@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/world/plane_scroll_sync.hpp` / `src/game/world/plane_scroll_sync.cpp`: Plane scroll delta & VDP H/V-scroll buffer sync (`0x00D188..0x00D342`: 8px tile crossings, `0x1FF`/`0xFF` wrap, `±10000` anti-overflow, `wrap_camera_to_map_bounds`, `flush_hscroll_to_vdp_buffer`) (M16.104).
+- `tests/m16_104_plane_scroll_sync_test.cpp`: Automated M16.104 test qualifying tile-crossing deltas, `0x1FF`/`0xFF` masks, `±10000` wrap, map-bounds wrap, and Plane A/B HScroll flush (M16.104).
 - `src/game/camera/camera_follow.hpp` / `src/game/camera/camera_follow.cpp`: Camera deadzone follow (`0x00CEEA..0x00D114`: `[0x78,0xC8]`/`[0x68,0x80]`, `±3`/`±0x1E` ramp, HUD slide `0x50`/`0xF0`, locked-center mode, `$FF17C4` screen shake) (M16.103).
 - `tests/m16_103_camera_follow_test.cpp`: Automated M16.103 test qualifying deadzone, smooth catch-up, HUD slide triggers, locked-center mode, and screen shake (M16.103).
 - `src/game/world/room_warp_sequence.hpp` / `src/game/world/room_warp_sequence.cpp`: Room update hook guard (`0x00C980`/`0x00C998`), 6-flag warp lock guard (`0x00C9B2..0x00C9EA`), and warp transition sequence (`0x00C9EC..0x00CB0A`: `0x0004 -> 0x0611`, camera centering, checkpoint bit 6, flag reset, fade `4`) (M16.102).

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-104-PLANE-SCROLL-SYNC — Plane Scroll Delta & VDP H/V-Scroll Buffer Sync
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.320 extracted `0x00D188..0x00D342`: `update_plane_scroll_deltas` (8px tile crossings, `0x1FF`/`0xFF` H/V-scroll, `±10000` anti-overflow), `wrap_camera_to_map_bounds`, and `flush_hscroll_to_vdp_buffer`.
+
+**Decisions:**
+1. **Dedicated `plane_scroll_sync` Module:**
+   - Added `src/game/world/plane_scroll_sync.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-103-CAMERA-FOLLOW — Camera Deadzone Follow, Screen Shake & HUD Slide Trigger
 **Status:** Accepted
 **Date:** 2026-11-17

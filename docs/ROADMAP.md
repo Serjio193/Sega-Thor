@@ -1,3 +1,9 @@
+# M16.104 Plane Scroll Delta & VDP H/V-Scroll Buffer Sync (`0x00D188..0x00D342`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `update_plane_scroll_deltas` (`0x00D188..0x00D264`), `wrap_camera_to_map_bounds` (`0x00D266..0x00D2B2`), and `flush_hscroll_to_vdp_buffer` (`0x00D2B4..0x00D342`) in `src/game/world/plane_scroll_sync.hpp/.cpp`.
+- Qualified `oasis_m16_104_plane_scroll_sync` and full 64-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.103 Camera Deadzone Follow, Screen Shake & HUD Slide Trigger (`0x00CEEA..0x00D114`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
