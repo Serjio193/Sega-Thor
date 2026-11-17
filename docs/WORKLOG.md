@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.110: 5-Digit Decimal-to-ASCII Formatter)
+- **Concrete Task**: Implement `src/game/ui/decimal_ascii.hpp/.cpp` with `format_u16_dec_zero_padded(uint16_t val)` (`0x00C0BE..0x00C112` -> `"00000".."65535"`) and `format_u16_dec_space_padded(uint16_t val)` (`0x00C114..0x00C178` -> `"    0".."65535"`); add `tests/m16_110_decimal_ascii_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/decimal_ascii.hpp` / `src/game/ui/decimal_ascii.cpp`.
+  * Added `tests/m16_110_decimal_ascii_test.cpp` (registered as `oasis_m16_110_decimal_ascii` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `91/91` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `91/91` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `format_u16_dec_zero_padded()` / `format_u16_dec_space_padded()` directly into HUD / menu numeric displays is deferred to future UI unification.
+
 # Worklog — 2026-11-17 (M16.109: 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer)
 - **Concrete Task**: Implement `src/game/ui/glyph_outliner.hpp/.cpp` with `rasterize_outlined_glyph(std::span<const std::uint16_t, 14> rows)` (`0x00C222..0x00C2EA`: unpack 14 `uint16_be` rows into `18x17` 306-byte scratch canvas, 4-neighbor outline pass setting empty cells orthogonally adjacent to `bit 7` set to `0x0E`, and column-major 4-tile 4-bpp VDP packing TL `0x13`, BL `0xA3`, TR `0x1B`, BR `0xAB` = 128 bytes); add `tests/m16_109_glyph_outliner_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

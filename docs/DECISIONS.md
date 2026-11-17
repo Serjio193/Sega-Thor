@@ -1,3 +1,14 @@
+# ADR-20261117-M16-110-DECIMAL-ASCII — 5-Digit Decimal-to-ASCII Formatter
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.326 extracted `0x00C0BE..0x00C178`: `format_u16_dec_zero_padded` (`0x00C0BE..0x00C112`) and `format_u16_dec_space_padded` (`0x00C114..0x00C178`) formatting 5-digit ASCII strings into `$FF192A`.
+
+**Decisions:**
+1. **Dedicated `decimal_ascii` Module:**
+   - Added `src/game/ui/decimal_ascii.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-109-GLYPH-OUTLINER — 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer
 **Status:** Accepted
 **Date:** 2026-11-17

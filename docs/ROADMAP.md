@@ -1,3 +1,9 @@
+# M16.110 5-Digit Decimal-to-ASCII Formatter (`0x00C0BE..0x00C178`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `format_u16_dec_zero_padded` (`0x00C0BE..0x00C112`, `"00000".."65535"`) and `format_u16_dec_space_padded` (`0x00C114..0x00C178`, `"    0".."65535"`) in `src/game/ui/decimal_ascii.hpp/.cpp`.
+- Qualified `oasis_m16_110_decimal_ascii` and the 91-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.109 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer (`0x00C222..0x00C2EA`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

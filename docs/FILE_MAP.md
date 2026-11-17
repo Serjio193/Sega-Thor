@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/decimal_ascii.hpp` / `src/game/ui/decimal_ascii.cpp`: 5-digit decimal-to-ASCII formatter (`0x00C0BE..0x00C112` zero-padded `"00000".."65535"`, `0x00C114..0x00C178` space-padded `"    0".."65535"`) (M16.110).
+- `tests/m16_110_decimal_ascii_test.cpp`: Automated M16.110 test qualifying `0`, `105`, `9999`, `10000`, and `65535` in both zero-padded and space-padded modes (M16.110).
 - `src/game/ui/glyph_outliner.hpp` / `src/game/ui/glyph_outliner.cpp`: 1-bpp dialogue glyph outliner & 4-tile VDP rasterizer (`0x00C222..0x00C2EA`, `18x17` 306B canvas, 4-neighbor `0x0E` outline dilation, column-major TL `0x13`/BL `0xA3`/TR `0x1B`/BR `0xAB` 128B 4-bpp tiles) (M16.109).
 - `tests/m16_109_glyph_outliner_test.cpp`: Automated M16.109 test qualifying single-pixel 4-neighbor outline dilation and 128-byte 4-bpp VDP tile packing (M16.109).
 - `src/game/ui/inventory_grid_ui.hpp` / `src/game/ui/inventory_grid_ui.cpp`: Inventory/Ring 4x4 grid UI layout (`0x0042A6..0x004360`, `grid_slot_to_xy`, `build_inventory_grid_icon_plan` with 8 inventory slots, `9`-tile stride, `+0x18` Y bias, spirit `0x20` & special `0x29` in `$FF2FA8`) (M16.108).
