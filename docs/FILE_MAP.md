@@ -5330,6 +5330,10 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
 - docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).
 
+- tools/extract_rom_ali_input_seq_durability.py — M15.391 ROM Ali input sequence matcher, shockwave spawner & durability extractor.
+- tests/rom_ali_input_seq_durability_test.py — M15.391 unit tests for motion sequence matcher, shockwave spawner, and weapon durability break.
+- data/thor-evidence/rom_ali_input_seq_durability_m15_391.json — M15.391 evidence database.
+- docs/handoffs/STANDALONE_M15_391_ALI_INPUT_SEQ_DURABILITY_HANDOFF.md — M15.391 C++20 Standalone handoff.
 - tools/extract_rom_ali_spirit_power_inspector.py — M15.390 ROM Ali spirit power invocation, item proximity & object inspector extractor.
 - tests/rom_ali_spirit_power_inspector_test.py — M15.390 unit tests for spirit power, item proximity, interactive objects, and facing normalizer.
 - data/thor-evidence/rom_ali_spirit_power_inspector_m15_390.json — M15.390 evidence database.

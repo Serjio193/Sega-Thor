@@ -1,0 +1,47 @@
+{
+  "milestone": "M15.391",
+  "description": "ROM Ali Input Sequence Pattern Matcher, Shockwave Spawner, Weapon Durability & Break SFX",
+  "address_range": [
+    "0x0083F8",
+    "0x0085E2"
+  ],
+  "byte_count": 490,
+  "shockwave_offsets": [
+    "0xF800",
+    "0x0B00",
+    "0x0817",
+    "0xF500"
+  ],
+  "routines": [
+    {
+      "name": "ali_motion_sequence_matcher",
+      "start": "0x0083F8",
+      "end": "0x00846A",
+      "purpose": "Stateful 3-stage command motion recognizer: scans up to 12 frames in $FF1668 for Press -> Release -> Re-press pattern"
+    },
+    {
+      "name": "ali_shockwave_projectile_spawner",
+      "start": "0x00846C",
+      "end": "0x0084FA",
+      "purpose": "Spawns shockwave projectile entity 0x16 at $FF1AA4 with elevation 19, orientation offsets 0x0084FC, and speed 0x800 via 0xE2D4"
+    },
+    {
+      "name": "ali_vdp_dma_enqueue",
+      "start": "0x008504",
+      "end": "0x00852E",
+      "purpose": "Enqueues VDP DMA parameters (0x9D2FE, 0x9F00, 0x390) with interrupt safety mask SR 0x0700"
+    },
+    {
+      "name": "ali_weapon_durability_break",
+      "start": "0x008530",
+      "end": "0x0085C2",
+      "purpose": "Decrements weapon durability; ignores 0xFF; on 0 clears slot, reverts to Dagger ID 1 / type 0x0A, 90f toast, and plays weapon break SFX 0xC00269"
+    },
+    {
+      "name": "ali_exp_bonus_check",
+      "start": "0x0085C4",
+      "end": "0x0085E2",
+      "purpose": "Checks EXP threshold $FF0E3C >= $FF1A70; clears EXP and sets bonus item drop flag $FF0DBB = 0xFF"
+    }
+  ]
+}

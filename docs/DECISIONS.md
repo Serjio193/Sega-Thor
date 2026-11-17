@@ -12271,6 +12271,13 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.391: ROM Ali Input Sequence Pattern Matcher, Shockwave Spawner, Weapon Durability & Break SFX (0x0083F8..0x0085E2)
+
+- Decoded stateful 3-stage command motion recognizer (`0x0083F8..0x00846A`): scans up to 12 frames in ring `$FF1668` for Press -> Release -> Re-press double-tap motions.
+- Decoded shockwave projectile spawner (`0x00846C..0x0084FA`): spawns entity type `0x16` at `$FF1AA4` with elevation 19, orientation offsets table `0x0084FC` (`[0xF800, 0x0B00, 0x0817, 0xF500]`), and directional velocity via `0xE2D4`.
+- Decoded weapon durability decrement and break handler (`0x008530..0x0085C2`): ignores infinite ammo `0xFF`; on 0 clears weapon slot, reverts to Dagger ID 1 / type `0x0A`, sets 90-frame toast `$FF1856 = 0x5A`, and plays weapon break SFX `#$C00269`.
+- Decoded EXP level-up bonus check (`0x0085C4..0x0085E2`): clears `$FF0E3C` and sets bonus item drop flag `$FF0DBB = 0xFF`.
+
 ## 2026-11-17 - Milestone M15.390: ROM Ali Spirit Power Invocation, Item Proximity Scanner, Object Inspector & 4-Direction Normalizer (0x00822C..0x0083F8)
 
 - Decoded Spirit Power Button A invocation (`0x00822C..0x0082AC`): Air Call (`state = 0x16, anim = 0x16`, `vz = 0x70000`, `+$197E += 8`) vs Ground Summon (`state = 0x10, anim = 0x10`, `vz = 0x70000`, zero horizontal velocities, clear `$FF1980` and ring count).

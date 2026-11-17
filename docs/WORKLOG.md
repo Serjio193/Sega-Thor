@@ -31418,6 +31418,18 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.391: ROM Ali Input Sequence Pattern Matcher, Shockwave Spawner, Weapon Durability & Break SFX (0x0083F8..0x0085E2)
+
+- Decoded and tested stateful 3-stage command motion recognizer (`0x0083F8..0x00846A`): scans up to 12 frames in ring `$FF1668` for Press -> Release -> Re-press double-tap motions.
+- Decoded and tested shockwave projectile spawner (`0x00846C..0x0084FA`): spawns entity type `0x16` at `$FF1AA4` with elevation 19, orientation offsets table `0x0084FC` (`[0xF800, 0x0B00, 0x0817, 0xF500]`), and directional velocity via `0xE2D4`.
+- Decoded and tested atomic VDP DMA enqueue (`0x008504..0x00852E`): writes DMA commands (`0x9D2FE`, `0x9F00`, `0x390`) to `$FF1892` with interrupt masking (`SR = 0x0700`).
+- Decoded and tested weapon durability decrement and break handler (`0x008530..0x0085C2`): ignores infinite ammo `0xFF`; on 0 clears weapon slot, reverts to Dagger ID 1 / type `0x0A`, sets 90-frame toast `$FF1856 = 0x5A`, and plays weapon break SFX `#$C00269`.
+- Decoded and tested EXP level-up bonus check (`0x0085C4..0x0085E2`): clears `$FF0E3C` and sets bonus item drop flag `$FF0DBB = 0xFF`.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_input_seq_durability_m15_391.json` (5 routines, 490 bytes).
+- Unit tests: `tests/rom_ali_input_seq_durability_test.py` (`4/4 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_391_ALI_INPUT_SEQ_DURABILITY_HANDOFF.md`.
+- Next Step: Commit and push M15.391 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.390: ROM Ali Spirit Power Invocation, Item Proximity Scanner, Object Inspector & 4-Direction Normalizer (0x00822C..0x0083F8)
 
 - Decoded and tested Spirit Power Button A invocation (`0x00822C..0x0082AC`): Air Call (`state = 0x16, anim = 0x16`, `vz = 0x70000`, `+$197E += 8`) vs Ground Summon (`state = 0x10, anim = 0x10`, `vz = 0x70000`, zero horizontal velocities, clear `$FF1980` and ring count).
