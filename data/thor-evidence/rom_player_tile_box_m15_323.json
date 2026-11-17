@@ -1,0 +1,22 @@
+{
+  "milestone": "M15.323",
+  "title": "ROM Player Tile-Box Containment & Overlap Checks",
+  "routines": {
+    "player_inside_tile_box": {
+      "start": "0x00C17A",
+      "end": "0x00C1CC"
+    },
+    "player_overlaps_tile_box": {
+      "start": "0x00C1CE",
+      "end": "0x00C220"
+    }
+  },
+  "constants": {
+    "tile_shift": 3,
+    "tile_max_bias_packed": "0x00070007",
+    "player_entity_ram": "0x00FF19E8",
+    "entity_x_offset": "0x08",
+    "entity_y_offset": "0x0C",
+    "entity_radius_offset": "0x46"
+  }
+}

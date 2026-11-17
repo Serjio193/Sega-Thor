@@ -1,3 +1,8 @@
+# ADR-20261117-M15-323-PLAYER-TILE-BOX — Player Tile-Box Containment & Overlap Checks (`0x00C17A`..`0x00C220`)
+- **Context:** Trigger zones test Ali's AABB (`0x08` X, `0x0C` Y, `0x46` half-extent at `$FF19E8`) against 8px tile boxes `[tx1*8, tx2*8+7] x [ty1*8, ty2*8+7]` for full containment (`0x00C17A`) or overlap (`0x00C1CE`).
+- **Decision:** Extracted both routines' offsets and `+7px` inclusive bias (`0x00070007`) into `data/thor-evidence/rom_player_tile_box_m15_323.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.107 can evaluate room/event trigger boxes with exact pixel-boundary parity.
+
 # ADR-20261117-M15-322-MENU-SPRITE-DMA — Inventory/Menu Sprite & Font DMA Strip Emitter (`0x004000`..`0x00417A`)
 - **Context:** Inventory/menu UI builds SAT pairs (`0x86DD` + `0x85D0+qty`), chunks text into `<= 4`-tile horizontal sprites, queues font tile DMAs via the 16-byte LUT `0x0040CE` (`1..16` tiles), and remaps ASCII `0x2B..0x2F` by `+0x30`.
 - **Decision:** Extracted the LUT, font bases (`0x152F5A`/`0x15375A`), and SAT/DMA rules into `data/thor-evidence/rom_menu_sprite_dma_m15_322.json` with 2/2 passing tests and Standalone handoff.

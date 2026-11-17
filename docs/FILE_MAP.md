@@ -1,3 +1,9 @@
+# M15.323 ROM Player Tile-Box Containment & Overlap Checks
+- `tools/extract_rom_player_tile_box.py` — ROM extractor & verifier for `0x00C17A..0x00C220` (Ali `$FF19E8` AABB containment and overlap against 8px tile boxes with `+7px` max bias).
+- `tests/rom_player_tile_box_test.py` — Unit tests verifying containment and overlap boundary cases.
+- `data/thor-evidence/rom_player_tile_box_m15_323.json` — Verified evidence JSON for M15.323.
+- `docs/handoffs/STANDALONE_M15_323_PLAYER_TILE_BOX_HANDOFF.md` — C++20 Standalone handoff for M16.107.
+
 # M15.322 ROM Inventory/Menu Sprite & Font DMA Strip Emitter
 - `tools/extract_rom_menu_sprite_dma.py` — ROM extractor & verifier for `0x004000..0x00417A` (item/digit pair `0x86DD`/`0x85D0`, 16B sprite-tile LUT `0x0040CE`, `<=4`-tile font strips from `0x152F5A`/`0x15375A`, `0x2B..0x2F` `+0x30` remap).
 - `tests/rom_menu_sprite_dma_test.py` — Unit tests verifying font strip chunking and ASCII remap.

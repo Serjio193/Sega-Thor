@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.323: ROM PLAYER TILE-BOX CONTAINMENT & OVERLAP CHECKS (`0x00C17A`..`0x00C220`) — `$FF19E8` AABB vs `8px + 7` Tile Box; Extractor (`tools/extract_rom_player_tile_box.py` <= 500 lines), Tests (`tests/rom_player_tile_box_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_323_PLAYER_TILE_BOX_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00C17A..0x00C220` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_player_tile_box.py`, `python -m unittest tests/rom_player_tile_box_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.323, await M16.102 completion, and continue.
+
 # 2026-11-17 — Milestone M15.322: ROM INVENTORY/MENU SPRITE & FONT DMA STRIP EMITTER (`0x004000`..`0x00417A`) — `0x86DD`/`0x85D0`, 16B LUT `0x0040CE`, `<=4`-Tile Strips, `+0x30` Remap; Extractor (`tools/extract_rom_menu_sprite_dma.py` <= 500 lines), Tests (`tests/rom_menu_sprite_dma_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_322_MENU_SPRITE_DMA_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x004000..0x00417A` and extracted `0x0040CE` LUT in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_menu_sprite_dma.py`, `python -m unittest tests/rom_menu_sprite_dma_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
