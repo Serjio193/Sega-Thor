@@ -12271,6 +12271,11 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.392: ROM Ali 8-Direction D-Pad Velocity Resolver & Slide Motion Recognizer (0x86B4) (0x0085E2..0x008778)
+
+- Decoded 16-entry D-pad jump table `0x0085FA` resolver (`0x0085E2..0x0086B2`): resolves 8-way directional velocity vectors (Up/Down `0x30000`, Left/Right `0x36000`, Diagonals `0x2A000`/`0x25800`), facing `d3`, and movement carry flag.
+- Decoded Slide command motion recognizer `0x86B4` (`0x0086B4..0x008766`): scans up to 30 frames from `$FF1668`, converts D-pad nibbles via 16-byte LUT `0x008768`, tracks 4-step quarter-turn rotational sequence, clears `$FF16EA = 0`, and returns carry set on match.
+
 ## 2026-11-17 - Milestone M15.391: ROM Ali Input Sequence Pattern Matcher, Shockwave Spawner, Weapon Durability & Break SFX (0x0083F8..0x0085E2)
 
 - Decoded stateful 3-stage command motion recognizer (`0x0083F8..0x00846A`): scans up to 12 frames in ring `$FF1668` for Press -> Release -> Re-press double-tap motions.

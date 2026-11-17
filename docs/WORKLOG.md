@@ -31418,6 +31418,15 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.392: ROM Ali 8-Direction D-Pad Velocity Resolver & Slide Motion Recognizer (0x86B4) (0x0085E2..0x008778)
+
+- Decoded and tested 16-entry D-pad jump table `0x0085FA` resolver (`0x0085E2..0x0086B2`): resolves 8-way directional velocity vectors (Up/Down `0x30000`, Left/Right `0x36000`, Diagonals `0x2A000`/`0x25800`), facing `d3`, and movement carry flag.
+- Decoded and tested Slide command motion recognizer `0x86B4` (`0x0086B4..0x008766`): scans up to 30 frames from `$FF1668`, converts D-pad nibbles via 16-byte LUT `0x008768`, tracks 4-step quarter-turn rotational sequence, clears `$FF16EA = 0`, and returns carry set on match.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_dpad_slide_recognizer_m15_392.json` (2 routines, 406 bytes).
+- Unit tests: `tests/rom_ali_dpad_slide_recognizer_test.py` (`3/3 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_392_ALI_DPAD_SLIDE_RECOGNIZER_HANDOFF.md`.
+- Next Step: Commit and push M15.392 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.391: ROM Ali Input Sequence Pattern Matcher, Shockwave Spawner, Weapon Durability & Break SFX (0x0083F8..0x0085E2)
 
 - Decoded and tested stateful 3-stage command motion recognizer (`0x0083F8..0x00846A`): scans up to 12 frames in ring `$FF1668` for Press -> Release -> Re-press double-tap motions.
