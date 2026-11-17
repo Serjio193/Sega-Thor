@@ -1,0 +1,42 @@
+{
+  "subsystem": "ROM Weapon Attack Frame 3D Hitbox Streamer & Dual-Pool Scanner Engine",
+  "milestone": "M15.421",
+  "rom_range": {
+    "start": "0x00BAAC",
+    "end": "0x00BC8E",
+    "size_bytes": 482,
+    "sha256": "fd4ba425536aa8ff8fc1b5396c3869ae0243ee5b1f4c32cc367ef7dd13934312"
+  },
+  "stream_format": {
+    "entry_size_bytes": 12,
+    "word_fields": [
+      "z_min",
+      "z_max",
+      "x_min",
+      "y_min",
+      "x_max",
+      "y_max"
+    ],
+    "mirror_rule": "When facing left (status == 3), neg(x_min), neg(x_max), exg(x_min, x_max)"
+  },
+  "pools": {
+    "all_slots_group2": {
+      "entry": "0x00BAAC",
+      "base_address": "0x00FF19E8",
+      "slot_count": 21,
+      "stride": 188
+    },
+    "enemy_only_slots": {
+      "entry": "0x00BAB8",
+      "base_address": "0x00FF1CD8",
+      "slot_count": 17,
+      "stride": 188
+    }
+  },
+  "target_filters": {
+    "active_check": "type > 0",
+    "self_check": "target != self",
+    "invulnerable_bit": "bit 3 on +0x38(a0)",
+    "status_protect": "bit 0 on +0x3A(a0)"
+  }
+}

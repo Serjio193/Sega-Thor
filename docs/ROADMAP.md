@@ -1,3 +1,6 @@
+# M15.421 ROM Weapon Attack Frame 3D Hitbox Streamer & Dual-Pool Scanner Engine (`0x00BAAC`..`0x00BC8E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_weapon_hitbox_streamer.py`, `tests/rom_weapon_hitbox_streamer_test.py` (`6/6 PASS`), `data/thor-evidence/rom_weapon_hitbox_streamer_m15_421.json`, and `docs/handoffs/STANDALONE_M15_421_WEAPON_HITBOX_STREAMER_HANDOFF.md`.
+
 # M15.420 ROM Entity 3D AABB Combat Overlap & Multi-Pool Collision Iterator Engine (`0x00B79A`..`0x00BAAC`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_combat_overlap_engine.py`, `tests/rom_combat_overlap_engine_test.py` (`6/6 PASS`), `data/thor-evidence/rom_combat_overlap_engine_m15_420.json`, and `docs/handoffs/STANDALONE_M15_420_COMBAT_OVERLAP_ENGINE_HANDOFF.md`.
 

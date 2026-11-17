@@ -1,3 +1,9 @@
+# M15.421 ROM Weapon Attack Frame 3D Hitbox Streamer & Dual-Pool Scanner Engine
+- `tools/extract_rom_weapon_hitbox_streamer.py` — extractor for `0x00BAAC..0x00BC8E` (12-byte weapon hitbox streamer, left-facing horizontal mirroring, dual-pool scanning `$FF19E8`/`$FF1CD8`, and 3D AABB overlap).
+- `tests/rom_weapon_hitbox_streamer_test.py` — `6` unit tests verifying ROM constants, stream unpacking, horizontal mirroring, 3D world projection, target filters, and Carry flag hit returns.
+- `data/thor-evidence/rom_weapon_hitbox_streamer_m15_421.json` — extracted M15.421 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_421_WEAPON_HITBOX_STREAMER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.420 ROM Entity 3D AABB Combat Overlap & Multi-Pool Collision Iterator Engine
 - `tools/extract_rom_combat_overlap_engine.py` — extractor for `0x00B79A..0x00BAAC` (directional attack hitbox generator, target vulnerability filters, Group 2 3D AABB scanner, Group 4 breakables scanner, and iterator context buffer `$FF194A`).
 - `tests/rom_combat_overlap_engine_test.py` — `6` unit tests verifying ROM constants, facing direction hitbox formulas, target immunity filters, Group 2 and Group 4 pool structures, and 3D AABB overlap logic.
