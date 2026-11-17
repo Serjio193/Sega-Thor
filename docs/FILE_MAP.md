@@ -1,3 +1,9 @@
+# M15.424 ROM Combat Hit Spark Particle Generator & 3D Overlap Centerpoint Calculator
+- `tools/extract_rom_hit_spark_generator.py` — extractor for `0x00C012..0x00C0BE` (hit spark particle generator, 4-slot ring buffer `$FF19C8`, lifetime 5 frames, clamped 3D bounding box intersection, and 2D projected midpoint coordinates).
+- `tests/rom_hit_spark_generator_test.py` — `4` unit tests verifying ROM constants, clamped 3D midpoint calculations, 4-slot ring buffer allocation limit, and ground-level spark projection.
+- `data/thor-evidence/rom_hit_spark_generator_m15_424.json` — extracted M15.424 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_424_HIT_SPARK_GENERATOR_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.423 ROM Entity Combat Hit Response, Knockback & Trajectory Physics Calculator
 - `tools/extract_rom_combat_hit_response.py` — extractor for `0x00BE98..0x00C012` (combat hit response, shield facing calculation, unblocked damage/hitstun application, 4-mode knockback trajectory table `0x00BF26`, air juggle bounce, and shield clash handler).
 - `tests/rom_combat_hit_response_test.py` — `5` unit tests verifying ROM constants, shield facing logic, knockback mode resolution, knockback velocity parameters, and HUD tracking triggers.

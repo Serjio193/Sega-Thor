@@ -1,3 +1,6 @@
+# M15.424 ROM Combat Hit Spark Particle Generator & 3D Overlap Centerpoint Calculator (`0x00C012`..`0x00C0BE`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_hit_spark_generator.py`, `tests/rom_hit_spark_generator_test.py` (`4/4 PASS`), `data/thor-evidence/rom_hit_spark_generator_m15_424.json`, and `docs/handoffs/STANDALONE_M15_424_HIT_SPARK_GENERATOR_HANDOFF.md`.
+
 # M15.423 ROM Entity Combat Hit Response, Knockback & Trajectory Physics Calculator (`0x00BE98`..`0x00C012`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_combat_hit_response.py`, `tests/rom_combat_hit_response_test.py` (`5/5 PASS`), `data/thor-evidence/rom_combat_hit_response_m15_423.json`, and `docs/handoffs/STANDALONE_M15_423_COMBAT_HIT_RESPONSE_HANDOFF.md`.
 

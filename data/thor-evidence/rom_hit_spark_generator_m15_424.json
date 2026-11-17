@@ -1,0 +1,12 @@
+{
+  "routine": "Combat Hit Spark Particle Generator & 3D Overlap Centerpoint Calculator",
+  "start_address": "0x00C012",
+  "end_address": "0x00C0BE",
+  "size_bytes": 172,
+  "buffer_address": "0x00FF19C8",
+  "slot_count": 4,
+  "slot_size_bytes": 8,
+  "particle_type": 2,
+  "lifetime_frames": 5,
+  "sha256": "2e2064bbd6d2249744126ed163592b25d7d760a676a3d676cc72963e0c2b2d86"
+}
