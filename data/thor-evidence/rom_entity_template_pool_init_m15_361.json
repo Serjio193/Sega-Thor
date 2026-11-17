@@ -1,0 +1,132 @@
+{
+  "milestone": "M15.361",
+  "rom_range": "0x008C5A..0x008E20",
+  "pool_resetter_008c5a": [
+    {
+      "base_addr": "0xFF2954",
+      "slot_count": 4,
+      "stride_bytes": 90,
+      "clear_mode": "fx_5a"
+    },
+    {
+      "base_addr": "0xFF2D8C",
+      "slot_count": 6,
+      "stride_bytes": 90,
+      "clear_mode": "fx_5a"
+    },
+    {
+      "base_addr": "0xFF2ABC",
+      "slot_count": 8,
+      "stride_bytes": 90,
+      "clear_mode": "fx_5a"
+    },
+    {
+      "base_addr": "0xFF19C8",
+      "slot_count": 4,
+      "stride_bytes": 8,
+      "clear_mode": "type_only"
+    },
+    {
+      "base_addr": "0xFF1B60",
+      "slot_count": 19,
+      "stride_bytes": 188,
+      "clear_mode": "entity_bc"
+    }
+  ],
+  "template_initializer_008d06": {
+    "table_addr": "0x03F2FA",
+    "record_stride_bytes": 32,
+    "full_entity_threshold_addr": "0xFF2954",
+    "full_clear_words": 93,
+    "fx_clear_words": 44,
+    "sample_templates": [
+      {
+        "index": 0,
+        "type_id": 2,
+        "height_4a": 48,
+        "radius_42_44_46": 10,
+        "sprite_w_48": 10,
+        "sprite_h_49": 10,
+        "unk_3d": 16,
+        "unk_4c": 0,
+        "flags_3a": "0x00",
+        "flags_36": "0x01",
+        "flags_37": "0x00",
+        "flags_38": "0x10",
+        "flags_3c": "0x00",
+        "ptr_1a_anim": "0x13CDFC",
+        "ptr_1e_frame": "0x0C0000",
+        "ptr_26_ai": "0x03FF7A",
+        "ptr_22_hitbox": "0x058000",
+        "ptr_5e_extra": "0x059D9C"
+      },
+      {
+        "index": 1,
+        "type_id": 4,
+        "height_4a": 0,
+        "radius_42_44_46": 0,
+        "sprite_w_48": 0,
+        "sprite_h_49": 0,
+        "unk_3d": 0,
+        "unk_4c": 0,
+        "flags_3a": "0x00",
+        "flags_36": "0x08",
+        "flags_37": "0x00",
+        "flags_38": "0x0D",
+        "flags_3c": "0x00",
+        "ptr_1a_anim": "0x154B98",
+        "ptr_1e_frame": "0x15517E",
+        "ptr_26_ai": "0x040D94",
+        "ptr_22_hitbox": "0x000000",
+        "ptr_5e_extra": "0x000000"
+      },
+      {
+        "index": 2,
+        "type_id": 6,
+        "height_4a": 0,
+        "radius_42_44_46": 0,
+        "sprite_w_48": 0,
+        "sprite_h_49": 0,
+        "unk_3d": 0,
+        "unk_4c": 0,
+        "flags_3a": "0x05",
+        "flags_36": "0x08",
+        "flags_37": "0x60",
+        "flags_38": "0x0D",
+        "flags_3c": "0x00",
+        "ptr_1a_anim": "0x000000",
+        "ptr_1e_frame": "0x000000",
+        "ptr_26_ai": "0x000000",
+        "ptr_22_hitbox": "0x000000",
+        "ptr_5e_extra": "0x000000"
+      },
+      {
+        "index": 3,
+        "type_id": 8,
+        "height_4a": 4,
+        "radius_42_44_46": 8,
+        "sprite_w_48": 8,
+        "sprite_h_49": 8,
+        "unk_3d": 8,
+        "unk_4c": 9,
+        "flags_3a": "0x05",
+        "flags_36": "0x01",
+        "flags_37": "0x01",
+        "flags_38": "0x0D",
+        "flags_3c": "0x00",
+        "ptr_1a_anim": "0x155AF6",
+        "ptr_1e_frame": "0x155D76",
+        "ptr_26_ai": "0x000000",
+        "ptr_22_hitbox": "0x000000",
+        "ptr_5e_extra": "0x000000"
+      }
+    ]
+  },
+  "tint_ramp_008dd4": {
+    "intensity_addr": "0xFF183E",
+    "active_flag_addr": "0xFF1AA4",
+    "pulse_timer_addr": "0xFF199E",
+    "pulse_min_timer": 20,
+    "pulse_mask_addr": "0xFF199F"
+  }
+}

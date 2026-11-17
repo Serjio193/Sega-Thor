@@ -1,3 +1,6 @@
+# M15.361 ROM 5-Pool Resetter, 32B Entity Template Initializer (`0x03F2FA`) & Tint Ramp (`0x008C5A`..`0x008E20`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_template_pool_init.py`, `tests/rom_entity_template_pool_init_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_template_pool_init_m15_361.json`, and `docs/handoffs/STANDALONE_M15_361_ENTITY_TEMPLATE_POOL_INIT_HANDOFF.md`.
+
 # M15.360 ROM Master Gameplay Frame Loop, Queued Trigger & Menu Dispatcher (`0x008AA6`..`0x008C58`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_main_game_loop.py`, `tests/rom_main_game_loop_test.py` (`2/2 PASS`), `data/thor-evidence/rom_main_game_loop_m15_360.json`, and `docs/handoffs/STANDALONE_M15_360_MAIN_GAME_LOOP_HANDOFF.md`.
 

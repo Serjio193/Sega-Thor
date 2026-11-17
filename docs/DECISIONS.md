@@ -1,3 +1,7 @@
+# ADR-20261117-M15-361-ENTITY-TEMPLATE-POOL-INIT — 5-Pool Resetter, 32B Entity Template Initializer & Tint Ramp (`0x008C5A`..`0x008E20`)
+- **Context:** `0x008C5A..0x008E20` resets all 5 entity/FX/spark pools, populates `0xBC` and `0x5A` entity slots from the 32-byte template table at `0x03F2FA`, and steps the `$FF183E` screen-tint/pulse intensity.
+- **Decision:** Extract the 5 pool descriptors, full `32B` template field mapping (`0x03F2FA`), and `$FF183E` ramp rules in `tools/extract_rom_entity_template_pool_init.py` and `docs/handoffs/STANDALONE_M15_361_ENTITY_TEMPLATE_POOL_INIT_HANDOFF.md`.
+
 # ADR-20261117-M15-360-MAIN-GAME-LOOP — Master Gameplay Frame Loop & Menu Dispatcher (`0x008AA6`..`0x008C58`)
 - **Context:** `0x008AA6..0x008C58` defines Beyond Oasis's top-level per-frame execution order (14 subsystem `bsr.w` calls), V-Int frame pacing (`$FF1654`), queued `$FF1864` item/spirit trigger (`0x008B8E`), and 4-mode menu dispatcher (`0x008BAC`).
 - **Decision:** Verify every `bsr.w` relative offset in `tools/extract_rom_main_game_loop.py` and document the exact V-Int sync points and menu-entry guards in `docs/handoffs/STANDALONE_M15_360_MAIN_GAME_LOOP_HANDOFF.md`.

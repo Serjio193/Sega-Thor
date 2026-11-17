@@ -1,3 +1,9 @@
+# M15.361 ROM 5-Pool Resetter, 32B Entity Template Initializer & Tint Ramp
+- `tools/extract_rom_entity_template_pool_init.py` — extractor for `0x008C5A..0x008E20` (5-pool resetter, `0x03F2FA` 32B entity template initializer/reloader, `$FF183E` tint ramp).
+- `tests/rom_entity_template_pool_init_test.py` — `2` unit tests verifying ROM pools, Ali template fields (`0x03F2FA`), and tint ramp state machine.
+- `data/thor-evidence/rom_entity_template_pool_init_m15_361.json` — extracted M15.361 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_361_ENTITY_TEMPLATE_POOL_INIT_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.360 ROM Master Gameplay Frame Loop & Menu Dispatcher
 - `tools/extract_rom_main_game_loop.py` — extractor for `0x008AA6..0x008C58` (14 ordered per-frame `bsr.w` stages, `$FF1864` queued item/spirit trigger, `$FF185E` 4-mode menu dispatcher).
 - `tests/rom_main_game_loop_test.py` — `2` unit tests verifying all 14 ROM `bsr.w` pipeline targets and menu mode priority rules.
