@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/hud_sat_emitter.hpp` / `src/game/ui/hud_sat_emitter.cpp`: HUD frame SAT & item-toast DMA emitter (`0x00A342..0x00A436`: 6 primary HUD sprites, 3 enemy-gauge sprites mirrored at `0x0158 - slide_x`, 3x3 toast sprite `0x85C7`, 80-sprite cap, and `0x90`-word DMA from `0x000AAEBB + item_id * 0x90` to `0xB8E0`) (M16.118).
+- `tests/m16_118_hud_sat_emitter_test.cpp`: Automated M16.118 test qualifying HUD slide mirror math, toast sprite coordinates, 80-sprite cap, and toast icon DMA descriptor (M16.118).
 - `src/game/video/ysort_sat_pipeline.hpp` / `src/game/video/ysort_sat_pipeline.cpp`: Master Y-sorted SAT render pipeline (`0x00A196..0x00A27E`: 5 passes — 4 high-prio FX, 4 hit-sparks, 21 descending-Y `> -1` entities, 8 ground/shadow FX, 6 floor FX) (M16.117).
 - `tests/m16_117_ysort_sat_pipeline_test.cpp`: Automated M16.117 test qualifying the 5 render passes, descending-Y sort, inactive entity skipping, and `y < -1` sentinel skipping (M16.117).
 - `src/game/world/aabb_solid_sweep_3axis.hpp` / `src/game/world/aabb_solid_sweep_3axis.cpp`: 3D AABB solid sweep for `-X` (`0x009EBA`), `+Y` (`0x009FA0`), and `-Y` (`0x00A09A`) across 21 `0xBC`-stride slots with zero-gap `±1` push, reusing `SolidSweepBlocker` (M16.116).

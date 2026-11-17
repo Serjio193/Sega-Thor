@@ -1,3 +1,9 @@
+# M16.118 HUD Frame SAT & Item-Toast DMA Emitter (`0x00A342..0x00A436`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `compute_hud_sat_and_toast_plan` (`0x00A342..0x00A436`: 6 primary HUD sprites shifted by `slide_x`, 3 enemy-gauge sprites shifted by `0x0158 - slide_x`, 3x3 toast sprite `0x85C7` at `(slide_x + 0x68, 0x0118)`, 80-sprite cap, and `0x90`-word DMA from `0x000AAEBB + item_id * 0x90` to VRAM `0xB8E0`) in `src/game/ui/hud_sat_emitter.hpp/.cpp`.
+- Qualified `oasis_m16_118_hud_sat_emitter` and the 99-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.117 Master Y-Sorted SAT Render Pipeline (`0x00A196..0x00A27E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.118: HUD Frame SAT & Item-Toast DMA Emitter)
+- **Concrete Task**: Implement `src/game/ui/hud_sat_emitter.hpp/.cpp` with `compute_hud_sat_and_toast_plan(slide_x, enemy_gauge_active, toast_timer, toast_item_id, cached_toast_item_id, current_sat_count)` (`0x00A342..0x00A436`: 6 primary HUD sprites shifted by `slide_x`, 3 enemy-gauge sprites shifted by `0x0158 - slide_x`, 3x3 toast sprite `0x85C7` at `(slide_x + 0x68, 0x0118)` when `toast_timer != 0 && sat_count < 80`, plus `0x90`-word DMA from `0x000AAEBB + item_id * 0x90` to VRAM `0xB8E0` when `toast_item_id != cached_toast_item_id`); add `tests/m16_118_hud_sat_emitter_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/hud_sat_emitter.hpp` / `src/game/ui/hud_sat_emitter.cpp`.
+  * Added `tests/m16_118_hud_sat_emitter_test.cpp` (registered as `oasis_m16_118_hud_sat_emitter` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `99/99` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `99/99` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `compute_hud_sat_and_toast_plan()` directly into `HudOverlay` / `StandaloneGameSimulation` live HUD SAT frame emission is deferred to future HUD-UI unification.
+
 # Worklog — 2026-11-17 (M16.117: Master Y-Sorted SAT Render Pipeline)
 - **Concrete Task**: Implement `src/game/video/ysort_sat_pipeline.hpp/.cpp` with `build_ysort_sat_render_order(...)` (`0x00A196..0x00A27E`: 5 front-to-back SAT render passes — 4 high-prio FX `$FF2954`, 4 hit-sparks `$FF19C8`, 21 entities `$FF19E8` sorted by descending Y `> -1`, 8 ground/shadow FX `$FF2ABC`, 6 floor FX `$FF2D8C`); add `tests/m16_117_ysort_sat_pipeline_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

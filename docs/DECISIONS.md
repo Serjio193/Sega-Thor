@@ -1,3 +1,14 @@
+# ADR-20261117-M16-118-HUD-SAT-EMITTER — HUD Frame SAT & Item-Toast DMA Emitter
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.334 extracted `0x00A342..0x00A436`: 6 primary HUD sprites (`slide_x`), 3 enemy-gauge sprites (`0x0158 - slide_x`), 3x3 toast sprite (`0x85C7` at `(slide_x + 0x68, 0x0118)`), 80-sprite cap, and `0x90`-word DMA (`0x000AAEBB + item_id * 0x90` -> `0xB8E0`).
+
+**Decisions:**
+1. **Dedicated `hud_sat_emitter` Module:**
+   - Added `src/game/ui/hud_sat_emitter.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-117-YSORT-SAT-PIPELINE — Master Y-Sorted SAT Render Pipeline
 **Status:** Accepted
 **Date:** 2026-11-17
