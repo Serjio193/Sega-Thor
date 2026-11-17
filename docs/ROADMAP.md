@@ -1,3 +1,9 @@
+# M16.117 Master Y-Sorted SAT Render Pipeline (`0x00A196..0x00A27E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `build_ysort_sat_render_order` (`0x00A196..0x00A27E`: 5 front-to-back SAT passes — 4 high-prio FX, 4 hit-sparks, 21 entities sorted by descending Y `> -1`, 8 ground/shadow FX, 6 floor FX) in `src/game/video/ysort_sat_pipeline.hpp/.cpp`.
+- Qualified `oasis_m16_117_ysort_sat_pipeline` and the 98-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.116 3D AABB Solid Sweep (-X, +Y, -Y) (`0x009EBA..0x00A194`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

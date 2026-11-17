@@ -1,3 +1,14 @@
+# ADR-20261117-M16-117-YSORT-SAT-PIPELINE — Master Y-Sorted SAT Render Pipeline
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.333 extracted `0x00A196..0x00A27E`: 5 front-to-back SAT render passes (4 high-prio FX, 4 hit-sparks, 21 entities sorted by descending Y `> -1`, 8 ground/shadow FX, 6 floor FX).
+
+**Decisions:**
+1. **Dedicated `ysort_sat_pipeline` Module:**
+   - Added `src/game/video/ysort_sat_pipeline.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-116-AABB-SOLID-SWEEP-3AXIS — 3D AABB Solid Sweep (-X, +Y, -Y)
 **Status:** Accepted
 **Date:** 2026-11-17

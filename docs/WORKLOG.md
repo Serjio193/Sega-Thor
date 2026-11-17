@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.117: Master Y-Sorted SAT Render Pipeline)
+- **Concrete Task**: Implement `src/game/video/ysort_sat_pipeline.hpp/.cpp` with `build_ysort_sat_render_order(...)` (`0x00A196..0x00A27E`: 5 front-to-back SAT render passes — 4 high-prio FX `$FF2954`, 4 hit-sparks `$FF19C8`, 21 entities `$FF19E8` sorted by descending Y `> -1`, 8 ground/shadow FX `$FF2ABC`, 6 floor FX `$FF2D8C`); add `tests/m16_117_ysort_sat_pipeline_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/video/ysort_sat_pipeline.hpp` / `src/game/video/ysort_sat_pipeline.cpp`.
+  * Added `tests/m16_117_ysort_sat_pipeline_test.cpp` (registered as `oasis_m16_117_ysort_sat_pipeline` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `98/98` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `98/98` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `build_ysort_sat_render_order()` directly into `SpriteCompositor` / `StandaloneGameSimulation` live SAT frame assembly is deferred to future SAT-pipeline unification.
+
 # Worklog — 2026-11-17 (M16.116: 3D AABB Solid Sweep (-X, +Y, -Y))
 - **Concrete Task**: Implement `src/game/world/aabb_solid_sweep_3axis.hpp/.cpp` with `sweep_aabb_solid_3axis(...)` (`0x009EBA` `-X`, `0x009FA0` `+Y`, `0x00A09A` `-Y` across the 21-slot `0xBC`-stride entity pool, clamping movement to nearest 3D AABB gap and pushing obstacle by `±1` when `gap == 0` and push flags allow), reusing `SolidSweepBlocker` from `src/game/entities/solid_entity_sweep.hpp`; add `tests/m16_116_aabb_solid_sweep_3axis_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

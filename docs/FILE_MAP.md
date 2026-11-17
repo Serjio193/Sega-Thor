@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/video/ysort_sat_pipeline.hpp` / `src/game/video/ysort_sat_pipeline.cpp`: Master Y-sorted SAT render pipeline (`0x00A196..0x00A27E`: 5 passes — 4 high-prio FX, 4 hit-sparks, 21 descending-Y `> -1` entities, 8 ground/shadow FX, 6 floor FX) (M16.117).
+- `tests/m16_117_ysort_sat_pipeline_test.cpp`: Automated M16.117 test qualifying the 5 render passes, descending-Y sort, inactive entity skipping, and `y < -1` sentinel skipping (M16.117).
 - `src/game/world/aabb_solid_sweep_3axis.hpp` / `src/game/world/aabb_solid_sweep_3axis.cpp`: 3D AABB solid sweep for `-X` (`0x009EBA`), `+Y` (`0x009FA0`), and `-Y` (`0x00A09A`) across 21 `0xBC`-stride slots with zero-gap `±1` push, reusing `SolidSweepBlocker` (M16.116).
 - `tests/m16_116_aabb_solid_sweep_3axis_test.cpp`: Automated M16.116 test qualifying `-X`, `+Y`, `-Y` gap clamping, Z non-overlap skip, and zero-gap `±1` push (M16.116).
 - `src/game/ui/save_prompt.hpp` / `src/game/ui/save_prompt.cpp`: In-game save prompt & save-allowed guard (`0x005472..0x005578`, `can_open_save_prompt`, `step_save_prompt` `3=YES`/`4=NO`, toggle `0x006003A5`, confirm `0x00A003AA`, cancel `0x00A00347`, error `0x00A00253`) (M16.115).

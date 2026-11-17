@@ -65,6 +65,7 @@ add_library(oasis_core
     src/game/video/vdp_clear_and_palette_cycle.cpp
     src/game/video/vdp_dma_exec.cpp
     src/game/video/vint_dma_and_input_ring.cpp
+    src/game/video/ysort_sat_pipeline.cpp
     src/game/enemy/enemy_ai_0030_0048.cpp
     src/game/enemy/dungeon_enemy_dispatch.cpp
     src/game/enemy/heavy_enemy_dispatch.cpp
