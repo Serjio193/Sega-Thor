@@ -1,3 +1,20 @@
+# M16.159 ROM Entity Pass A Master SAT Sprite Dispatcher (`0x00A196..0x00A2EE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `build_group2_inactive_mask`, `sort_group2_y_depth_order`, `dispatch_master_sat_pass`, and `dispatch_master_sat_raw` in `src/game/render/master_sat_dispatcher.hpp/.cpp`:
+  - `0x00A196`: Clears composite flag `$FF1651.b`.
+  - `0x00A1A0..0x00A1A6`: Evaluates demo mode active flag `$FF1996.b` (branches to demo hook `0x00A336` on non-zero).
+  - Multi-pool 5-pass SAT sprite dispatch:
+    - Pass 1 (`0x00A1AA..0x00A1BE`): Group 1 High-Priority FX (`$FF2954`, 4 slots, 90B stride), dispatching active entities to Custom SAT `0x00A9A0` (`flags_36 & 0x01 != 0`) or Normal SAT `0x00AD76`.
+    - Pass 2 (`0x00A1C2..0x00A1D2`): Special Pool / Hit-Sparks (`$FF19C8`, 4 slots, 8B stride), dispatching through jump table `0x00A33C`.
+    - Pass 3 (`0x00A1D6..0x00A246`): Group 2 Entities (`$FF19E8`, 21 slots, 188B stride) with selection sort in descending Y order with sentinel -1 (`moveq #-1, d5`), writing 21-bit done mask to `$FF188E.l`.
+    - Pass 4 (`0x00A248..0x00A25C`): Group 4 Ground/Shadow FX (`$FF2ABC`, 8 slots, 90B stride).
+    - Pass 5 (`0x00A260..0x00A274`): Group 3 Floor FX (`$FF2D8C`, 6 slots, 90B stride).
+  - `0x00A278..0x00A2A2`: Foreground Player Entity override (`$FF1995.b` non-zero and slot 0 active), re-rendering player slot in foreground via `0x00A9AA` (Custom SAT Foreground) or `0x00AD80` (Normal SAT Foreground).
+  - `0x00A2A6..0x00A2C6`: SAT Link Terminator, advancing zero offset to 8 (`addq.w #8, d7`), writing link terminator `0` at `-5(a6, d7.w)`, and asserting VDP sync flags `$FF164E |= 0x03`.
+  - Raw 64KB RAM window integration helper `dispatch_master_sat_raw`.
+- Qualified `oasis_m16_159_master_sat_dispatcher` and the 139-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.158 ROM Vertical (±Y) Solid Dynamic Entity Collision Sweeps (`0x009FA0..0x00A196`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

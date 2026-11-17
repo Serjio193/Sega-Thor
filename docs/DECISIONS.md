@@ -1,3 +1,31 @@
+# ADR-20261117-M16-159-MASTER-SAT-DISPATCHER — ROM Entity Pass A Master SAT Sprite Dispatcher (0x00A196..0x00A2EE)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.410 extracted ROM routines `0x00A196..0x00A2EE` governing the master SAT sprite composition and multi-pool dispatch sequence:
+   - `0x00A196`: Master sprite composition entry: clears composite flag `$FF1651.b`.
+   - `0x00A1A0..0x00A1A6`: Demo mode active check `$FF1996.b` (branches to demo hook `0x00A336`).
+   - 5-pass multi-pool render sequence:
+     * Pass 1 (`0x00A1AA..0x00A1BE`): Group 1 High-Priority FX (`$FF2954`, 4 slots, 90B stride).
+     * Pass 2 (`0x00A1C2..0x00A1D2`): Special Pool / Hit-Sparks (`$FF19C8`, 4 slots, 8B stride, jump table `0x00A33C`).
+     * Pass 3 (`0x00A1D6..0x00A246`): Group 2 Entities (`$FF19E8`, 21 slots, 188B stride) with selection sort in descending Y order using sentinel -1 (`moveq #-1, d5`), writing 21-bit done mask to `$FF188E.l`.
+     * Pass 4 (`0x00A248..0x00A25C`): Group 4 Ground/Shadow FX (`$FF2ABC`, 8 slots, 90B stride).
+     * Pass 5 (`0x00A260..0x00A274`): Group 3 Floor FX (`$FF2D8C`, 6 slots, 90B stride).
+   - Target entrypoint selection:
+     * Entity `flags_36 & 0x01 == 0` -> Normal SAT `0x00AD76`.
+     * Entity `flags_36 & 0x01 == 1` -> Custom SAT `0x00A9A0`.
+   - Foreground Player Override (`0x00A278..0x00A2A2`):
+     * If `$FF1995.b != 0` and slot 0 is active, dispatches player slot to Foreground Normal `0x00AD80` or Foreground Custom `0x00A9AA`.
+   - SAT Link Terminator (`0x00A2A6..0x00A2C6`):
+     * Hardware VDP sprite linked list termination: offset 0 advances to 8 (`addq.w #8, d7`), writes `0` into `-5(a6, d7.w)` to mark end-of-list, and asserts VDP dirty sync mask `$FF164E |= 0x03`.
+
+**Decisions:**
+1. **Dedicated `master_sat_dispatcher` Module:**
+   - Added `src/game/render/master_sat_dispatcher.hpp/.cpp` modeling pure `build_group2_inactive_mask`, `sort_group2_y_depth_order`, `dispatch_master_sat_pass`, and raw memory integration `dispatch_master_sat_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (139/139 M16 tests).
+
 # ADR-20261117-M16-158-VERTICAL-ENTITY-SWEEPS — ROM Vertical (±Y) Solid Dynamic Entity Collision Sweeps (0x009FA0..0x00A196)
 **Status:** Accepted
 **Date:** 2026-11-17
