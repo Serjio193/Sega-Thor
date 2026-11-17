@@ -1,3 +1,17 @@
+# ADR-20261117-M16-128-PROJECTILE-LATCH-BURST — Death Explosion Burst, Latch Follow & Projectile Probe
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.344 extracted `0x00EA04..0x00EB40`: `death_explosion_burst` (`0x00EA04..0x00EA74`), `carried_latch_follow` (`0x00EA76..0x00EABE`), and `projectile_wall_and_hit_probe` (`0x00EAC0..0x00EB40`).
+2. Death burst logic decrements burst timer at `+0x9E`, applies `(prng & 0x1F) - 16` coordinate jitter to `base_x`/`base_y` (`+0x4E`/`+0x52`), plays dual SFX `0x0090021B` and `0x00600382`, and destroys the entity slot when timer reaches 0.
+3. Carried latch logic decrements latch timer at `+0xB8`, transitions to projectile probe at 0 or despawns at 1, and binds local XYZ (`+0xAE`, `+0xB0`, `+0xB2`) to parent coordinates.
+4. Projectile probe detects terrain wall collisions (bit 6) with bounce SFX `0x00700378`, performs `[-6..+6, -6..+6, -2..+2]` spatial probe, checks target shield block (`0x3A` bit 1), intangible/phase (`0x38` bit 2), invulnerability/hitstun (`0x38` bit 3 or `0x82 != 0`), and applies payload to target mailbox `+0x7E`.
+
+**Decisions:**
+1. **Dedicated `projectile_latch_burst` Module:**
+   - Added `src/game/combat/projectile_latch_burst.hpp/.cpp` modeling `step_death_explosion_burst`, `step_carried_latch_follow`, `is_in_projectile_probe_box`, and `evaluate_projectile_probe`.
+
 # ADR-20261117-M16-127-EXPLOSION-SPAWNER — Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase
 **Status:** Accepted
 **Date:** 2026-11-17

@@ -1,3 +1,9 @@
+# M16.128 Death Explosion Burst, Latch Follow & Projectile Probe (`0x00EA04..0x00EB40`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_death_explosion_burst`, `step_carried_latch_follow`, `is_in_projectile_probe_box`, and `evaluate_projectile_probe` in `src/game/combat/projectile_latch_burst.hpp/.cpp`.
+- Qualified `oasis_m16_128_projectile_latch_burst` and the 109-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.127 Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase (`0x00E90E..0x00EA02`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
