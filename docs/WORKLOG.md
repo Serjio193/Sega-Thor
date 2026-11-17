@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.314: ROM TERRAIN ELEVATION & LEDGE PROBE (`0x00938E`..`0x0096F7`) — X/Y Span Probes, `0x0096E8` 16B LUT, `0x0180` Ledge Scan; Extractor (`tools/extract_rom_terrain_elevation_probe.py` <= 500 lines), Tests (`tests/rom_terrain_elevation_probe_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_314_TERRAIN_ELEVATION_PROBE_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00938E..0x0096F7` in `local-roms/Beyond Oasis (USA).md` (3 directional probes + span aggregators + 16-byte LUT `0x0096E8`).
+- Verified `python tools/extract_rom_terrain_elevation_probe.py`, `python -m unittest tests/rom_terrain_elevation_probe_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.314, proceed to M15.315, and await M16.97 completion.
+
 # 2026-11-17 — Milestone M15.313: ROM INCREMENTAL ROW/COL VDP PLANE SCROLLER (`0x0023CC`..`0x002630`) — 29-Tile Col (`0x8F80`, `+40`) & 41-Tile Row (`+28`) Streamers; Extractor (`tools/extract_rom_vdp_plane_scroll.py` <= 500 lines), Tests (`tests/rom_vdp_plane_scroll_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_313_VDP_PLANE_SCROLL_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x0023CC..0x002630` in `local-roms/Beyond Oasis (USA).md` (`0x0023CC..0x002510` column streamer, `0x002512..0x002630` row streamer).
 - Verified `python tools/extract_rom_vdp_plane_scroll.py`, `python -m unittest tests/rom_vdp_plane_scroll_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake` (`2624 governed files <= 500 lines`).

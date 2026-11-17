@@ -1,3 +1,8 @@
+# ADR-20261117-M15-314-TERRAIN-ELEVATION-PROBE — Terrain Elevation & Ledge Probe (`0x00938E`..`0x0096F7`)
+- **Context:** Entity X/Y terrain probes (`0x00938E`, `0x0094D2`, `0x0095AA`) aggregate 8px tile spans via OR/AND, decode elevation via the 16-byte Gray-code LUT `0x0096E8`, and test `delta` against `0x70(a6)` including ledge drops (`<= -2` via `0xFF1706` -> `0xFF196E`).
+- **Decision:** Extracted the LUT, RAM addresses, and probe parameters into `data/thor-evidence/rom_terrain_elevation_probe_m15_314.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.98 can implement exact elevation & ledge-drop collision parity.
+
 # ADR-20261117-M15-313-VDP-PLANE-SCROLL — Incremental Row/Col VDP Plane Scroller (`0x0023CC`..`0x002630`)
 - **Context:** Scrolling large tilemaps into the `64x32` (`0x1000` byte) VDP nametable streams one 29-tile column (`0x0023CC`, VDP auto-inc `0x8F80` -> `0x8F02`, `+40` tiles ahead) or one 41-tile row (`0x002512`, `+28` rows ahead) per step.
 - **Decision:** Extracted both routines' exact struct offsets (`0x08..0x24`), wrap masks (`0x7E` col, `0xF80` row), and single-wrap sentinel (`0x03E8`) into `data/thor-evidence/rom_vdp_plane_scroll_m15_313.json` with a 2/2 passing Python reference test and Standalone handoff.

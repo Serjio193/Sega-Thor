@@ -1,3 +1,9 @@
+# M15.314 ROM Terrain Elevation & Ledge Probe
+- `tools/extract_rom_terrain_elevation_probe.py` — ROM extractor & verifier for `0x00938E..0x0096F7` (X/Y terrain span probes, ledge scan up to `0x0180` px, and 16-byte Gray-code LUT `0x0096E8`).
+- `tests/rom_terrain_elevation_probe_test.py` — Unit tests verifying ROM LUT/constants and elevation/ledge probe decisions.
+- `data/thor-evidence/rom_terrain_elevation_probe_m15_314.json` — Verified evidence JSON for M15.314.
+- `docs/handoffs/STANDALONE_M15_314_TERRAIN_ELEVATION_PROBE_HANDOFF.md` — C++20 Standalone handoff for M16.98.
+
 # M15.313 ROM Incremental Row/Col VDP Plane Scroller
 - `tools/extract_rom_vdp_plane_scroll.py` — ROM extractor & verifier for `0x0023CC..0x002510` (29-tile column streamer) and `0x002512..0x002630` (41-tile row streamer).
 - `tests/rom_vdp_plane_scroll_test.py` — Unit tests verifying ROM constants and wrap-around row/col streaming simulation.
