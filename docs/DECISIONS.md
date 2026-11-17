@@ -1,3 +1,8 @@
+# ADR-20261117-M15-346-BOMB-DETONATION — Bomb Detonation Blast Spawner & Screen-Shake Trigger (`0x00ED04`..`0x00EDA8`)
+- **Context:** Bomb detonation (`0x00ED04`) converts/spawns blast entity `0x3A`, drops `z` by `4.0 px` (`0x00040000`, clamped `>= 0`), sets damage `0x8007`, plays `0x00B00225`/`0x00600382`, and triggers `4`-frame screen shake (`$FF17C4`).
+- **Decision:** Extracted all blast parameters, SFX IDs, and screen-shake constants into `data/thor-evidence/rom_bomb_detonation_m15_346.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.130 can implement bomb detonation blasts and screen shake with exact parity.
+
 # ADR-20261117-M15-345-PROJECTILE-HIT-KNOCKBACK — Projectile Hit Knockback, Enemy Gauge Timer & Gravity (`0x00EB40`..`0x00EC58`)
 - **Context:** Projectile hits (`0x00EB40`) inflict `10f` stun (`0x83`), `(0x400, 0x3C0)`/`(0x200, 0x1E0)` knockback + `vz = 0x00020000`, trigger the `90f` enemy HP gauge (`$FF184F`) for Ali attacks, play `0x00800210`, and step projectile flight with `0x00006000` gravity & `10px` cull margin.
 - **Decision:** Extracted all physics and HUD constants into `data/thor-evidence/rom_projectile_hit_knockback_m15_345.json` with 2/2 passing tests and Standalone handoff.

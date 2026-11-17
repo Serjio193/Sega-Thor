@@ -1,3 +1,4 @@
+# M15.346 ROM Bomb Detonation Blast Spawner & Screen-Shake Trigger (`0x00ED04`..`0x00EDA8`) — COMPLETE / VERIFIED
 # M15.345 ROM Projectile Hit Knockback, Enemy Gauge Timer & Gravity (`0x00EB40`..`0x00EC58`) — COMPLETE / VERIFIED
 # M15.344 ROM Death Explosion Burst, Latch Follow & Projectile Probe (`0x00EA04`..`0x00EB40`) — COMPLETE / VERIFIED
 # M15.343 ROM Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase (`0x00E90E`..`0x00EA02`) — COMPLETE / VERIFIED

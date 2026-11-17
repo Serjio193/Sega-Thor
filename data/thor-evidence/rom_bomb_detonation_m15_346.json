@@ -1,0 +1,19 @@
+{
+  "milestone": "M15.346",
+  "title": "ROM Bomb Detonation Blast Spawner & Screen-Shake Trigger",
+  "routine": {
+    "start": "0x00ED04",
+    "end": "0x00EDA8"
+  },
+  "constants": {
+    "blast_entity_type": "0x003A",
+    "blast_z_drop_16_16": "0x00040000",
+    "blast_damage_word": "0x8007",
+    "blast_hit_type": 2,
+    "blast_state": 8,
+    "blast_sfx_1": "0x00B00225",
+    "blast_sfx_2": "0x00600382",
+    "screen_shake_frames": 4,
+    "screen_shake_ram": "0x00FF17C4"
+  }
+}

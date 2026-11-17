@@ -1,3 +1,9 @@
+# M15.346 ROM Bomb Detonation Blast Spawner & Screen-Shake Trigger
+- `tools/extract_rom_bomb_detonation.py` — ROM extractor & verifier for `0x00ED04..0x00EDA8` (entity `0x3A` blast, `0x00040000` Z drop, `0x8007` damage, `4f` screen shake `$FF17C4`, SFX `0x00B00225`/`0x00600382`).
+- `tests/rom_bomb_detonation_test.py` — Unit tests verifying Z-clamp and blast parameters.
+- `data/thor-evidence/rom_bomb_detonation_m15_346.json` — Verified evidence JSON for M15.346.
+- `docs/handoffs/STANDALONE_M15_346_BOMB_DETONATION_HANDOFF.md` — C++20 Standalone handoff for M16.130.
+
 # M15.345 ROM Projectile Hit Knockback, Enemy Gauge Timer & Gravity
 - `tools/extract_rom_projectile_hit_knockback.py` — ROM extractor & verifier for `0x00EB40..0x00EC58` (`10f` stun, `0x400`/`0x3C0` & `0x200`/`0x1E0` KB, `90f` enemy gauge `$FF184F`, `0x00006000` Z-gravity, `10px` cull).
 - `tests/rom_projectile_hit_knockback_test.py` — Unit tests verifying projectile Z-gravity and ground clamp.
