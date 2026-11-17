@@ -1,3 +1,9 @@
+# M15.406 ROM 2D Bounding Tile Box Sampler, Type 0x56 Pushable Block Scanner & Ground Latch
+- `tools/extract_rom_bounding_box_pushable_latch.py` — extractor for `0x009BC2..0x009D4E` (2D bounding tile box sampler, 6-slot pool `$FF2D8C` type `0x56` pushable block collision scanner, and ground surface latch).
+- `tests/rom_bounding_box_pushable_latch_test.py` — `4` unit tests verifying ROM constants, bounding box interval calculations, and pushable block collision hits/misses.
+- `data/thor-evidence/rom_bounding_box_pushable_latch_m15_406.json` — extracted M15.406 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_406_BOUNDING_BOX_PUSHABLE_LATCH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.405 ROM Ramp/Bridge Slope Solver, Fractional Height Interpolator & Tile Elevation Engine
 - `tools/extract_rom_slope_elevation_engine.py` — extractor for `0x0099F0..0x009BC0` (48-tile ramp search, LUT 2 mapping `0x0096F8`, flat surface elevation table `$FF1706`, and fractional slope interpolation using `mulu`/`divu`).
 - `tests/rom_slope_elevation_engine_test.py` — `4` unit tests verifying ROM constants, LUT 2 mappings, flat surface lookups, and fractional slope interpolations.

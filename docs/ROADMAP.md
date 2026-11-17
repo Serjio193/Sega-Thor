@@ -1,3 +1,6 @@
+# M15.406 ROM 2D Bounding Tile Box Sampler, Type 0x56 Pushable Block Scanner & Ground Latch (`0x009BC2`..`0x009D4E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_bounding_box_pushable_latch.py`, `tests/rom_bounding_box_pushable_latch_test.py` (`4/4 PASS`), `data/thor-evidence/rom_bounding_box_pushable_latch_m15_406.json`, and `docs/handoffs/STANDALONE_M15_406_BOUNDING_BOX_PUSHABLE_LATCH_HANDOFF.md`.
+
 # M15.405 ROM Ramp/Bridge Slope Solver, Fractional Height Interpolator & Tile Elevation Engine (`0x0099F0`..`0x009BC0`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_slope_elevation_engine.py`, `tests/rom_slope_elevation_engine_test.py` (`4/4 PASS`), `data/thor-evidence/rom_slope_elevation_engine_m15_405.json`, and `docs/handoffs/STANDALONE_M15_405_SLOPE_ELEVATION_ENGINE_HANDOFF.md`.
 

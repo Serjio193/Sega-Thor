@@ -1,0 +1,34 @@
+{
+  "milestone": "M15.406",
+  "title": "ROM 2D Bounding Tile Box Sampler, Type 0x56 Pushable Block Scanner & Ground Latch",
+  "routines": {
+    "bounding_tile_box_sampler": {
+      "start": "0x009BF2",
+      "end": "0x009C40",
+      "bytes": 78,
+      "layer1_ram": "0x00FF1766",
+      "layer2_ram": "0x00FF1770",
+      "stride_shift_offset": "0x08",
+      "row_stride_offset": "0x04"
+    },
+    "pushable_block_scanner": {
+      "start": "0x009C7C",
+      "end": "0x009D00",
+      "bytes": 132,
+      "pool_ram": "0x00FF2D8C",
+      "slot_count": 6,
+      "stride_bytes": 90,
+      "target_type": "0x0056",
+      "x_radius_offset": "0x42",
+      "y_radius_offset": "0x44"
+    },
+    "ground_surface_latch": {
+      "start": "0x009D00",
+      "end": "0x009D4E",
+      "bytes": 78,
+      "lut_addr": "0x0096E8",
+      "surface_type_offset": "0x70",
+      "ground_height_offset": "0x14"
+    }
+  }
+}
