@@ -1,3 +1,12 @@
+# M16.135 Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box (`0x00822C..0x008350`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `trigger_ali_jump`, `probe_pickup_entities`, `get_interact_box`, and `is_in_interact_box` in `src/game/player/ali_jump_pickup_probe.hpp/.cpp` covering:
+  - Jump trigger: running jump state 22 with preserved XY vel when `sub_action == 4 && dpad_held`, else standing jump state 16 with zeroed XY vel, `vz = 0x00070000`, backing up previous sub_action to `+0x9E`, clearing input ring count `$FF16EA = 0`, and cutscene lock guard `$FF1985`.
+  - Pickup probe: ±6px bounding box scan for pickup items (`entity_type == 8`), despawning collected entity slot and extracting item word `(item_id << 8) | quantity` to `$FF1976`.
+  - 4-direction interaction boxes relative to Ali's facing direction: Up `[-8, -30, 8, -4]`, Right `[4, -8, 32, 8]`, Down `[-8, 4, 8, 30]`, Left `[-32, -8, -4, 8]`.
+- Qualified `oasis_m16_135_ali_jump_pickup_probe` and the 116-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.134 Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher (`0x007D8A..0x007E9C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

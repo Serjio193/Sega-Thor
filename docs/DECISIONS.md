@@ -1,3 +1,31 @@
+# ADR-20261117-M16-135-ALI-JUMP-PICKUP — Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.351 extracted `0x00822C..0x008350`: `ali_jump_trigger` (`0x00822C..0x0082AC`), `ali_pickup_probe` (`0x0082AE..0x0082F6`), and `ali_interact_probe` (`0x0082F8..0x008350`).
+2. `ali_jump_trigger`:
+   - Checks cutscene/spirit lock flag `$FF1985 != 0`; if set, aborts without jumping.
+   - If D-pad movement is active and current `sub_action == 4` (running):
+     * Triggers Running Jump: sets running jump flag `$FF197E = 0xFF`, `vz = 0x00070000` (+7.0 px/frame), backs up `sub_action` into `+0x9E`, sets `state = 22` (0x16) and `sub_action = 22` (0x16), clears input ring count `$FF16EA = 0`, and preserves `vel_x`/`vel_y`.
+   - Otherwise:
+     * Triggers Standing Jump: clears `vel_x = 0` and `vel_y = 0`, sets `vz = 0x00070000` (+7.0 px/frame), backs up `sub_action` into `+0x9E`, sets `state = 16` (0x10) and `sub_action = 16` (0x10), clears standing jump flag `$FF1980 = 0`, and clears input ring count `$FF16EA = 0`.
+3. `ali_pickup_probe`:
+   - Scans candidate entity slots within a relative `[-6..+6, -6..+6]` px box centered on Ali.
+   - When matching an entity with `entity_type == 8` (Pickup):
+     * Despawns entity slot (`entity_type = 0`).
+     * Encodes item word `(item_id << 8) | quantity` to `$FF1976`, sub_action to `$FF1978`, and world payload to `$FF197A`.
+4. `ali_interact_probe`:
+   - 4-direction relative interaction boxes `[x1, y1, x2, y2]` based on Ali's facing direction `+0x16`:
+     * Facing 0 (Up): `[-8, -30, 8, -4]`
+     * Facing 1 (Right): `[4, -8, 32, 8]`
+     * Facing 2 (Down): `[-8, 4, 8, 30]`
+     * Facing 3 (Left): `[-32, -8, -4, 8]`
+
+**Decisions:**
+1. **Dedicated `ali_jump_pickup_probe` Module:**
+   - Added `src/game/player/ali_jump_pickup_probe.hpp/.cpp` modeling `trigger_ali_jump`, `probe_pickup_entities`, `get_interact_box`, and `is_in_interact_box`.
+
 # ADR-20261117-M16-134-ALI-INPUT-DISPATCH — Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher
 **Status:** Accepted
 **Date:** 2026-11-17
