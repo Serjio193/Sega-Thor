@@ -1,0 +1,47 @@
+{
+  "routine": "dialogue_task_sprite_compositor_and_frame_sync",
+  "start_address": "0x00C756",
+  "end_address": "0x00C88C",
+  "size_bytes": 310,
+  "entry_points": {
+    "dialogue_task_sprite_compositor": "0x00C756",
+    "dialogue_emit_line_sprites": "0x00C81C",
+    "dialogue_emit_sat_piece": "0x00C838",
+    "dialogue_frame_sync_and_render": "0x00C84E"
+  },
+  "prompt_arrow": {
+    "tile_continue": "0x86DC",
+    "tile_dismiss": "0x96DC",
+    "x_pos": 284,
+    "y_pos_base": 332,
+    "y_step_decrement": 12
+  },
+  "line_sprites": {
+    "pieces_per_row": 8,
+    "size_code": "0x0C00",
+    "x_start": 160,
+    "x_step": 32,
+    "tile_step": 4,
+    "y_bias": 272
+  },
+  "hardware_sprite_limit": 80,
+  "memory_map": {
+    "FF13CC": "sat_buffer_base",
+    "FF188C": "sat_buffer_offset",
+    "FF188A": "sat_link_counter",
+    "FF1886": "prompt_icon_active",
+    "FF1887": "prompt_dismiss_flag",
+    "FF1657": "animation_timer",
+    "FF1880": "line_counter",
+    "FF1872": "plane_top_base",
+    "FF1874": "plane_bottom_base",
+    "FF1876": "line1_row_offset",
+    "FF1878": "line2_row_offset",
+    "FF187A": "line3_row_offset",
+    "FF187C": "line4_row_offset",
+    "FF185D": "render_in_progress_flag",
+    "FF1654": "frame_sync_cadence",
+    "FF164E": "vint_status_flags"
+  },
+  "code_hex": "48e701024bf900ff13ccdaf900ff188c3a3900ff188a4a3900ff1886674c0839000400ff16576742363c86dc4a3900ff1887670408c3000c4244323c011c343c014c303900ff18800c40000364180442000c0c400002640e0442000c0c40000164040442000c6100007a383c0c00363900ff1872ea4b08c3000f343900ff187661000044343900ff18786100003a363900ff1874ea4b08c3000f343900ff187a61000024343900ff187c6100001a9bfc00ff13cc33cd00ff188c33c500ff188a4cdf40804e75323c00a0064201103c3c00076100000e06410020584351cefff44e750c450050640e52453ac23005d0443ac03ac33ac14e752f0850f900ff185d4a7900ff1654661633fc000200ff16546100c5ba6100002051f900ff185d0839000000ff164e66f66100d91651f900ff185d205f4e75"
+}

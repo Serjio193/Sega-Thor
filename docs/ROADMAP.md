@@ -1,3 +1,6 @@
+# M15.430 ROM Dialogue Entity Sprite Compositor, Prompt Arrow Indicator & Frame Sync Engine (`0x00C756`..`0x00C88C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dialogue_task_compositor.py`, `tests/rom_dialogue_task_compositor_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dialogue_task_compositor_m15_430.json`, and `docs/handoffs/STANDALONE_M15_430_DIALOGUE_TASK_COMPOSITOR_HANDOFF.md`.
+
 # M15.429 ROM Dialogue Window 4-Line Circular Scroll Engine, VDP Direct Clearer & Glyph DMA Streamer (`0x00C566`..`0x00C756`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dialogue_scroll_dma.py`, `tests/rom_dialogue_scroll_dma_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dialogue_scroll_dma_m15_429.json`, and `docs/handoffs/STANDALONE_M15_429_DIALOGUE_SCROLL_DMA_HANDOFF.md`.
 

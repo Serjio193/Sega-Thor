@@ -1,3 +1,9 @@
+# M15.430 ROM Dialogue Entity Sprite Compositor, Prompt Arrow Indicator & Frame Sync Engine
+- `tools/extract_rom_dialogue_task_compositor.py` — extractor for `0x00C756..0x00C88C` (dialogue task callback `dialogue_task_sprite_compositor`, prompt arrow generator, 32-piece window text line grid `dialogue_emit_line_sprites`, 80-sprite limiter, and frame sync `0x00C84E`).
+- `tests/rom_dialogue_task_compositor_test.py` — `5` unit tests verifying ROM constants, prompt arrow flashing and continue/dismiss tile selection, dynamic Y coordinate scaling, 32-piece window grid layout, and 80-sprite hardware overflow protection.
+- `data/thor-evidence/rom_dialogue_task_compositor_m15_430.json` — extracted M15.430 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_430_DIALOGUE_TASK_COMPOSITOR_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.429 ROM Dialogue Window 4-Line Circular Scroll Engine, VDP Direct Clearer & Glyph DMA Streamer
 - `tools/extract_rom_dialogue_scroll_dma.py` — extractor for `0x00C566..0x00C756` (4-line circular buffer scroll `dialogue_advance_line_and_scroll`, direct VDP clearer `0x00C66A`, glyph DMA streamer `0x00C6BE`, and blank DMA helper `0x00C734`).
 - `tests/rom_dialogue_scroll_dma_test.py` — `5` unit tests verifying ROM constants, fast line advance without scrolling, 4-line circular buffer scroll recycling to `0x30`, glyph DMA queue construction, and blank buffer DMA helper.
