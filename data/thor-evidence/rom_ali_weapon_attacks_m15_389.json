@@ -1,0 +1,41 @@
+{
+  "milestone": "M15.389",
+  "description": "ROM Ali Weapon Combat Attack Initializers (Sword, Bow, Bomb & Sprint Strikes)",
+  "address_range": [
+    "0x00803C",
+    "0x00822C"
+  ],
+  "byte_count": -496,
+  "routines": [
+    {
+      "name": "ali_sword_attack_dispatch",
+      "start": "0x00803C",
+      "end": "0x00808E",
+      "purpose": "Initializes Sword attacks: leap slash (anim 0x66, state 0x5C), running slash (anim 0x60, state 0x54), stationary slash (anim 0x4E, state 0x46)"
+    },
+    {
+      "name": "ali_bow_bomb_attack_dispatch",
+      "start": "0x008090",
+      "end": "0x0080D6",
+      "purpose": "Initializes Bow draw with SFX 0x600377 (standard 0x54/0x4C, Fire Bow 0x5C/0x4C) and Bomb placement (0x58/0x50)"
+    },
+    {
+      "name": "ali_sprint_dash_attacks",
+      "start": "0x0080D8",
+      "end": "0x00814C",
+      "purpose": "Initializes running sprint tackle (anim 0x40, state 0x38, timer 0x15) and evaluates special motion cascades"
+    },
+    {
+      "name": "ali_mount_grab_attacks",
+      "start": "0x00814E",
+      "end": "0x00820C",
+      "purpose": "Initializes combat strikes while mounting/grabbing entities (anims 0x42/0x3A and 0x3E/0x36)"
+    },
+    {
+      "name": "ali_attack_commit_finalize",
+      "start": "0x00820E",
+      "end": "0x00822C",
+      "purpose": "Commits animation, state, recovery timer $FF198B = 4, clears input ring buffer count, and unrolls stack"
+    }
+  ]
+}

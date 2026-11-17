@@ -12271,6 +12271,13 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.389: ROM Ali Weapon Combat Attack Initializers (Sword, Bow, Bomb & Sprint Strikes) (0x00803C..0x00822C)
+
+- Decoded Sword attack variations (`0x00803C..0x00808E`): leap slash (`state = 0x5C, anim = 0x66`) via Dash Leap `0x8814`, running slash (`state = 0x54, anim = 0x60`), and stationary slash (`state = 0x46, anim = 0x4E`).
+- Decoded Bow and Bomb initializers (`0x008090..0x0080D6`): Bow draw with SFX `#$600377` (standard `state = 0x4C, anim = 0x54`, Fire Bow `anim = 0x5C` when `$FF0DB1 == 8`) and Bomb placement (`state = 0x50, anim = 0x58`).
+- Decoded sprint dash attacks from running state 4 (`0x0080D8..0x00814C`): Dagger sprint tackle (`state = 0x38, anim = 0x40`, bit 2 of `+0x39`, timer `+0x9A = 0x15`), motion routes (`0x8814`, `0x8778`, `0x8950`), and mount/grab strikes.
+- Decoded attack commit finalizer (`0x00820E..0x00822C`): recovery timer `$FF198B = 4`, state and animation installation, input ring buffer count clearing, and stack unroll from `$FF1934.l`.
+
 ## 2026-11-17 - Milestone M15.388: ROM Ali Jump Initiation, Weapon Hotkey Swap & Dagger Attack Dispatcher (0x007E46..0x00803C)
 
 - Decoded Jump button C initiation (`0x007E46..0x007EC2`): ground state validation, jump/ledge state transition (`state = 0x14, anim = 0x14`), SFX `#$900359`, and stack unroll from `$FF1934.l`.

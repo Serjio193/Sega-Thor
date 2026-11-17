@@ -31418,6 +31418,17 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.389: ROM Ali Weapon Combat Attack Initializers (Sword, Bow, Bomb & Sprint Strikes) (0x00803C..0x00822C)
+
+- Decoded and tested Sword attack variations (`0x00803C..0x00808E`): leap slash (`state = 0x5C, anim = 0x66`) via Dash Leap `0x8814`, running slash (`state = 0x54, anim = 0x60`), and stationary slash (`state = 0x46, anim = 0x4E`).
+- Decoded and tested Bow and Bomb initializers (`0x008090..0x0080D6`): Bow draw with SFX `#$600377` (standard `state = 0x4C, anim = 0x54`, Fire Bow `anim = 0x5C` when `$FF0DB1 == 8`) and Bomb placement (`state = 0x50, anim = 0x58`).
+- Decoded and tested sprint dash attacks from running state 4 (`0x0080D8..0x00814C`): Dagger sprint tackle (`state = 0x38, anim = 0x40`, bit 2 of `+0x39`, timer `+0x9A = 0x15`), motion routes (`0x8814`, `0x8778`, `0x8950`), and mount/grab strikes.
+- Decoded and tested attack commit finalizer (`0x00820E..0x00822C`): recovery timer `$FF198B = 4`, state and animation installation, input ring buffer count clearing, and stack unroll from `$FF1934.l`.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_weapon_attacks_m15_389.json` (5 routines, 496 bytes).
+- Unit tests: `tests/rom_ali_weapon_attacks_test.py` (`5/5 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_389_ALI_WEAPON_ATTACKS_HANDOFF.md`.
+- Next Step: Commit and push M15.389 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.388: ROM Ali Jump Initiation, Weapon Hotkey Swap & Dagger Attack Dispatcher (0x007E46..0x00803C)
 
 - Decoded and tested Jump button C initiation (`0x007E46..0x007EC2`): ground state validation, jump/ledge state transition (`state = 0x14, anim = 0x14`), SFX `#$900359`, and stack unroll from `$FF1934.l`.
