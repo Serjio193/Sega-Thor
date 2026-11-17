@@ -1,0 +1,41 @@
+{
+  "routine": "scene_script_header_unpacker_and_16kb_vram_dma",
+  "start_address": "0x00D406",
+  "end_address": "0x00D542",
+  "size_bytes": 316,
+  "entry_points": {
+    "load_scene_header_and_init_vram": "0x00D406",
+    "unpack_elevation_bands": "0x00D44A",
+    "clear_camera_structs": "0x00D46C",
+    "init_aligned_camera_coords": "0x00D484",
+    "decompress_4_bg_patterns": "0x00D4C8",
+    "queue_16kb_vram_dma": "0x00D50E"
+  },
+  "script_header_layout": {
+    "plane_tilemap_ptr": "+0x04(a1)",
+    "bg_pattern_indices": "+0x08(a1) (4 bytes)",
+    "elevation_slice_thresholds": "+0x0C(a1) (4 bytes)",
+    "bgm_track_id": "+0x10(a1) -> $FF16F4",
+    "bgm_tempo": "+0x12(a1) -> $FF16F6",
+    "bgm_sound_mode": "+0x14(a1) -> $FF16F8",
+    "scroll_flags": "+0x16(a1) -> d6",
+    "vdp_scroll_mode": "+0x18(a1) -> $FF16F0"
+  },
+  "elevation_tables": {
+    "unpacked_thresholds_ram": "0xFF16FE (4 words, shifted << 3)",
+    "height_band_boundaries_ram": "0xFF1706 (8 words, sentinel $F000)"
+  },
+  "camera_structs": {
+    "plane_a": "0xFF1716 (20 words)",
+    "plane_b": "0xFF173E (20 words)",
+    "alignment_mask": "0xFFF8FFF8 (8-pixel grid)"
+  },
+  "dma_upload_parameters": {
+    "staging_buffer": "0xFF3FA8",
+    "bus_source_addr": "0x007F9FD4",
+    "vram_dest": "0x0000",
+    "length_words": 8192,
+    "vint_request_flag": "bit 1 of $FF164E"
+  },
+  "byte_hash": "7872896cb8885f9d"
+}

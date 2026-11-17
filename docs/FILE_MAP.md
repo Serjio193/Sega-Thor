@@ -1,3 +1,9 @@
+# M15.439 ROM Scene Script Header Unpacker, Dual-Plane Camera Initializer & 16KB VRAM DMA Upload Engine
+- `tools/extract_rom_scene_header_dma.py` — extractor for `0x00D406..0x00D542` (scene script header unpacking, elevation height bands, dual camera reset, 4-block pattern decompressor, and 16KB VRAM DMA upload).
+- `tests/rom_scene_header_dma_test.py` — `5` unit tests verifying ROM constants, script header unpacking, elevation threshold math and sentinel $F000, 8-pixel grid alignment, and 16KB VRAM DMA queueing.
+- `data/thor-evidence/rom_scene_header_dma_m15_439.json` — extracted M15.439 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_439_SCENE_HEADER_DMA_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.438 ROM Background Tile Pattern Decompressor & 4KB VRAM DMA Streamer
 - `tools/extract_rom_bg_tile_dma.py` — extractor for `0x00D3B2..0x00D406` (background tile pattern decompression via table `0x05CE96`, DMA queue packaging, and V-Int sync).
 - `tests/rom_bg_tile_dma_test.py` — `4` unit tests verifying ROM constants, pointer table validity, 4KB DMA entry construction, and multiple pattern streaming.
