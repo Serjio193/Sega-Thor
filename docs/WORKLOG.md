@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.121: Debug Stage/Room Warp Menu & Spawn Table)
+- **Concrete Task**: Implement `src/game/ui/debug_warp_menu.hpp/.cpp` with `DebugWarpSpawnTable::parse_from_rom(...)` (`0x0005D918`: 32 area slots -> room offset list -> `(tile_x, tile_y) << 3` pixel spawn) and `step_debug_warp_menu(...)` (`0x004C9C..0x004F42`: Up/Down room wrap, Left/Right non-empty area wrap with room clamping, `10f`/`3f` key repeat, `A` confirm `0x00A00256`, `B/C` cancel `0x00A00347`, move SFX `0x006003A6`); add `tests/m16_121_debug_warp_menu_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/debug_warp_menu.hpp` / `src/game/ui/debug_warp_menu.cpp`.
+  * Added `tests/m16_121_debug_warp_menu_test.cpp` (registered as `oasis_m16_121_debug_warp_menu` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `102/102` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `102/102` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring the interactive debug warp menu overlay and `0x00CA24` room-warp dispatch into `StandaloneGameSimulation` is deferred to future debug-UI integration.
+
 # Worklog — 2026-11-17 (M16.120: Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics)
 - **Concrete Task**: Implement `src/game/entities/ai_steering_gravity.hpp/.cpp` with `facing_and_manhattan_to_player(...)` (`0x00E398..0x00E3E6`), `steer_4way_toward_player(...)` (`0x00E3E8..0x00E45C`: `max(16, max(|dx|, |dy|))` chase timer), `aim_fixed_point_vector(...)` (`0x00E45E..0x00E4CE`: 16.16 normalized `2.0 px/frame` major-axis step), `launch_knockback_arc(...)` (`0x00E4D0..0x00E500`: `0x300`/`0x2E0` XY + `0x00060000` Z), and `step_z_gravity(...)` (`0x00E502..0x00E520`: `vz -= 0x0000C000`, skips exact `0` via `-1`, lands at `z < 0`), reusing `velocity_vector_math.hpp`; add `tests/m16_120_ai_steering_gravity_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

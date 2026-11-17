@@ -1,3 +1,9 @@
+# M16.121 Debug Stage/Room Warp Menu & Spawn Table (`0x004C9C..0x004F20`, `0x005D918`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `DebugWarpSpawnTable` (`0x0005D918`: 32 area slots, relative offsets, `(tile_x, tile_y) << 3` pixel spawn) and `step_debug_warp_menu` (`0x004C9C..0x004F42`: Up/Down room wrap, Left/Right non-empty area wrap + room clamp, `10f`/`3f` repeat, `0x006003A6` move, `0x00A00256` confirm, `0x00A00347` cancel) in `src/game/ui/debug_warp_menu.hpp/.cpp`.
+- Qualified `oasis_m16_121_debug_warp_menu` and the 102-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.120 Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics (`0x00E398..0x00E520`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

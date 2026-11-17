@@ -63,6 +63,7 @@ add_library(oasis_core
     src/game/ui/food_menu.cpp
     src/game/ui/save_prompt.cpp
     src/game/ui/hud_sat_emitter.cpp
+    src/game/ui/debug_warp_menu.cpp
     src/game/video/palette_fade.cpp
     src/game/video/vdp_clear_and_palette_cycle.cpp
     src/game/video/vdp_dma_exec.cpp

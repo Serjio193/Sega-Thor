@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/debug_warp_menu.hpp` / `src/game/ui/debug_warp_menu.cpp`: Debug stage/room warp menu (`0x004C9C..0x004F42`, `10f`/`3f` key repeat, non-empty area skip, room clamp, `0x006003A6` / `0x00A00256` / `0x00A00347` SFX) and `0x0005D918` 32-area ROM spawn table parser (`(tile_x, tile_y) << 3`) (M16.121).
+- `tests/m16_121_debug_warp_menu_test.cpp`: Automated M16.121 test qualifying ROM spawn table parsing, room/area wrap, empty-area skip, key repeat, confirm, and cancel (M16.121).
 - `src/game/entities/ai_steering_gravity.hpp` / `src/game/entities/ai_steering_gravity.cpp`: Enemy AI steering (`0x00E398..0x00E45C`), 16.16 normalized `2.0 px/frame` aim (`0x00E45E..0x00E4CE`), knockback launch (`0x00E4D0..0x00E500`), and Z-gravity (`0x00E502..0x00E520`), reusing `velocity_vector_math.hpp` (M16.120).
 - `tests/m16_120_ai_steering_gravity_test.cpp`: Automated M16.120 test qualifying Manhattan/4-way steering, 16.16 aim vector, knockback launch, and Z-gravity `0 -> -1` skip & landing (M16.120).
 - `src/game/video/sprite_dma_throttle.hpp` / `src/game/video/sprite_dma_throttle.cpp`: Entity sprite-DMA budget throttle (`0x00A9AE..0x00A9F8`, facing `3` -> `1`, `$FF1651 = 0xFF` throttle) and shadow visibility (`0x00AA78..0x00AAA5`) (M16.119).

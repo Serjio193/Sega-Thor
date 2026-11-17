@@ -1,3 +1,14 @@
+# ADR-20261117-M16-121-DEBUG-WARP-MENU — Debug Stage/Room Warp Menu & Spawn Table
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.337 extracted `0x004C9C..0x004F20` and `0x0005D918`: 32-area ROM spawn table, `10f`/`3f` key repeat, non-empty area skipping, and `(tile_x, tile_y) << 3` pixel coordinates.
+
+**Decisions:**
+1. **Dedicated `debug_warp_menu` Module:**
+   - Added `src/game/ui/debug_warp_menu.hpp/.cpp` with `DebugWarpSpawnTable` (supporting both ROM binary parsing and synthetic construction for unit tests) and `step_debug_warp_menu`.
+
 # ADR-20261117-M16-120-AI-STEERING-GRAVITY — Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics
 **Status:** Accepted
 **Date:** 2026-11-17
