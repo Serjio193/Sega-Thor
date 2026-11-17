@@ -1,3 +1,39 @@
+# M16.169 ROM Entity 3D AABB Combat Overlap & Multi-Pool Collision Iterator Engine (`0x00B79A..0x00BAAC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `compute_directional_hitbox`, `is_target_vulnerable`, `check_box_overlap_2d`, `check_overlap_3d`, `apply_combat_hit`, `scan_group2_overlaps`, `resume_group2_overlaps`, `scan_group2_interval_overlaps`, `resume_group2_interval_overlaps`, `scan_group4_overlaps`, `resume_group4_overlaps`, and raw 64KB RAM window integration helpers in `src/game/combat/combat_overlap_engine.hpp/.cpp` and `include/game/combat/combat_overlap_engine.hpp`:
+  - `0x00B79A..0x00B854`: Directional Combat Hitbox calculation:
+    - 4-way facing direction `+0x16(a6)`:
+      * Facing 0 (Down): `y_min = 0` (`d2 = 0`)
+      * Facing 1 (Left): `x_max = 0` (`d3 = 0`)
+      * Facing 2 (Up): `y_max = 0` (`d4 = 0`)
+      * Facing 3 (Right): `x_min = 0` (`d1 = 0`)
+    - Target vulnerability filtering:
+      * Intangible/invulnerable: `(flags_38 & 0x0C) == 0`
+      * Protected: `(flags_3a & 0x01) == 0`
+      * Hit cooldown: `cooldown_82 == 0`
+      * Self-damage prevention: `self_owner_7e != 0 && target_addr != 0 && self_owner_7e == target_addr` filters out self-inflicted hits.
+    - Hit application:
+      * Bumps hit cooldowns: `+0x82(a6) += 1` and `+0x82(a0) += 1`.
+      * Attacker attribution: `+0x7E(a0) = attacker_ptr`.
+      * Damage: `+0x84(a0) = self.damage`.
+      * Invulnerability timer: `+0x83(a0) = 12`.
+      * Combat status: `+0x86(a0) = 0x8001`.
+      * Clear hit stun: `+0x9D(a0) = 0`.
+      * Knockback velocities: `vel_x = 0x0200, vel_y = 0x01C0, vel_z = 0x00020000`.
+  - `0x00B856..0x00B920`: Group 2 3D AABB Overlap Scanner:
+    - Scans 21 slots at `$FF19E8` (stride 188B / `$BC`).
+    - Evaluates 2D box overlap and point Z probe `self.elev_z + self.ground_h` in target `[tz_base, tz_top]`.
+    - Coroutine-style context save buffer `$FF194A..$FF196A` on hit; resume iterator at `0x00B912`.
+  - `0x00B922..0x00B9DC`: Group 2 3D Interval Scanner:
+    - Evaluates explicit vertical Z interval overlap `[pz_min, pz_max]` vs `[tz_base, tz_top]`.
+    - Context save buffer at `$FF196E`.
+  - `0x00B9EC..0x00BAAC`: Group 4 Breakables/Pickups Scanner:
+    - Scans 8 slots at `$FF2ABC` (stride 90B / `$5A`).
+    - Context save buffer at `$FF196A`.
+  - Raw 64KB RAM window integration helpers for full simulation.
+- Qualified `oasis_m16_169_combat_overlap_engine` and the 149-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.168 ROM Entity Special Dynamic FX Halo, Swirl & SAT Piece Compositor Subsystem (Part 2) (`0x00B56E..0x00B79A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

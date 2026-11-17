@@ -1,3 +1,34 @@
+# ADR-20261118-M16-169-COMBAT-OVERLAP-ENGINE — ROM Entity 3D AABB Combat Overlap & Multi-Pool Collision Iterator Engine (0x00B79A..0x00BAAC)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.420 extracted ROM routines `0x00B79A..0x00BAAC` governing entity directional combat hitbox calculation, vulnerability filtering, hit application, and multi-pool 3D collision iterators:
+   - `0x00B79A..0x00B854`: Directional Combat Hitbox:
+     * 4-way facing direction `+0x16(a6)` shapes hitbox radii:
+       - Facing 0 (Down): `y_min = 0`
+       - Facing 1 (Left): `x_max = 0`
+       - Facing 2 (Up): `y_max = 0`
+       - Facing 3 (Right): `x_min = 0`
+     * Vulnerability filtering: intangible/invulnerable `+0x38` bits 2/3 == 0, protected `+0x3A` bit 0 == 0, hit cooldown `+0x82` == 0, self-damage check `+0x7E(a6) != a0`.
+     * Hit response: increments cooldowns `+0x82 += 1`, sets attacker pointer `+0x7E`, invulnerability timer `+0x83 = 12`, damage `+0x84`, status `+0x86 = 0x8001`, clears stun `+0x9D = 0`, sets knockback velocities `(vel_x=0x0200, vel_y=0x01C0, vel_z=0x00020000)`.
+   - `0x00B856..0x00B920`: Group 2 3D AABB Overlap Scanner:
+     * Scans 21 slots at `$FF19E8` (stride 188B).
+     * Saves iterator state in coroutine buffer `$FF194A..$FF196A` on hit, with resume entry at `0x00B912`.
+   - `0x00B922..0x00B9DC`: Group 2 3D Interval Scanner:
+     * Evaluates explicit Z interval `[pz_min, pz_max]` overlap.
+     * Context save buffer at `$FF196E`.
+   - `0x00B9EC..0x00BAAC`: Group 4 Breakables Scanner:
+     * Scans 8 slots at `$FF2ABC` (stride 90B) for weapon impacts against breakable pots/chests/pickups.
+     * Context save buffer at `$FF196A`.
+   - Raw 64KB RAM window integration helpers for full emulation fidelity.
+
+**Decisions:**
+1. **Dedicated `combat_overlap_engine` Module:**
+   - Added `src/game/combat/combat_overlap_engine.hpp/.cpp` and `include/game/combat/combat_overlap_engine.hpp` modeling directional hitboxes, vulnerability checks, hit response application, multi-pool iterators, and raw memory integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (149/149 M16 tests).
+
 # ADR-20261118-M16-168-DYNAMIC-FX-RENDERER-P2 — ROM Entity Special Dynamic FX Halo, Swirl & SAT Piece Compositor Subsystem (Part 2) (0x00B56E..0x00B79A)
 **Status:** Accepted
 **Date:** 2026-11-18
