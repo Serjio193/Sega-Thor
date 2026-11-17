@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.292: ROM CONTINUE GAME SRAM LOAD & ENTITY RESTORE (`0x00161C`..`0x001730`) — Primary/Backup Fallback, `596`B Sum, `376`B Restore, `30`f Invuln; Extractor (`tools/extract_rom_continue_game_load.py` <= 500 lines), Tests (`tests/rom_continue_game_load_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_292_CONTINUE_GAME_LOAD_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00161C..0x001710` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_continue_game_load.py` and `python tests/rom_continue_game_load_test.py` (2/2 PASS).
+- Next: Commit & push M15.292, await M16.76 completion, and continue.
+
 # 2026-11-17 — Milestone M15.291: ROM NEW GAME INITIALIZATION (`0x001300`..`0x00144F`) — `HP=200`, `ATK=10`, `Room 0x1B`, `Ali (256, 80)`, 4 Secret Chords; Extractor (`tools/extract_rom_new_game_init.py` <= 500 lines), Tests (`tests/rom_new_game_init_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_291_NEW_GAME_INIT_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x001300..0x00144F` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_new_game_init.py` and `python tests/rom_new_game_init_test.py` (2/2 PASS).

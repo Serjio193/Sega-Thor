@@ -1,3 +1,7 @@
+# M15.292 ROM Continue Game SRAM Load & Entity Restore (`0x00161C`..`0x001730`) — COMPLETE / VERIFIED
+- Decoded primary/backup SRAM fallback (`0x001112`/`0x00114A` -> `0x0016F4`, `596` bytes + `u16_be` sum checksum, soft reset `0x00020E` on double failure), `376`-byte (`0xBC` words) Ali+Spirit restore, `0x014522` spirit reload, and `30`-frame (`0x1E`) post-load invulnerability.
+- Authored `tools/extract_rom_continue_game_load.py`, `tests/rom_continue_game_load_test.py` (`2/2 PASS`), `data/thor-evidence/rom_continue_game_load_m15_292.json`, and `docs/handoffs/STANDALONE_M15_292_CONTINUE_GAME_LOAD_HANDOFF.md`.
+
 # M15.291 ROM New Game Initialization (`0x001300`..`0x00144F`) — COMPLETE / VERIFIED
 - Decoded New Game WRAM clear (`$FF0BFE`, `0x12A` words), starting stats (`MaxHP=HP=200`, `MaxSP=SP=0`, `ATK=10`, `spirit=0`), 4 P1+P2 secret chords, and initial spawn (`Room 0x001B`, `Cam (96, 0)`, `Ali (256, 80)`).
 - Authored `tools/extract_rom_new_game_init.py`, `tests/rom_new_game_init_test.py` (`2/2 PASS`), `data/thor-evidence/rom_new_game_init_m15_291.json`, and `docs/handoffs/STANDALONE_M15_291_NEW_GAME_INIT_HANDOFF.md`.

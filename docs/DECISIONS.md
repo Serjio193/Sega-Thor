@@ -1,3 +1,7 @@
+# ADR-20261117-M15-292-CONTINUE-GAME-LOAD — Continue Game SRAM Load & Entity Restore (`0x00161C`..`0x001730`)
+- **Decision:** Model Continue Game save loading in Standalone with primary/backup SRAM fallback (`0x001112`/`0x00114A`, `596`B + `u16_be` sum checksum), `376`B Ali+Spirit restore, `0x014522` spirit reload, and `30`-frame post-load invulnerability.
+- **Evidence:** Direct Capstone M68K disassembly of `0x00161C..0x001710` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-291-NEW-GAME-INIT — New Game Initialization (`0x001300`..`0x00144F`)
 - **Decision:** Model New Game initialization in Standalone with `MaxHP = HP = 200`, `MaxSP = SP = 0`, `ATK = 10` (`$FF0D7E`), `Room 0x001B`, `Cam (96, 0)`, `Ali (256, 80)`, and the 4 secret P1+P2 input chords.
 - **Evidence:** Direct Capstone M68K disassembly of `0x001300..0x00144F` in `local-roms/Beyond Oasis (USA).md`.

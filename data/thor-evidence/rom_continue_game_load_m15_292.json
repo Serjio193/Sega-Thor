@@ -1,0 +1,22 @@
+{
+  "milestone": "M15.292",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "continue_load": {
+    "entry_addr": "0x00161C",
+    "primary_slot_addr": "0x001112",
+    "backup_slot_addr": "0x00114A",
+    "checksum_loader_addr": "0x0016F4",
+    "corrupt_reset_addr": "0x00020E",
+    "sram_payload_words": 298,
+    "sram_payload_bytes": 596,
+    "entity_copy_words": 188,
+    "entity_copy_bytes": 376,
+    "ram_save_buf": "0xFF0BFE",
+    "ram_player_entity": "0xFF19E8",
+    "ram_spirit_entity": "0xFF1AA4",
+    "ram_room_id": "0xFF0E42",
+    "spirit_resource_loader_addr": "0x014522",
+    "post_load_invuln_frames": 30,
+    "gameplay_entry_addr": "0x00CA24"
+  }
+}

@@ -1,3 +1,9 @@
+# M15.292 ROM Continue Game SRAM Load & Entity Restore
+- `tools/extract_rom_continue_game_load.py` — Extracts Continue Game primary/backup SRAM fallback, `596`B checksum, `376`B entity copy, and `30`f invulnerability.
+- `tests/rom_continue_game_load_test.py` — Unit tests verifying Continue Game constants and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_continue_game_load_m15_292.json` — Extracted Continue Game load evidence.
+- `docs/handoffs/STANDALONE_M15_292_CONTINUE_GAME_LOAD_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.291 ROM New Game Initialization
 - `tools/extract_rom_new_game_init.py` — Extracts New Game starting stats, Room `0x001B` spawn, and 4 secret P1+P2 chords.
 - `tests/rom_new_game_init_test.py` — Unit tests verifying starting values and JSON artifact (`2/2 PASS`).
