@@ -1,0 +1,14 @@
+{
+  "routine": "Tile Rect vs Player Ali AABB Containment & Overlap Collision Testers",
+  "start_address": "0x00C17A",
+  "end_address": "0x00C222",
+  "size_bytes": 168,
+  "player_address": "0x00FF19E8",
+  "entry_points": {
+    "player_inside_rect": "0x00C17A",
+    "player_overlaps_rect": "0x00C1CE"
+  },
+  "tile_scale_shift": 3,
+  "max_extent_bias": "0x00070007",
+  "sha256": "f6ed7c1dd9ff78efb9198b85a58e208429add8b3f5f584df34eb329f49a874db"
+}

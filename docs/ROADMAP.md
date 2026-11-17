@@ -1,3 +1,6 @@
+# M15.426 ROM Tile Rect vs Player Ali AABB Containment & Overlap Collision Testers (`0x00C17A`..`0x00C222`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_player_rect_collision.py`, `tests/rom_player_rect_collision_test.py` (`5/5 PASS`), `data/thor-evidence/rom_player_rect_collision_m15_426.json`, and `docs/handoffs/STANDALONE_M15_426_PLAYER_RECT_COLLISION_HANDOFF.md`.
+
 # M15.425 ROM Fixed-Width & Space-Padded Decimal String Formatters (`0x00C0BE`..`0x00C17A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_decimal_string_formatter.py`, `tests/rom_decimal_string_formatter_test.py` (`4/4 PASS`), `data/thor-evidence/rom_decimal_string_formatter_m15_425.json`, and `docs/handoffs/STANDALONE_M15_425_DECIMAL_STRING_FORMATTER_HANDOFF.md`.
 

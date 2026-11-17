@@ -1,3 +1,9 @@
+# M15.426 ROM Tile Rect vs Player Ali AABB Containment & Overlap Collision Testers
+- `tools/extract_rom_player_rect_collision.py` — extractor for `0x00C17A..0x00C222` (strict AABB containment test `player_inside_rect`, overlap intersection test `player_overlaps_rect`, packed coordinate scaling, and player radius `$46`).
+- `tests/rom_player_rect_collision_test.py` — `5` unit tests verifying ROM constants, packed register coordinate unpacking, strict inside containment conditions, overlap intersection conditions, and exact boundary edge alignment.
+- `data/thor-evidence/rom_player_rect_collision_m15_426.json` — extracted M15.426 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_426_PLAYER_RECT_COLLISION_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.425 ROM Fixed-Width & Space-Padded Decimal String Formatters
 - `tools/extract_rom_decimal_string_formatter.py` — extractor for `0x00C0BE..0x00C17A` (fixed 5-digit zero-padded `format_dec_fixed5` and leading-space padded `format_dec_spaces` decimal string formatters, buffer `$FF192A`, and divisor cascade).
 - `tests/rom_decimal_string_formatter_test.py` — `4` unit tests verifying ROM constants, fixed 5-digit formatting, leading-space suppression, and pointer rewind mechanics.
