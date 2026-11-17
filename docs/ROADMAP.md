@@ -1,3 +1,6 @@
+# M15.377 ROM Ali Cartwheel Evade Hitbox, Ledge-Catch Probe & Standup Sync (`0x006738`..`0x00693A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_cartwheel_ledge.py`, `tests/rom_ali_cartwheel_ledge_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_cartwheel_ledge_m15_377.json`, and `docs/handoffs/STANDALONE_M15_377_ALI_CARTWHEEL_LEDGE_HANDOFF.md`.
+
 # M15.376 ROM Ali Crawl Movement, Multi-Surface Footstep SFX & Skid Deceleration (`0x006516`..`0x006700`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_crawl_skid.py`, `tests/rom_ali_crawl_skid_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_crawl_skid_m15_376.json`, and `docs/handoffs/STANDALONE_M15_376_ALI_CRAWL_SKID_HANDOFF.md`.
 

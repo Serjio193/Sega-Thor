@@ -1,0 +1,36 @@
+{
+  "milestone": "M15.377",
+  "title": "ROM Ali Cartwheel Evade Hitbox, Ledge-Catch Probe & Standup Sync",
+  "routines": {
+    "ali_cartwheel_evade_hitbox": {
+      "start": "0x006738",
+      "end": "0x0067DC"
+    },
+    "ali_ledge_hang_pullup_jump": {
+      "start": "0x0067DE",
+      "end": "0x0067FE"
+    },
+    "ali_pit_edge_catch_hold": {
+      "start": "0x006800",
+      "end": "0x006874"
+    },
+    "ali_ledge_standup_spirit_sync": {
+      "start": "0x006876",
+      "end": "0x00693A"
+    }
+  },
+  "constants": {
+    "cartwheel_base_damage": 14,
+    "cartwheel_keyframe_bonus": 24,
+    "cartwheel_spin_sfx": "0x1B400344",
+    "cartwheel_friction_step": 32768,
+    "ledge_pullup_jump_target": "0x0000CA24",
+    "pit_edge_gravity_step": 49152,
+    "ledge_foot_probe_offset": 14,
+    "ledge_catch_state": "0x0032",
+    "standup_recovery_timer": 20,
+    "standup_state": "0x0034",
+    "anim_asset_table": "0x0003F4A6",
+    "standup_recovery_sfx": "0x0080037A"
+  }
+}

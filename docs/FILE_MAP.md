@@ -1,3 +1,9 @@
+# M15.377 ROM Ali Cartwheel Evade Hitbox, Ledge-Catch Probe & Standup Sync
+- `tools/extract_rom_ali_cartwheel_ledge.py` — extractor for `0x006738..0x00693A` (cartwheel damage `14`/`16`, spin SFX `0x1B400344`, contact frame reset, `0x8000` friction, ledge pull-up `0xCA24`, `-0xC000` gravity, foot probe offset `+14`, ledge catch state `0x32`, standup state `0x34` 20f timer, standup SFX `0x0080037A`).
+- `tests/rom_ali_cartwheel_ledge_test.py` — `2` unit tests verifying ROM constants, cartwheel damage/contact logic, and pit edge probe transitions.
+- `data/thor-evidence/rom_ali_cartwheel_ledge_m15_377.json` — extracted M15.377 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_377_ALI_CARTWHEEL_LEDGE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.376 ROM Ali Crawl Movement, Multi-Surface Footstep SFX & Skid Deceleration
 - `tools/extract_rom_ali_crawl_skid.py` — extractor for `0x006516..0x006700` (perpendicular crawl nudges `±0x2A000` X / `±0x25800` Y, water/dust/creep footstep SFX, 6-frame skid gate, state `0x0C` 21f dust, scrape SFX `0x1B400344`, friction decel `0xACCC` / `0x8000`).
 - `tests/rom_ali_crawl_skid_test.py` — `2` unit tests verifying ROM constants, perpendicular crawl nudging, and friction deceleration math.
