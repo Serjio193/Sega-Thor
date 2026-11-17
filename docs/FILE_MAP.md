@@ -1,3 +1,9 @@
+# M15.395 ROM Master Gameplay Frame Sequencer, Screen Shake Dispatcher & Joypad Menu Hotkeys
+- `tools/extract_rom_master_frame_sequencer.py` — extractor for `0x008AA6..0x008C5A` (15-phase frame pipeline, screen shake bit 7 dispatch to `0x530C`/`0x7CC6`, and joypad hotkey menu triggers `0x3B3E`).
+- `tests/rom_master_frame_sequencer_test.py` — `3` unit tests verifying ROM constants, screen shake dispatcher, and joypad menu hotkeys.
+- `data/thor-evidence/rom_master_frame_sequencer_m15_395.json` — extracted M15.395 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_395_MASTER_FRAME_SEQUENCER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.394 ROM Ali Rapid-Mash, Triple-Tap Motion Detectors & Demo Stream Loader
 - `tools/extract_rom_ali_rapid_tripletap_demo.py` — extractor for `0x008910..0x008AA6` (rapid-mash 13-frame bit 4 count >= 3, triple-tap 25-frame 3-matching cardinal D-pad sequence via table `0x0087F4`, demo stream initializer `0x0089B2`, and 9-entry demo asset offset table `0x008A94`).
 - `tests/rom_ali_rapid_tripletap_demo_test.py` — `3` unit tests verifying ROM constants, rapid-mash logic, triple-tap directional recognition, and demo asset offset addresses.

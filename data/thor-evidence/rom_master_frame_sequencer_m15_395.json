@@ -1,0 +1,57 @@
+{
+  "milestone": "M15.395",
+  "title": "ROM Master Gameplay Frame Sequencer, Screen Shake Dispatcher & Joypad Menu Hotkeys",
+  "routines": {
+    "master_frame_sequencer": {
+      "start": "0x008AA6",
+      "end": "0x008B8C",
+      "bytes": 230,
+      "demo_flag_ram": "0x00FF1996",
+      "demo_finished_ram": "0x00FF1997",
+      "global_tick_ram": "0x00FF0D76",
+      "anim_subtick_ram": "0x00FF1971",
+      "vblank_sync_ram": "0x00FF1654",
+      "pipeline_calls": {
+        "pause_menu": "0x00A4C8",
+        "joypad_poll": "0x008BAC",
+        "screen_shake_step": "0x008B8E",
+        "event_vm_tick": "0x00F788",
+        "dialogue_hud_step": "0x00557A",
+        "spirit_mana_step": "0x00DEEC",
+        "secondary_weapon_flight": "0x00E0BA",
+        "hazard_blast_step": "0x00E0F4",
+        "ali_machine_step": "0x008E22",
+        "entities_list_step": "0x008E90",
+        "entity_gc_reclaim": "0x008DD4",
+        "camera_boundary_clamp": "0x00C998",
+        "plane_scroll_sync": "0x00C980",
+        "sat_compose": "0x00A196"
+      }
+    },
+    "screen_shake_dispatcher": {
+      "start": "0x008B8E",
+      "end": "0x008BAA",
+      "bytes": 28,
+      "trigger_ram": "0x00FF1864",
+      "flash_handler": "0x00530C",
+      "shake_handler": "0x007CC6"
+    },
+    "joypad_menu_hotkeys": {
+      "start": "0x008BAC",
+      "end": "0x008C58",
+      "bytes": 172,
+      "joypad_held_ram": "0x00FF165E",
+      "joypad_edge_ram": "0x00FF165F",
+      "joypad_extra_ram": "0x00FF1660",
+      "menu_request_ram": "0x00FF185E",
+      "menu_handler": "0x003B3E",
+      "all_released_mask": "0x70",
+      "menu_indices": {
+        "start_button": 0,
+        "item_ring": 1,
+        "weapon_ring": 2,
+        "map_status": 3
+      }
+    }
+  }
+}

@@ -1,3 +1,6 @@
+# M15.395 ROM Master Gameplay Frame Sequencer, Screen Shake Dispatcher & Joypad Menu Hotkeys (`0x008AA6`..`0x008C5A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_master_frame_sequencer.py`, `tests/rom_master_frame_sequencer_test.py` (`3/3 PASS`), `data/thor-evidence/rom_master_frame_sequencer_m15_395.json`, and `docs/handoffs/STANDALONE_M15_395_MASTER_FRAME_SEQUENCER_HANDOFF.md`.
+
 # M15.394 ROM Ali Rapid-Mash, Triple-Tap Motion Detectors & Demo Stream Loader (`0x008910`..`0x008AA6`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_rapid_tripletap_demo.py`, `tests/rom_ali_rapid_tripletap_demo_test.py` (`3/3 PASS`), `data/thor-evidence/rom_ali_rapid_tripletap_demo_m15_394.json`, and `docs/handoffs/STANDALONE_M15_394_ALI_RAPID_TRIPLETAP_DEMO_HANDOFF.md`.
 
