@@ -1,0 +1,42 @@
+{
+  "milestone": "M15.412",
+  "title": "ROM Pass B Master SAT Dispatcher & Cache Mask Reuse",
+  "address_range": {
+    "start": "0x00A524",
+    "end": "0x00A69A",
+    "bytes": 374
+  },
+  "mask_cache": "0x00FF188E",
+  "pools": {
+    "group_1": {
+      "address": "0x00FF2954",
+      "slots": 4,
+      "stride": 90
+    },
+    "special_pool": {
+      "address": "0x00FF19C8",
+      "slots": 4,
+      "stride": 8
+    },
+    "group_2_depth_sorted": {
+      "address": "0x00FF19E8",
+      "slots": 21,
+      "stride": 188
+    },
+    "group_4": {
+      "address": "0x00FF2ABC",
+      "slots": 8,
+      "stride": 90
+    },
+    "group_3": {
+      "address": "0x00FF2D8C",
+      "slots": 6,
+      "stride": 90
+    }
+  },
+  "vdp_sat": {
+    "buffer": "0x00FF13CC",
+    "sync_flags": "0x00FF164E",
+    "sync_mask": "0x03"
+  }
+}

@@ -1,3 +1,9 @@
+# M15.412 ROM Pass B Master SAT Dispatcher & Cache Mask Reuse
+- `tools/extract_rom_pass_b_sat_dispatcher.py` — extractor for `0x00A524..0x00A69A` (Pass B master sprite composition, cached active mask reuse `$FF188E.l`, descending-Y selection sorting, and VDP SAT link terminator).
+- `tests/rom_pass_b_sat_dispatcher_test.py` — `4` unit tests verifying ROM constants, cached mask filtering, descending-Y sorting order, and render target selection.
+- `data/thor-evidence/rom_pass_b_sat_dispatcher_m15_412.json` — extracted M15.412 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_412_PASS_B_SAT_DISPATCHER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.411 ROM Dialogue & HUD Sprite SAT Compositor and Allocation Subsystem
 - `tools/extract_rom_dialogue_sprite_subsystem.py` — extractor for `0x00A342..0x00A524` (dialogue frame 6-sprite emitter, portrait 3-sprite emitter, cursor DMA to VRAM `$B8E0`, template tables `0x00A438`/`0x00A480`, and static SAT reservation pass).
 - `tests/rom_dialogue_sprite_subsystem_test.py` — `4` unit tests verifying ROM constants, reservation byte calculations, cursor DMA address formulas, and dialogue sprite positioning.

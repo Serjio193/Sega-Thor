@@ -1,3 +1,14 @@
+# 2026-11-17 — Milestone M15.412: ROM PASS B MASTER SAT DISPATCHER & CACHE MASK REUSE (`0x00A524`..`0x00A69A`) — Post-Allocation Sprite Pass, Reused Active Mask Cache `$FF188E.l`, Descending-Y Selection Sort & SAT Link Terminator `$FF13CC`; Extractor (`tools/extract_rom_pass_b_sat_dispatcher.py` <= 500 lines), Tests (`tests/rom_pass_b_sat_dispatcher_test.py` 4/4 PASS), Handoff (`docs/handoffs/STANDALONE_M15_412_PASS_B_SAT_DISPATCHER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00A524..0x00A69A` (`local-roms/Beyond Oasis (USA).md`) and verified:
+  * `0x00A524..0x00A538`: Group 1 render scan (4 slots of 90 bytes at `$FF2954`; if `type != 0`, dispatches to `$AD76` or `$A9A0`).
+  * `0x00A53C..0x00A54C`: Special pool scan (4 slots of 8 bytes at `$FF19C8`; dispatches through jump table at `$A69A`).
+  * `0x00A550..0x00A5A2`: Group 2 descending-Y depth sorter (loads cached active entity bitmask from `$FF188E.l` into `d7`; iteratively selects slot with maximum Y coordinate `+0x0C(a6)`; sets bit in `d7` and dispatches to `$AD76` or `$A9A0`).
+  * `0x00A5A6..0x00A5BA`: Group 4 render scan (8 slots of 90 bytes at `$FF2ABC`).
+  * `0x00A5BE..0x00A5D2`: Group 3 render scan (6 slots of 90 bytes at `$FF2D8C`).
+  * `0x00A5D6..0x00A600`: Foreground player entity pass (checks `$FF1995`; if active renders `$FF19E8[0]` via `$AD80`/`$A9AA`).
+  * `0x00A604..0x00A624`: VDP SAT link terminator (loads SAT buffer at `$FF13CC`; writes link terminator `0` to `-5(a6, d7.w)`; sets VDP sync flags `ori.b #3, $FF164E.l`).
+- Verification: `python tools/extract_rom_pass_b_sat_dispatcher.py`, `python -m unittest tests.rom_pass_b_sat_dispatcher_test` (`4/4 PASS`), `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
 # 2026-11-17 — Milestone M15.411: ROM DIALOGUE & HUD SPRITE SAT COMPOSITOR AND ALLOCATION SUBSYSTEM (`0x00A342`..`0x00A524`) — Dialogue Frame 6-Sprite Emitter, Portrait 3-Sprite Emitter, Cursor DMA to VRAM `$B8E0` from ROM `0x000AAEEB`, Template Tables `0x00A438`/`0x00A480` & Static SAT Reservation Pass; Extractor (`tools/extract_rom_dialogue_sprite_subsystem.py` <= 500 lines), Tests (`tests/rom_dialogue_sprite_subsystem_test.py` 4/4 PASS), Handoff (`docs/handoffs/STANDALONE_M15_411_DIALOGUE_SPRITE_SUBSYSTEM_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00A342..0x00A524` (`local-roms/Beyond Oasis (USA).md`) and verified:
   * `0x00A342..0x00A37E`: dialogue frame 6-sprite emitter (loads SAT buffer at `$FF13CC + $FF188C.w`; loads current sprite count `$FF188A.w`; selects template table `0x00A438` vs `0x00A480` based on style flag `$FF1858.b`; applies horizontal offset `$FF185A.w`; writes 6 sprite attributes linking sprite indices).
