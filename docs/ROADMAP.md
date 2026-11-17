@@ -1,3 +1,20 @@
+# M16.161 ROM Entity Pass B SAT Sprite Dispatcher & Camera Window Filter (`0x00A524..0x00A69A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `filter_cached_mask_by_camera_window`, `sort_group2_pass_b_order`, `dispatch_pass_b_sat_pass`, and `dispatch_pass_b_sat_raw` in `src/game/render/pass_b_sat_dispatcher.hpp/.cpp`:
+  - `0x00A550..0x00A5A2`: Pass B Group 2 Depth Sorter reusing cached active entity bitmask from `$FF188E.l` directly into `d7` without re-scanning all 21 slots.
+  - Camera window viewport frustum culling filter (`CameraWindowFilter`) marking off-screen entities into cached mask before selection sorting.
+  - Multi-pool 5-pass SAT sprite dispatch:
+    - Pass 1 (`0x00A524..0x00A538`): Group 1 High-Priority FX (`$FF2954`, 4 slots, 90B stride), dispatching active entities to Custom SAT `0x00A9A0` (`flags_36 & 0x01 != 0`) or Normal SAT `0x00AD76`.
+    - Pass 2 (`0x00A53C..0x00A54C`): Special Pool / Hit-Sparks (`$FF19C8`, 4 slots, 8B stride), dispatching through jump table `0x00A69A`.
+    - Pass 3 (`0x00A550..0x00A5A2`): Group 2 Entities (`$FF19E8`, 21 slots, 188B stride) with selection sort in descending Y order using sentinel -1, writing updated done mask to `$FF188E.l`.
+    - Pass 4 (`0x00A5A6..0x00A5BA`): Group 4 Ground/Shadow FX (`$FF2ABC`, 8 slots, 90B stride).
+    - Pass 5 (`0x00A5BE..0x00A5D2`): Group 3 Floor FX (`$FF2D8C`, 6 slots, 90B stride).
+  - `0x00A5D6..0x00A600`: Foreground Player Entity override (`$FF1995.b` non-zero and slot 0 active), re-rendering player slot in foreground via `0x00A9AA` (Custom SAT Foreground) or `0x00AD80` (Normal SAT Foreground).
+  - `0x00A604..0x00A624`: SAT Link Terminator, advancing zero offset to 8 (`addq.w #8, d7`), writing link terminator `0` at `-5(a6, d7.w)`, and asserting VDP sync flags `$FF164E |= 0x03`.
+  - Raw 64KB RAM window integration helper `dispatch_pass_b_sat_raw`.
+- Qualified `oasis_m16_161_pass_b_sat_dispatcher` and the 141-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.160 ROM Dialogue Entity Sprite Subsystem & Special Mode Presets (`0x00A2F0..0x00A524`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

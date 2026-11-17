@@ -1,3 +1,31 @@
+# ADR-20261117-M16-161-PASS-B-SAT-DISPATCHER — ROM Entity Pass B SAT Sprite Dispatcher & Camera Window Filter (0x00A524..0x00A69A)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.412 extracted ROM routines `0x00A524..0x00A69A` governing Pass B multi-pool SAT sprite dispatching and cached mask optimization:
+   - `0x00A550..0x00A5A2`: Pass B Group 2 Depth Sorter:
+     * Reads cached active entity bitmask directly from `$FF188E.l` into `d7`, bypassing 21-slot active/inactive loop.
+     * Iteratively finds entity with maximum Y coordinate among unrendered slots, marks it in `d7`, and dispatches to `$AD76` (Normal SAT) or `$A9A0` (Custom SAT).
+   - Camera Window Filter:
+     * Culls entities falling outside viewport `[camera_x - margin .. camera_x + width + margin]` and `[camera_y - margin .. camera_y + height + margin]` by setting their corresponding bit in the cached mask.
+   - Multi-pool 5-pass SAT sprite dispatch:
+     * Pass 1 (`0x00A524..0x00A538`): Group 1 High-Priority FX (`$FF2954`, 4 slots, 90B stride).
+     * Pass 2 (`0x00A53C..0x00A54C`): Special Pool / Hit-Sparks (`$FF19C8`, 4 slots, 8B stride, jump table `0x00A69A`).
+     * Pass 3 (`0x00A550..0x00A5A2`): Group 2 Entities (`$FF19E8`, 21 slots, 188B stride).
+     * Pass 4 (`0x00A5A6..0x00A5BA`): Group 4 Ground/Shadow FX (`$FF2ABC`, 8 slots, 90B stride).
+     * Pass 5 (`0x00A5BE..0x00A5D2`): Group 3 Floor FX (`$FF2D8C`, 6 slots, 90B stride).
+   - Foreground Player Override (`0x00A5D6..0x00A600`):
+     * If `$FF1995.b != 0` and slot 0 is active, renders player slot in foreground via `0x00A9AA`/`0x00AD80`.
+   - SAT Link Terminator (`0x00A604..0x00A624`):
+     * Advances zero offset to 8 (`addq.w #8, d7`), writes `0` into `-5(a6, d7.w)`, and asserts VDP sync flags `$FF164E |= 0x03`.
+
+**Decisions:**
+1. **Dedicated `pass_b_sat_dispatcher` Module:**
+   - Added `src/game/render/pass_b_sat_dispatcher.hpp/.cpp` modeling pure `filter_cached_mask_by_camera_window`, `sort_group2_pass_b_order`, `dispatch_pass_b_sat_pass`, and raw memory integration `dispatch_pass_b_sat_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (141/141 M16 tests).
+
 # ADR-20261117-M16-160-DIALOGUE-SPRITE-SUBSYSTEM — ROM Dialogue Entity Sprite Subsystem & Special Mode Presets (0x00A2F0..0x00A524)
 **Status:** Accepted
 **Date:** 2026-11-17
