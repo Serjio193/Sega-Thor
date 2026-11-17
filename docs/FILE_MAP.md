@@ -1,3 +1,9 @@
+# M15.332 ROM 3D AABB Solid Sweep (-X, +Y, -Y)
+- `tools/extract_rom_aabb_solid_sweep_3axis.py` — ROM extractor & verifier for `0x009EBA..0x00A194` (21-slot `0x00BC` entity pool `-X`, `+Y`, `-Y` 3D AABB sweeps and zero-gap push).
+- `tests/rom_aabb_solid_sweep_3axis_test.py` — Unit tests verifying `-X`, `+Y`, `-Y` gap clamping and push deltas.
+- `data/thor-evidence/rom_aabb_solid_sweep_3axis_m15_332.json` — Verified evidence JSON for M15.332.
+- `docs/handoffs/STANDALONE_M15_332_AABB_SOLID_SWEEP_3AXIS_HANDOFF.md` — C++20 Standalone handoff for M16.116.
+
 # M15.331 ROM In-Game Save Prompt & Save-Allowed Guard
 - `tools/extract_rom_save_prompt.py` — ROM extractor & verifier for `0x005472..0x005578` (`$FF16F1` bit-6 save guard, `3=YES`/`4=NO` `$FF1862` prompt, SFX `0x006003A5`/`0x00A003AA`/`0x00A00347`/`0x00A00253`, `0x001726` SRAM save).
 - `tests/rom_save_prompt_test.py` — Unit tests verifying save-allowed guard and YES/NO prompt state machine.

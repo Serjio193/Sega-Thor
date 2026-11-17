@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.332: ROM 3D AABB SOLID SWEEP (-X, +Y, -Y) (`0x009EBA`..`0x00A194`) — 21x`0xBC` Pool, Gap Clamp & `±1` Push; Extractor (`tools/extract_rom_aabb_solid_sweep_3axis.py` <= 500 lines), Tests (`tests/rom_aabb_solid_sweep_3axis_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_332_AABB_SOLID_SWEEP_3AXIS_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x009EBA..0x00A194` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_aabb_solid_sweep_3axis.py`, `python -m unittest tests/rom_aabb_solid_sweep_3axis_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.332, check M16.107 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.331: ROM IN-GAME SAVE PROMPT & SAVE-ALLOWED GUARD (`0x005472`..`0x005578`) — `$FF16F1` Bit 6, YES(`3`)/NO(`4`), `0x001726` Save; Extractor (`tools/extract_rom_save_prompt.py` <= 500 lines), Tests (`tests/rom_save_prompt_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_331_SAVE_PROMPT_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x005472..0x005578` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_save_prompt.py`, `python -m unittest tests/rom_save_prompt_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

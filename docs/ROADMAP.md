@@ -1,3 +1,4 @@
+# M15.332 ROM 3D AABB Solid Sweep (-X, +Y, -Y) (`0x009EBA`..`0x00A194`) — COMPLETE / VERIFIED
 # M15.331 ROM In-Game Save Prompt & Save-Allowed Guard (`0x005472`..`0x005578`) — COMPLETE / VERIFIED
 # M15.330 ROM Consumable Item Validation & HP/SP/Spirit Restore (`0x005236`..`0x005472`) — COMPLETE / VERIFIED
 # M15.329 ROM 4x4 Food/Consumable Menu Use & Drop (`0x00474E`..`0x00494A`) — COMPLETE / VERIFIED

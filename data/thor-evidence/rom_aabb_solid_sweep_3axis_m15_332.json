@@ -1,0 +1,36 @@
+{
+  "milestone": "M15.332",
+  "title": "ROM 3D AABB Solid Sweep (-X, +Y, -Y)",
+  "routines": {
+    "sweep_neg_x": {
+      "start": "0x009EBA",
+      "end": "0x009F9E",
+      "flag_offset": "0x40",
+      "push_offset": "0x72",
+      "push_delta": -1
+    },
+    "sweep_pos_y": {
+      "start": "0x009FA0",
+      "end": "0x00A098",
+      "flag_offset": "0x41",
+      "push_offset": "0x76",
+      "push_delta": 1
+    },
+    "sweep_neg_y": {
+      "start": "0x00A09A",
+      "end": "0x00A194",
+      "flag_offset": "0x41",
+      "push_offset": "0x76",
+      "push_delta": -1
+    }
+  },
+  "constants": {
+    "entity_pool_ram": "0x00FF19E8",
+    "entity_slot_count": 21,
+    "entity_stride_bytes": "0x00BC",
+    "hit_flag_bit": 7,
+    "contact_ptr_offset": "0x68",
+    "contact_type_offset": "0x6C",
+    "contact_type_solid": 3
+  }
+}

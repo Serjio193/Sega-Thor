@@ -1,3 +1,8 @@
+# ADR-20261117-M15-332-AABB-SOLID-SWEEP-3AXIS — 3D AABB Solid Sweep (-X, +Y, -Y) (`0x009EBA`..`0x00A194`)
+- **Context:** Companion to M15.305 (`+X` sweep `0x009DD6`): `0x009EBA` (`-X`), `0x009FA0` (`+Y`), and `0x00A09A` (`-Y`) sweep the 21-slot `0x00BC`-stride entity pool (`0x00FF19E8`), clamp movement to the nearest 3D AABB gap, and push `0x72(a5)`/`0x76(a5)` by `±1` at zero gap.
+- **Decision:** Extracted all pool parameters, flag offsets, and push instructions into `data/thor-evidence/rom_aabb_solid_sweep_3axis_m15_332.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.116 can complete all 4 cardinal axes of 3D AABB solid entity sweep & push.
+
 # ADR-20261117-M15-331-SAVE-PROMPT — In-Game Save Prompt & Save-Allowed Guard (`0x005472`..`0x005578`)
 - **Context:** In-game saving (`0x005472`) checks lock flags `$FF1996`/`$FF17C1`, player state `$FF19EC <= 2`, and room flag `$FF16F1` bit 6 before opening a YES(`3`)/NO(`4`) prompt (`$FF1862`) that invokes `0x001726` on confirmation.
 - **Decision:** Extracted all guard flags, choice constants, and SFX IDs into `data/thor-evidence/rom_save_prompt_m15_331.json` with 2/2 passing tests and Standalone handoff.
