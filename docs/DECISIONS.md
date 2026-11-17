@@ -1,3 +1,30 @@
+# ADR-20261117-M16-140-WEAPON-DURABILITY-DPAD — ROM Weapon Durability Decrement, Auto-Revert to Dagger & 16-Way D-Pad Velocity Resolver (0x008530..0x0086B2)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.356 extracted ROM routines `0x008530..0x0086B2` governing consumable weapon durability decrement, zero-durability slot clearing, auto-revert to Dagger (ID 1) with toast/SFX, threshold limit clamp guard, and 16-entry D-pad 16.16 velocity and facing resolution:
+   - `0x008530..0x0085C2`: `step_weapon_durability`:
+     * Reads equipped weapon slot index `idx = $FF0DB0`, entry `[id, dur]` at `$FF0D80 + idx * 2`.
+     * Validates consumable ID range `2 <= id <= 12`; exits without changes if out of range.
+     * Ignores infinite durability items (`dur == 0xFF`).
+     * Decrements finite durability `dur = dur - 1`.
+     * When `dur == 0` (or was 0), clears slot to `[0, 0]`, sets equipped slot `$FF0DB0 = 0`, equipped weapon `$FF0DB1 = 1` (Dagger), revert timer `$FF0D7E = 0x000A`, sub-state `$FF19EE = 0`, HUD weapon ID `$FF1854 = 1`, HUD weapon state `$FF1855 = 0`, HUD toast timer `$FF1856 = 0x005A` (90 frames), weapon break flag `$FF198F = 0xFF`, and plays SFX `0x00C00269`.
+   - `0x0085C4..0x0085E0`: `check_threshold_guard`:
+     * Compares unsigned word `u16($FF0E3C) > u16($FF1A70)`.
+     * If greater: clears `$FF0E3C = 0` and sets tripped flag `$FF0DBB = 0xFF`.
+   - `0x0085E2..0x0086B2`: `resolve_dpad_motion`:
+     * Indexes 16-entry jump table `0x0085FA` by input nibble `$FF165E & 0x0F` (bits: Up=1, Down=2, Left=4, Right=8).
+     * Preserves current facing and sets `moving = false` with zero velocities for neutral and opposing cancellation states (`0x0`, `0x3`, `0xC`, `0xF`).
+     * Cardinal movement: Up (`0x1`, `0xD`) -> `[0, -0x30000]`, facing 0; Down (`0x2`, `0xE`) -> `[0, +0x30000]`, facing 2; Left (`0x4`, `0x7`) -> `[-0x36000, 0]`, facing 3; Right (`0x8`, `0xB`) -> `[+0x36000, 0]`, facing 1.
+     * Diagonal movement: Up-Left (`0x5`) -> `[-0x2A000, -0x25800]`, facing 0; Down-Left (`0x6`) -> `[-0x2A000, +0x25800]`, facing 2; Up-Right (`0x9`) -> `[+0x2A000, -0x25800]`, facing 0; Down-Right (`0xA`) -> `[+0x2A000, +0x25800]`, facing 2.
+
+**Decisions:**
+1. **Dedicated `ali_weapon_durability` Module:**
+   - Added `src/game/player/ali_weapon_durability.hpp/.cpp` modeling `step_weapon_durability`, `step_weapon_durability_direct`, `check_threshold_guard`, and `resolve_dpad_motion`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-139-COMBAT-HIT-APPLY — ROM Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark (0x00BE98..0x00C0BC)
 **Status:** Accepted
 **Date:** 2026-11-17

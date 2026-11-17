@@ -1,3 +1,12 @@
+# M16.140 ROM Weapon Durability Decrement, Auto-Revert to Dagger & 16-Way D-Pad Velocity Resolver (`0x008530..0x0086B2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_weapon_durability`, `step_weapon_durability_direct`, `check_threshold_guard`, and `resolve_dpad_motion` in `src/game/player/ali_weapon_durability.hpp/.cpp`:
+  - Weapon durability decrement & auto-revert: checks slot `$FF0DB0`, verifies consumable ID range 2..12 and finite durability `!= 0xFF`, decrements `dur`, and on zero durability clears slot `[0, 0]`, reverts to Dagger (ID 1) in slot 0, sets revert timer `$FF0D7E = 0x0A`, HUD weapon `$FF1854 = 1`, toast timer `$FF1856 = 0x5A`, break flag `$FF198F = 0xFF`, and plays SFX `0x00C00269`.
+  - Threshold reset guard: unsigned comparison of `$FF0E3C > $FF1A70`, clearing `$FF0E3C = 0` and setting tripped flag `$FF0DBB = 0xFF`.
+  - 16-way D-pad velocity resolver: evaluates `$FF165E & 0x0F` via 16-entry jump table `0x0085FA`, computing cardinal speeds (`±0x36000` X, `±0x30000` Y), diagonal speeds (`±0x2A000` X, `±0x25800` Y), cardinal facing, and preserving facing on neutral/cancelling inputs (`0`, `3`, `C`, `F`).
+- Qualified `oasis_m16_140_weapon_durability_dpad` and the 121-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.139 ROM Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark (`0x00BE98..0x00C0BC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
