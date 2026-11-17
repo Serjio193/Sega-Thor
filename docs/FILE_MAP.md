@@ -1,3 +1,9 @@
+# M15.398 ROM Universal Entity Simulation Machine, Animation Frame Stepper & Terrain Pre-flight
+- `tools/extract_rom_entity_sim_anim_preflight.py` — extractor for `0x008F22..0x009084` (freeze/slowmo gates, animation frame stepper with duration/loop decoding, terrain layer select `$FF16F0`, and +X move code `0x11`).
+- `tests/rom_entity_sim_anim_preflight_test.py` — `4` unit tests verifying ROM constants, freeze/slowmo gates, animation frame stepping, and layer selection.
+- `data/thor-evidence/rom_entity_sim_anim_preflight_m15_398.json` — extracted M15.398 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_398_ENTITY_SIM_ANIM_PREFLIGHT_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.397 ROM Animated Palette CRAM Sequencer & 3-Group Entity Master Stepper
 - `tools/extract_rom_anim_palette_entity_stepper.py` — extractor for `0x008E22..0x008F22` (animated palette timer & CRAM buffer sync, 3-group entity loop with return vectors in `$FF193C`, state reset, and secondary entity dispatch).
 - `tests/rom_anim_palette_entity_stepper_test.py` — `3` unit tests verifying ROM constants, animated palette sequencer frames, and entity state resets.

@@ -1,3 +1,6 @@
+# M15.398 ROM Universal Entity Simulation Machine, Animation Frame Stepper & Terrain Pre-flight (`0x008F22`..`0x009084`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_sim_anim_preflight.py`, `tests/rom_entity_sim_anim_preflight_test.py` (`4/4 PASS`), `data/thor-evidence/rom_entity_sim_anim_preflight_m15_398.json`, and `docs/handoffs/STANDALONE_M15_398_ENTITY_SIM_ANIM_PREFLIGHT_HANDOFF.md`.
+
 # M15.397 ROM Animated Palette CRAM Sequencer & 3-Group Entity Master Stepper (`0x008E22`..`0x008F22`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_anim_palette_entity_stepper.py`, `tests/rom_anim_palette_entity_stepper_test.py` (`3/3 PASS`), `data/thor-evidence/rom_anim_palette_entity_stepper_m15_397.json`, and `docs/handoffs/STANDALONE_M15_397_ANIM_PALETTE_ENTITY_STEPPER_HANDOFF.md`.
 

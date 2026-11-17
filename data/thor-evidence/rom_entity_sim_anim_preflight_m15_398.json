@@ -1,0 +1,43 @@
+{
+  "milestone": "M15.398",
+  "title": "ROM Universal Entity Simulation Machine, Animation Frame Stepper & Terrain Pre-flight",
+  "routines": {
+    "entity_sim_anim_preflight": {
+      "start": "0x008F22",
+      "end": "0x008F84",
+      "bytes": 98,
+      "freeze_flag_ram": "0x00FF17B8",
+      "freeze_bit": 1,
+      "slow_motion_ram": "0x00FF17B8",
+      "slow_motion_bit": 0
+    },
+    "anim_frame_stepper": {
+      "start": "0x008F84",
+      "end": "0x009040",
+      "bytes": 188,
+      "state_offset": "0x2A",
+      "prev_state_offset": "0x2C",
+      "anim_frame_offset": "0x30",
+      "keyframe_timer_offset": "0x2E",
+      "sprite_asset_offset": "0x32",
+      "anim_table_ptr_offset": "0x26",
+      "flags_37_offset": "0x37"
+    },
+    "terrain_collision_preflight": {
+      "start": "0x009040",
+      "end": "0x009084",
+      "bytes": 68,
+      "collision_dir_offset": "0x40",
+      "layer_1_ram": "0x00FF1766",
+      "layer_2_ram": "0x00FF1770",
+      "layer_select_ram": "0x00FF16F0",
+      "layer_select_bit": 7,
+      "intangible_bit": 4,
+      "flying_bit": 1,
+      "right_move_code": "0x11",
+      "branch_neg_x": "0x009128",
+      "branch_y_sweep": "0x0091F6",
+      "branch_flying": "0x009708"
+    }
+  }
+}
