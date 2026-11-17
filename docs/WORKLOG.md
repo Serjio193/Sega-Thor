@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.301: ROM SOUND DRIVER 11-CHANNEL FM/PSG/SFX RAM MAP (`0x0604E6`..`0x06064B`) — 6 FM + 3 PSG + 2 SFX, Fade/Stop; Extractor (`tools/extract_rom_sound_channels.py` <= 500 lines), Tests (`tests/rom_sound_channels_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_301_SOUND_CHANNELS_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x0604E6..0x06064B` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_sound_channels.py` and `python tests/rom_sound_channels_test.py` (2/2 PASS).
+- Next: Commit & push M15.301, await M16.84 completion, and continue.
+
 # 2026-11-17 — Milestone M15.300: ROM HUD HP/SP/ENEMY GAUGE BAR VDP RENDERER (`0x00267C`..`0x0027A4`) — 48-Row Differential Renderer, `(cur*47)/max+1`; Extractor (`tools/extract_rom_hud_gauge_bars.py` <= 500 lines), Tests (`tests/rom_hud_gauge_bars_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_300_HUD_GAUGE_BARS_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00267C..0x0027A4` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_hud_gauge_bars.py` and `python tests/rom_hud_gauge_bars_test.py` (2/2 PASS).

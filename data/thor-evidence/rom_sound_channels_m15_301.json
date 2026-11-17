@@ -1,0 +1,81 @@
+{
+  "milestone": "M15.301",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "sound_channels": {
+    "stop_all_addr": "0x0604E6",
+    "fade_all_addr": "0x060516",
+    "fm_stride_bytes": 202,
+    "psg_stride_bytes": 138,
+    "channel_count": 11,
+    "fade_init_step": 2,
+    "fade_init_timer": 126
+  },
+  "channels": [
+    {
+      "index": 0,
+      "name": "fm_1",
+      "kind": "fm",
+      "ram_addr": "0xFF0022"
+    },
+    {
+      "index": 1,
+      "name": "fm_2",
+      "kind": "fm",
+      "ram_addr": "0xFF00EC"
+    },
+    {
+      "index": 2,
+      "name": "fm_3",
+      "kind": "fm",
+      "ram_addr": "0xFF01B6"
+    },
+    {
+      "index": 3,
+      "name": "fm_4",
+      "kind": "fm",
+      "ram_addr": "0xFF0280"
+    },
+    {
+      "index": 4,
+      "name": "fm_5",
+      "kind": "fm",
+      "ram_addr": "0xFF034A"
+    },
+    {
+      "index": 5,
+      "name": "fm_6_dac",
+      "kind": "fm",
+      "ram_addr": "0xFF0414"
+    },
+    {
+      "index": 6,
+      "name": "psg_1",
+      "kind": "psg",
+      "ram_addr": "0xFF049E"
+    },
+    {
+      "index": 7,
+      "name": "psg_2",
+      "kind": "psg",
+      "ram_addr": "0xFF0528"
+    },
+    {
+      "index": 8,
+      "name": "psg_3_noise",
+      "kind": "psg",
+      "ram_addr": "0xFF05B2"
+    },
+    {
+      "index": 9,
+      "name": "sfx_fm",
+      "kind": "sfx",
+      "ram_addr": "0xFF0628"
+    },
+    {
+      "index": 10,
+      "name": "sfx_psg",
+      "kind": "sfx",
+      "ram_addr": "0xFF06F2"
+    }
+  ]
+}

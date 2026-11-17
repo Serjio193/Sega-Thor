@@ -1,3 +1,9 @@
+# M15.301 ROM Sound Driver 11-Channel FM/PSG/SFX RAM Map
+- `tools/extract_rom_sound_channels.py` — Extracts 11 sound driver channel RAM bases (`$FF0022..$FF06F2`) & fade/stop params.
+- `tests/rom_sound_channels_test.py` — Unit tests verifying all 11 channels and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_sound_channels_m15_301.json` — Extracted sound driver channel evidence.
+- `docs/handoffs/STANDALONE_M15_301_SOUND_CHANNELS_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.300 ROM HUD HP/SP/Enemy Gauge Bar VDP Renderer
 - `tools/extract_rom_hud_gauge_bars.py` — Extracts Ali HP/SP and Enemy HP VDP commands, 4bpp fills, and 48-row scaler (`0x00271C`).
 - `tests/rom_hud_gauge_bars_test.py` — Unit tests verifying VDP commands, 48-row scaling, and JSON artifact (`2/2 PASS`).

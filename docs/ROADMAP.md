@@ -1,3 +1,7 @@
+# M15.301 ROM Sound Driver 11-Channel FM/PSG/SFX RAM Map (`0x0604E6`..`0x06064B`) — COMPLETE / VERIFIED
+- Decoded all 11 sound driver channels (`6` FM at `$FF0022..$FF0414` stride `0xCA`, `3` PSG at `$FF049E..$FF05B2` stride `0x8A`, `2` SFX at `$FF0628`/`$FF06F2` stride `0xCA`) and System cmds `0x00` stop (`0x0604E6`) & `0x07` fade (`0x060516`, step `2`, timer `0x7E`).
+- Authored `tools/extract_rom_sound_channels.py`, `tests/rom_sound_channels_test.py` (`2/2 PASS`), `data/thor-evidence/rom_sound_channels_m15_301.json`, and `docs/handoffs/STANDALONE_M15_301_SOUND_CHANNELS_HANDOFF.md`.
+
 # M15.300 ROM HUD HP/SP/Enemy Gauge Bar VDP Renderer (`0x00267C`..`0x0027A4`) — COMPLETE / VERIFIED
 - Decoded V-Int differential HUD gauge renderer (`0x00267C..0x0027A4`) for Ali HP (`0xF0E0`, `0x4E2222E4`), Ali SP (`0xF280`, `0x4E6666E4`), and Target Enemy HP (`0xF420`, `0xDE4444ED`), 48-row fill formula `((cur * 47) / max) + 1`, and erase mask `0x00EEEE00`.
 - Authored `tools/extract_rom_hud_gauge_bars.py`, `tests/rom_hud_gauge_bars_test.py` (`2/2 PASS`), `data/thor-evidence/rom_hud_gauge_bars_m15_300.json`, and `docs/handoffs/STANDALONE_M15_300_HUD_GAUGE_BARS_HANDOFF.md`.
