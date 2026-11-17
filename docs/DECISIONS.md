@@ -1,3 +1,7 @@
+# ADR-20261117-M15-358-CHAINED-SUPER-MOTION — Chained F-B-F + 360-Spin Super-Motion Recognizer (`0x008814`..`0x00890E`)
+- **Context:** Ali's chained super-motion (`0x008814..0x00890E`) reuses the M15.357 F-B-F (`0x0087F4`) and 360° spin (`0x008768`) tables in a single continuous pass over the `$FF1668` ring without resetting the 30-frame cap or the ring index between phases.
+- **Decision:** Document the unbounded `$FF16EA` loop and shared-cursor phase transition (re-evaluating the final F-B-F sample as the first spin cardinal) in `tools/extract_rom_chained_super_motion.py` and `docs/handoffs/STANDALONE_M15_358_CHAINED_SUPER_MOTION_HANDOFF.md`.
+
 # ADR-20261117-M15-357-COMMAND-MOTIONS — 360-Spin & F-B-F Command-Motion Recognizers (`0x0086B4`..`0x008813`)
 - **Context:** Ali's special moves (360° spin slash and Forward-Back-Forward dash/thrust) scan the shared `$FF1668` 64x2B D-pad input ring (`$FF16E8` head, `$FF16EA` count) using two distinct state machines (`0x0086B4` and `0x008778`).
 - **Decision:** Extract the exact `0x008768` 16-entry direction LUT, 30-sample spin cap, and `0x0087F4` 4-facing F-B-F sequence/mask table in `tools/extract_rom_command_motions.py` and `docs/handoffs/STANDALONE_M15_357_COMMAND_MOTIONS_HANDOFF.md`.

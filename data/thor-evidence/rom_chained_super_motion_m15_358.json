@@ -1,0 +1,22 @@
+{
+  "milestone": "M15.358",
+  "rom_range": "0x008814..0x00890E",
+  "ring_buffer": {
+    "base_addr": "0xFF1668",
+    "head_offset_addr": "0xFF16E8",
+    "count_addr": "0xFF16EA",
+    "ring_byte_mask": "0x7E",
+    "uses_full_ring_count": true
+  },
+  "phase_1_fbf": {
+    "addr": "0x008814..0x00887C",
+    "pattern_table_addr": "0x0087F4",
+    "resets_ring_index_on_transition": false
+  },
+  "phase_2_spin_360": {
+    "addr": "0x00887E..0x00890E",
+    "dir_lut_addr": "0x008768",
+    "continues_remaining_count": true,
+    "clears_count_on_match": true
+  }
+}

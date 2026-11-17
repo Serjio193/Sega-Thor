@@ -1,3 +1,6 @@
+# M15.358 ROM Chained F-B-F + 360-Spin Super-Motion Recognizer (`0x008814`..`0x00890E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_chained_super_motion.py`, `tests/rom_chained_super_motion_test.py` (`2/2 PASS`), `data/thor-evidence/rom_chained_super_motion_m15_358.json`, and `docs/handoffs/STANDALONE_M15_358_CHAINED_SUPER_MOTION_HANDOFF.md`.
+
 # M15.357 ROM 360-Spin & F-B-F Command-Motion Recognizers (`0x0086B4`..`0x008813`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_command_motions.py`, `tests/rom_command_motions_test.py` (`2/2 PASS`), `data/thor-evidence/rom_command_motions_m15_357.json`, and `docs/handoffs/STANDALONE_M15_357_COMMAND_MOTIONS_HANDOFF.md`.
 

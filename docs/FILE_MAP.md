@@ -1,3 +1,9 @@
+# M15.358 ROM Chained F-B-F + 360-Spin Super-Motion Recognizer
+- `tools/extract_rom_chained_super_motion.py` — extractor for `0x008814..0x00890E` (unbounded `$FF16EA` scan chaining F-B-F phase into seamless 360° spin phase).
+- `tests/rom_chained_super_motion_test.py` — `2` unit tests verifying ROM opcodes, chained F-B-F + 360° spin match, and perpendicular edge abort.
+- `data/thor-evidence/rom_chained_super_motion_m15_358.json` — extracted M15.358 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_358_CHAINED_SUPER_MOTION_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.357 ROM 360-Spin & F-B-F Command-Motion Recognizers
 - `tools/extract_rom_command_motions.py` — extractor for `0x0086B4..0x008813` (`$FF1668` 64-entry ring buffer, `0x008768` 8-dir LUT, 30-frame 360° CW/CCW spin recognizer, `0x0087F4` 4-facing F-B-F patterns).
 - `tests/rom_command_motions_test.py` — `2` unit tests verifying ROM motion tables and CW/CCW 360° spin detection.
