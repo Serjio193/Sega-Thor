@@ -1,3 +1,7 @@
+# ADR-20261117-M15-367-ALI-REGEN-MOUNT-REDIRECT — Ali Passive HP/SP Regen & Mount Damage Redirect (`0x0056D8`..`0x00584E`)
+- **Context:** `0x0056D8..0x00584E` implements accessory/water-driven HP (`0x0F`/`0x07` frame mask) and SP (`0x07`/`0x03` frame mask) passive regeneration, `0x28` height sync, and `$FF1989` mount (`type == 0x1C` at `Ali + 0xBC`) damage forwarding.
+- **Decision:** Extract all accessory/terrain bit guards, cadence masks, and mount redirect fields in `tools/extract_rom_ali_regen_mount_redirect.py` and `docs/handoffs/STANDALONE_M15_367_ALI_REGEN_MOUNT_REDIRECT_HANDOFF.md`.
+
 # ADR-20261117-M15-366-ALI-STATUS-ALARMS — Ali Status Tick, Low-HP/SP Alarms & Respawn Anchor (`0x00557A`..`0x0056D7`)
 - **Context:** `0x00557A..0x0056D7` runs every gameplay frame to update Ali's hitbox extents, invulnerability timer (`$FF198E`), pending weapon swap (`$FF198F`), adaptive low-HP (`(HP>>1)+10`, `0x00A0038C`) and low-SP (`SP+12`, `0x00A004DD`) alarms, and `$FF1972` safe-ground respawn anchor.
 - **Decision:** Extract all alarm thresholds, SFX IDs, and safe-anchor state guards in `tools/extract_rom_ali_status_alarms.py` and `docs/handoffs/STANDALONE_M15_366_ALI_STATUS_ALARMS_HANDOFF.md`.

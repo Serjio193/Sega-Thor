@@ -1,0 +1,30 @@
+{
+  "milestone": "M15.367",
+  "rom_range": "0x0056D8..0x00584E",
+  "passive_hp_regen": {
+    "requires_idle_state_0": true,
+    "accessory_flags_addr": "0xFF0DBA",
+    "hp_regen_bit": 0,
+    "fast_regen_bit": 3,
+    "terrain_flags_addr": "0xFF16F0",
+    "water_bit": 5,
+    "frame_counter_addr": "0xFF1971",
+    "base_mask": "0x0F",
+    "fast_mask": "0x07"
+  },
+  "passive_sp_regen": {
+    "requires_no_active_spirit": true,
+    "sp_regen_bit": 2,
+    "fast_regen_bit": 3,
+    "water_bit": 5,
+    "base_mask": "0x07",
+    "fast_mask": "0x03"
+  },
+  "ali_default_height": 40,
+  "mount_damage_redirect": {
+    "mount_flag_addr": "0xFF1989",
+    "requires_ali_z_zero": true,
+    "mount_slot_offset_bytes": 188,
+    "mount_entity_type": "0x1C"
+  }
+}
