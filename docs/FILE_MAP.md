@@ -1,3 +1,9 @@
+# M15.397 ROM Animated Palette CRAM Sequencer & 3-Group Entity Master Stepper
+- `tools/extract_rom_anim_palette_entity_stepper.py` — extractor for `0x008E22..0x008F22` (animated palette timer & CRAM buffer sync, 3-group entity loop with return vectors in `$FF193C`, state reset, and secondary entity dispatch).
+- `tests/rom_anim_palette_entity_stepper_test.py` — `3` unit tests verifying ROM constants, animated palette sequencer frames, and entity state resets.
+- `data/thor-evidence/rom_anim_palette_entity_stepper_m15_397.json` — extracted M15.397 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_397_ANIM_PALETTE_ENTITY_STEPPER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.396 ROM Master Entity Subsystems Clear, Universal Constructor & Spirit Glow Pulse
 - `tools/extract_rom_entity_constructor_lifecycle.py` — extractor for `0x008C5A..0x008E22` (clear 5 entity pools, universal entity constructor with descriptor table `0x0003F2FA`, pointer re-init, and spirit glow pulse `$FF183E`).
 - `tests/rom_entity_constructor_lifecycle_test.py` — `3` unit tests verifying ROM constants, pool sizes/strides, and spirit glow pulse ramp/pulse/fade transitions.

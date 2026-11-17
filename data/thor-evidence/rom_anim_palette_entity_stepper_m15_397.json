@@ -1,0 +1,58 @@
+{
+  "milestone": "M15.397",
+  "title": "ROM Animated Palette CRAM Sequencer & 3-Group Entity Master Stepper",
+  "routines": {
+    "anim_palette_sequencer": {
+      "start": "0x008E22",
+      "end": "0x008E8E",
+      "bytes": 108,
+      "active_flag_ram": "0x00FF164F",
+      "table_ptr_ram": "0x00FF17A2",
+      "cram_buffer_ram": "0x00FF134C",
+      "cram_sync_flag_ram": "0x00FF164D",
+      "cram_sync_bit": 0
+    },
+    "entity_master_stepper": {
+      "start": "0x008E90",
+      "end": "0x008EF6",
+      "bytes": 102,
+      "groups": [
+        {
+          "base": "0x00FF2954",
+          "slots": 4,
+          "stride": 90,
+          "handler": "0x008F12"
+        },
+        {
+          "base": "0x00FF19E8",
+          "slots": 21,
+          "stride": 188,
+          "handler": "0x008F22"
+        },
+        {
+          "base": "0x00FF2D8C",
+          "slots": 6,
+          "stride": 90,
+          "handler": "0x008F12"
+        }
+      ],
+      "recovery_vector_ram": "0x00FF193C"
+    },
+    "entity_state_reset": {
+      "start": "0x008EF8",
+      "end": "0x008F10",
+      "bytes": 24,
+      "state_offset": "0x2A",
+      "timer_offset": "0x2C",
+      "timer_init_val": "0xFFFF",
+      "flags_37_mask": "0xF9"
+    },
+    "secondary_entity_dispatch": {
+      "start": "0x008F12",
+      "end": "0x008F22",
+      "bytes": 16,
+      "active_bit": 4,
+      "script_engine_addr": "0x0039CA"
+    }
+  }
+}

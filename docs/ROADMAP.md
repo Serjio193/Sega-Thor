@@ -1,3 +1,6 @@
+# M15.397 ROM Animated Palette CRAM Sequencer & 3-Group Entity Master Stepper (`0x008E22`..`0x008F22`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_anim_palette_entity_stepper.py`, `tests/rom_anim_palette_entity_stepper_test.py` (`3/3 PASS`), `data/thor-evidence/rom_anim_palette_entity_stepper_m15_397.json`, and `docs/handoffs/STANDALONE_M15_397_ANIM_PALETTE_ENTITY_STEPPER_HANDOFF.md`.
+
 # M15.396 ROM Master Entity Subsystems Clear, Universal Constructor & Spirit Glow Pulse (`0x008C5A`..`0x008E22`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_constructor_lifecycle.py`, `tests/rom_entity_constructor_lifecycle_test.py` (`3/3 PASS`), `data/thor-evidence/rom_entity_constructor_lifecycle_m15_396.json`, and `docs/handoffs/STANDALONE_M15_396_ENTITY_CONSTRUCTOR_LIFECYCLE_HANDOFF.md`.
 
