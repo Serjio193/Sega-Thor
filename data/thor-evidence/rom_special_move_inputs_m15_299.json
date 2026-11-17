@@ -1,0 +1,102 @@
+{
+  "milestone": "M15.299",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "spin_360": {
+    "detector_addr": "0x0086B4",
+    "dpad_lut_addr": "0x008768",
+    "max_history_frames": 30,
+    "cardinal_steps_required": 4,
+    "dpad_lut_16": [
+      255,
+      0,
+      4,
+      255,
+      6,
+      7,
+      5,
+      255,
+      2,
+      1,
+      3,
+      255,
+      255,
+      255,
+      255,
+      255
+    ]
+  },
+  "fbf_lunge": {
+    "detector_addr": "0x008778",
+    "table_addr": "0x0087F4",
+    "perpendicular_cancel_vertical": [
+      4,
+      8
+    ],
+    "perpendicular_cancel_horizontal": [
+      1,
+      2
+    ],
+    "facings": [
+      {
+        "facing": 0,
+        "sequence": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "masks": [
+          15,
+          2,
+          15,
+          0
+        ]
+      },
+      {
+        "facing": 1,
+        "sequence": [
+          8,
+          4,
+          8,
+          0
+        ],
+        "masks": [
+          15,
+          4,
+          15,
+          0
+        ]
+      },
+      {
+        "facing": 2,
+        "sequence": [
+          2,
+          1,
+          2,
+          0
+        ],
+        "masks": [
+          15,
+          1,
+          15,
+          0
+        ]
+      },
+      {
+        "facing": 3,
+        "sequence": [
+          4,
+          8,
+          4,
+          0
+        ],
+        "masks": [
+          15,
+          8,
+          15,
+          0
+        ]
+      }
+    ]
+  }
+}

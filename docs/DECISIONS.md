@@ -1,3 +1,7 @@
+# ADR-20261117-M15-299-SPECIAL-MOVE-INPUTS — Ali Command-Input Special Moves (`0x0086B4`, `0x008778`)
+- **Decision:** Model Ali's 360° Spin Slash (`0x0086B4`, 30-frame window, CW/CCW 4-cardinal sequence) and F-B-F Lunge (`0x008778`, `0x0087F4` 4-facing table with perpendicular cancel) over `InputHistoryRing64` in Standalone.
+- **Evidence:** Direct Capstone M68K disassembly of `0x0086B4..0x008813` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-298-HIT-REACTIONS — Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool (`0x00BF26`..`0x00C060`)
 - **Decision:** Model combat hit reactions in Standalone via the 4 ROM profiles at `0x00BF26` (`light`, `launcher`, `medium`, `heavy`), shield parry clang (`0x00900202`) + weapon recoil (`6`/`10`), and 4-slot 8B hit-spark pool (`$FF19C8`).
 - **Evidence:** Direct Capstone M68K disassembly of `0x00BF26..0x00C060` in `local-roms/Beyond Oasis (USA).md`.

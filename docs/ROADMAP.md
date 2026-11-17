@@ -1,3 +1,7 @@
+# M15.299 ROM Ali Command-Input Special Moves (`0x0086B4`, `0x008778`) — COMPLETE / VERIFIED
+- Decoded 360-degree Spin Slash detector (`0x0086B4`, 30-frame window, 16-byte D-pad LUT `0x008768`, CW/CCW 4-cardinal sequence) and Forward-Back-Forward Lunge detector (`0x008778`, 4x8-byte seq/mask table `0x0087F4`, perpendicular cancel).
+- Authored `tools/extract_rom_special_move_inputs.py`, `tests/rom_special_move_inputs_test.py` (`2/2 PASS`), `data/thor-evidence/rom_special_move_inputs_m15_299.json`, and `docs/handoffs/STANDALONE_M15_299_SPECIAL_MOVE_INPUTS_HANDOFF.md`.
+
 # M15.298 ROM Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool (`0x00BF26`..`0x00C060`) — COMPLETE / VERIFIED
 - Decoded 4-entry hit-reaction jump table (`0x00BF26`: light `0x300/0x2C0/0`, launcher `0/0/0x70000`, medium `0x400/0x3C0/0x28000`, heavy `0x700/0x680/0x30000`), shield parry recoil (`0x00BFAE`, SFX `0x00900202`, weapon `6`/`10`), and 4-slot hit-spark pool (`$FF19C8`).
 - Authored `tools/extract_rom_hit_reactions.py`, `tests/rom_hit_reactions_test.py` (`2/2 PASS`), `data/thor-evidence/rom_hit_reactions_m15_298.json`, and `docs/handoffs/STANDALONE_M15_298_HIT_REACTIONS_HANDOFF.md`.

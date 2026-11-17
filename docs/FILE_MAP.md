@@ -1,3 +1,9 @@
+# M15.299 ROM Ali Command-Input Special Moves
+- `tools/extract_rom_special_move_inputs.py` — Extracts 360° Spin Slash LUT (`0x008768`) and 4-facing F-B-F Lunge table (`0x0087F4`).
+- `tests/rom_special_move_inputs_test.py` — Unit tests verifying special-move LUTs/sequences and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_special_move_inputs_m15_299.json` — Extracted special-move input evidence.
+- `docs/handoffs/STANDALONE_M15_299_SPECIAL_MOVE_INPUTS_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.298 ROM Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool
 - `tools/extract_rom_hit_reactions.py` — Extracts 4 hit-reaction profiles (`0x00BF26`), shield parry (`0x00BFAE`), and hit-spark pool (`$FF19C8`).
 - `tests/rom_hit_reactions_test.py` — Unit tests verifying knockback velocities, shield SFX, and JSON artifact (`2/2 PASS`).
