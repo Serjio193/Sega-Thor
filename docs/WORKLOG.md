@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.353: ROM FACING-MIRRORED 3D WEAPON HITBOX BUILDER & FX-POOL SCANNER (`0x00B9EC`..`0x00BB1E`) — `12B` Local Box, `facing==3` X-Mirror, `$FF1CD8` 17-Slot; Extractor (`tools/extract_rom_weapon_hitbox_builder.py` <= 500 lines), Tests (`tests/rom_weapon_hitbox_builder_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_353_WEAPON_HITBOX_BUILDER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00B9EC..0x00BB1E` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_weapon_hitbox_builder.py`, `python -m unittest tests/rom_weapon_hitbox_builder_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.353, check M16.119 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.352: ROM RESUMABLE 21-SLOT MASKED 3D HITBOX ITERATOR (`0x00B852`..`0x00B920`) — `21x0xBC` Masked Scan & `$FF194A` Resume; Extractor (`tools/extract_rom_resumable_hitbox_iter.py` <= 500 lines), Tests (`tests/rom_resumable_hitbox_iter_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_352_RESUMABLE_HITBOX_ITER_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00B852..0x00B920` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_resumable_hitbox_iter.py`, `python -m unittest tests/rom_resumable_hitbox_iter_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

@@ -1,3 +1,4 @@
+# M15.353 ROM Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner (`0x00B9EC`..`0x00BB1E`) — COMPLETE / VERIFIED
 # M15.352 ROM Resumable 21-Slot Masked 3D Hitbox Iterator (`0x00B852`..`0x00B920`) — COMPLETE / VERIFIED
 # M15.351 ROM Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box (`0x00822C`..`0x008350`) — COMPLETE / VERIFIED
 # M15.350 ROM Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher (`0x007D8A`..`0x007E9C`) — COMPLETE / VERIFIED

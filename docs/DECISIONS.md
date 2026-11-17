@@ -1,3 +1,8 @@
+# ADR-20261117-M15-353-WEAPON-HITBOX-BUILDER — Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner (`0x00B9EC`..`0x00BB1E`)
+- **Context:** Weapon/attack hitbox queries (`0x00BAAC`, `0x00BAB8`) read 12-byte local AABBs `(dz1, dz2, dx1, dy1, dx2, dy2)`, mirror X `(-dx2, -dx1)` when `facing == 3` (Left), and translate into world space for 21-slot (`$FF19E8`) or 17-slot enemy (`$FF1CD8`) checks.
+- **Decision:** Extracted all pool bases, slot counts, and mirroring rules into `data/thor-evidence/rom_weapon_hitbox_builder_m15_353.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.137 can construct facing-mirrored 3D weapon hitboxes with exact parity.
+
 # ADR-20261117-M15-352-RESUMABLE-HITBOX-ITER — Resumable 21-Slot Masked 3D Hitbox Iterator (`0x00B852`..`0x00B920`)
 - **Context:** Multi-target hitbox queries (`0x00B852`/`0x00B912`) iterate the 21-slot `0xBC` entity pool (`0x00FF19E8`) using a 21-bit slot mask, skipping self and inactive (`<= 0`) slots, and snapshot registers `d0-d7` at `$FF194A..$FF1969` to resume iteration.
 - **Decision:** Extracted the pool geometry and iterator save-range into `data/thor-evidence/rom_resumable_hitbox_iter_m15_352.json` with 2/2 passing tests and Standalone handoff.

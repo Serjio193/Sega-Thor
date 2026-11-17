@@ -1,0 +1,27 @@
+{
+  "milestone": "M15.353",
+  "title": "ROM Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner",
+  "routines": {
+    "find_fx_pool_hit": {
+      "start": "0x00B9EC",
+      "end": "0x00BAA8"
+    },
+    "build_weapon_hitbox_all": {
+      "start": "0x00BAAC",
+      "end": "0x00BB1E"
+    },
+    "build_weapon_hitbox_enemies": {
+      "start": "0x00BAB8",
+      "end": "0x00BB1E"
+    }
+  },
+  "constants": {
+    "fx_pool_ram": "0x00FF2ABC",
+    "fx_pool_slots": 8,
+    "fx_pool_stride": "0x005A",
+    "enemy_pool_ram": "0x00FF1CD8",
+    "enemy_pool_slots": 17,
+    "hitbox_entry_bytes": 12,
+    "mirror_facing_id": 3
+  }
+}

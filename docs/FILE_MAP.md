@@ -1,3 +1,9 @@
+# M15.353 ROM Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner
+- `tools/extract_rom_weapon_hitbox_builder.py` — ROM extractor & verifier for `0x00B9EC..0x00BB1E` (8-slot `0x5A` FX pool `$FF2ABC`, 17-slot enemy pool `$FF1CD8`, 12B local hitbox with `facing==3` X-mirror).
+- `tests/rom_weapon_hitbox_builder_test.py` — Unit tests verifying `facing == 3` X-mirroring and world translation.
+- `data/thor-evidence/rom_weapon_hitbox_builder_m15_353.json` — Verified evidence JSON for M15.353.
+- `docs/handoffs/STANDALONE_M15_353_WEAPON_HITBOX_BUILDER_HANDOFF.md` — C++20 Standalone handoff for M16.137.
+
 # M15.352 ROM Resumable 21-Slot Masked 3D Hitbox Iterator
 - `tools/extract_rom_resumable_hitbox_iter.py` — ROM extractor & verifier for `0x00B852..0x00B920` (21-slot `0xBC`-stride masked 3D hitbox iterator with `$FF194A..$FF1969` resume state).
 - `tests/rom_resumable_hitbox_iter_test.py` — Unit tests verifying slot-mask filtering and multi-hit iteration.
