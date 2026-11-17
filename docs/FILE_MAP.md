@@ -1,3 +1,9 @@
+# M15.444 ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer
+- `tools/extract_rom_dirty_plane_blitter.py` — extractor for `0x00DC26..0x00DDA2` (viewport bounds clipping, toroidal plane modulo arithmetic, VDP command synthesis, and tile word streaming).
+- `tests/rom_dirty_plane_blitter_test.py` — `5` unit tests verifying ROM constants, clipped mode viewport math, toroidal coordinate wrapping, unclipped streaming path, and interrupt masking parity.
+- `data/thor-evidence/rom_dirty_plane_blitter_m15_444.json` — extracted M15.444 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_444_DIRTY_PLANE_BLITTER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.443 ROM Tilemap Rectangle Fill & Block Copy Subsystem
 - `tools/extract_rom_tilemap_rect_ops.py` — extractor for `0x00DB1A..0x00DC26` (tilemap byte fill, word block copy with VRAM sync, and auxiliary byte block copy).
 - `tests/rom_tilemap_rect_ops_test.py` — `5` unit tests verifying ROM constants, byte fill loop, word tile copy loop, auxiliary byte copy loop, and 2D rectangular stride math.

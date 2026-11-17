@@ -1,3 +1,6 @@
+# M15.444 ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer (`0x00DC26`..`0x00DDA2`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dirty_plane_blitter.py`, `tests/rom_dirty_plane_blitter_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dirty_plane_blitter_m15_444.json`, and `docs/handoffs/STANDALONE_M15_444_DIRTY_PLANE_BLITTER_HANDOFF.md`.
+
 # M15.443 ROM Tilemap Rectangle Fill & Block Copy Subsystem (`0x00DB1A`..`0x00DC26`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_tilemap_rect_ops.py`, `tests/rom_tilemap_rect_ops_test.py` (`5/5 PASS`), `data/thor-evidence/rom_tilemap_rect_ops_m15_443.json`, and `docs/handoffs/STANDALONE_M15_443_TILEMAP_RECT_OPS_HANDOFF.md`.
 
