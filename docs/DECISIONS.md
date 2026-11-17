@@ -12271,6 +12271,12 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.384: ROM Ali Command Motions & Button-Mash Rapid Attack (0x007656..0x00780E)
+
+- Decoded master special motion recognizer dispatch hierarchy (`0x007656..0x0076C0`): priority checks `0x8814` (Dash Leap `0x62`), `0x86B4` (Slide `0x40`), `0x8778` (Somersault `0x56`), `0x8910` (Cartwheel `0x72`), and `0x8950` (Grand Dash Strike `0x74`); default fallback triggers normal combo hit 1/2 with SFX `#$7004D3`.
+- Decoded button-mashing rapid-fire combo trigger (`0x0076C2..0x00770A`): scans 8 frames in ring buffer `$FF1668`, requiring >=8 Button A taps to force frame `+0x30 = 8` and clear `+0x2E = 0`.
+- Decoded motion state initializers: Slide (`state = 0x40, anim = 0x46`, SFX `#$600343`), Somersault (`state = 0x56, anim = 0x64, vz = 0x84000`, SFX `#$800220`), Dash Leap (`state = 0x62, anim = 0x70, vz = 0x30000`, SFX `#$800220`), Cartwheel (`state = 0x72, anim = 0x7A`, SFX `#$80025B`), and Grand Dash Strike (`state = 0x74, anim = 0x80`, speed `0x600`, SFX `#$7004D3`).
+
 ## 2026-11-17 - Milestone M15.383: ROM Ali Water Combat Ripple Physics & Air Dive (0x0074A4..0x007656)
 
 - Decoded water ripple directional impulse physics (`0x0074A4..0x00751E`): sets horizontal speeds `(0x800, 0x780)` and vertical jump impulse `+0x56 = 0x00020000` (+2.0 px/frame) based on relative player orientation.

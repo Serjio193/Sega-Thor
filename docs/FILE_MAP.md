@@ -5330,6 +5330,10 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
 - docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).
 
+- tools/extract_rom_ali_command_special_motions.py — M15.384 ROM Ali command motions and button-mash rapid attack extractor.
+- tests/rom_ali_command_special_motions_test.py — M15.384 unit tests for motion dispatch precedence, default combo hits, and button mashing.
+- data/thor-evidence/rom_ali_command_special_motions_m15_384.json — M15.384 evidence database.
+- docs/handoffs/STANDALONE_M15_384_ALI_COMMAND_SPECIAL_MOTIONS_HANDOFF.md — M15.384 C++20 Standalone handoff.
 - tools/extract_rom_ali_water_combat_ripple_dive.py — M15.383 ROM Ali water combat ripple physics and air dive extractor.
 - tests/rom_ali_water_combat_ripple_dive_test.py — M15.383 unit tests for ripple velocity, durability table, high dive impulse, and target hitstun.
 - data/thor-evidence/rom_ali_water_combat_ripple_dive_m15_383.json — M15.383 evidence database.

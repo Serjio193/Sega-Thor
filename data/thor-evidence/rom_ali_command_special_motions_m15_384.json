@@ -1,0 +1,53 @@
+{
+  "milestone": "M15.384",
+  "description": "ROM Ali Command Motions & Button-Mash Rapid Attack",
+  "address_range": [
+    "0x007656",
+    "0x00780E"
+  ],
+  "byte_count": 440,
+  "routines": [
+    {
+      "name": "ali_motion_dispatcher",
+      "start": "0x007656",
+      "end": "0x0076C0",
+      "purpose": "Dispatches special motions 0x8814, 0x86B4, 0x8778, 0x8910, 0x8950, or default hits"
+    },
+    {
+      "name": "ali_button_mash_counter",
+      "start": "0x0076C2",
+      "end": "0x00770A",
+      "purpose": "Scans 8 ring-buffer frames for Button A taps; >=8 taps forces rapid-fire combo at frame 8"
+    },
+    {
+      "name": "ali_motion_slide_attack",
+      "start": "0x00770C",
+      "end": "0x007740",
+      "purpose": "Ground slide state 0x40 / anim 0x46 with SFX 0x600343 and 18-frame invulnerability"
+    },
+    {
+      "name": "ali_motion_somersault_flip",
+      "start": "0x007742",
+      "end": "0x00776A",
+      "purpose": "Super somersault state 0x56 / anim 0x64 with vertical impulse 0x84000 and SFX 0x800220"
+    },
+    {
+      "name": "ali_motion_dash_leap",
+      "start": "0x00776C",
+      "end": "0x0077AC",
+      "purpose": "Dash leap state 0x62 / anim 0x70 with vertical impulse 0x30000, speed 0x100, SFX 0x800220"
+    },
+    {
+      "name": "ali_motion_cartwheel",
+      "start": "0x0077AE",
+      "end": "0x0077CC",
+      "purpose": "Cartwheel evasion state 0x72 / anim 0x7A with SFX 0x80025B"
+    },
+    {
+      "name": "ali_motion_grand_dash_strike",
+      "start": "0x0077CE",
+      "end": "0x00780E",
+      "purpose": "Grand dash strike state 0x74 / anim 0x80 with speed 0x600 and SFX 0x7004D3"
+    }
+  ]
+}
