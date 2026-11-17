@@ -1,3 +1,9 @@
+# M16.129 Projectile Hit Knockback, Enemy Gauge Timer & Gravity (`0x00EB40..0x00EC58`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_projectile_z_gravity`, `apply_projectile_target_knockback`, `attach_projectile_latch`, and `step_projectile_flight_gravity` in `src/game/combat/projectile_hit_knockback.hpp/.cpp`.
+- Qualified `oasis_m16_129_projectile_hit_knockback` and the 110-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.128 Death Explosion Burst, Latch Follow & Projectile Probe (`0x00EA04..0x00EB40`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

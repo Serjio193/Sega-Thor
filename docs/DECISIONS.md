@@ -1,3 +1,17 @@
+# ADR-20261117-M16-129-PROJECTILE-HIT-KNOCKBACK — Projectile Hit Knockback, Enemy Gauge Timer & Gravity
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.345 extracted `0x00EB40..0x00EC58`: `apply_projectile_target_knockback` (`0x00EB40..0x00EBAC`), `attach_projectile_latch` (`0x00EBB0..0x00EC40`), and `step_projectile_flight_gravity` (`0x00EBC8..0x00EC0A`).
+2. Projectile hit knockback sets target stun duration to 10 frames, calculates directional velocity with `0x0400`/`0x03C0` (or `0x0200`/`0x01E0` for light knockback) via `0x00E2D4`, applies `+0x00020000` (+2.0 px/frame) Z velocity, sets airborne bit 15 on target `+0x86` if target Z > 0, triggers 90-frame enemy HP gauge if attacker is Ali (`0x00FF19E8`), and plays SFX `0x00800210`.
+3. Non-light knockback attaches projectile latch (8 frames, state 6) with local relative XYZ offsets to target.
+4. Projectile Z gravity accelerates by `-0x00006000` (0.375 px/frame^2); ground contact clamps to 0 and despawns if `flags_6e` bit 7 is set, or transitions to 5-frame drop timer (state 6); mid-air projectiles outside viewport with 10px margin despawn.
+
+**Decisions:**
+1. **Dedicated `projectile_hit_knockback` Module:**
+   - Added `src/game/combat/projectile_hit_knockback.hpp/.cpp` modeling `step_projectile_z_gravity`, `apply_projectile_target_knockback`, `attach_projectile_latch`, and `step_projectile_flight_gravity`.
+
 # ADR-20261117-M16-128-PROJECTILE-LATCH-BURST — Death Explosion Burst, Latch Follow & Projectile Probe
 **Status:** Accepted
 **Date:** 2026-11-17
