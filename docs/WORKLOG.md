@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.93: Room Tilemap & Collision Layer Descriptor Builder)
+- **Concrete Task**: Implement `src/game/world/room_layer_loader.hpp/.cpp` with `RoomLayerSpec` (`tiles_w`, `tiles_h`, `row_shift`, `tilemap_offset`, `tilemap_bytes`, `has_collision`, `collision_offset`, `collision_bytes`), `RoomLayerLayout` (`plane_a` `0xC000`, `plane_b` `0xE000`, `tileset_dma_words = 0x2000`), `compute_row_shift(tiles_w)` (`0x00D7B0`: `ctz(tiles_w * 2)`), and `decode_room_layer_header(header4)` (`0x00D560..0x00D620`); add `tests/m16_93_room_layer_loader_test.cpp`; qualify full 53-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/room_layer_loader.hpp` / `src/game/world/room_layer_loader.cpp`.
+  * Added `tests/m16_93_room_layer_loader_test.cpp` (registered as `oasis_m16_93_room_layer_loader` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 53/53 regression run.
+  * MSVC Debug (`build-debug`): 53/53 regression run.
+  * Remaining unknowns: Replacing ad-hoc header decoding in `town_scene_loader.cpp` with `decode_room_layer_header()` is deferred to future world-loader cleanup.
+
 # Worklog — 2026-11-17 (M16.92: 16-Bit LFSR PRNG & Bounded Random Helpers)
 - **Concrete Task**: Implement `src/game/entities/prng_lfsr.hpp/.cpp` with `PrngLfsr16` (`seed = 0x7F28` `$FF1928`, `next_rng16()` `0x00E268`, `rand_u16(bound)` `0x00E2A2`, `rand_u8(bound)` `0x00E2BA`), matching the 8 exact ROM outputs from `0x7F28`; add `tests/m16_92_prng_lfsr_test.cpp`; qualify full 52-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

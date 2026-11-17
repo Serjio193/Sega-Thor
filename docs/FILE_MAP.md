@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/world/room_layer_loader.hpp` / `src/game/world/room_layer_loader.cpp`: Room tilemap & collision layer descriptor builder (`0x00D500..0x00D7BF`, `compute_row_shift` `0x00D7B0`, `decode_room_layer_header`) (M16.93).
+- `tests/m16_93_room_layer_loader_test.cpp`: Automated M16.93 test qualifying `compute_row_shift`, 2x1 room header layout, and dual-plane collision offsets (M16.93).
 - `src/game/entities/prng_lfsr.hpp` / `src/game/entities/prng_lfsr.cpp`: 16-bit LFSR PRNG (`$FF1928`, seed `0x7F28`, `next_rng16` `0x00E268`, `rand_u16` `0x00E2A2`, `rand_u8` `0x00E2BA`) (M16.92).
 - `tests/m16_92_prng_lfsr_test.cpp`: Automated M16.92 test qualifying the exact 8-output sequence from `0x7F28` and bounded `rand_u16`/`rand_u8` helpers (M16.92).
 - `src/game/entities/entity_pool_allocators.hpp` / `src/game/entities/entity_pool_allocators.cpp`: 4 fixed-stride WRAM entity/effect pool allocators (`Effect8` `$FF2ABC`, `Special6` `$FF2D8C`, `FullEntity18` `$FF1C1C`, `EnemyEntity17` `$FF1CD8`, `0x0694 + idx * 9`, `$FF184F` HUD invalidation) (M16.91).

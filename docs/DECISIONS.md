@@ -1,3 +1,14 @@
+# ADR-20261117-M16-93-ROOM-LAYER-LOADER — Room Tilemap & Collision Layer Descriptor Builder
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.309 extracted the room layer descriptor builder (`0x00D500..0x00D7BF`), row shift helper (`0x00D7B0`, `ctz(tiles_w * 2)`), and 4-byte decompressed header unpacking into Plane A (`0xC000`, `$FF1716`/`$FF1766`) and Plane B (`0xE000`, `$FF173E`/`$FF1770`).
+
+**Decisions:**
+1. **Dedicated `room_layer_loader` Module:**
+   - Added `src/game/world/room_layer_loader.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-92-PRNG-LFSR — 16-Bit LFSR PRNG & Bounded Random Helpers
 **Status:** Accepted
 **Date:** 2026-11-17

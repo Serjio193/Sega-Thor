@@ -1,3 +1,9 @@
+# M16.93 Room Tilemap & Collision Layer Descriptor Builder (`0x00D500..0x00D7BF`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `RoomLayerSpec`, `RoomLayerLayout`, `compute_row_shift` (`0x00D7B0`), and `decode_room_layer_header` (`0x00D560..0x00D620`) in `src/game/world/room_layer_loader.hpp/.cpp`.
+- Qualified `oasis_m16_93_room_layer_loader` and full 53-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.92 16-Bit LFSR PRNG & Bounded Random Helpers (`0x00E268..0x00E2D3`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
