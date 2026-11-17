@@ -1,3 +1,33 @@
+# ADR-20261117-M16-158-VERTICAL-ENTITY-SWEEPS — ROM Vertical (±Y) Solid Dynamic Entity Collision Sweeps (0x009FA0..0x00A196)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.409 extracted ROM routines `0x009FA0..0x00A196` governing vertical solid dynamic entity collision sweeps across 21 Group 2 entities at `$FF19E8` (stride 188B):
+   - `0x009FA0..0x00A098`: `sweep_entities_pos_y`:
+     * Checks intangible bit 2 on `+0x38(a6)`.
+     * Precomputes self bottom edge `d1 = y + rad_y`, elevation interval `a2 = z + ground_h` to `a2 + height`, and ground X interval `x + ground_h ± rad_x`.
+     * Loops across 21 slots (`d7 = 0x14`):
+       - Filters `type <= 0`, target intangible `+0x38` bit 2, ignore collision `+0x3a` bit 1.
+       - Requires `target.y > self.y`.
+       - Computes `dist = (target.y - target.rad_y) - (self.y + self.rad_y)`.
+       - Tests `dist < dy`.
+       - Tests X-axis overlap against self X interval.
+       - Tests Z-axis elevation overlap against self elevation interval.
+       - On 3D collision: sets `+0x41 |= 0x80`, writes target address to `+0x68`, sets reaction code 3 into `+0x6C`, clamps `dy = dist`.
+       - On flush contact `dist == 0`: if `!(self.flags_37 & 0x20)` and `!(target.flags_37 & 0x40)`, pushes target down: `target.vel_y += 1`.
+   - `0x00A09A..0x00A196`: `sweep_entities_neg_y`:
+     * Mirrors +Y sweep for negative movement: requires `target.y < self.y`.
+     * Computes `dist = (self.y - self.rad_y) - (target.y + target.rad_y)`.
+     * Clamps `dy = dist`, sets `+0x41 |= 0x80`, writes target to `+0x68`, reaction code 3.
+     * On flush contact `dist == 0`: if push allowed, pushes target up: `target.vel_y -= 1`.
+
+**Decisions:**
+1. **Dedicated `vertical_entity_sweeps` Module:**
+   - Added `src/game/player/vertical_entity_sweeps.hpp/.cpp` modeling pure `sweep_entities_pos_y`, `sweep_entities_neg_y`, and raw byte span helpers `sweep_slot_entities_pos_y` and `sweep_slot_entities_neg_y`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (138/138 M16 tests).
+
 # ADR-20261117-M16-157-HORIZONTAL-ENTITY-SWEEPS — ROM Horizontal (±X) Solid Dynamic Entity Collision Sweeps (0x009DD6..0x009F9E)
 **Status:** Accepted
 **Date:** 2026-11-17
