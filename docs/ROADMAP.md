@@ -1,3 +1,13 @@
+# M16.145 ROM Master Entity Subsystems Clear, Universal Constructor & Spirit Glow Pulse (`0x008C5A..0x008E22`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `clear_entity_slot_90`, `clear_entity_slot_188`, `clear_special_slot_8`, `EntityPoolSet`, `read_entity_descriptor`, `construct_entity`, `reinit_entity_script_pointers`, and `step_spirit_glow_pulse` in `src/game/player/entity_constructor_lifecycle.hpp/.cpp`:
+  - Master entity subsystems clear: clears 5 RAM entity pools (4x90B `$FF2954`, 6x90B `$FF2D8C`, 8x90B `$FF2ABC`, 4x8B `$FF19C8`, 19x188B `$FF1B60`), sets headers and timers `$2C/$34/$5C = 0xFFFF`, and preserves player `$FF19E8` and spirit `$FF1AA4` slots.
+  - Universal entity constructor: zero-initializes entity state words starting at offset 2, looks up 32-byte ROM entity descriptor table at `0x0003F2FA + (entity_type - 2) * 16`, populates 16 descriptor fields, and initializes timers.
+  - Entity script pointers re-init: reloads 5 function pointers from descriptor table into entity slot.
+  - Spirit glow pulse controller: ramps HUD spirit glow `$FF183E` 0->1->2->3, pulses to 4 on even frames >= 20, and steps down 4->2->1->0 when dismissed.
+- Qualified `oasis_m16_145_entity_constructor_lifecycle` and the 125-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.144 ROM Master Gameplay Frame Sequencer, Screen Shake Dispatcher & Joypad Menu Hotkeys (`0x008AA6..0x008C5A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

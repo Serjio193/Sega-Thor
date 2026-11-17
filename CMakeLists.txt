@@ -107,6 +107,7 @@ add_library(oasis_core
     src/game/player/ali_chained_super_motion.cpp
     src/game/player/ali_rapid_tripletap_demo.cpp
     src/game/player/master_frame_sequencer.cpp
+    src/game/player/entity_constructor_lifecycle.cpp
     src/game/input/mash_tripletap_detectors.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp

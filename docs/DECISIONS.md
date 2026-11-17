@@ -1,3 +1,29 @@
+# ADR-20261117-M16-145-ENTITY-CONSTRUCTOR-LIFECYCLE — ROM Master Entity Subsystems Clear, Universal Constructor & Spirit Glow Pulse (0x008C5A..0x008E22)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.396 extracted ROM routines `0x008C5A..0x008E22` governing the entity subsystems lifecycle, descriptor table lookup, universal entity initialization, and HUD spirit glow pulse:
+   - `0x008C5A..0x008D04`: `master_entity_subsystems_clear`:
+     * Clears 5 entity pools: Pool 1 `$FF2954` (4 slots, stride 90B), Pool 2 `$FF2D8C` (6 slots, stride 90B), Pool 3 `$FF2ABC` (8 slots, stride 90B), Pool 4 `$FF19C8` (4 slots, stride 8B), and Pool 5 `$FF1B60` (19 non-player slots, stride 188B).
+     * Clears slot header words (`+0x00, +0x04, +0x06, +0x2A = 0`) and sets initial timers (`+0x2C, +0x34, +0x5C = 0xFFFF`).
+     * Strictly preserves Player slot `$FF19E8` and Spirit slot `$FF1AA4`.
+   - `0x008D06..0x008DA2`: `universal_entity_constructor`:
+     * Clears entity memory starting at offset 2 (44 words for 90B slots, 93 words for 188B slots).
+     * Resolves 32-byte ROM entity descriptor table at `0x0003F2FA + (entity_type - 2) * 16`.
+     * Populates 16 descriptor fields (`+0x4A, +0x46, +0x42, +0x44, +0x48, +0x49, +0x3D, +0x4C, +0x3A, +0x36, +0x37, +0x38, +0x3C, +0x1A, +0x1E, +0x26, +0x22, +0x5E`), initializes timers `+0x2C, +0x34, +0x5C = 0xFFFF`.
+   - `0x008DA4..0x008DD2`: `reinit_entity_script_pointers`:
+     * Reloads the 5 function pointers from descriptor table into an existing entity slot.
+   - `0x008DD4..0x008E22`: `step_spirit_glow_pulse`:
+     * When spirit is active: ramps HUD spirit glow `$FF183E` 0->1->2->3; at level 3, pulses to 4 on even frames when animation timer `$FF199E` >= 20.
+     * When spirit is dismissed: steps glow down 4->2, 3->2, 2->1, 1->0.
+
+**Decisions:**
+1. **Dedicated `entity_constructor_lifecycle` Module:**
+   - Added `src/game/player/entity_constructor_lifecycle.hpp/.cpp` modeling `clear_entity_slot_90`, `clear_entity_slot_188`, `clear_special_slot_8`, `EntityPoolSet`, `read_entity_descriptor`, `construct_entity`, `reinit_entity_script_pointers`, and `step_spirit_glow_pulse`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-144-MASTER-FRAME-SEQUENCER — ROM Master Gameplay Frame Sequencer, Screen Shake Dispatcher & Joypad Menu Hotkeys (0x008AA6..0x008C5A)
 **Status:** Accepted
 **Date:** 2026-11-17
