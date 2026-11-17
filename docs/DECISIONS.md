@@ -1,3 +1,38 @@
+# ADR-20261117-M16-137-WEAPON-HITBOX-BUILDER — Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.353 extracted `0x00B9EC..0x00BB1E`: `find_fx_pool_hit` (`0x00B9EC..0x00BAA8`) and `build_world_weapon_hitbox` / `scan_weapon_hitbox_all` / `scan_weapon_hitbox_enemies` (`0x00BAAC..0x00BBA6`).
+2. FX pool scanner (`0x00B9EC`):
+   - Scans 8-slot pickup/FX pool at `$FF2ABC` (stride `0x5A` = 90 bytes).
+   - Combines caller entity coordinates and elevation bias with relative probe:
+     * `px1 = ex + rx1`, `px2 = ex + rx2`
+     * `py1 = ey + elevation + ry1`, `py2 = ey + elevation + ry2`
+     * `pz = ez + elevation + rz`
+   - Tests 3D AABB containment against FX slots:
+     * Skips inactive slots (`state <= 0`).
+     * `px1 <= fx_x + rx && px2 >= fx_x - rx`
+     * `py1 <= fx_y + elevation + ry && py2 >= fx_y + elevation - ry`
+     * `pz >= fx_z + elevation && pz <= fx_z + elevation + hz`
+   - Uses `$FF194A` save/restore state layout for resumable iteration across FX slots via `find_next_fx_pool_hit` (`0x00BA9C`).
+3. Weapon hitbox builder & entity scanner (`0x00BAAC..0x00BB1E`):
+   - Local hitbox table entry has 12 bytes (6 signed words): `(dz1, dz2, dx1, dy1, dx2, dy2)` indexed by `(facing == 3 ? 1 : facing) * 12`.
+   - When `facing == 3` (Left), mirrors X: `(dx1, dx2) = (-dx2, -dx1)`.
+   - Translates by caller's entity position and elevation offset:
+     * `x1 = ex + dx1`, `x2 = ex + dx2`
+     * `y1 = ey + elevation + dy1`, `y2 = ey + elevation + dy2`
+     * `z1 = ez + elevation + dz1`, `z2 = ez + elevation + dz2`
+   - Entity pool candidate scanning:
+     * `scan_weapon_hitbox_all`: checks candidate slots from `$FF19E8` (full 21-slot pool).
+     * `scan_weapon_hitbox_enemies`: checks 17 enemy slots from `$FF1CD8` (slot 4..20), skipping player & allies (slots 0..3).
+     * Filters: skips caller self, inactive slots (`state <= 0`), `flags_38 & 0x08`, and `flags_3a & 0x01`.
+     * Overlap tests: Z interval `world_box.z2 >= target_z_min && world_box.z1 <= target_z_max`, X interval `world_box.x1 <= target_ex + rx && world_box.x2 >= target_ex - rx`, Y interval `world_box.y1 <= target_ey_top + ry && world_box.y2 >= target_ey_top - ry`.
+
+**Decisions:**
+1. **Dedicated `weapon_hitbox_builder` Module:**
+   - Added `src/game/combat/weapon_hitbox_builder.hpp/.cpp` modeling `build_world_weapon_hitbox`, `build_world_weapon_hitbox_from_table`, `find_first_fx_pool_hit`, `find_first_fx_pool_hit_abs`, `find_next_fx_pool_hit`, `scan_entities_for_weapon_hit`, `scan_weapon_hitbox_all`, and `scan_weapon_hitbox_enemies`.
+
 # ADR-20261117-M16-136-RESUMABLE-HITBOX-ITER — Resumable 21-Slot Masked 3D Hitbox Iterator
 **Status:** Accepted
 **Date:** 2026-11-17

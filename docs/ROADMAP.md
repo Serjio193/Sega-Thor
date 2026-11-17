@@ -1,3 +1,14 @@
+# M16.137 Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner (`0x00B9EC..0x00BB1E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `build_world_weapon_hitbox`, `build_world_weapon_hitbox_from_table`, `find_first_fx_pool_hit`, `find_first_fx_pool_hit_abs`, `find_next_fx_pool_hit`, `scan_entities_for_weapon_hit`, `scan_weapon_hitbox_all`, and `scan_weapon_hitbox_enemies` in `src/game/combat/weapon_hitbox_builder.hpp/.cpp`:
+  - 8-slot FX pool at `$FF2ABC` (stride `0x5A` = 90B) with 3D AABB overlap check and resumable state saving/restoration matching `$FF194A`.
+  - 12-byte local hitbox table lookup indexed by `(facing == 3 ? 1 : facing) * 12`.
+  - Facing 3 (Left) X mirroring: `(dx1, dx2) = (-dx2, -dx1)`.
+  - World coordinate translation with entity elevation bias: `(x, y + y_off, z + y_off)`.
+  - Weapon hitbox candidate scanning for all slots (`$FF19E8`, 21 slots) and enemy slots (`$FF1CD8`, 17 slots), filtering self, inactive entities, and flags (`flags_38 & 0x08`, `flags_3a & 0x01`).
+- Qualified `oasis_m16_137_weapon_hitbox_builder` and the 118-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.136 Resumable 21-Slot Masked 3D Hitbox Iterator (`0x00B852..0x00B99E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
