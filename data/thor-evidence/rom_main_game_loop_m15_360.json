@@ -1,0 +1,113 @@
+{
+  "milestone": "M15.360",
+  "rom_range": "0x008AA6..0x008C58",
+  "frame_loop": {
+    "entry_addr": "0x008AA6",
+    "play_timer_addr": "0xFF0D76",
+    "frame_tick_addr": "0xFF1654",
+    "slowdown_flag_addr": "0xFF17B8",
+    "pipeline_calls": [
+      {
+        "call_site": "0x008B1E",
+        "target": "0x00A4C8",
+        "stage": "hud_conditional_update"
+      },
+      {
+        "call_site": "0x008B22",
+        "target": "0x008BAC",
+        "stage": "menu_and_soft_reset_check"
+      },
+      {
+        "call_site": "0x008B26",
+        "target": "0x008B8E",
+        "stage": "queued_item_or_spirit_trigger"
+      },
+      {
+        "call_site": "0x008B2A",
+        "target": "0x00F788",
+        "stage": "input_and_trigger_tick"
+      },
+      {
+        "call_site": "0x008B2E",
+        "target": "0x00557A",
+        "stage": "status_and_hud_tick"
+      },
+      {
+        "call_site": "0x008B32",
+        "target": "0x00DEEC",
+        "stage": "entity_ai_physics_tick"
+      },
+      {
+        "call_site": "0x008B36",
+        "target": "0x00E0BA",
+        "stage": "fx_particle_tick"
+      },
+      {
+        "call_site": "0x008B3A",
+        "target": "0x00E0F4",
+        "stage": "secondary_fx_tick"
+      },
+      {
+        "call_site": "0x008B3E",
+        "target": "0x008E22",
+        "stage": "camera_scroll_tick"
+      },
+      {
+        "call_site": "0x008B42",
+        "target": "0x008E90",
+        "stage": "palette_vdp_sync_tick"
+      },
+      {
+        "call_site": "0x008B46",
+        "target": "0x008DD4",
+        "stage": "audio_music_tick"
+      },
+      {
+        "call_site": "0x008B52",
+        "target": "0x00C998",
+        "stage": "room_pre_vint_hook"
+      },
+      {
+        "call_site": "0x008B60",
+        "target": "0x00C980",
+        "stage": "room_post_vint_hook"
+      },
+      {
+        "call_site": "0x008B86",
+        "target": "0x00A196",
+        "stage": "master_ysort_sat_render"
+      }
+    ]
+  },
+  "queued_trigger_008b8e": {
+    "flag_addr": "0xFF1864",
+    "bit7_target": "0x007CC6",
+    "nonzero_low_target": "0x00530C"
+  },
+  "menu_dispatcher_008bac": {
+    "abc_hold_mask": "0x70",
+    "abc_flag_addr": "0xFF19A7",
+    "menu_mode_addr": "0xFF185E",
+    "menu_entry_target": "0x003B3E",
+    "modes": [
+      {
+        "button": "Start",
+        "mode": 0
+      },
+      {
+        "button": "EdgeBit2",
+        "mode": 3
+      },
+      {
+        "button": "EdgeBit1",
+        "mode": 1,
+        "requires_ali_state_le_2_and_zero_1a6e": true
+      },
+      {
+        "button": "EdgeBit0",
+        "mode": 2,
+        "requires_ali_state_le_2_and_zero_1a6e": true
+      }
+    ]
+  }
+}

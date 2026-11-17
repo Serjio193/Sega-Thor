@@ -1,3 +1,9 @@
+# M15.360 ROM Master Gameplay Frame Loop & Menu Dispatcher
+- `tools/extract_rom_main_game_loop.py` — extractor for `0x008AA6..0x008C58` (14 ordered per-frame `bsr.w` stages, `$FF1864` queued item/spirit trigger, `$FF185E` 4-mode menu dispatcher).
+- `tests/rom_main_game_loop_test.py` — `2` unit tests verifying all 14 ROM `bsr.w` pipeline targets and menu mode priority rules.
+- `data/thor-evidence/rom_main_game_loop_m15_360.json` — extracted M15.360 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_360_MAIN_GAME_LOOP_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.359 ROM Attract-Mode 9-Slot Demo-Stream Loader & Delta Decoder
 - `tools/extract_rom_demo_stream_loader.py` — extractor for `0x0089B2..0x008AA5` (`$FF0BFC` 0..8 wrap, `0x008A94` 9-entry offset table into `$1698FE`, `0x003820` decompression, `$FFDFB2` 8KB delta decode).
 - `tests/rom_demo_stream_loader_test.py` — `2` unit tests verifying the 9 ROM stream addresses, index wrap, and 8-bit cumulative delta decoding.

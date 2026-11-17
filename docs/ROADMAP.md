@@ -1,3 +1,6 @@
+# M15.360 ROM Master Gameplay Frame Loop, Queued Trigger & Menu Dispatcher (`0x008AA6`..`0x008C58`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_main_game_loop.py`, `tests/rom_main_game_loop_test.py` (`2/2 PASS`), `data/thor-evidence/rom_main_game_loop_m15_360.json`, and `docs/handoffs/STANDALONE_M15_360_MAIN_GAME_LOOP_HANDOFF.md`.
+
 # M15.359 ROM Attract-Mode 9-Slot Demo-Stream Loader & 8KB Delta Decoder (`0x0089B2`..`0x008AA5`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_demo_stream_loader.py`, `tests/rom_demo_stream_loader_test.py` (`2/2 PASS`), `data/thor-evidence/rom_demo_stream_loader_m15_359.json`, and `docs/handoffs/STANDALONE_M15_359_DEMO_STREAM_LOADER_HANDOFF.md`.
 

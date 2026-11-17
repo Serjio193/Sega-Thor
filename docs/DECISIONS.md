@@ -1,3 +1,7 @@
+# ADR-20261117-M15-360-MAIN-GAME-LOOP — Master Gameplay Frame Loop & Menu Dispatcher (`0x008AA6`..`0x008C58`)
+- **Context:** `0x008AA6..0x008C58` defines Beyond Oasis's top-level per-frame execution order (14 subsystem `bsr.w` calls), V-Int frame pacing (`$FF1654`), queued `$FF1864` item/spirit trigger (`0x008B8E`), and 4-mode menu dispatcher (`0x008BAC`).
+- **Decision:** Verify every `bsr.w` relative offset in `tools/extract_rom_main_game_loop.py` and document the exact V-Int sync points and menu-entry guards in `docs/handoffs/STANDALONE_M15_360_MAIN_GAME_LOOP_HANDOFF.md`.
+
 # ADR-20261117-M15-359-DEMO-STREAM-LOADER — Attract-Mode 9-Slot Demo-Stream Loader & Delta Decoder (`0x0089B2`..`0x008AA5`)
 - **Context:** Attract-mode demo playback (`0x0089B2..0x008AA5`) cycles `$FF0BFC` over 9 LZ-compressed streams (`0x1698FE + u16[0x008A94 + idx*2]`) into `$FFBFAC`, applies an `0x2000`-byte cumulative delta decode at `$FFDFB2`, and hands off replay state to `0x00CA24`.
 - **Decision:** Extract all 9 ROM demo stream addresses, the `$FF0BFC` wrap rule, and the `$FFDFB2` 8KB delta decode loop in `tools/extract_rom_demo_stream_loader.py` and `docs/handoffs/STANDALONE_M15_359_DEMO_STREAM_LOADER_HANDOFF.md`.
