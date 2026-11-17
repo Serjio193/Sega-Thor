@@ -1,3 +1,7 @@
+# ADR-20261117-M15-362-PALETTE-ANIM-POOL-DISPATCH — Linked-List CRAM Palette Animator & 3-Pool AI Dispatcher (`0x008E22`..`0x008F10`)
+- **Context:** `0x008E22..0x008F10` implements the per-frame CRAM palette-cycling linked-list animator (`$FF17A2` -> `$FF134C`) and the 3-pool entity AI/script dispatcher (`$FF2954`, `$FF19E8`, `$FF2D8C`).
+- **Decision:** Model the exact node layout (`+0x00..+0x08` + 4B keyframes), `1/2`-frame advance threshold, `$FF164D` dirty bit, and 3-pool continuation contract in `tools/extract_rom_palette_anim_pool_dispatch.py` and `docs/handoffs/STANDALONE_M15_362_PALETTE_ANIM_POOL_DISPATCH_HANDOFF.md`.
+
 # ADR-20261117-M15-361-ENTITY-TEMPLATE-POOL-INIT — 5-Pool Resetter, 32B Entity Template Initializer & Tint Ramp (`0x008C5A`..`0x008E20`)
 - **Context:** `0x008C5A..0x008E20` resets all 5 entity/FX/spark pools, populates `0xBC` and `0x5A` entity slots from the 32-byte template table at `0x03F2FA`, and steps the `$FF183E` screen-tint/pulse intensity.
 - **Decision:** Extract the 5 pool descriptors, full `32B` template field mapping (`0x03F2FA`), and `$FF183E` ramp rules in `tools/extract_rom_entity_template_pool_init.py` and `docs/handoffs/STANDALONE_M15_361_ENTITY_TEMPLATE_POOL_INIT_HANDOFF.md`.

@@ -1,3 +1,6 @@
+# M15.362 ROM Linked-List CRAM Palette Animator & 3-Pool AI Dispatcher (`0x008E22`..`0x008F10`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_palette_anim_pool_dispatch.py`, `tests/rom_palette_anim_pool_dispatch_test.py` (`2/2 PASS`), `data/thor-evidence/rom_palette_anim_pool_dispatch_m15_362.json`, and `docs/handoffs/STANDALONE_M15_362_PALETTE_ANIM_POOL_DISPATCH_HANDOFF.md`.
+
 # M15.361 ROM 5-Pool Resetter, 32B Entity Template Initializer (`0x03F2FA`) & Tint Ramp (`0x008C5A`..`0x008E20`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_template_pool_init.py`, `tests/rom_entity_template_pool_init_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_template_pool_init_m15_361.json`, and `docs/handoffs/STANDALONE_M15_361_ENTITY_TEMPLATE_POOL_INIT_HANDOFF.md`.
 

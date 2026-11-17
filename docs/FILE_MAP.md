@@ -1,3 +1,9 @@
+# M15.362 ROM Linked-List CRAM Palette Animator & 3-Pool AI Dispatcher
+- `tools/extract_rom_palette_anim_pool_dispatch.py` — extractor for `0x008E22..0x008F10` (`$FF17A2` CRAM palette animation linked list -> `$FF134C`, 3-pool AI/script dispatcher, `0x008EF8` anim-state reset helper).
+- `tests/rom_palette_anim_pool_dispatch_test.py` — `2` unit tests verifying ROM pool descriptors and CRAM keyframe cycling/wrapping.
+- `data/thor-evidence/rom_palette_anim_pool_dispatch_m15_362.json` — extracted M15.362 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_362_PALETTE_ANIM_POOL_DISPATCH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.361 ROM 5-Pool Resetter, 32B Entity Template Initializer & Tint Ramp
 - `tools/extract_rom_entity_template_pool_init.py` — extractor for `0x008C5A..0x008E20` (5-pool resetter, `0x03F2FA` 32B entity template initializer/reloader, `$FF183E` tint ramp).
 - `tests/rom_entity_template_pool_init_test.py` — `2` unit tests verifying ROM pools, Ali template fields (`0x03F2FA`), and tint ramp state machine.

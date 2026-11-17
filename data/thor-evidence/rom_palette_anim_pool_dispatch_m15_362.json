@@ -1,0 +1,43 @@
+{
+  "milestone": "M15.362",
+  "rom_range": "0x008E22..0x008F10",
+  "palette_animator_008e22": {
+    "enable_flag_addr": "0xFF164F",
+    "list_head_ptr_addr": "0xFF17A2",
+    "cram_shadow_addr": "0xFF134C",
+    "vint_cram_dirty_addr": "0xFF164D",
+    "vint_cram_dirty_bit": 0,
+    "node_layout": {
+      "next_delta_i16": "0x00",
+      "cram_offset_u16": "0x02",
+      "cursor_u16": "0x04",
+      "delay_timer_u16": "0x06",
+      "keyframes_start": "0x08",
+      "keyframe_stride_bytes": 4
+    }
+  },
+  "ai_pool_dispatcher_008e90": {
+    "return_continuation_addr": "0xFF193C",
+    "pools": [
+      {
+        "base_addr": "0xFF2954",
+        "slot_count": 4,
+        "stride_bytes": 90,
+        "handler": "0x008F12"
+      },
+      {
+        "base_addr": "0xFF19E8",
+        "slot_count": 21,
+        "stride_bytes": 188,
+        "handler": "0x008F22"
+      },
+      {
+        "base_addr": "0xFF2D8C",
+        "slot_count": 6,
+        "stride_bytes": 90,
+        "handler": "0x008F12"
+      }
+    ],
+    "set_anim_state_helper": "0x008EF8"
+  }
+}
