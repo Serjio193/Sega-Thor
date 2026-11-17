@@ -12271,6 +12271,13 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.381: ROM Ali Shoreline Stepper, Water 3/4 Scaler & Landing Gate (0x007074..0x007262)
+
+- Decoded shoreline exit airborne stepper (`0x007074..0x0070F6`): applies `0xC000` gravity acceleration to vertical velocity `+0x56`, integrates position deltas, and triggers surface splash landing SFX `#$600343` on water/ground impact (`height <= 0`).
+- Decoded water landing audio gate (`0x007112..0x007196`): maintains water contact flag `bit 0 of +0x67` for timer `<= 4`, triggers splash entry SFX `#$500341` when `timer > 4`, and transitions to landing recovery (`0x005E78`) with 20-frame timer `+0x30 = 0x14`.
+- Decoded exact 75% water velocity scaling (`0x007198..0x0071D8`): calculates `(v >> 1) + (v >> 2)` with opposing inertia cancellation to prevent control resistance during sharp turns.
+- Decoded aerial jump slash descent and shadow update (`0x0071DA..0x007262`) with 12-frame landing recovery timer `+0x30 = 0x0C`.
+
 ## 2026-11-17 - Milestone M15.380: ROM Ali Water Dive, Air Combat, Splash & Shoreline Exit (0x006D7A..0x007074)
 
 - Decoded Ali water dive airborne gravity arc (`0x006DD2..0x006E78`): applies standard `0xC000` gravity acceleration to vertical velocity `+0x56`, integrates deltas `+0x4E` and `+0x52`, and transitions to landing recovery (`0x005E78`) with 12-frame timer `+0x30 = 0x0C` on water/ground impact.

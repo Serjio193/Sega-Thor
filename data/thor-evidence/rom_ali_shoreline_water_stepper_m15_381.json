@@ -1,0 +1,35 @@
+{
+  "milestone": "M15.381",
+  "description": "ROM Ali Shoreline Stepper, Water 3/4 Scaler & Landing Gate",
+  "address_range": [
+    "0x007074",
+    "0x007262"
+  ],
+  "byte_count": 494,
+  "routines": [
+    {
+      "name": "ali_shoreline_exit_airborne_stepper",
+      "start": "0x007074",
+      "end": "0x0070F6",
+      "purpose": "Airborne gravity step for shoreline climb, ripple 0x70F8 callback, landing SFX 0x600343"
+    },
+    {
+      "name": "ali_water_jump_landing_audio_gate",
+      "start": "0x007112",
+      "end": "0x007196",
+      "purpose": "Water contact flag bit 0 of $67, splash SFX 0x500341 on timer > 4, landing timer 0x14"
+    },
+    {
+      "name": "ali_water_velocity_3_4_scaler_and_clamp",
+      "start": "0x007198",
+      "end": "0x0071D8",
+      "purpose": "Exact 75% velocity scaling (d >> 1) + (d >> 2) and opposing inertia input cancellation"
+    },
+    {
+      "name": "ali_jump_slash_descent_shadow",
+      "start": "0x0071DA",
+      "end": "0x007262",
+      "purpose": "Aerial descent, shadow update 0x9D00, landing timer 0x0C and anim recovery 0x62CC"
+    }
+  ]
+}

@@ -31418,6 +31418,17 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.381: ROM Ali Shoreline Stepper, Water 3/4 Scaler & Landing Gate (0x007074..0x007262)
+
+- Decoded and tested shoreline exit airborne stepper (`0x007074..0x0070F6`): integrates horizontal deltas, applies `0xC000` gravity, triggers surface splash landing SFX `#$600343` on water/ground impact (`height <= 0`), and validates animation completion `bit 1 of +0x37` when airborne speed zeroes.
+- Decoded and tested water jump landing audio gate (`0x007112..0x007196`): maintains water contact flag `bit 0 of +0x67` for timer `<= 4`, triggers splash entry SFX `#$500341` when `timer > 4`, and transitions to landing recovery (`0x005E78`) with 20-frame timer `+0x30 = 0x14`.
+- Decoded and tested exact 75% water velocity scaling (`0x007198..0x0071D8`): calculates `(v >> 1) + (v >> 2)` with opposing inertia cancellation.
+- Decoded and tested aerial jump slash descent and shadow update (`0x0071DA..0x007262`) with 12-frame landing recovery timer `+0x30 = 0x0C`.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_shoreline_water_stepper_m15_381.json` (4 routines, 494 bytes).
+- Unit tests: `tests/rom_ali_shoreline_water_stepper_test.py` (`4/4 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_381_ALI_SHORELINE_WATER_STEPPER_HANDOFF.md`.
+- Next Step: Commit and push M15.381 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.380: ROM Ali Water Dive, Air Combat, Splash & Shoreline Exit (0x006D7A..0x007074)
 
 - Decoded and tested ROM Ali water stroke paddle and coast transitions (`0x006D7A..0x006DD0`), stroke counter increment `$FF1980`, and ripple effects via `0x00BCBA`.
