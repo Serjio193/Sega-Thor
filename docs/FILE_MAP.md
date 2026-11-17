@@ -1,3 +1,9 @@
+# M15.309 ROM Room Tilemap & Collision Layer Builder
+- `tools/extract_rom_room_layer_loader.py` — Extracts room header unpacking (`0x00D500`) & `0x00D7B0` row-shift helper.
+- `tests/rom_room_layer_loader_test.py` — Unit tests verifying 4-byte room header offsets and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_room_layer_loader_m15_309.json` — Extracted room layer loader evidence.
+- `docs/handoffs/STANDALONE_M15_309_ROOM_LAYER_LOADER_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.308 ROM 16-Bit LFSR PRNG & Bounded Random Helpers
 - `tools/extract_rom_prng_lfsr.py` — Extracts 16-bit LFSR (`0x00E268`), seed `0x7F28`, and bounded helpers (`0x00E2A2`/`0x00E2BA`).
 - `tests/rom_prng_lfsr_test.py` — Unit tests verifying LFSR seed, sequence, and JSON artifact (`2/2 PASS`).

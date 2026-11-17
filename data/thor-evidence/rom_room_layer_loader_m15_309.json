@@ -1,0 +1,35 @@
+{
+  "milestone": "M15.309",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "room_layer_loader": {
+    "entry_addr": "0x00D500",
+    "row_shift_helper_addr": "0x00D7B0",
+    "tileset_dma_words": 8192,
+    "decomp_ram_dest": "0xFF3FA8",
+    "plane_a_desc_addr": "0xFF1716",
+    "plane_a_col_desc_addr": "0xFF1766",
+    "plane_a_vram": "0xC000",
+    "plane_b_desc_addr": "0xFF173E",
+    "plane_b_col_desc_addr": "0xFF1770",
+    "plane_b_vram": "0xE000"
+  },
+  "sample_2x1_room": {
+    "plane_a": {
+      "tiles_w": 64,
+      "tiles_h": 32,
+      "row_shift": 7,
+      "tilemap_offset": 4,
+      "tilemap_bytes": 4096,
+      "has_collision": true,
+      "collision_offset": 4100,
+      "collision_bytes": 2048
+    },
+    "plane_b": {
+      "tiles_w": 32,
+      "tiles_h": 32,
+      "row_shift": 6,
+      "tilemap_offset": 6148,
+      "tilemap_bytes": 2048
+    }
+  }
+}

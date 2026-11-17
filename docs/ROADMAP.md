@@ -1,3 +1,7 @@
+# M15.309 ROM Room Tilemap & Collision Layer Builder (`0x00D500`..`0x00D7BF`) — COMPLETE / VERIFIED
+- Decoded room loader (`0x00D500`: `0x2000`-word tileset DMA to `0x0000`, `0x003820` decomp to `$FF3FA8`, 4-byte Plane A/B/Collision header, `0x00D7B0` `ctz(tiles_w*2)` row-shift helper).
+- Authored `tools/extract_rom_room_layer_loader.py`, `tests/rom_room_layer_loader_test.py` (`2/2 PASS`), `data/thor-evidence/rom_room_layer_loader_m15_309.json`, and `docs/handoffs/STANDALONE_M15_309_ROOM_LAYER_LOADER_HANDOFF.md`.
+
 # M15.308 ROM 16-Bit LFSR PRNG & Bounded Random Helpers (`0x00E268`..`0x00E2D3`) — COMPLETE / VERIFIED
 - Decoded 16-bit LFSR PRNG (`0x00E268`, seed `0x7F28` at `$FF1928`, 4 shifts/call with `rol16(d0, 2) ^ d0` tap) and bounded helpers (`0x00E2A2` u16, `0x00E2BA` u8).
 - Authored `tools/extract_rom_prng_lfsr.py`, `tests/rom_prng_lfsr_test.py` (`2/2 PASS`), `data/thor-evidence/rom_prng_lfsr_m15_308.json`, and `docs/handoffs/STANDALONE_M15_308_PRNG_LFSR_HANDOFF.md`.

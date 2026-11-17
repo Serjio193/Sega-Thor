@@ -1,3 +1,7 @@
+# ADR-20261117-M15-309-ROOM-LAYER-LOADER — Room Tilemap & Collision Layer Builder (`0x00D500`..`0x00D7BF`)
+- **Decision:** Model room Plane A/B & collision buffer unpacking in Standalone via `0x00D500`'s 4-byte header (`<< 5` tiles, `0x00D7B0` `ctz(tiles_w*2)` row shift, bit-7 appended collision byte-grid).
+- **Evidence:** Direct Capstone M68K disassembly of `0x00D500..0x00D620` and `0x00D7B0..0x00D7BF` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-308-PRNG-LFSR — 16-Bit LFSR PRNG & Bounded Random Helpers (`0x00E268`..`0x00E2D3`)
 - **Decision:** Model Beyond Oasis's deterministic RNG in Standalone via `0x00E268`'s 4-shift 16-bit LFSR (`$FF1928`, seed `0x7F28`, `rol16(d0, 2) ^ d0` tap) and `(rng * bound) >> 16` scaling.
 - **Evidence:** Direct Capstone M68K disassembly of `0x00E268..0x00E2D3` and seed `0x000424` in `local-roms/Beyond Oasis (USA).md`.

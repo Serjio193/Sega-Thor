@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.309: ROM ROOM TILEMAP & COLLISION LAYER BUILDER (`0x00D500`..`0x00D7BF`) — `0x2000`W Tileset, 4B Header -> Plane A/B/Col; Extractor (`tools/extract_rom_room_layer_loader.py` <= 500 lines), Tests (`tests/rom_room_layer_loader_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_309_ROOM_LAYER_LOADER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00D500..0x00D620` and `0x00D7B0..0x00D7BF` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_room_layer_loader.py` and `python tests/rom_room_layer_loader_test.py` (2/2 PASS).
+- Next: Commit & push M15.309, await M16.92 completion, and continue.
+
 # 2026-11-17 — Milestone M15.308: ROM 16-BIT LFSR PRNG (`0x00E268`..`0x00E2D3`) — Seed `0x7F28`, 4 Shifts/Call, `(rng*bound)>>16`; Extractor (`tools/extract_rom_prng_lfsr.py` <= 500 lines), Tests (`tests/rom_prng_lfsr_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_308_PRNG_LFSR_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00E268..0x00E2D3` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_prng_lfsr.py` and `python tests/rom_prng_lfsr_test.py` (2/2 PASS).
