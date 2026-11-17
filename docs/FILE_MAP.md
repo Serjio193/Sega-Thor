@@ -1,3 +1,9 @@
+# M15.427 ROM Dynamic 1-Bit Font Glyph Expansion, 4-Neighbor Outline Filter & 4bpp Tile Packer
+- `tools/extract_rom_font_glyph_tile_packer.py` — extractor for `0x00C222..0x00C2EC` (1-bit glyph expansion from ROM `0x0016C1CA`, 18x16 byte canvas `$FF3028`, 4-neighbor outline filter, and 4bpp tile packing into `$FF2FA8`).
+- `tests/rom_font_glyph_tile_packer_test.py` — `5` unit tests verifying ROM constants, 1-bit scanline expansion to canvas, 4-neighbor cardinal outline filtering, 4bpp Genesis planar tile packing, and actual ROM font glyph rendering.
+- `data/thor-evidence/rom_font_glyph_tile_packer_m15_427.json` — extracted M15.427 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_427_FONT_GLYPH_TILE_PACKER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.426 ROM Tile Rect vs Player Ali AABB Containment & Overlap Collision Testers
 - `tools/extract_rom_player_rect_collision.py` — extractor for `0x00C17A..0x00C222` (strict AABB containment test `player_inside_rect`, overlap intersection test `player_overlaps_rect`, packed coordinate scaling, and player radius `$46`).
 - `tests/rom_player_rect_collision_test.py` — `5` unit tests verifying ROM constants, packed register coordinate unpacking, strict inside containment conditions, overlap intersection conditions, and exact boundary edge alignment.

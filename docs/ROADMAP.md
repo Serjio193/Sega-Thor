@@ -1,3 +1,6 @@
+# M15.427 ROM Dynamic 1-Bit Font Glyph Expansion, 4-Neighbor Outline Filter & 4bpp Tile Packer (`0x00C222`..`0x00C2EC`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_font_glyph_tile_packer.py`, `tests/rom_font_glyph_tile_packer_test.py` (`5/5 PASS`), `data/thor-evidence/rom_font_glyph_tile_packer_m15_427.json`, and `docs/handoffs/STANDALONE_M15_427_FONT_GLYPH_TILE_PACKER_HANDOFF.md`.
+
 # M15.426 ROM Tile Rect vs Player Ali AABB Containment & Overlap Collision Testers (`0x00C17A`..`0x00C222`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_player_rect_collision.py`, `tests/rom_player_rect_collision_test.py` (`5/5 PASS`), `data/thor-evidence/rom_player_rect_collision_m15_426.json`, and `docs/handoffs/STANDALONE_M15_426_PLAYER_RECT_COLLISION_HANDOFF.md`.
 

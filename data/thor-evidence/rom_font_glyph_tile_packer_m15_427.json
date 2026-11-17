@@ -1,0 +1,14 @@
+{
+  "routine": "Dynamic 1-Bit Font Glyph Expansion, 4-Neighbor Outline Filter & 4bpp Tile Packer",
+  "start_address": "0x00C222",
+  "end_address": "0x00C2EC",
+  "size_bytes": 202,
+  "font_table_rom": "0x0016C1CA",
+  "glyph_record_size": 28,
+  "canvas_ram": "0x00FF3028",
+  "tiles_out_ram": "0x00FF2FA8",
+  "canvas_pitch": 18,
+  "canvas_rows": 18,
+  "outline_color": 14,
+  "sha256": "7f7aae24f668c3f1687c0765179995afff05b0bd1f5edfdeb7c7f38bd1318d8e"
+}
