@@ -1,3 +1,6 @@
+# M15.366 ROM Ali Status Tick, Low-HP/SP Alarms & Safe Respawn Anchor (`0x00557A`..`0x0056D7`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_status_alarms.py`, `tests/rom_ali_status_alarms_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_status_alarms_m15_366.json`, and `docs/handoffs/STANDALONE_M15_366_ALI_STATUS_ALARMS_HANDOFF.md`.
+
 # M15.365 ROM Room/Event Script VM Dispatcher & Cutscene Lock (`0x00F788`..`0x00F8C6`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_event_script_vm.py`, `tests/rom_event_script_vm_test.py` (`2/2 PASS`), `data/thor-evidence/rom_event_script_vm_m15_365.json`, and `docs/handoffs/STANDALONE_M15_365_EVENT_SCRIPT_VM_HANDOFF.md`.
 

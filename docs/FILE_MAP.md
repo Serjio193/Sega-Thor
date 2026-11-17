@@ -1,3 +1,9 @@
+# M15.366 ROM Ali Status Tick, Low-HP/SP Alarms & Respawn Anchor
+- `tools/extract_rom_ali_status_alarms.py` — extractor for `0x00557A..0x0056D7` (`$FF1993` low-HP alarm `0x00A0038C`, `$FF1994` low-SP alarm `0x00A004DD`, `$FF1972` safe respawn anchor, `$FF198E` invuln & `$FF198F` weapon swap).
+- `tests/rom_ali_status_alarms_test.py` — `2` unit tests verifying ROM SFX/threshold constants and HP/SP heartbeat cadence.
+- `data/thor-evidence/rom_ali_status_alarms_m15_366.json` — extracted M15.366 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_366_ALI_STATUS_ALARMS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.365 ROM Room/Event Script VM Dispatcher & Cutscene Lock
 - `tools/extract_rom_event_script_vm.py` — extractor for `0x00F788..0x00F8C6` (31-opcode jump table `0x00F7D0`, `$FF17B6` wait-timer, `$FF17BD` cutscene lock & unlock).
 - `tests/rom_event_script_vm_test.py` — `2` unit tests verifying the 31 ROM VM opcodes and wait/cutscene/VM gate transitions.

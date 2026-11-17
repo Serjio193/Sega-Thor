@@ -1,0 +1,39 @@
+{
+  "milestone": "M15.366",
+  "rom_range": "0x00557A..0x0056D7",
+  "ali_entity_addr": "0xFF19E8",
+  "low_hp_alarm": {
+    "timer_addr": "0xFF1993",
+    "hp_offset": "0x8A",
+    "max_trigger_hp": 64,
+    "cooldown_shift": 1,
+    "cooldown_bias": 10,
+    "sfx_id": "0x00A0038C"
+  },
+  "low_sp_alarm": {
+    "timer_addr": "0xFF1994",
+    "active_spirit_addr": "0xFF1AA4",
+    "excluded_spirit_type": "0x16",
+    "sp_offset": "0x8E",
+    "max_trigger_sp": 24,
+    "cooldown_bias": 12,
+    "sfx_id": "0x00A004DD"
+  },
+  "safe_respawn_anchor": {
+    "hazard_offset": "0x6F",
+    "hazard_bit": 7,
+    "allowed_states": [
+      0,
+      2,
+      4
+    ],
+    "anchor_xy_addr": "0xFF1972"
+  },
+  "invuln_and_weapon_swap": {
+    "freeze_flag_addr": "0xFF1985",
+    "invuln_timer_addr": "0xFF198E",
+    "weapon_swap_flag_addr": "0xFF198F",
+    "weapon_class_addr": "0xFF0D7E",
+    "spirit_ball_type_guard": "0x3A"
+  }
+}

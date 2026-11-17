@@ -1,3 +1,7 @@
+# ADR-20261117-M15-366-ALI-STATUS-ALARMS — Ali Status Tick, Low-HP/SP Alarms & Respawn Anchor (`0x00557A`..`0x0056D7`)
+- **Context:** `0x00557A..0x0056D7` runs every gameplay frame to update Ali's hitbox extents, invulnerability timer (`$FF198E`), pending weapon swap (`$FF198F`), adaptive low-HP (`(HP>>1)+10`, `0x00A0038C`) and low-SP (`SP+12`, `0x00A004DD`) alarms, and `$FF1972` safe-ground respawn anchor.
+- **Decision:** Extract all alarm thresholds, SFX IDs, and safe-anchor state guards in `tools/extract_rom_ali_status_alarms.py` and `docs/handoffs/STANDALONE_M15_366_ALI_STATUS_ALARMS_HANDOFF.md`.
+
 # ADR-20261117-M15-365-EVENT-SCRIPT-VM — Room/Event Script VM Dispatcher & Cutscene Lock (`0x00F788`..`0x00F8C6`)
 - **Context:** `0x00F788..0x00F8C6` drives Beyond Oasis's room/event script VM (`$FF17B2` PC, 31 opcodes `0x00..0x1E` at `0x00F7D0`), `$FF17B6` wait-timer, and `$FF17BD` cutscene lock (`0x00F894`).
 - **Decision:** Extract all 31 even-aligned VM opcode handlers and the wait/cutscene/VM gate transitions in `tools/extract_rom_event_script_vm.py` and `docs/handoffs/STANDALONE_M15_365_EVENT_SCRIPT_VM_HANDOFF.md`.
