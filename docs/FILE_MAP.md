@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/world/room_warp_sequence.hpp` / `src/game/world/room_warp_sequence.cpp`: Room update hook guard (`0x00C980`/`0x00C998`), 6-flag warp lock guard (`0x00C9B2..0x00C9EA`), and warp transition sequence (`0x00C9EC..0x00CB0A`: `0x0004 -> 0x0611`, camera centering, checkpoint bit 6, flag reset, fade `4`) (M16.102).
+- `tests/m16_102_room_warp_sequence_test.cpp`: Automated M16.102 test qualifying the 6-flag warp lock guard, `0x0004 -> 0x0611` redirect, camera centering, checkpoint trigger, and flag reset (M16.102).
 - `src/game/ui/dialogue_sat_builder.hpp` / `src/game/ui/dialogue_sat_builder.cpp`: Dialogue cursor & 4x8 border SAT builder (`0x00C756..0x00C84C`, `0x86DC`/`0x96DC` blinking cursor, `0x0C00` border bars, `80`-sprite cap) (M16.101).
 - `tests/m16_101_dialogue_sat_builder_test.cpp`: Automated M16.101 test qualifying cursor blinking/choice positioning, 8-sprite bar emission, and 80-sprite SAT cap (M16.101).
 - `src/game/world/room_area_loader.hpp` / `src/game/world/room_area_loader.cpp`: Room & area transition loader (`0x00C8AA..0x00C96B`, 16-entry Area Table, `resolve_room_header_addr`, `transition_room_flags`) (M16.100).

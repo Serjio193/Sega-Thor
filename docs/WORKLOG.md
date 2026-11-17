@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.102: Room Update Hooks & Warp Transition Sequence)
+- **Concrete Task**: Implement `src/game/world/room_warp_sequence.hpp/.cpp` with `can_run_room_update_hooks()` (`0x00C980`/`0x00C998`), `can_trigger_room_warp()` (`0x00C9B2..0x00C9EA`: 6-flag warp lock guard), and `execute_room_warp_sequence()` (`0x00C9EC..0x00CB0A`: `0x0004 -> 0x0611` redirect, half-screen camera centering `(spawn_x - 160, spawn_y - 112)`, checkpoint bit 6 trigger, transition flag reset, sound cmd `2`, fade speed `4`); add `tests/m16_102_room_warp_sequence_test.cpp`; qualify full 62-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/room_warp_sequence.hpp` / `src/game/world/room_warp_sequence.cpp`.
+  * Added `tests/m16_102_room_warp_sequence_test.cpp` (registered as `oasis_m16_102_room_warp_sequence` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 62/62 regression run.
+  * MSVC Debug (`build-debug`): 62/62 regression run.
+  * Remaining unknowns: Invoking room-header `+0`/`+2` relative hooks and `execute_room_warp_sequence()` directly inside `StandaloneGameSimulation` scene transitions is deferred to future world-transition unification.
+
 # Worklog — 2026-11-17 (M16.101: Dialogue Cursor & Border SAT Builder)
 - **Concrete Task**: Implement `src/game/ui/dialogue_sat_builder.hpp/.cpp` with `DialogueSatEntry`, `DialogueSatInput`, `append_dialogue_sat_entry()` (`0x00C838..0x00C84C`, 80-sprite cap), `emit_8_sprite_bar()` (`0x00C81C..0x00C836`: `X=0x00A0 + 0x20*i`, `Y=bar_y + 0x0110`, `0x0C00` link base, `tile += 4`), and `build_dialogue_sat()` (`0x00C756..0x00C81A`: blinking cursor `0x86DC`/`0x96DC` at `X=0x011C`, `Y=0x014C - 12*(3 - min(choice,3))`); add `tests/m16_101_dialogue_sat_builder_test.cpp`; qualify full 61-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

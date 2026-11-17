@@ -1,3 +1,14 @@
+# ADR-20261117-M16-102-ROOM-WARP-SEQUENCE — Room Update Hooks & Warp Transition Sequence
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.318 extracted the room update hook guard (`0x00C980`/`0x00C998`), 6-flag warp lock guard (`0x00C9B2..0x00C9EA`), and warp transition sequence (`0x00C9EC..0x00CB0A`: `0x0004 -> 0x0611`, `(spawn_x - 160, spawn_y - 112)` camera centering, checkpoint bit 6, flag reset + fade `4`).
+
+**Decisions:**
+1. **Dedicated `room_warp_sequence` Module:**
+   - Added `src/game/world/room_warp_sequence.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-101-DIALOGUE-SAT-BUILDER — Dialogue Cursor & Border SAT Builder
 **Status:** Accepted
 **Date:** 2026-11-17

@@ -1,3 +1,9 @@
+# M16.102 Room Update Hooks & Warp Transition Sequence (`0x00C980..0x00CB0A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `can_run_room_update_hooks` (`0x00C980`/`0x00C998`), `can_trigger_room_warp` (6-flag guard `0x00C9B2..0x00C9EA`), and `execute_room_warp_sequence` (`0x00C9EC..0x00CB0A`: `0x0004 -> 0x0611`, camera centering, checkpoint bit 6, flag reset + fade `4`) in `src/game/world/room_warp_sequence.hpp/.cpp`.
+- Qualified `oasis_m16_102_room_warp_sequence` and full 62-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.101 Dialogue Cursor & Border SAT Builder (`0x00C756..0x00C84C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
