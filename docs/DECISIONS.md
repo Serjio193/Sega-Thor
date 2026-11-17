@@ -12271,6 +12271,13 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.387: ROM Ali Item Drop Spawner, 8-Slot Allocation Probe, Input Ring Sampler & Master Button Dispatcher (0x007C3C..0x007E46)
+
+- Decoded item drop world entity allocation (`0x007C3C..0x007CC4`): spawns entity type 8 at player coordinates with 60-frame countdown (`+0x22 = 0x3C`), item ID (`+0x32`), sub-type (`+0x52`), initial state (`+0x4`), flag bit 0 in `+0x39`, and player transition to idle/walk `0x62CC`.
+- Decoded 8-slot entity allocation probe (`0x007D24..0x007D88`): scans slots at `$FF2ABC` (stride 90 bytes `0x5A`) against classification table `0x05CE16.l` and distance probe `0xE5AE`.
+- Decoded multi-frame input ring buffer sampler (`0x007D8A..0x007DC6`): samples up to `d0` frames from `$FF1668` with head wrap `& 0x7E`.
+- Decoded master player button dispatcher (`0x007DC8..0x007E46`): samples up to 5 recent frames and dispatches Jump (bit 6 -> `0x7E46`), Attack (bit 4 -> `0x7F82`), Latched attack (`$FF165E` bit 4 -> `0x7FB6`), and Spirit power (bit 5 -> `0x822C`).
+
 ## 2026-11-17 - Milestone M15.386: ROM Ali Item Pickup Dispatcher, Inventory Storage, Jewel Upgrades & Full-Bag Audio Rejection (0x007A28..0x007C3C)
 
 - Decoded item pickup category classifier (`0x007A28..0x007A68`): routes item ID `$FF1976` into weapons (`0x01..0x0C`), jewels/gems (`0x0D..0x10`), rank upgrade (`0x11`), spirit jewels (`0x12..0x15`), keys (`0x16..0x19`), or food/consumables (`0x1A..0x3F`).

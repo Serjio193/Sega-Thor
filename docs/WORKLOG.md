@@ -31418,6 +31418,18 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.387: ROM Ali Item Drop Spawner, 8-Slot Allocation Probe, Input Ring Sampler & Master Button Dispatcher (0x007C3C..0x007E46)
+
+- Decoded and tested item drop world entity allocation (`0x007C3C..0x007CC4`): spawns entity type 8 at player coordinates with 60-frame initial countdown (`+0x22 = 0x3C`), item ID (`+0x32`), sub-type (`+0x52`), initial state (`+0x4`), flag bit 0 in `+0x39`, and player transition to idle/walk `0x62CC`.
+- Decoded and tested drop rejection audio gate (`0x007CC6..0x007D22`): plays buzzer error SFX `#$C00255` with rejection state `0x3C` / anim `0x44`.
+- Decoded and tested 8-slot entity allocation probe (`0x007D24..0x007D88`): scans slots at `$FF2ABC` (stride 90 bytes `0x5A`) against classification table `0x05CE16.l` and distance probe `0xE5AE`.
+- Decoded and tested multi-frame input ring buffer sampler (`0x007D8A..0x007DC6`): samples up to `d0` frames from `$FF1668` with head wrap `& 0x7E`.
+- Decoded and tested master player button dispatcher (`0x007DC8..0x007E46`): samples up to 5 recent frames and dispatches Jump (bit 6 -> `0x7E46`), Attack (bit 4 -> `0x7F82`), Latched attack (`$FF165E` bit 4 -> `0x7FB6`), and Spirit power (bit 5 -> `0x822C`).
+- Extracted JSON evidence `data/thor-evidence/rom_ali_item_drop_button_dispatch_m15_387.json` (5 routines, 522 bytes).
+- Unit tests: `tests/rom_ali_item_drop_button_dispatch_test.py` (`5/5 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_387_ALI_ITEM_DROP_BUTTON_DISPATCH_HANDOFF.md`.
+- Next Step: Commit and push M15.387 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.386: ROM Ali Item Pickup Dispatcher, Inventory Storage, Jewel Upgrades & Full-Bag Audio Rejection (0x007A28..0x007C3C)
 
 - Decoded and tested item pickup category classifier (`0x007A28..0x007A68`): routes item ID `$FF1976` into weapons (`0x01..0x0C`), jewels/gems (`0x0D..0x10`), rank upgrade (`0x11`), spirit jewels (`0x12..0x15`), keys (`0x16..0x19`), or food/consumables (`0x1A..0x3F`).

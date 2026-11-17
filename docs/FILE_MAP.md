@@ -5330,6 +5330,10 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
 - docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).
 
+- tools/extract_rom_ali_item_drop_button_dispatch.py — M15.387 ROM Ali item drop spawner, 8-slot allocation probe, input sampler & button dispatcher extractor.
+- tests/rom_ali_item_drop_button_dispatch_test.py — M15.387 unit tests for item drop spawn, reject buzzer, allocation probe, and button dispatcher.
+- data/thor-evidence/rom_ali_item_drop_button_dispatch_m15_387.json — M15.387 evidence database.
+- docs/handoffs/STANDALONE_M15_387_ALI_ITEM_DROP_BUTTON_DISPATCH_HANDOFF.md — M15.387 C++20 Standalone handoff.
 - tools/extract_rom_ali_item_pickup_inventory.py — M15.386 ROM Ali item pickup dispatcher, inventory storage & jewel upgrades extractor.
 - tests/rom_ali_item_pickup_inventory_test.py — M15.386 unit tests for item pickup, weapon/food storage, spirit jewels, and full-bag reject.
 - data/thor-evidence/rom_ali_item_pickup_inventory_m15_386.json — M15.386 evidence database.

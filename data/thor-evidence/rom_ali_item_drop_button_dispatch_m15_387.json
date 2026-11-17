@@ -1,0 +1,41 @@
+{
+  "milestone": "M15.387",
+  "description": "ROM Ali Item Drop Spawner, 8-Slot Allocation Probe, Input Ring Sampler & Master Button Dispatcher",
+  "address_range": [
+    "0x007C3C",
+    "0x007E46"
+  ],
+  "byte_count": 522,
+  "routines": [
+    {
+      "name": "ali_item_drop_spawn",
+      "start": "0x007C3C",
+      "end": "0x007CC4",
+      "purpose": "Allocates world entity type 8 for item drop with 60-frame timer, clones player coordinates, and returns to idle/walk 0x62CC"
+    },
+    {
+      "name": "ali_item_drop_reject",
+      "start": "0x007CC6",
+      "end": "0x007D22",
+      "purpose": "Plays full bag / drop rejection buzzer SFX 0xC00255 with state 0x3C and anim 0x44"
+    },
+    {
+      "name": "ali_item_slot_probe",
+      "start": "0x007D24",
+      "end": "0x007D88",
+      "purpose": "Scans 8 entity slots at $FF2ABC (stride 90 bytes) against table 0x05CE16 to verify drop eligibility"
+    },
+    {
+      "name": "ali_input_ring_sample",
+      "start": "0x007D8A",
+      "end": "0x007DC6",
+      "purpose": "Samples and ORs composite button masks across d0 frames from input ring buffer at $FF1668 with wrap 0x7E"
+    },
+    {
+      "name": "ali_master_button_dispatcher",
+      "start": "0x007DC8",
+      "end": "0x007E46",
+      "purpose": "Evaluates 5 recent input frames and dispatches Jump (bit 6), Attack (bit 4), Latched Attack ($FF165E), and Spirit (bit 5)"
+    }
+  ]
+}
