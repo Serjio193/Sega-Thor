@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.325: ROM 1-BPP DIALOGUE GLYPH OUTLINER & 4-TILE VDP RASTERIZER (`0x00C222`..`0x00C2EA`) — `0x16C1CA` (28B), `18x16` Canvas, `0x0E` Outline, 128B 4-bpp; Extractor (`tools/extract_rom_glyph_outliner.py` <= 500 lines), Tests (`tests/rom_glyph_outliner_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_325_GLYPH_OUTLINER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00C222..0x00C2EA` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_glyph_outliner.py`, `python -m unittest tests/rom_glyph_outliner_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.325, check M16.103 status, and continue.
+
 # 2026-11-17 — Milestone M15.324: ROM INVENTORY/RING 4x4 GRID UI LAYOUT (`0x0042A6`..`0x004360`) — `(0x70, 0x40)` + 24px Pitch, 8 Slots `$FF0D80`, 9-Tile Icons `0x155D76`; Extractor (`tools/extract_rom_inventory_grid_ui.py` <= 500 lines), Tests (`tests/rom_inventory_grid_ui_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_324_INVENTORY_GRID_UI_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x0042A6..0x004360` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_inventory_grid_ui.py`, `python -m unittest tests/rom_inventory_grid_ui_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

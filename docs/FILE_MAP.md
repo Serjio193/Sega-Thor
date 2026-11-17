@@ -1,3 +1,9 @@
+# M15.325 ROM 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer
+- `tools/extract_rom_glyph_outliner.py` — ROM extractor & verifier for `0x00C222..0x00C2EA` (`0x16C1CA` 28B/glyph 1-bpp font, `18x16` scratch canvas `$FF3028`, 4-neighbor `0x0E` outline, 4-tile 4-bpp VDP packing `$FF2FA8`).
+- `tests/rom_glyph_outliner_test.py` — Unit tests verifying outline dilation and 4-bpp VDP tile packing.
+- `data/thor-evidence/rom_glyph_outliner_m15_325.json` — Verified evidence JSON for M15.325.
+- `docs/handoffs/STANDALONE_M15_325_GLYPH_OUTLINER_HANDOFF.md` — C++20 Standalone handoff for M16.109.
+
 # M15.324 ROM Inventory/Ring 4x4 Grid UI Layout
 - `tools/extract_rom_inventory_grid_ui.py` — ROM extractor & verifier for `0x0042A6..0x004360` (4x4 24px grid at `(0x70, 0x40)`, 8 inventory slots `$FF0D80`, 9 tiles/icon `0x155D76`, spirit `$FF0E50`, special `$FF0DB0`).
 - `tests/rom_inventory_grid_ui_test.py` — Unit tests verifying 4x4 grid slot coordinate mapping.
