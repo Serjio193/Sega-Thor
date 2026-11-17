@@ -1,3 +1,6 @@
+# M15.437 ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger (`0x00D2B4`..`0x00D3B2`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_vdp_scroll_builder.py`, `tests/rom_vdp_scroll_builder_test.py` (`5/5 PASS`), `data/thor-evidence/rom_vdp_scroll_builder_m15_437.json`, and `docs/handoffs/STANDALONE_M15_437_VDP_SCROLL_BUILDER_HANDOFF.md`.
+
 # M15.436 ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer (`0x00D146`..`0x00D2B4`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_scroll_integrator.py`, `tests/rom_scroll_integrator_test.py` (`5/5 PASS`), `data/thor-evidence/rom_scroll_integrator_m15_436.json`, and `docs/handoffs/STANDALONE_M15_436_SCROLL_INTEGRATOR_HANDOFF.md`.
 

@@ -1,3 +1,9 @@
+# M15.437 ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger
+- `tools/extract_rom_vdp_scroll_builder.py` — extractor for `0x00D2B4..0x00D3B2` (VDP horizontal and vertical scroll table generator, fullscreen/strip/scanline modes, and V-Int DMA sync commit).
+- `tests/rom_vdp_scroll_builder_test.py` — `5` unit tests verifying ROM constants, fullscreen scroll modes for Plane A and B, 16-px tile strip H-scroll table, 1-line scanline parallax table, and 2-cell column V-scroll table with DMA commit.
+- `data/thor-evidence/rom_vdp_scroll_builder_m15_437.json` — extracted M15.437 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_437_VDP_SCROLL_BUILDER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.436 ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer
 - `tools/extract_rom_scroll_integrator.py` — extractor for `0x00D146..0x00D2B4` (scroll delta integration, VDP Plane A ring-buffer tracking, tile strip dirty flagging, and toroidal modulo wrapping).
 - `tests/rom_scroll_integrator_test.py` — `5` unit tests verifying ROM constants, fixed-point and word accumulator entrypoints, horizontal delta and 512-px VDP scroll ring buffer, vertical delta and 256-px VDP scroll ring buffer, and toroidal coordinate normalization.
