@@ -1,3 +1,7 @@
+# M15.310 ROM Entity Animation Frame Sequencer & 8px-Step Collision (`0x008FE0`..`0x0090FC`) — COMPLETE / VERIFIED
+- Decoded 4-byte entity animation keyframe sequencer (`0x008FF0`: `frame_id`, `0x8000` last-frame bit, `>> 1` duration, `$37` bits `1/2/3`) and `0x009042` 16.16 physics + 8px-tile stepper (`0x00938E`).
+- Authored `tools/extract_rom_entity_anim_sequencer.py`, `tests/rom_entity_anim_sequencer_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_anim_sequencer_m15_310.json`, and `docs/handoffs/STANDALONE_M15_310_ENTITY_ANIM_SEQUENCER_HANDOFF.md`.
+
 # M15.309 ROM Room Tilemap & Collision Layer Builder (`0x00D500`..`0x00D7BF`) — COMPLETE / VERIFIED
 - Decoded room loader (`0x00D500`: `0x2000`-word tileset DMA to `0x0000`, `0x003820` decomp to `$FF3FA8`, 4-byte Plane A/B/Collision header, `0x00D7B0` `ctz(tiles_w*2)` row-shift helper).
 - Authored `tools/extract_rom_room_layer_loader.py`, `tests/rom_room_layer_loader_test.py` (`2/2 PASS`), `data/thor-evidence/rom_room_layer_loader_m15_309.json`, and `docs/handoffs/STANDALONE_M15_309_ROOM_LAYER_LOADER_HANDOFF.md`.

@@ -1,0 +1,22 @@
+{
+  "milestone": "M15.310",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "anim_sequencer": {
+    "entry_addr": "0x008FF0",
+    "keyframe_stride_bytes": 4,
+    "last_frame_bit_mask": "0x8000",
+    "duration_shift_right": 1,
+    "flag_bit_anim_completed": 1,
+    "flag_bit_last_frame": 2,
+    "flag_bit_swing_hit_once": 3,
+    "offset_timer_2e": "0x2E",
+    "offset_cursor_30": "0x30",
+    "offset_frame_id_32": "0x32",
+    "offset_combat_flags_37": "0x37"
+  },
+  "physics_stepper": {
+    "entry_addr": "0x009042",
+    "tile_step_pixels": 8,
+    "tile_probe_addr": "0x00938E"
+  }
+}

@@ -1,3 +1,7 @@
+# ADR-20261117-M15-310-ENTITY-ANIM-SEQUENCER — Entity Animation Frame Sequencer (`0x008FE0`..`0x0090FC`)
+- **Decision:** Model entity animation keyframe stepping in Standalone via `0x008FF0`'s 4-byte `(frame_id, flags_dur)` records (`0x8000` loop-end bit, `>> 1` duration ticks, `$37` bits `1/2/3`).
+- **Evidence:** Direct Capstone M68K disassembly of `0x008FE0..0x0090FC` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-309-ROOM-LAYER-LOADER — Room Tilemap & Collision Layer Builder (`0x00D500`..`0x00D7BF`)
 - **Decision:** Model room Plane A/B & collision buffer unpacking in Standalone via `0x00D500`'s 4-byte header (`<< 5` tiles, `0x00D7B0` `ctz(tiles_w*2)` row shift, bit-7 appended collision byte-grid).
 - **Evidence:** Direct Capstone M68K disassembly of `0x00D500..0x00D620` and `0x00D7B0..0x00D7BF` in `local-roms/Beyond Oasis (USA).md`.

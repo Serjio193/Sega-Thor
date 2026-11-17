@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.310: ROM ENTITY ANIMATION FRAME SEQUENCER (`0x008FE0`..`0x0090FC`) — 4B Keyframes, `0x8000` Loop End, 8px Stepper; Extractor (`tools/extract_rom_entity_anim_sequencer.py` <= 500 lines), Tests (`tests/rom_entity_anim_sequencer_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_310_ENTITY_ANIM_SEQUENCER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x008FE0..0x0090FC` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_entity_anim_sequencer.py` and `python tests/rom_entity_anim_sequencer_test.py` (2/2 PASS).
+- Next: Commit & push M15.310, await M16.93 completion, and continue.
+
 # 2026-11-17 — Milestone M15.309: ROM ROOM TILEMAP & COLLISION LAYER BUILDER (`0x00D500`..`0x00D7BF`) — `0x2000`W Tileset, 4B Header -> Plane A/B/Col; Extractor (`tools/extract_rom_room_layer_loader.py` <= 500 lines), Tests (`tests/rom_room_layer_loader_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_309_ROOM_LAYER_LOADER_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00D500..0x00D620` and `0x00D7B0..0x00D7BF` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_room_layer_loader.py` and `python tests/rom_room_layer_loader_test.py` (2/2 PASS).

@@ -1,3 +1,9 @@
+# M15.310 ROM Entity Animation Frame Sequencer & 8px-Step Collision
+- `tools/extract_rom_entity_anim_sequencer.py` — Extracts 4-byte anim keyframe sequencer (`0x008FF0`) & 8px-step collision stepper (`0x009042`).
+- `tests/rom_entity_anim_sequencer_test.py` — Unit tests verifying keyframe wrap/completion flags and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_entity_anim_sequencer_m15_310.json` — Extracted entity anim sequencer evidence.
+- `docs/handoffs/STANDALONE_M15_310_ENTITY_ANIM_SEQUENCER_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.309 ROM Room Tilemap & Collision Layer Builder
 - `tools/extract_rom_room_layer_loader.py` — Extracts room header unpacking (`0x00D500`) & `0x00D7B0` row-shift helper.
 - `tests/rom_room_layer_loader_test.py` — Unit tests verifying 4-byte room header offsets and JSON artifact (`2/2 PASS`).
