@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.100: Room & Area Transition Loader)
+- **Concrete Task**: Implement `src/game/world/room_area_loader.hpp/.cpp` with the 16-entry Area Pointer Table (`0x00C92C..0x00C96B`), `resolve_room_header_addr(rom, area_ptrs, room_id)` (`0x00C90E..0x00C92A`: `entry_addr + int16_be`), and `transition_room_flags(state, new_room_id)` (`0x00C8AA..0x00C90C`: 16B `$FF0E2C` room flags, 16B `$FF0E1C` area flags + 3B `$FF0DB3` extra, `$FF0E40`); add `tests/m16_100_room_area_loader_test.cpp`; qualify full 60-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/room_area_loader.hpp` / `src/game/world/room_area_loader.cpp`.
+  * Added `tests/m16_100_room_area_loader_test.cpp` (registered as `oasis_m16_100_room_area_loader` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 60/60 regression run.
+  * MSVC Debug (`build-debug`): 60/60 regression run.
+  * Remaining unknowns: Replacing hardcoded area pointer lookups in `town_scene_loader.cpp` with `resolve_room_header_addr()` is deferred to future world-loader unification.
+
 # Worklog — 2026-11-17 (M16.99: Z80-Safe VDP DMA Executor & HUD Portrait DMA)
 - **Concrete Task**: Implement `src/game/video/vdp_dma_exec.hpp/.cpp` with `VdpDmaDescriptor`, `VdpDmaCommandSequence`, `serialize_vdp_dma_commands()` (`0x0027FC..0x002896`: regs `0x94`, `0x93`, `0x95`, `0x96`, `0x97`, VRAM DMA command `((vram_dst & 0x3FFF) | 0x4000)` / `((vram_dst >> 14) & 3) | 0x80`), and `HudPortraitDmaState` / `build_hud_portrait_dma()` (`0x002632..0x002678`: `0x000AA3EC + portrait * 0x60` -> VRAM `0xF1C0`, `0x60` words); add `tests/m16_99_vdp_dma_exec_test.cpp`; qualify full 59-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

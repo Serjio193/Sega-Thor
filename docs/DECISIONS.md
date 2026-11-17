@@ -1,3 +1,14 @@
+# ADR-20261117-M16-100-ROOM-AREA-LOADER — Room & Area Transition Loader
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.316 extracted the 16-entry Area Pointer Table (`0x00C92C..0x00C96B`), `get_room_header` (`0x00C90E..0x00C92A`: `entry + int16_be`), and `load_room_and_jump` (`0x00C8AA..0x00C90C`: room/area flag clearing and `$FF0E40` update).
+
+**Decisions:**
+1. **Dedicated `room_area_loader` Module:**
+   - Added `src/game/world/room_area_loader.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-99-VDP-DMA-EXEC — Z80-Safe VDP DMA Executor & HUD Portrait DMA
 **Status:** Accepted
 **Date:** 2026-11-17

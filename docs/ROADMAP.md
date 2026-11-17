@@ -1,3 +1,9 @@
+# M16.100 Room & Area Transition Loader (`0x00C8AA..0x00C96B`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `kAreaTablePointers` (`0x00C92C..0x00C96B`), `resolve_room_header_addr` (`0x00C90E..0x00C92A`), and `transition_room_flags` (`0x00C8AA..0x00C90C`) in `src/game/world/room_area_loader.hpp/.cpp`.
+- Qualified `oasis_m16_100_room_area_loader` (including `0x001B -> 0x0002E1D8` ROM parity) and full 60-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.99 Z80-Safe VDP DMA Executor & HUD Portrait DMA (`0x002632..0x002678`, `0x0027A6..0x002896`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
