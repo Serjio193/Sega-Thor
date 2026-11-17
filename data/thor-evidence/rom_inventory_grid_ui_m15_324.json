@@ -1,0 +1,27 @@
+{
+  "milestone": "M15.324",
+  "title": "ROM Inventory/Ring 4x4 Grid UI Layout",
+  "routines": {
+    "grid_slot_to_xy": {
+      "start": "0x0042A6",
+      "end": "0x0042D0"
+    },
+    "render_inventory_grid": {
+      "start": "0x0042E8",
+      "end": "0x004360"
+    }
+  },
+  "constants": {
+    "grid_origin_x": 112,
+    "grid_origin_y": 64,
+    "cell_pitch_px": 24,
+    "grid_cols": 4,
+    "inventory_slots": 8,
+    "icon_tile_stride": 9,
+    "icon_y_bias": 24,
+    "icon_rom_base": "0x00155D76",
+    "inventory_ram": "0x00FF0D80",
+    "spirit_slot_ram": "0x00FF0E50",
+    "special_slot_ram": "0x00FF0DB0"
+  }
+}

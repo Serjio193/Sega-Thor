@@ -1,3 +1,9 @@
+# M15.324 ROM Inventory/Ring 4x4 Grid UI Layout
+- `tools/extract_rom_inventory_grid_ui.py` — ROM extractor & verifier for `0x0042A6..0x004360` (4x4 24px grid at `(0x70, 0x40)`, 8 inventory slots `$FF0D80`, 9 tiles/icon `0x155D76`, spirit `$FF0E50`, special `$FF0DB0`).
+- `tests/rom_inventory_grid_ui_test.py` — Unit tests verifying 4x4 grid slot coordinate mapping.
+- `data/thor-evidence/rom_inventory_grid_ui_m15_324.json` — Verified evidence JSON for M15.324.
+- `docs/handoffs/STANDALONE_M15_324_INVENTORY_GRID_UI_HANDOFF.md` — C++20 Standalone handoff for M16.108.
+
 # M15.323 ROM Player Tile-Box Containment & Overlap Checks
 - `tools/extract_rom_player_tile_box.py` — ROM extractor & verifier for `0x00C17A..0x00C220` (Ali `$FF19E8` AABB containment and overlap against 8px tile boxes with `+7px` max bias).
 - `tests/rom_player_tile_box_test.py` — Unit tests verifying containment and overlap boundary cases.

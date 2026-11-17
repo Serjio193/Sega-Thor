@@ -1,3 +1,4 @@
+# M15.324 ROM Inventory/Ring 4x4 Grid UI Layout (`0x0042A6`..`0x004360`) — COMPLETE / VERIFIED
 # M15.323 ROM Player Tile-Box Containment & Overlap Checks (`0x00C17A`..`0x00C220`) — COMPLETE / VERIFIED
 # M15.322 ROM Inventory/Menu Sprite & Font DMA Strip Emitter (`0x004000`..`0x00417A`) — COMPLETE / VERIFIED
 # M15.321 ROM Room Height-Band Table Builder & Tileset Chunk Loader (`0x00D344`..`0x00D4FE`) — COMPLETE / VERIFIED

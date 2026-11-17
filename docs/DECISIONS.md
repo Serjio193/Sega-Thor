@@ -1,3 +1,8 @@
+# ADR-20261117-M15-324-INVENTORY-GRID-UI — Inventory/Ring 4x4 Grid UI Layout (`0x0042A6`..`0x004360`)
+- **Context:** The pause/ring inventory menu maps slot indices `0..15` onto a 24x24px 4x4 grid starting at `(112, 64)`, rendering 8 weapon/item slots (`$FF0D80`, 9 tiles each from `0x155D76`) plus spirit (`$FF0E50`) and special (`$FF0DB0`) slots.
+- **Decision:** Extracted the grid geometry and RAM/ROM pointers into `data/thor-evidence/rom_inventory_grid_ui_m15_324.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.108 can lay out inventory/ring UI icons with exact screen coordinates.
+
 # ADR-20261117-M15-323-PLAYER-TILE-BOX — Player Tile-Box Containment & Overlap Checks (`0x00C17A`..`0x00C220`)
 - **Context:** Trigger zones test Ali's AABB (`0x08` X, `0x0C` Y, `0x46` half-extent at `$FF19E8`) against 8px tile boxes `[tx1*8, tx2*8+7] x [ty1*8, ty2*8+7]` for full containment (`0x00C17A`) or overlap (`0x00C1CE`).
 - **Decision:** Extracted both routines' offsets and `+7px` inclusive bias (`0x00070007`) into `data/thor-evidence/rom_player_tile_box_m15_323.json` with 2/2 passing tests and Standalone handoff.

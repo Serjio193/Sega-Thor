@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.324: ROM INVENTORY/RING 4x4 GRID UI LAYOUT (`0x0042A6`..`0x004360`) — `(0x70, 0x40)` + 24px Pitch, 8 Slots `$FF0D80`, 9-Tile Icons `0x155D76`; Extractor (`tools/extract_rom_inventory_grid_ui.py` <= 500 lines), Tests (`tests/rom_inventory_grid_ui_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_324_INVENTORY_GRID_UI_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x0042A6..0x004360` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_inventory_grid_ui.py`, `python -m unittest tests/rom_inventory_grid_ui_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.324, await M16.103 completion, and continue.
+
 # 2026-11-17 — Milestone M15.323: ROM PLAYER TILE-BOX CONTAINMENT & OVERLAP CHECKS (`0x00C17A`..`0x00C220`) — `$FF19E8` AABB vs `8px + 7` Tile Box; Extractor (`tools/extract_rom_player_tile_box.py` <= 500 lines), Tests (`tests/rom_player_tile_box_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_323_PLAYER_TILE_BOX_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00C17A..0x00C220` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_player_tile_box.py`, `python -m unittest tests/rom_player_tile_box_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
