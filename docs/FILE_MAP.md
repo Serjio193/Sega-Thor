@@ -1,3 +1,9 @@
+# M15.413 ROM Shadow & Special Effects SAT Composition Pass
+- `tools/extract_rom_shadow_sat_pass.py` — extractor for `0x00A6A0..0x00A7E6` (shadow and special effects sprite pass, shadow flag filtering bit 2 of `$3A`, descending-Y selection sort, and VDP SAT terminator).
+- `tests/rom_shadow_sat_pass_test.py` — `4` unit tests verifying ROM constants, shadow flag filtering, descending-Y sorting order, and custom SAT target selection.
+- `data/thor-evidence/rom_shadow_sat_pass_m15_413.json` — extracted M15.413 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_413_SHADOW_SAT_PASS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.412 ROM Pass B Master SAT Dispatcher & Cache Mask Reuse
 - `tools/extract_rom_pass_b_sat_dispatcher.py` — extractor for `0x00A524..0x00A69A` (Pass B master sprite composition, cached active mask reuse `$FF188E.l`, descending-Y selection sorting, and VDP SAT link terminator).
 - `tests/rom_pass_b_sat_dispatcher_test.py` — `4` unit tests verifying ROM constants, cached mask filtering, descending-Y sorting order, and render target selection.

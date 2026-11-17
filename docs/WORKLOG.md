@@ -1,3 +1,11 @@
+# 2026-11-17 — Milestone M15.413: ROM SHADOW & SPECIAL EFFECTS SAT COMPOSITION PASS (`0x00A6A0`..`0x00A7E6`) — Dedicated Shadow/Reflection Pass, Bit 2 of `$3A` Shadow Gate, Group 2 Descending-Y Shadow Sorter & SAT Link Terminator `$FF13CC`; Extractor (`tools/extract_rom_shadow_sat_pass.py` <= 500 lines), Tests (`tests/rom_shadow_sat_pass_test.py` 4/4 PASS), Handoff (`docs/handoffs/STANDALONE_M15_413_SHADOW_SAT_PASS_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00A6A0..0x00A7E6` (`local-roms/Beyond Oasis (USA).md`) and verified:
+  * `0x00A6A0..0x00A6C2`: Group 1 shadow scan (4 slots of 90 bytes at `$FF2954`; checks `type > 0` and shadow flag `btst.b #2, $3a(a6)`; dispatches to `$AD76`/`$A9A0` if set).
+  * `0x00A6C6..0x00A738`: Group 2 shadow depth sorter (21 slots of 188 bytes at `$FF19E8`; builds active mask in `d7` filtering for `(flags_3a & 0x04) != 0`; selection sorts active shadow slots by descending Y coordinate `+0x0C(a6)`).
+  * `0x00A73C..0x00A768`: Group 4 and Group 3 shadow scans (`$FF2ABC` 8 slots, `$FF2D8C` 6 slots).
+  * `0x00A76C..0x00A784`: VDP SAT link terminator (loads SAT buffer at `$FF13CC`; writes link terminator `0` to `-5(a6, d7.w)`).
+- Verification: `python tools/extract_rom_shadow_sat_pass.py`, `python -m unittest tests.rom_shadow_sat_pass_test` (`4/4 PASS`), `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
 # 2026-11-17 — Milestone M15.412: ROM PASS B MASTER SAT DISPATCHER & CACHE MASK REUSE (`0x00A524`..`0x00A69A`) — Post-Allocation Sprite Pass, Reused Active Mask Cache `$FF188E.l`, Descending-Y Selection Sort & SAT Link Terminator `$FF13CC`; Extractor (`tools/extract_rom_pass_b_sat_dispatcher.py` <= 500 lines), Tests (`tests/rom_pass_b_sat_dispatcher_test.py` 4/4 PASS), Handoff (`docs/handoffs/STANDALONE_M15_412_PASS_B_SAT_DISPATCHER_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00A524..0x00A69A` (`local-roms/Beyond Oasis (USA).md`) and verified:
   * `0x00A524..0x00A538`: Group 1 render scan (4 slots of 90 bytes at `$FF2954`; if `type != 0`, dispatches to `$AD76` or `$A9A0`).

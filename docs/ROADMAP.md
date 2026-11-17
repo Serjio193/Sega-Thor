@@ -1,3 +1,6 @@
+# M15.413 ROM Shadow & Special Effects SAT Composition Pass (`0x00A6A0`..`0x00A7E6`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_shadow_sat_pass.py`, `tests/rom_shadow_sat_pass_test.py` (`4/4 PASS`), `data/thor-evidence/rom_shadow_sat_pass_m15_413.json`, and `docs/handoffs/STANDALONE_M15_413_SHADOW_SAT_PASS_HANDOFF.md`.
+
 # M15.412 ROM Pass B Master SAT Dispatcher & Cache Mask Reuse (`0x00A524`..`0x00A69A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_pass_b_sat_dispatcher.py`, `tests/rom_pass_b_sat_dispatcher_test.py` (`4/4 PASS`), `data/thor-evidence/rom_pass_b_sat_dispatcher_m15_412.json`, and `docs/handoffs/STANDALONE_M15_412_PASS_B_SAT_DISPATCHER_HANDOFF.md`.
 
