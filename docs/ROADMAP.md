@@ -1,3 +1,6 @@
+# M15.441 ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer (`0x00D7C0`..`0x00D9A4`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_visible_plane_streamer.py`, `tests/rom_visible_plane_streamer_test.py` (`5/5 PASS`), `data/thor-evidence/rom_visible_plane_streamer_m15_441.json`, and `docs/handoffs/STANDALONE_M15_441_VISIBLE_PLANE_STREAMER_HANDOFF.md`.
+
 # M15.440 ROM Dual Tilemap Plane Header Unpacker, VRAM Plane A/B Layout Configurator, Stride Shift Calculator & Full Plane Initializer (`0x00D542`..`0x00D7C0`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dual_plane_loader.py`, `tests/rom_dual_plane_loader_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dual_plane_loader_m15_440.json`, and `docs/handoffs/STANDALONE_M15_440_DUAL_PLANE_LOADER_HANDOFF.md`.
 

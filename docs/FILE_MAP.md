@@ -1,3 +1,9 @@
+# M15.441 ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer
+- `tools/extract_rom_visible_plane_streamer.py` — extractor for `0x00D7C0..0x00D9A4` (visible tile bounds calculation, toroidal wrapping, VDP row write commands, visible tile streaming, and 40x28 blank tile clearer).
+- `tests/rom_visible_plane_streamer_test.py` — `5` unit tests verifying ROM constants, streamer context zeroing, active bit test and blank branch, VDP command calculations, and blank fill tile dimensions.
+- `data/thor-evidence/rom_visible_plane_streamer_m15_441.json` — extracted M15.441 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_441_VISIBLE_PLANE_STREAMER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.440 ROM Dual Tilemap Plane Header Unpacker, VRAM Plane A/B Layout Configurator, Stride Shift Calculator & Full Plane Initializer
 - `tools/extract_rom_dual_plane_loader.py` — extractor for `0x00D542..0x00D7C0` (dual tilemap plane unpacking, VRAM Plane A/B layout configuration, log2 stride calculation, hardware scroll clears, initial visible tile uploads, palette load, and camera limits).
 - `tests/rom_dual_plane_loader_test.py` — `5` unit tests verifying ROM constants, Plane A/B layout, hardware scroll clears, camera limit formulas, and log2 byte stride shift exponent simulation.
