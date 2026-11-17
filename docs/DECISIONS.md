@@ -1,3 +1,34 @@
+# ADR-20261117-M16-144-MASTER-FRAME-SEQUENCER — ROM Master Gameplay Frame Sequencer, Screen Shake Dispatcher & Joypad Menu Hotkeys (0x008AA6..0x008C5A)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.395 extracted ROM routines `0x008AA6..0x008C5A` governing the central gameplay frame sequencer loop, screen shake/flash dispatcher, and joypad menu hotkeys:
+   - `0x008AA6..0x008B8C`: `master_frame_sequencer`:
+     * Checks demo state flags `$FF1996` (active) and `$FF1997` (playing), returning `ExitToTitle` (`0x002934`) when demo finishes.
+     * Increments global 32-bit tick `$FF0D76` by 2 and 8-bit animation sub-tick `$FF1971` by 1.
+     * Synchronizes with V-Int timer `$FF1654`, acknowledges sync via `$FF164D` bit 3, increments frame count `$FF199C`, sets countdown to 2.
+     * Evaluates slow-motion flag `$FF17B8` bit 0, extending countdown to 3.
+     * Orchestrates 15-phase execution pipeline in exact ROM sequence: Pause Menu (`0xA4C8`), Joypad Poll (`0x8BAC`), Screen Shake (`0x8B8E`), Event VM (`0xF788`), Dialogue (`0x557A`), Mana (`0xDEEC`), Weapon (`0xE0BA`), Hazards (`0xE0F4`), Player (`0x8E22`), Entities (`0x8E90`), GC (`0x8DD4`), Camera (`0xC998`), Plane Scroll (`0xC980`), Demo Enemy Gauge clear (`$FF184F = 0`), and SAT Compose (`0xA196`).
+   - `0x008B8E..0x008BAA`: `screen_shake_dispatcher`:
+     * Reads `$FF1864` trigger byte, testing and clearing bit 7.
+     * If bit 7 was clear: dispatches to Palette Flash handler (`0x00530C`).
+     * If bit 7 was set: dispatches to Earthquake Screen Shake handler (`0x007CC6`).
+   - `0x008BAC..0x008C58`: `joypad_menu_hotkeys`:
+     * Tests button release mask `0x70` in `$FF165E` (Buttons A, B, C); on all released, resets key repeat `$FF19A7 = 0xFF` and clears input ring count `$FF16EA = 0`.
+     * Tests input locks `$FF1987`, `$FF17B8` bit 2, `$FF1983`, `$FF1982`; aborts without opening menu if any lock is active.
+     * Start button (`$FF165F` bit 7): triggers Pause Menu (`0x003B3E`) with `$FF185E = 0`.
+     * 6-button controller (`$FF1660`) hotkeys:
+       - Mode button (bit 2): triggers Map/Status screen (`$FF185E = 3`).
+       - Extra button 1 (bit 1): triggers Item ring menu (`$FF185E = 1`) when Ali sub-state <= 2 and spirit idle (`$FF1A6E == 0`).
+       - Extra button 0 (bit 0): triggers Weapon ring menu (`$FF185E = 2`) when Ali sub-state <= 2 and spirit idle (`$FF1A6E == 0`).
+
+**Decisions:**
+1. **Dedicated `master_frame_sequencer` Module:**
+   - Added `src/game/player/master_frame_sequencer.hpp/.cpp` modeling `step_gameplay_frame`, `dispatch_screen_shake`, `poll_joypad_menu_hotkeys`, and `GameplayFrameState`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-143-ALI-RAPID-TRIPLETAP-DEMO — ROM Ali Rapid-Mash, Triple-Tap Motion Detectors & Demo Stream Table (0x008910..0x008AA6)
 **Status:** Accepted
 **Date:** 2026-11-17

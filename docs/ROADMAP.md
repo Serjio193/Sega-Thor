@@ -1,3 +1,12 @@
+# M16.144 ROM Master Gameplay Frame Sequencer, Screen Shake Dispatcher & Joypad Menu Hotkeys (`0x008AA6..0x008C5A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_gameplay_frame`, `dispatch_screen_shake`, `poll_joypad_menu_hotkeys`, and `GameplayFrameState` in `src/game/player/master_frame_sequencer.hpp/.cpp`:
+  - Master frame sequencer: checks demo flags `$FF1996`/`$FF1997`, advances global tick `$FF0D76 += 2` and animation subtick `$FF1971 += 1`, synchronizes V-Int frame tick with `$FF164D` bit 3 and frame count `$FF199C`, handles slow-motion `$FF17B8` bit 0, and orchestrates 15-phase gameplay pipeline.
+  - Screen shake dispatcher: reads `$FF1864`, clears trigger bit 7, routing to palette flash (`0x530C`) when bit 7 was clear or earthquake screen shake (`0x7CC6`) when bit 7 was set.
+  - Joypad menu hotkeys: tests release mask `0x70` in `$FF165E` to reset key repeat `$FF19A7 = 0xFF` and clear ring count `$FF16EA = 0`, evaluates input locks (`$FF1987`, `$FF17B8` bit 2, `$FF1983`, `$FF1982`), handles Start button Pause Menu (`$FF185E = 0`), and 6-button controller hotkeys (Mode -> Map `$FF185E = 3`, Item Ring `$FF185E = 1`, Weapon Ring `$FF185E = 2` with Ali substate <= 2 and spirit idle guards).
+- Qualified `oasis_m16_144_master_frame_sequencer` and the 125-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.143 ROM Ali Rapid-Mash, Triple-Tap Motion Detectors & Demo Stream Table (`0x008910..0x008AA6`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
