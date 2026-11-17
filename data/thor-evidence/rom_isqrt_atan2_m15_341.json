@@ -1,0 +1,39 @@
+{
+  "milestone": "M15.341",
+  "title": "ROM Integer Square Root & 256-Step atan2 Angle LUT",
+  "routines": {
+    "isqrt_u32": {
+      "start": "0x00E6BA",
+      "end": "0x00E6EE"
+    },
+    "atan2_to_point": {
+      "start": "0x00E6F0",
+      "end": "0x00E704"
+    },
+    "atan2_to_player": {
+      "start": "0x00E706",
+      "end": "0x00E766"
+    },
+    "atan_octant_lut": {
+      "start": "0x00E768",
+      "end": "0x00E78C"
+    }
+  },
+  "tangent_lut_0x05D906": [
+    "0x0019",
+    "0x004E",
+    "0x0089",
+    "0x00D2",
+    "0x0138",
+    "0x01DF",
+    "0x034C",
+    "0x0A27",
+    "0xFFFF"
+  ],
+  "constants": {
+    "isqrt_guess_cap": 1024,
+    "angle_step": 8,
+    "angle_90_deg": 64,
+    "angle_180_deg": 128
+  }
+}

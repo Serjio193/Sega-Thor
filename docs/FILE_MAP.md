@@ -1,3 +1,9 @@
+# M15.341 ROM Integer Square Root & 256-Step atan2 Angle LUT
+- `tools/extract_rom_isqrt_atan2.py` — ROM extractor & verifier for `0x00E6BA..0x00E78C` & `0x0005D906` (Heron `isqrt_u32` with `0x0400` cap, 9-word tangent LUT, 256-step `atan2` in 8-unit increments).
+- `tests/rom_isqrt_atan2_test.py` — Unit tests verifying `isqrt_u32` and all 4 quadrants of `atan2_256`.
+- `data/thor-evidence/rom_isqrt_atan2_m15_341.json` — Verified evidence JSON for M15.341.
+- `docs/handoffs/STANDALONE_M15_341_ISQRT_ATAN2_HANDOFF.md` — C++20 Standalone handoff for M16.125.
+
 # M15.340 ROM Ali Attack Action & Weapon-Class State Dispatcher
 - `tools/extract_rom_ali_attack_dispatch.py` — ROM extractor & verifier for `0x008002..0x00814C` (dagger/sword/bow/bomb attack anim & state dispatch, air-kick `0x40`/`0x38`, bow SFX `0x00600377`).
 - `tests/rom_ali_attack_dispatch_test.py` — Unit tests verifying weapon-class attack dispatch.

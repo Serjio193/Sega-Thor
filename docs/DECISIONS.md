@@ -1,3 +1,8 @@
+# ADR-20261117-M15-341-ISQRT-ATAN2 — Integer Square Root & 256-Step atan2 Angle LUT (`0x00E6BA`..`0x00E78C`, `0x05D906`)
+- **Context:** Fixed-point distance and homing/targeting routines use `0x00E6BA` (Heron's `isqrt_u32` with initial guess `min(val, 0x0400)`) and `0x00E6F0`/`0x00E706` (`0..255` `atan2` in steps of `8` via 9-word tangent LUT `0x0005D906`).
+- **Decision:** Extracted the 9-word tangent LUT and quadrant-folding rules into `data/thor-evidence/rom_isqrt_atan2_m15_341.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.125 can compute deterministic integer square roots and 32-direction `atan2` angles with exact parity.
+
 # ADR-20261117-M15-340-ALI-ATTACK-DISPATCH — Ali Attack Action & Weapon-Class State Dispatcher (`0x008002`..`0x00814C`)
 - **Context:** Ali's attack trigger (`0x008002`) switches on weapon class `$FF0D7E` (`0x0A` dagger/air-kick, `0x0C` sword slash/thrust/spin, `0x0E` bow/hyper-bow with `0x00600377`, `0x10` bomb throw) and projectile lock `$FF1B60`.
 - **Decision:** Extracted all `(anim, state)` pairs and SFX constants into `data/thor-evidence/rom_ali_attack_dispatch_m15_340.json` with 2/2 passing tests and Standalone handoff.

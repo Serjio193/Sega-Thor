@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.341: ROM INTEGER SQUARE ROOT & 256-STEP ATAN2 ANGLE LUT (`0x00E6BA`..`0x00E78C`, `0x05D906`) — Heron `isqrt`, 9w Tan LUT, 32-Dir `atan2`; Extractor (`tools/extract_rom_isqrt_atan2.py` <= 500 lines), Tests (`tests/rom_isqrt_atan2_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_341_ISQRT_ATAN2_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00E6BA..0x00E78C` and extracted 9-word LUT `0x0005D906` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_isqrt_atan2.py`, `python -m unittest tests/rom_isqrt_atan2_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.341, check M16.113 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.340: ROM ALI ATTACK ACTION & WEAPON-CLASS STATE DISPATCHER (`0x008002`..`0x00814C`) — Dagger/Sword/Bow/Bomb `(anim, state)` & Air-Kick; Extractor (`tools/extract_rom_ali_attack_dispatch.py` <= 500 lines), Tests (`tests/rom_ali_attack_dispatch_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_340_ALI_ATTACK_DISPATCH_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x008002..0x00814C` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_ali_attack_dispatch.py`, `python -m unittest tests/rom_ali_attack_dispatch_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
