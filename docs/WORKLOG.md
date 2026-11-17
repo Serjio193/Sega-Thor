@@ -1,3 +1,15 @@
+# Worklog — 2026-11-17 (M16.124: Ali Attack Action & Weapon-Class State Dispatcher)
+- **Concrete Task**: Implement `src/game/player/ali_attack_dispatch.hpp/.cpp` with `dispatch_ali_attack(...)` (`0x008002..0x00814C`: ground attack dispatch `0x008002..0x0080D4` and airborne attack dispatch `0x0080D8..0x00814C` for dagger `0x0A`, sword `0x0C`, bow `0x0E`, bomb `0x10`; sword thrust on D-pad, sword spin, bow normal/hyper item 8 + SFX `0x00600377`, bomb throw, active projectile lockout `$FF1B60`, airborne air-kick `0x40`/`0x38` with 21f stun, airborne sword spin, and input ring clearance `$FF16EA=0`) and `dispatch_ground_attack(...)`; add `tests/m16_124_ali_attack_dispatch_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/player/ali_attack_dispatch.hpp` / `src/game/player/ali_attack_dispatch.cpp`.
+  * Added `tests/m16_124_ali_attack_dispatch_test.cpp` (registered as `oasis_m16_124_ali_attack_dispatch` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 105/105 tests passed (`ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): 105/105 tests passed (`ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: `ali_attack_dispatch.hpp` (73 lines), `ali_attack_dispatch.cpp` (112 lines), `m16_124_ali_attack_dispatch_test.cpp` (123 lines), `CMakeLists.txt` (259 lines), `project_tests_m16.cmake` (393 lines) <= 500 lines.
+  * Remaining unknowns: Integrating `dispatch_ali_attack()` directly into `PlayerActionMachine` primary attack tick (`0x005580` / `0x007FD4`) is deferred to live-player input integration.
+
 # Worklog — 2026-11-17 (M16.123: Entity Camera-Viewport Culler & Airborne Landing)
 - **Concrete Task**: Implement `src/game/entities/viewport_culler_landing.hpp/.cpp` with `step_airborne_move_and_land(...)` (`0x00E522..0x00E5AC`, reusing `step_z_gravity()` from `ai_steering_gravity.hpp`: XY integration, idle spin, `15`-frame landing stun `0x9A=0x0F` + thud SFX `0x00800270`, grounded codes `0`/`3`), `is_offscreen_with_z(...)` (`0x00E5AE..0x00E60E`), `is_offscreen_ground(...)` (`0x00E610..0x00E66C`: `320x224 + margin`), and `copy_entity_struct_0xbc(...)` (`0x00E66E..0x00E67E`: `94` words / `0xBC` bytes); add `tests/m16_123_viewport_culler_landing_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/player/ali_attack_dispatch.hpp` / `src/game/player/ali_attack_dispatch.cpp`: Ali attack action & weapon-class state dispatcher (`0x008002..0x00814C`: ground & airborne attacks for dagger `0x0A`, sword `0x0C`, bow `0x0E`, bomb `0x10`, 21f air-kick stun, bow SFX `0x00600377`, input ring clear) (M16.124).
+- `tests/m16_124_ali_attack_dispatch_test.cpp`: Automated M16.124 test qualifying ground/airborne attack dispatch, sword thrust/spin, bow normal/hyper fire & SFX, bomb throw, active projectile guard, and air-kick stun (M16.124).
 - `src/game/entities/viewport_culler_landing.hpp` / `src/game/entities/viewport_culler_landing.cpp`: Airborne XY integration & `15`-frame landing stun / `0x00800270` thud (`0x00E522..0x00E5AC`, reusing `step_z_gravity()`), `320x224 + margin` viewport cullers (`0x00E5AE..0x00E66C`), and `94`-word `0xBC` entity struct copy (`0x00E66E..0x00E67E`) (M16.123).
 - `tests/m16_123_viewport_culler_landing_test.cpp`: Automated M16.123 test qualifying airborne XY/spin, landing stun & thud SFX, grounded codes `0`/`3`, `320x224 + margin` cullers, and `0xBC` struct copy (M16.123).
 - `src/game/player/weapon_equip_summon.hpp` / `src/game/player/weapon_equip_summon.cpp`: Spirit summon trigger (`0x007E9E..0x007EC2`: state `0x14`, SFX `0x00900359`) and weapon quick-equip class mapper (`0x007EC4..0x007F80`: `0x0A`/`0x0C`/`0x0E`/`0x10`, 60f toast, `0x00C0025D`/`0x00A00253`), reusing `secondary_weapon.hpp` (M16.122).

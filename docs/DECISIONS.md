@@ -1,3 +1,14 @@
+# ADR-20261117-M16-124-ALI-ATTACK-DISPATCH — Ali Attack Action & Weapon-Class State Dispatcher
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.340 extracted `0x008002..0x00814C`: ground attack dispatch (`0x008002..0x0080D4`) and airborne attack dispatch (`0x0080D8..0x00814C`) for weapon classes `0x0A` (Dagger), `0x0C` (Sword), `0x0E` (Bow), and `0x10` (Bomb).
+
+**Decisions:**
+1. **Dedicated `ali_attack_dispatch` Module:**
+   - Added `src/game/player/ali_attack_dispatch.hpp/.cpp` modeling attack animations/states (`0x3A`/`0x0A` dagger ground, `0x40`/`0x38` dagger air kick with 21f stun, `0x4E`/`0x46` sword slash, `0x60`/`0x54` sword thrust, `0x66`/`0x5C` sword spin, `0x54`/`0x4C` bow fire with SFX `0x00600377`, `0x5C`/`0x4C` hyper bow, `0x58`/`0x50` bomb throw), projectile active check (`$FF1B60`), and input ring clearance.
+
 # ADR-20261117-M16-123-VIEWPORT-CULLER-LANDING — Entity Camera-Viewport Culler & Airborne Landing
 **Status:** Accepted
 **Date:** 2026-11-17

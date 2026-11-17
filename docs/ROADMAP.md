@@ -1,3 +1,9 @@
+# M16.124 Ali Attack Action & Weapon-Class State Dispatcher (`0x008002..0x00814C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `dispatch_ali_attack` and `dispatch_ground_attack` in `src/game/player/ali_attack_dispatch.hpp/.cpp` covering ground/airborne weapon-class state transitions (`0x3A`/`0x0A` dagger ground, `0x40`/`0x38` dagger air kick with 21f stun, `0x4E`/`0x46` sword slash, `0x60`/`0x54` sword thrust, `0x66`/`0x5C` sword spin, `0x54`/`0x4C` bow fire with SFX `0x00600377`, `0x5C`/`0x4C` hyper bow, `0x58`/`0x50` bomb throw), active projectile lockout (`$FF1B60`), and input ring clearance.
+- Qualified `oasis_m16_124_ali_attack_dispatch` and the 105-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.123 Entity Camera-Viewport Culler & Airborne Landing (`0x00E522..0x00E67E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
