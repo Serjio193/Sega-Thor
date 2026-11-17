@@ -1,3 +1,14 @@
+# ADR-20261117-M16-91-ENTITY-POOL-ALLOCATORS — WRAM Entity, Effect & Projectile Pool Allocators
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.307 extracted the 4 fixed-stride WRAM allocators (`0x00D9BE` `Effect8`, `0x00D9F0` `Special6`, `0x00DA1A` `FullEntity18`, `0x00DA2A` `EnemyEntity17`) and `$FF184F` stale-HUD invalidation on enemy slot reuse.
+
+**Decisions:**
+1. **Dedicated `entity_pool_allocators` Module:**
+   - Added `src/game/entities/entity_pool_allocators.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-90-VDP-CLEAR-AND-PALETTE-CYCLE — VDP Full Clear, Armlet Glow & CRAM Palette Cycler
 **Status:** Accepted
 **Date:** 2026-11-17

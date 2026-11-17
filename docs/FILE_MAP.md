@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/entities/entity_pool_allocators.hpp` / `src/game/entities/entity_pool_allocators.cpp`: 4 fixed-stride WRAM entity/effect pool allocators (`Effect8` `$FF2ABC`, `Special6` `$FF2D8C`, `FullEntity18` `$FF1C1C`, `EnemyEntity17` `$FF1CD8`, `0x0694 + idx * 9`, `$FF184F` HUD invalidation) (M16.91).
+- `tests/m16_91_entity_pool_allocators_test.cpp`: Automated M16.91 test qualifying pool capacities, RAM addresses, Effect8 VRAM tiles, and `$FF184F` invalidation on slot reuse (M16.91).
 - `src/game/video/vdp_clear_and_palette_cycle.hpp` / `src/game/video/vdp_clear_and_palette_cycle.cpp`: VDP Full Clear table (`0x002B28`), Armlet Glow state machine (`0x008DD4`), and CRAM Palette Cycler (`0x008E22`) (M16.90).
 - `tests/m16_90_vdp_clear_and_palette_cycle_test.cpp`: Automated M16.90 test qualifying 6 VDP clear regions, armlet glow ramp/pulse/decay, and CRAM keyframe cycling (M16.90).
 - `src/game/entities/solid_entity_sweep.hpp` / `src/game/entities/solid_entity_sweep.cpp`: 3D AABB solid entity `+X` sweep (`0x009DD6`, 21-slot `$FF19E8` stride `0xBC`, `$40` bit 7, `3`-frame `$6C` push timer, `+1px` pushable nudge) (M16.89).

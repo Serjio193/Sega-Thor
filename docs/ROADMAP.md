@@ -1,3 +1,9 @@
+# M16.91 WRAM Entity, Effect & Projectile Pool Allocators (`0x00D9BE..0x00DA60`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `ObjectPoolKind`, `AllocatedSlot`, and `EntityPoolAllocators` (`Effect8`, `Special6`, `FullEntity18`, `EnemyEntity17`, `0x0694 + idx * 9` VRAM tiles, `$FF184F` stale-HUD invalidation) in `src/game/entities/entity_pool_allocators.hpp/.cpp`.
+- Qualified `oasis_m16_91_entity_pool_allocators` and full 51-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.90 VDP Full Clear, Armlet Glow & CRAM Palette Cycler (`0x002B28`, `0x008DD4..0x008E8E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

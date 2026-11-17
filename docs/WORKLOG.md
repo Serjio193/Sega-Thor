@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.91: WRAM Entity, Effect & Projectile Pool Allocators)
+- **Concrete Task**: Implement `src/game/entities/entity_pool_allocators.hpp/.cpp` with `ObjectPoolKind` (`Effect8`, `Special6`, `FullEntity18`, `EnemyEntity17`), `AllocatedSlot` (`pool`, `index`, `ram_addr`, `vram_tile`), and `EntityPoolAllocators` (capacities `8`/`6`/`18`/`17`, `$FF2ABC`/`$FF2D8C`/`$FF1C1C`/`$FF1CD8`, strides `0x5A`/`0xBC`, Effect8 VRAM tile `0x0694 + idx * 9`, `$FF184F` invalidation when reused enemy slot matches `$FF1850`); add `tests/m16_91_entity_pool_allocators_test.cpp`; qualify full 51-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/entities/entity_pool_allocators.hpp` / `src/game/entities/entity_pool_allocators.cpp`.
+  * Added `tests/m16_91_entity_pool_allocators_test.cpp` (registered as `oasis_m16_91_entity_pool_allocators` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 51/51 regression run.
+  * MSVC Debug (`build-debug`): 51/51 regression run.
+  * Remaining unknowns: Connecting `EntityPoolAllocators` directly to `EntityConstructorState` / `ScreenEntity` spawn/despawn lifecycle is deferred to future entity-pool unification.
+
 # Worklog — 2026-11-17 (M16.90: VDP Full Clear, Armlet Glow & CRAM Palette Cycler)
 - **Concrete Task**: Implement `src/game/video/vdp_clear_and_palette_cycle.hpp/.cpp` with `VdpClearRegion` & `kVdpClearRegions` (`0x002B28`: HScroll `0xDC00`, VSRAM `40` words, Tile `0` `0x0000`, SAT `0xD000`, Plane A `0xC000`, Plane B `0xE000`, DMA Fill `0x8F01`/`0x9780`), `step_armlet_glow(glow, spirit_active, timer_ff199e, pulse_ff199f)` (`0x008DD4`), and `PaletteCycleEntry` / `PaletteCycler::step_frame(cram_shadow)` (`0x008E22`); add `tests/m16_90_vdp_clear_and_palette_cycle_test.cpp`; qualify full 50-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
