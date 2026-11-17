@@ -1,3 +1,8 @@
+# ADR-20261117-M15-334-HUD-SAT-EMITTER — HUD Frame SAT & Item-Toast DMA Emitter (`0x00A342`..`0x00A436`)
+- **Context:** Every render frame (`0x00A342`) emits 6 primary HUD sprites (`+$FF185A`), 3 enemy-gauge sprites mirrored at `0x0158 - $FF185A`, and an item-use toast (`0x85C7` at `($FF185A + 0x68, 0x0118)`) with `0x90`-word icon DMA (`0x000AAEBB` -> `0xB8E0`).
+- **Decision:** Extracted all SAT offsets, mirror constants, and DMA addresses into `data/thor-evidence/rom_hud_sat_emitter_m15_334.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.118 can emit HUD & item-toast SAT/DMA state with exact hardware parity.
+
 # ADR-20261117-M15-333-YSORT-SAT-PIPELINE — Master Y-Sorted SAT Render Pipeline (`0x00A196`..`0x00A27E`)
 - **Context:** Mega Drive SAT draws lower-index sprites on top, so `0x00A196` emits 4 high-priority FX (`$FF2954`), 4 hit-sparks (`$FF19C8`), 21 entities (`$FF19E8`) sorted by descending Y (`> -1`), 8 ground FX (`$FF2ABC`), and 6 floor FX (`$FF2D8C`).
 - **Decision:** Extracted all 5 pass buffers, counts, strides, and Y-sort sentinel into `data/thor-evidence/rom_ysort_sat_pipeline_m15_333.json` with 2/2 passing tests and Standalone handoff.

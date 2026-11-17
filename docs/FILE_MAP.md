@@ -1,3 +1,9 @@
+# M15.334 ROM HUD Frame SAT & Item-Toast DMA Emitter
+- `tools/extract_rom_hud_sat_emitter.py` — ROM extractor & verifier for `0x00A342..0x00A436` (6 primary HUD sprites, 3 mirrored enemy-gauge sprites at `0x0158 - slide_x`, item-toast sprite `0x85C7` + `0x90`-word DMA `0x000AAEBB` -> `0xB8E0`).
+- `tests/rom_hud_sat_emitter_test.py` — Unit tests verifying HUD mirror math and toast DMA offset.
+- `data/thor-evidence/rom_hud_sat_emitter_m15_334.json` — Verified evidence JSON for M15.334.
+- `docs/handoffs/STANDALONE_M15_334_HUD_SAT_EMITTER_HANDOFF.md` — C++20 Standalone handoff for M16.118.
+
 # M15.333 ROM Master Y-Sorted SAT Render Pipeline
 - `tools/extract_rom_ysort_sat_pipeline.py` — ROM extractor & verifier for `0x00A196..0x00A27E` (5-pass SAT pipeline: 4 high-prio FX `$FF2954`, 4 hit-sparks `$FF19C8`, 21 Y-sorted entities `$FF19E8`, 8 ground FX `$FF2ABC`, 6 floor FX `$FF2D8C`).
 - `tests/rom_ysort_sat_pipeline_test.py` — Unit tests verifying descending-Y entity sort and `-1` Y sentinel.

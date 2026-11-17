@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.334: ROM HUD FRAME SAT & ITEM-TOAST DMA EMITTER (`0x00A342`..`0x00A436`) — 6 HUD + 3 Enemy (`0x0158-X`) + Toast `0x85C7` (`0x000AAEBB`->`0xB8E0`); Extractor (`tools/extract_rom_hud_sat_emitter.py` <= 500 lines), Tests (`tests/rom_hud_sat_emitter_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_334_HUD_SAT_EMITTER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00A342..0x00A436` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_hud_sat_emitter.py`, `python -m unittest tests/rom_hud_sat_emitter_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.334, check M16.109 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.333: ROM MASTER Y-SORTED SAT RENDER PIPELINE (`0x00A196`..`0x00A27E`) — 5 Passes, 21 Entities Descending-Y (`> -1`); Extractor (`tools/extract_rom_ysort_sat_pipeline.py` <= 500 lines), Tests (`tests/rom_ysort_sat_pipeline_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_333_YSORT_SAT_PIPELINE_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00A196..0x00A27E` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_ysort_sat_pipeline.py`, `python -m unittest tests/rom_ysort_sat_pipeline_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

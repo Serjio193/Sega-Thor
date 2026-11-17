@@ -1,0 +1,21 @@
+{
+  "milestone": "M15.334",
+  "title": "ROM HUD Frame SAT & Item-Toast DMA Emitter",
+  "routine": {
+    "start": "0x00A342",
+    "end": "0x00A436"
+  },
+  "constants": {
+    "primary_hud_sprite_count": 6,
+    "enemy_gauge_sprite_count": 3,
+    "enemy_mirror_base_x": "0x0158",
+    "toast_sprite_y": "0x0118",
+    "toast_sprite_size_hi": "0x0A",
+    "toast_sprite_tile": "0x85C7",
+    "toast_sprite_x_bias": "0x0068",
+    "toast_icon_rom_base": "0x000AAEBB",
+    "toast_icon_stride": "0x0090",
+    "toast_icon_vram_dst": "0xB8E0",
+    "toast_icon_dma_words": "0x0090"
+  }
+}
