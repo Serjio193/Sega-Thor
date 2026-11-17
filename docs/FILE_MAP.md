@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/menu_sprite_dma.hpp` / `src/game/ui/menu_sprite_dma.cpp`: Inventory/menu sprite & font DMA strip emitter (`0x004000..0x00417A`, `kSpriteTileCountLut16` `0x0040CE`, `remap_menu_ascii`, `append_menu_sat_sprite` 80-sprite cap, `emit_item_and_digit_pair` `0x86DD`/`0x85D0`, `emit_font_strip_plan` `<= 4`-tile chunks + `0x152F5A`/`0x15375A` DMA descriptors) (M16.106).
+- `tests/m16_106_menu_sprite_dma_test.cpp`: Automated M16.106 test qualifying `kSpriteTileCountLut16`, ASCII remap (`0x2B..0x2F`), `<= 4`-tile font strip chunking, and item/digit SAT pair with 80-sprite cap (M16.106).
 - `src/game/world/room_height_tileset.hpp` / `src/game/world/room_height_tileset.cpp`: Room height-band table builder (`0x00D43A..0x00D46A`, `0xF000` sentinel), 8px camera quantization (`0x00D48A..0x00D4C4`), and VScroll buffer flush (`0x00D344..0x00D396`) (M16.105).
 - `tests/m16_105_room_height_tileset_test.cpp`: Automated M16.105 test qualifying height-band tables, 8px quantization, and `$FFFF5C`/`$FF1348` VScroll flush (M16.105).
 - `src/game/world/plane_scroll_sync.hpp` / `src/game/world/plane_scroll_sync.cpp`: Plane scroll delta & VDP H/V-scroll buffer sync (`0x00D188..0x00D342`: 8px tile crossings, `0x1FF`/`0xFF` wrap, `±10000` anti-overflow, `wrap_camera_to_map_bounds`, `flush_hscroll_to_vdp_buffer`) (M16.104).

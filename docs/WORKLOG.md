@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.106: Inventory/Menu Sprite & Font DMA Strip Emitter)
+- **Concrete Task**: Implement `src/game/ui/menu_sprite_dma.hpp/.cpp` with the 16-byte sprite-tile-count LUT `kSpriteTileCountLut16` (`0x0040CE`: `{1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16}`), `remap_menu_ascii(ch)` (`0x2B..0x2F` -> `+0x30`), `append_menu_sat_sprite()` (`0x004066..0x0040A4`: `+0x80` bias, 80-sprite cap), `emit_item_and_digit_pair()` (`0x004026..0x00405C`: `0x86DD` icon + `0x85D0 + min(qty, 9)` digit at `Y + 16`), and `emit_font_strip_plan()` (`0x0040E2..0x004156`: `<= 4`-tile horizontal SAT chunks + 16-word glyph DMA descriptors from `0x152F5A` / `0x15375A`); add `tests/m16_106_menu_sprite_dma_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/menu_sprite_dma.hpp` / `src/game/ui/menu_sprite_dma.cpp`.
+  * Added `tests/m16_106_menu_sprite_dma_test.cpp` (registered as `oasis_m16_106_menu_sprite_dma` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `87/87` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `87/87` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `emit_font_strip_plan()` and `emit_item_and_digit_pair()` directly into `RingMenuState` and live menu VDP DMA submission is deferred to future menu-UI unification.
+
 # Worklog — 2026-11-17 (M16.105: Room Height-Band Table Builder & Tileset Chunk Loader)
 - **Concrete Task**: Implement `src/game/world/room_height_tileset.hpp/.cpp` with `build_height_band_tables()` (`0x00D43A..0x00D46A`: 4 signed band bytes -> `band_steps_4w` `$FF16FE` + `height_lut_8w` `$FF1706` with `0xF000` sentinel at index 7), `quantize_camera_pos()` (`0x00D48A..0x00D4C4`: `max(0, x & ~7)`), and `flush_vscroll_to_vdp_buffer()` (`0x00D344..0x00D396`: `$FFFF5C` 20-col / `$FF1348` full-screen); add `tests/m16_105_room_height_tileset_test.cpp`; qualify full 65-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

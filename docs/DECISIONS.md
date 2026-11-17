@@ -1,3 +1,14 @@
+# ADR-20261117-M16-106-MENU-SPRITE-DMA — Inventory/Menu Sprite & Font DMA Strip Emitter
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.322 extracted `0x004000..0x00417A`: 16-byte sprite-tile-count LUT (`0x0040CE`), `remap_menu_ascii` (`0x2B..0x2F` -> `+0x30`), `append_menu_sat_sprite` (`+0x80` bias, 80-sprite cap), `emit_item_and_digit_pair` (`0x86DD` + `0x85D0 + min(qty, 9)` at `Y + 16`), and `emit_font_strip_plan` (`<= 4`-tile horizontal SAT chunks + `0x152F5A`/`0x15375A` glyph DMA chunks).
+
+**Decisions:**
+1. **Dedicated `menu_sprite_dma` Module:**
+   - Added `src/game/ui/menu_sprite_dma.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-105-ROOM-HEIGHT-TILESET — Room Height-Band Table Builder & Tileset Chunk Loader
 **Status:** Accepted
 **Date:** 2026-11-17

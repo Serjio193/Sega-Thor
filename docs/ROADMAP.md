@@ -1,3 +1,9 @@
+# M16.106 Inventory/Menu Sprite & Font DMA Strip Emitter (`0x004000..0x00417A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `kSpriteTileCountLut16` (`0x0040CE`), `remap_menu_ascii` (`0x2B..0x2F` -> `+0x30`), `append_menu_sat_sprite` (`0x004066..0x0040A4`, `+0x80` bias, 80-sprite cap), `emit_item_and_digit_pair` (`0x004026..0x00405C`, `0x86DD` + `0x85D0 + min(qty, 9)` at `Y + 16`), and `emit_font_strip_plan` (`0x0040E2..0x004156`, `<= 4`-tile horizontal SAT chunks + `0x152F5A`/`0x15375A` glyph DMA chunks) in `src/game/ui/menu_sprite_dma.hpp/.cpp`.
+- Qualified `oasis_m16_106_menu_sprite_dma` and the 87-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.105 Room Height-Band Table Builder & Tileset Chunk Loader (`0x00D344..0x00D4FE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
