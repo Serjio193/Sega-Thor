@@ -1,3 +1,7 @@
+# M15.311 ROM Wrap-Around VDP Plane Blitter (`0x00D800`..`0x00D94E`) — COMPLETE / VERIFIED
+- Decoded dual-modulo wrap-around VDP Plane A/B blitter (`0x00D800`: `64x32` full-plane vs `41x29` viewport selection, `0x80` row bytes, `0x1000` plane bytes).
+- Authored `tools/extract_rom_vdp_plane_blitter.py`, `tests/rom_vdp_plane_blitter_test.py` (`2/2 PASS`), `data/thor-evidence/rom_vdp_plane_blitter_m15_311.json`, and `docs/handoffs/STANDALONE_M15_311_VDP_PLANE_BLITTER_HANDOFF.md`.
+
 # M15.310 ROM Entity Animation Frame Sequencer & 8px-Step Collision (`0x008FE0`..`0x0090FC`) — COMPLETE / VERIFIED
 - Decoded 4-byte entity animation keyframe sequencer (`0x008FF0`: `frame_id`, `0x8000` last-frame bit, `>> 1` duration, `$37` bits `1/2/3`) and `0x009042` 16.16 physics + 8px-tile stepper (`0x00938E`).
 - Authored `tools/extract_rom_entity_anim_sequencer.py`, `tests/rom_entity_anim_sequencer_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_anim_sequencer_m15_310.json`, and `docs/handoffs/STANDALONE_M15_310_ENTITY_ANIM_SEQUENCER_HANDOFF.md`.

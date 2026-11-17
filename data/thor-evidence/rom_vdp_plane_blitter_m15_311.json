@@ -1,0 +1,15 @@
+{
+  "milestone": "M15.311",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "vdp_plane_blitter": {
+    "entry_addr": "0x00D800",
+    "viewport_cols": 41,
+    "viewport_rows": 29,
+    "full_plane_cols": 64,
+    "full_plane_rows": 32,
+    "vdp_nametable_cols": 64,
+    "vdp_nametable_rows": 32,
+    "vdp_row_bytes": 128,
+    "vdp_plane_bytes": 4096
+  }
+}

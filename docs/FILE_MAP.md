@@ -1,3 +1,9 @@
+# M15.311 ROM Wrap-Around VDP Plane Blitter
+- `tools/extract_rom_vdp_plane_blitter.py` — Extracts `41x29` / `64x32` VDP plane blitter dimensions & wrap constants (`0x00D800`).
+- `tests/rom_vdp_plane_blitter_test.py` — Unit tests verifying blitter dimensions and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_vdp_plane_blitter_m15_311.json` — Extracted VDP plane blitter evidence.
+- `docs/handoffs/STANDALONE_M15_311_VDP_PLANE_BLITTER_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.310 ROM Entity Animation Frame Sequencer & 8px-Step Collision
 - `tools/extract_rom_entity_anim_sequencer.py` — Extracts 4-byte anim keyframe sequencer (`0x008FF0`) & 8px-step collision stepper (`0x009042`).
 - `tests/rom_entity_anim_sequencer_test.py` — Unit tests verifying keyframe wrap/completion flags and JSON artifact (`2/2 PASS`).
