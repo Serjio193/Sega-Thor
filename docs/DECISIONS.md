@@ -1,3 +1,7 @@
+# ADR-20261117-M15-356-WEAPON-DURABILITY-DPAD — Weapon Durability Decrement & 16-Way D-Pad Velocity (`0x008530`..`0x0086B2`)
+- **Context:** Ali's special-weapon durability consumption (`0x008530`, auto-reverting to Dagger `id=1` with SFX `0x00C00269`), `$FF0E3C > $FF1A70` threshold reset (`0x0085C4`), and 16-state D-pad movement velocity/facing table (`0x0085E2..0x0086B2`) drive core player control and weapon persistence.
+- **Decision:** Extract the exact 16-entry D-pad velocity/facing table (`±0x36000`/`±0x30000` cardinal, `±0x2A000`/`±0x25800` diagonal) and weapon durability revert state writes into `tools/extract_rom_weapon_durability_dpad.py` and `docs/handoffs/STANDALONE_M15_356_WEAPON_DURABILITY_DPAD_HANDOFF.md`.
+
 # ADR-20261117-M15-355-HIT-APPLY-SPARK — Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark (`0x00BE98`..`0x00C0BC`)
 - **Context:** `0x00BE98..0x00C0BC` implements the shared hit-resolution callbacks (`0x00BE98` / `0x00BEBA`) used by M15.354, including opposite-facing shield deflect (`+0x6D`, SFX `0x00900202`), the 4-tier knockback jump table at `0x00BF26`, and the 4-slot `$FF19C8` hit-spark spawner (`0x00C012`).
 - **Decision:** Capture the enemy gauge latch (`$FF184F=0x5A`), guard deflect branch, 4 knockback velocity profiles (`0x300/0x2C0`, `0/0+0x70000`, `0x400/0x3C0+0x28000`, `0x700/0x680+0x30000`), and clamped AABB intersection midpoint spark placement in `tools/extract_rom_hit_apply_spark.py` and `docs/handoffs/STANDALONE_M15_355_HIT_APPLY_SPARK_HANDOFF.md`.

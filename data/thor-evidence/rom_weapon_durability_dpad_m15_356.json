@@ -1,0 +1,152 @@
+{
+  "milestone": "M15.356",
+  "rom_range": "0x008530..0x0086B2",
+  "weapon_durability_decrement": {
+    "addr": "0x008530..0x0085C2",
+    "equipped_slot_addr": "0xFF0DB0",
+    "inventory_table_addr": "0xFF0D80",
+    "consumable_id_min": 2,
+    "consumable_id_max": 12,
+    "infinite_durability": 255,
+    "revert_weapon_id": 1,
+    "revert_timer_word": 10,
+    "hud_toast_timer": 90,
+    "break_sfx_id": "0x00C00269"
+  },
+  "threshold_reset_guard": {
+    "addr": "0x0085C4..0x0085E0",
+    "value_addr": "0xFF0E3C",
+    "limit_addr": "0xFF1A70",
+    "tripped_flag_addr": "0xFF0DBB"
+  },
+  "dpad_velocity_table": [
+    {
+      "pad_nibble": 0,
+      "target_addr": "0x00861A",
+      "moving": false,
+      "facing": null,
+      "vx": 0,
+      "vy": 0
+    },
+    {
+      "pad_nibble": 1,
+      "target_addr": "0x008654",
+      "moving": true,
+      "facing": 0,
+      "vx": 0,
+      "vy": -196608
+    },
+    {
+      "pad_nibble": 2,
+      "target_addr": "0x008644",
+      "moving": true,
+      "facing": 2,
+      "vx": 0,
+      "vy": 196608
+    },
+    {
+      "pad_nibble": 3,
+      "target_addr": "0x00861A",
+      "moving": false,
+      "facing": null,
+      "vx": 0,
+      "vy": 0
+    },
+    {
+      "pad_nibble": 4,
+      "target_addr": "0x008634",
+      "moving": true,
+      "facing": 3,
+      "vx": -221184,
+      "vy": 0
+    },
+    {
+      "pad_nibble": 5,
+      "target_addr": "0x0086A0",
+      "moving": true,
+      "facing": 0,
+      "vx": -172032,
+      "vy": -153600
+    },
+    {
+      "pad_nibble": 6,
+      "target_addr": "0x00868C",
+      "moving": true,
+      "facing": 2,
+      "vx": -172032,
+      "vy": 153600
+    },
+    {
+      "pad_nibble": 7,
+      "target_addr": "0x008634",
+      "moving": true,
+      "facing": 3,
+      "vx": -221184,
+      "vy": 0
+    },
+    {
+      "pad_nibble": 8,
+      "target_addr": "0x008624",
+      "moving": true,
+      "facing": 1,
+      "vx": 221184,
+      "vy": 0
+    },
+    {
+      "pad_nibble": 9,
+      "target_addr": "0x008678",
+      "moving": true,
+      "facing": 0,
+      "vx": 172032,
+      "vy": -153600
+    },
+    {
+      "pad_nibble": 10,
+      "target_addr": "0x008664",
+      "moving": true,
+      "facing": 2,
+      "vx": 172032,
+      "vy": 153600
+    },
+    {
+      "pad_nibble": 11,
+      "target_addr": "0x008624",
+      "moving": true,
+      "facing": 1,
+      "vx": 221184,
+      "vy": 0
+    },
+    {
+      "pad_nibble": 12,
+      "target_addr": "0x00861A",
+      "moving": false,
+      "facing": null,
+      "vx": 0,
+      "vy": 0
+    },
+    {
+      "pad_nibble": 13,
+      "target_addr": "0x008654",
+      "moving": true,
+      "facing": 0,
+      "vx": 0,
+      "vy": -196608
+    },
+    {
+      "pad_nibble": 14,
+      "target_addr": "0x008644",
+      "moving": true,
+      "facing": 2,
+      "vx": 0,
+      "vy": 196608
+    },
+    {
+      "pad_nibble": 15,
+      "target_addr": "0x00861A",
+      "moving": false,
+      "facing": null,
+      "vx": 0,
+      "vy": 0
+    }
+  ]
+}

@@ -1,3 +1,9 @@
+# M15.356 ROM Weapon Durability Decrement & 16-Way D-Pad Velocity
+- `tools/extract_rom_weapon_durability_dpad.py` — extractor for `0x008530..0x0086B2` (`$FF0D80` weapon durability decrement & Dagger revert, `$FF0E3C > $FF1A70` guard, `0x0085FA` 16-way D-pad 16.16 fixed-point velocity table).
+- `tests/rom_weapon_durability_dpad_test.py` — `2` unit tests verifying ROM 16-way D-pad velocity vectors and weapon durability/revert rules.
+- `data/thor-evidence/rom_weapon_durability_dpad_m15_356.json` — extracted M15.356 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_356_WEAPON_DURABILITY_DPAD_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.355 ROM Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark
 - `tools/extract_rom_hit_apply_spark.py` — extractor for `0x00BE98..0x00C0BC` (`$FF184F` enemy gauge latch, `+0x6D` shield deflect, `0x00BF26` 4-way knockback table, `$FF19C8` 4-slot hit-spark spawner).
 - `tests/rom_hit_apply_spark_test.py` — `2` unit tests verifying ROM jump-table targets, knockback tiers, and 3D intersection midpoint calculation.

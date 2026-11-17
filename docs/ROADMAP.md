@@ -1,3 +1,6 @@
+# M15.356 ROM Weapon Durability Decrement, Threshold Reset & 16-Way D-Pad Velocity (`0x008530`..`0x0086B2`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_weapon_durability_dpad.py`, `tests/rom_weapon_durability_dpad_test.py` (`2/2 PASS`), `data/thor-evidence/rom_weapon_durability_dpad_m15_356.json`, and `docs/handoffs/STANDALONE_M15_356_WEAPON_DURABILITY_DPAD_HANDOFF.md`.
+
 # M15.355 ROM Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark (`0x00BE98`..`0x00C0BC`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_hit_apply_spark.py`, `tests/rom_hit_apply_spark_test.py` (`2/2 PASS`), `data/thor-evidence/rom_hit_apply_spark_m15_355.json`, and `docs/handoffs/STANDALONE_M15_355_HIT_APPLY_SPARK_HANDOFF.md`.
 
