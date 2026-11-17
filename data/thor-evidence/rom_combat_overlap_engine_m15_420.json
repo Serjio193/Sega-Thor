@@ -1,0 +1,53 @@
+{
+  "subsystem": "ROM Entity 3D AABB Combat Overlap & Multi-Pool Collision Iterator Engine",
+  "milestone": "M15.420",
+  "rom_range": {
+    "start": "0x00B79A",
+    "end": "0x00BAAC",
+    "size_bytes": 786,
+    "sha256": "44c804a30d0386394e13b5e7f573de8be1cbb17e39f064e89aac1f8be05f67c0"
+  },
+  "routines": {
+    "directional_hitbox_scanner": {
+      "start": "0x00B79A",
+      "exit": "0x00B850",
+      "facing_modes": {
+        "0_down": "clear d2 (forward Y)",
+        "1_up": "clear d3 (backward Y)",
+        "2_right": "clear d4 (rightward X)",
+        "3_left": "clear d1 (leftward X)"
+      },
+      "target_filters": {
+        "invulnerable_mask": "0x0C on +0x38(a0)",
+        "status_bit": "bit 0 on +0x3A(a0)",
+        "hit_cooldown": "+0x82(a0)",
+        "self_damage_check": "+0x7E(a6) vs a0",
+        "hit_register": "addi.b #1, +0x82(a0)"
+      }
+    },
+    "group2_aabb_scanner": {
+      "start": "0x00B856",
+      "hit_exit": "0x00B910",
+      "resume_find_next": "0x00B912",
+      "pool_address": "0x00FF19E8",
+      "slot_count": 21,
+      "stride": 188,
+      "context_buffer": "0x00FF194A..0x00FF196A"
+    },
+    "group2_3d_interval_scanner": {
+      "start": "0x00B922",
+      "hit_exit": "0x00B9DC",
+      "resume_find_next": "0x00B9DE",
+      "pool_address": "0x00FF19E8",
+      "z_interval": "[d5, d6]"
+    },
+    "group4_aabb_scanner": {
+      "start": "0x00B9EC",
+      "hit_exit": "0x00BA9A",
+      "resume_find_next": "0x00BA9C",
+      "pool_address": "0x00FF2ABC",
+      "slot_count": 8,
+      "stride": 90
+    }
+  }
+}

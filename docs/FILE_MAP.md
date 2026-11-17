@@ -1,3 +1,9 @@
+# M15.420 ROM Entity 3D AABB Combat Overlap & Multi-Pool Collision Iterator Engine
+- `tools/extract_rom_combat_overlap_engine.py` — extractor for `0x00B79A..0x00BAAC` (directional attack hitbox generator, target vulnerability filters, Group 2 3D AABB scanner, Group 4 breakables scanner, and iterator context buffer `$FF194A`).
+- `tests/rom_combat_overlap_engine_test.py` — `6` unit tests verifying ROM constants, facing direction hitbox formulas, target immunity filters, Group 2 and Group 4 pool structures, and 3D AABB overlap logic.
+- `data/thor-evidence/rom_combat_overlap_engine_m15_420.json` — extracted M15.420 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_420_COMBAT_OVERLAP_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.419 ROM Entity Special Dynamic FX Halo, Swirl & SAT Piece Compositor Subsystem (Part 2)
 - `tools/extract_rom_dynamic_fx_renderer_p2.py` — extractor for `0x00B56E..0x00B79A` (bit 2 halo emitter, bit 1 swirl emitter, universal FX piece blitter 0x055E, and raw piece blitter).
 - `tests/rom_dynamic_fx_renderer_p2_test.py` — `5` unit tests verifying ROM constants, halo bit clear, swirl Y offset, universal FX blitter, and raw piece blitter.

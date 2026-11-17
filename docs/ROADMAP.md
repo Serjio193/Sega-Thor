@@ -1,3 +1,6 @@
+# M15.420 ROM Entity 3D AABB Combat Overlap & Multi-Pool Collision Iterator Engine (`0x00B79A`..`0x00BAAC`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_combat_overlap_engine.py`, `tests/rom_combat_overlap_engine_test.py` (`6/6 PASS`), `data/thor-evidence/rom_combat_overlap_engine_m15_420.json`, and `docs/handoffs/STANDALONE_M15_420_COMBAT_OVERLAP_ENGINE_HANDOFF.md`.
+
 # M15.419 ROM Entity Special Dynamic FX Halo, Swirl & SAT Piece Compositor Subsystem (Part 2: `0x00B56E`..`0x00B79A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dynamic_fx_renderer_p2.py`, `tests/rom_dynamic_fx_renderer_p2_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dynamic_fx_renderer_p2_m15_419.json`, and `docs/handoffs/STANDALONE_M15_419_DYNAMIC_FX_RENDERER_P2_HANDOFF.md`.
 
