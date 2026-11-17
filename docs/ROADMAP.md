@@ -1,3 +1,6 @@
+# M15.442 ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers (`0x00D9A4`..`0x00DB1A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_alloc_sound_dispatch.py`, `tests/rom_entity_alloc_sound_dispatch_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_alloc_sound_dispatch_m15_442.json`, and `docs/handoffs/STANDALONE_M15_442_ENTITY_ALLOC_SOUND_DISPATCH_HANDOFF.md`.
+
 # M15.441 ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer (`0x00D7C0`..`0x00D9A4`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_visible_plane_streamer.py`, `tests/rom_visible_plane_streamer_test.py` (`5/5 PASS`), `data/thor-evidence/rom_visible_plane_streamer_m15_441.json`, and `docs/handoffs/STANDALONE_M15_441_VISIBLE_PLANE_STREAMER_HANDOFF.md`.
 

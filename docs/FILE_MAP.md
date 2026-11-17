@@ -1,3 +1,9 @@
+# M15.442 ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers
+- `tools/extract_rom_entity_alloc_sound_dispatch.py` — extractor for `0x00D9A4..0x00DB1A` (projectile pool allocation, spark pool allocation, general entity slot searches, NPC spawning, and sound driver track control).
+- `tests/rom_entity_alloc_sound_dispatch_test.py` — `5` unit tests verifying ROM constants, projectile pool slot indexing, spark pool bounds, general entity pools (18/17 slots), NPC spawn fields, and sound command parameters.
+- `data/thor-evidence/rom_entity_alloc_sound_dispatch_m15_442.json` — extracted M15.442 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_442_ENTITY_ALLOC_SOUND_DISPATCH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.441 ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer
 - `tools/extract_rom_visible_plane_streamer.py` — extractor for `0x00D7C0..0x00D9A4` (visible tile bounds calculation, toroidal wrapping, VDP row write commands, visible tile streaming, and 40x28 blank tile clearer).
 - `tests/rom_visible_plane_streamer_test.py` — `5` unit tests verifying ROM constants, streamer context zeroing, active bit test and blank branch, VDP command calculations, and blank fill tile dimensions.
