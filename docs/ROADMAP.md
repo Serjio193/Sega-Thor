@@ -1,3 +1,7 @@
+# M15.308 ROM 16-Bit LFSR PRNG & Bounded Random Helpers (`0x00E268`..`0x00E2D3`) — COMPLETE / VERIFIED
+- Decoded 16-bit LFSR PRNG (`0x00E268`, seed `0x7F28` at `$FF1928`, 4 shifts/call with `rol16(d0, 2) ^ d0` tap) and bounded helpers (`0x00E2A2` u16, `0x00E2BA` u8).
+- Authored `tools/extract_rom_prng_lfsr.py`, `tests/rom_prng_lfsr_test.py` (`2/2 PASS`), `data/thor-evidence/rom_prng_lfsr_m15_308.json`, and `docs/handoffs/STANDALONE_M15_308_PRNG_LFSR_HANDOFF.md`.
+
 # M15.307 ROM WRAM Entity & Effect Pool Allocators (`0x00D9BE`..`0x00DA60`) — COMPLETE / VERIFIED
 - Decoded all 4 WRAM object pool allocators (`$FF2ABC` 8x`0x5A` VRAM `0x694+9*i`, `$FF2D8C` 6x`0x5A`, `$FF1C1C` 18x`0xBC`, `$FF1CD8` 17x`0xBC` with `$FF184F` stale-HUD invalidation).
 - Authored `tools/extract_rom_entity_pool_allocators.py`, `tests/rom_entity_pool_allocators_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_pool_allocators_m15_307.json`, and `docs/handoffs/STANDALONE_M15_307_ENTITY_POOL_ALLOCATORS_HANDOFF.md`.

@@ -1,3 +1,9 @@
+# M15.308 ROM 16-Bit LFSR PRNG & Bounded Random Helpers
+- `tools/extract_rom_prng_lfsr.py` — Extracts 16-bit LFSR (`0x00E268`), seed `0x7F28`, and bounded helpers (`0x00E2A2`/`0x00E2BA`).
+- `tests/rom_prng_lfsr_test.py` — Unit tests verifying LFSR seed, sequence, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_prng_lfsr_m15_308.json` — Extracted LFSR PRNG evidence.
+- `docs/handoffs/STANDALONE_M15_308_PRNG_LFSR_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.307 ROM WRAM Entity & Effect Pool Allocators
 - `tools/extract_rom_entity_pool_allocators.py` — Extracts all 4 WRAM object pools (`0x00D9BE..0x00DA2A`), strides, capacities, and VRAM tile step.
 - `tests/rom_entity_pool_allocators_test.py` — Unit tests verifying pool bases, capacities, and JSON artifact (`2/2 PASS`).

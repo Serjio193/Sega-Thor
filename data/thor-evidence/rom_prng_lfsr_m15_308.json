@@ -1,0 +1,23 @@
+{
+  "milestone": "M15.308",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "prng": {
+    "ram_seed_addr": "0xFF1928",
+    "initial_seed": "0x7F28",
+    "next_rng16_addr": "0x00E268",
+    "rand_u16_addr": "0x00E2A2",
+    "rand_u8_addr": "0x00E2BA",
+    "shifts_per_call": 4,
+    "tap_rol_bits": 2,
+    "first_8_outputs_from_init": [
+      "0xF28A",
+      "0x28AB",
+      "0x8AB9",
+      "0xAB9E",
+      "0xB9E6",
+      "0x9E65",
+      "0xE65D",
+      "0x65D7"
+    ]
+  }
+}

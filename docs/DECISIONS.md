@@ -1,3 +1,7 @@
+# ADR-20261117-M15-308-PRNG-LFSR — 16-Bit LFSR PRNG & Bounded Random Helpers (`0x00E268`..`0x00E2D3`)
+- **Decision:** Model Beyond Oasis's deterministic RNG in Standalone via `0x00E268`'s 4-shift 16-bit LFSR (`$FF1928`, seed `0x7F28`, `rol16(d0, 2) ^ d0` tap) and `(rng * bound) >> 16` scaling.
+- **Evidence:** Direct Capstone M68K disassembly of `0x00E268..0x00E2D3` and seed `0x000424` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-307-ENTITY-POOL-ALLOCATORS — WRAM Entity & Effect Pool Allocators (`0x00D9BE`..`0x00DA60`)
 - **Decision:** Model runtime entity & effect allocation in Standalone using the 4 fixed-capacity WRAM pools (`8` effects `0x5A` VRAM `0x694+9*i`, `6` specials `0x5A`, `18` full `0xBC`, `17` enemies `0xBC`) and `$FF184F` stale-HUD invalidation.
 - **Evidence:** Direct Capstone M68K disassembly of `0x00D9A4..0x00DA60` in `local-roms/Beyond Oasis (USA).md`.

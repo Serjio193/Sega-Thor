@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.308: ROM 16-BIT LFSR PRNG (`0x00E268`..`0x00E2D3`) — Seed `0x7F28`, 4 Shifts/Call, `(rng*bound)>>16`; Extractor (`tools/extract_rom_prng_lfsr.py` <= 500 lines), Tests (`tests/rom_prng_lfsr_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_308_PRNG_LFSR_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00E268..0x00E2D3` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_prng_lfsr.py` and `python tests/rom_prng_lfsr_test.py` (2/2 PASS).
+- Next: Commit & push M15.308, await M16.91 completion, and continue.
+
 # 2026-11-17 — Milestone M15.307: ROM WRAM ENTITY & EFFECT POOL ALLOCATORS (`0x00D9BE`..`0x00DA60`) — 4 Pools (`8/6/18/17`), VRAM `0x694+9*i`; Extractor (`tools/extract_rom_entity_pool_allocators.py` <= 500 lines), Tests (`tests/rom_entity_pool_allocators_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_307_ENTITY_POOL_ALLOCATORS_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00D9A4..0x00DA60` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_entity_pool_allocators.py` and `python tests/rom_entity_pool_allocators_test.py` (2/2 PASS).
