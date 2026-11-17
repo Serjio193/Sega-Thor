@@ -1,3 +1,9 @@
+# M15.374 ROM Ali Auto-Revive Refill, Item 0x2A Scanner & Dash Dispatcher
+- `tools/extract_rom_ali_revive_dash.py` — extractor for `0x00611E..0x0062CA` (alternating +3 HP/SP auto-revive refill, `$FF0D90` 16-slot item `0x2A` scanner, 1.5x dash velocity & splash/dust footstep SFX).
+- `tests/rom_ali_revive_dash_test.py` — `2` unit tests verifying ROM constants, auto-revive cadence, and 1.5x dash speed multiplier.
+- `data/thor-evidence/rom_ali_revive_dash_m15_374.json` — extracted M15.374 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_374_ALI_REVIVE_DASH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.373 ROM Game Over Banner & Palette Line
 - `tools/extract_rom_game_over_banner.py` — extractor for `0x005F92..0x0060C8` (40f post-death delay, `0x0541FE` banner decompression to `$FF3FAC`, `0x40000003` VDP DMA, `0x0060CA` 16-color CRAM palette, `0xF0` button wait loop).
 - `tests/rom_game_over_banner_test.py` — `2` unit tests verifying ROM banner/palette constants and Start/A/B/C button wait gate.

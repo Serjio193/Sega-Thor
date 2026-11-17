@@ -1,3 +1,6 @@
+# M15.374 ROM Ali Auto-Revive Refill, Item 0x2A Scanner & 1.5x Dash Dispatcher (`0x00611E`..`0x0062CA`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_revive_dash.py`, `tests/rom_ali_revive_dash_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_revive_dash_m15_374.json`, and `docs/handoffs/STANDALONE_M15_374_ALI_REVIVE_DASH_HANDOFF.md`.
+
 # M15.373 ROM Game Over Death Sequence, Banner Decompressor (`0x0541FE`) & Palette Line (`0x0060CA`) (`0x005F92`..`0x0060C8`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_game_over_banner.py`, `tests/rom_game_over_banner_test.py` (`2/2 PASS`), `data/thor-evidence/rom_game_over_banner_m15_373.json`, and `docs/handoffs/STANDALONE_M15_373_GAME_OVER_BANNER_HANDOFF.md`.
 

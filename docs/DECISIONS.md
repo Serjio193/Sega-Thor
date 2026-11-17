@@ -1,3 +1,7 @@
+# ADR-20261117-M15-374-ALI-REVIVE-DASH — Ali Auto-Revive Refill, Item 0x2A Scanner & Dash Dispatcher (`0x00611E`..`0x0062CA`)
+- **Context:** `0x00611E..0x0062CA` handles the in-game revival sequence (alternating +3 HP / +3 SP refills, chime `0x00C0034B`, jingle `0x00D00355`, get-up states `0x24`/`0x1E`), `$FF0D90` 16-slot inventory scan for item `0x2A` (`0x0061CC`), and walk (`state 2`) vs 1.5x dash (`state 4`, `v + (v>>1)`) with water/dust footstep SFX (`0x02400357`/`0x0040038E`).
+- **Decision:** Extract exact revive refill deltas, inventory search parameters, 1.5x velocity multiplier, and SFX dispatch rules in `tools/extract_rom_ali_revive_dash.py` and `docs/handoffs/STANDALONE_M15_374_ALI_REVIVE_DASH_HANDOFF.md`.
+
 # ADR-20261117-M15-373-GAME-OVER-BANNER — Game Over Banner & Palette Line (`0x005F92`..`0x0060C8`)
 - **Context:** `0x005F92..0x0060C8` runs the fatal death sequence: 40-frame delay timer (`$FF1992`), "GAME OVER" graphic decompression from ROM `0x0541FE` to RAM `$FF3FAC`, VRAM tile DMA (`0x40000003`), nametable base `0xE000`, 16-color CRAM palette loading from `0x0060CA`, and Start/A/B/C (`0xF0`) interactive button wait loop.
 - **Decision:** Extract exact banner ROM address, 16 CRAM palette values (`0x0060CA`), and button wait masks in `tools/extract_rom_game_over_banner.py` and `docs/handoffs/STANDALONE_M15_373_GAME_OVER_BANNER_HANDOFF.md`.
