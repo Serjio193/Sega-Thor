@@ -1,3 +1,7 @@
+# M15.298 ROM Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool (`0x00BF26`..`0x00C060`) — COMPLETE / VERIFIED
+- Decoded 4-entry hit-reaction jump table (`0x00BF26`: light `0x300/0x2C0/0`, launcher `0/0/0x70000`, medium `0x400/0x3C0/0x28000`, heavy `0x700/0x680/0x30000`), shield parry recoil (`0x00BFAE`, SFX `0x00900202`, weapon `6`/`10`), and 4-slot hit-spark pool (`$FF19C8`).
+- Authored `tools/extract_rom_hit_reactions.py`, `tests/rom_hit_reactions_test.py` (`2/2 PASS`), `data/thor-evidence/rom_hit_reactions_m15_298.json`, and `docs/handoffs/STANDALONE_M15_298_HIT_REACTIONS_HANDOFF.md`.
+
 # M15.297 ROM Combat Hitbox Collision & Kill-Rank Scaling (`0x00BCBA`..`0x00BF26`) — COMPLETE / VERIFIED
 - Decoded player/enemy hitbox collision (`0x00BCBA`/`0x00BCD8`), `0x2C`-byte frame records, Ali kill-rank damage bonus (`10,20,30,40,50,100,200` -> `+1..+11`), shield opposite-facing guard block (`$6D`), `90`-frame enemy HP HUD (`$FF184F`), and `6`-frame hit-flash (`$83`).
 - Authored `tools/extract_rom_combat_hitbox_kernel.py`, `tests/rom_combat_hitbox_kernel_test.py` (`2/2 PASS`), `data/thor-evidence/rom_combat_hitbox_kernel_m15_297.json`, and `docs/handoffs/STANDALONE_M15_297_COMBAT_HITBOX_KERNEL_HANDOFF.md`.

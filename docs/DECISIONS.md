@@ -1,3 +1,7 @@
+# ADR-20261117-M15-298-HIT-REACTIONS — Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool (`0x00BF26`..`0x00C060`)
+- **Decision:** Model combat hit reactions in Standalone via the 4 ROM profiles at `0x00BF26` (`light`, `launcher`, `medium`, `heavy`), shield parry clang (`0x00900202`) + weapon recoil (`6`/`10`), and 4-slot 8B hit-spark pool (`$FF19C8`).
+- **Evidence:** Direct Capstone M68K disassembly of `0x00BF26..0x00C060` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-297-COMBAT-HITBOX-KERNEL — Combat Hitbox Collision & Kill-Rank Scaling (`0x00BCBA`..`0x00BF26`)
 - **Decision:** Model Beyond Oasis's combat hitbox resolution in Standalone with the `0x2C`-byte animation-frame hitbox lookup, Ali's 7-tier kill-rank damage bonus (`+1..+11`), opposite-facing shield guard (`$6D`), `90`-frame enemy HP HUD, and `6`-frame hit-flash.
 - **Evidence:** Direct Capstone M68K disassembly of `0x00BCBA..0x00BD90` and `0x00BE96..0x00BF30` in `local-roms/Beyond Oasis (USA).md`.

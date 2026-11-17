@@ -1,0 +1,60 @@
+{
+  "milestone": "M15.298",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "reactions": [
+    {
+      "index": 0,
+      "selector": 0,
+      "name": "light_ground_or_juggle",
+      "target_addr": "0x00BF2E",
+      "horiz_x": 768,
+      "horiz_y": 704,
+      "vz_fixed": 0,
+      "airborne_fallthrough_to": "0x00BF58"
+    },
+    {
+      "index": 1,
+      "selector": 2,
+      "name": "vertical_launcher",
+      "target_addr": "0x00BF98",
+      "horiz_x": 0,
+      "horiz_y": 0,
+      "vz_fixed": 458752
+    },
+    {
+      "index": 2,
+      "selector": 4,
+      "name": "medium_knockback",
+      "target_addr": "0x00BF58",
+      "horiz_x": 1024,
+      "horiz_y": 960,
+      "vz_fixed": 163840
+    },
+    {
+      "index": 3,
+      "selector": 6,
+      "name": "heavy_knockback",
+      "target_addr": "0x00BF78",
+      "horiz_x": 1792,
+      "horiz_y": 1664,
+      "vz_fixed": 196608
+    }
+  ],
+  "shield_parry": {
+    "handler_addr": "0x00BFAE",
+    "sfx_id": "0x00900202",
+    "recoil_weapons_ff198c": [
+      6,
+      10
+    ],
+    "recoil_helper_addr": "0x008530"
+  },
+  "hit_spark_pool": {
+    "allocator_addr": "0x00C012",
+    "pool_base_addr": "0xFF19C8",
+    "slot_count": 4,
+    "slot_stride_bytes": 8,
+    "spark_type": 2,
+    "spark_timer_frames": 5
+  }
+}

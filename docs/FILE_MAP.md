@@ -1,3 +1,9 @@
+# M15.298 ROM Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool
+- `tools/extract_rom_hit_reactions.py` — Extracts 4 hit-reaction profiles (`0x00BF26`), shield parry (`0x00BFAE`), and hit-spark pool (`$FF19C8`).
+- `tests/rom_hit_reactions_test.py` — Unit tests verifying knockback velocities, shield SFX, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_hit_reactions_m15_298.json` — Extracted hit-reaction & spark pool evidence.
+- `docs/handoffs/STANDALONE_M15_298_HIT_REACTIONS_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.297 ROM Combat Hitbox Collision & Kill-Rank Scaling
 - `tools/extract_rom_combat_hitbox_kernel.py` — Extracts hitbox record layout, Ali kill-rank bonus curve (`+1..+11`), shield guard, and HUD/flash timers.
 - `tests/rom_combat_hitbox_kernel_test.py` — Unit tests verifying kill-rank curve, hitbox constants, and JSON artifact (`2/2 PASS`).
