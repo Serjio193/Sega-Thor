@@ -1,3 +1,9 @@
+# M15.422 ROM Universal Attack Frame Scanner & Hitbox Intersection Engine
+- `tools/extract_rom_attack_scanner_engine.py` — extractor for `0x00BC8E..0x00BE98` (universal attack frame scanner, 4 entrypoints, 44-byte frame descriptors, 7-threshold strength rank table, damage bit packing, directional hitbox mirroring, 3D AABB overlap, and durability reduction).
+- `tests/rom_attack_scanner_engine_test.py` — `7` unit tests verifying ROM constants, strength rank thresholds, damage packing, directional hitbox mirroring, 3D intersection checks, target filter logic, and durability trigger conditions.
+- `data/thor-evidence/rom_attack_scanner_engine_m15_422.json` — extracted M15.422 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_422_ATTACK_SCANNER_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.421 ROM Weapon Attack Frame 3D Hitbox Streamer & Dual-Pool Scanner Engine
 - `tools/extract_rom_weapon_hitbox_streamer.py` — extractor for `0x00BAAC..0x00BC8E` (12-byte weapon hitbox streamer, left-facing horizontal mirroring, dual-pool scanning `$FF19E8`/`$FF1CD8`, and 3D AABB overlap).
 - `tests/rom_weapon_hitbox_streamer_test.py` — `6` unit tests verifying ROM constants, stream unpacking, horizontal mirroring, 3D world projection, target filters, and Carry flag hit returns.

@@ -1,0 +1,68 @@
+{
+  "routine": "Universal Attack Frame Scanner & Hitbox Intersection Engine",
+  "start_address": "0x00BC8E",
+  "end_address": "0x00BE98",
+  "size_bytes": 522,
+  "entry_points": {
+    "scan_all_entities": {
+      "address": 48270,
+      "callback": 48826,
+      "pool_base": 16718312,
+      "slot_count": 21,
+      "slot_stride": 188
+    },
+    "scan_group3_a": {
+      "address": 48292,
+      "callback": 48792,
+      "pool_base": 16719064,
+      "slot_count": 17,
+      "slot_stride": 188
+    },
+    "scan_group3_b": {
+      "address": 48314,
+      "callback": 48792,
+      "pool_base": 16719064,
+      "slot_count": 17,
+      "slot_stride": 188,
+      "mode_flag_198b": 2
+    },
+    "scan_single": {
+      "address": 48344,
+      "callback": 48826,
+      "pool_base": 16718312,
+      "slot_count": 1,
+      "slot_stride": 188
+    }
+  },
+  "strength_thresholds": [
+    [
+      10,
+      1
+    ],
+    [
+      20,
+      1
+    ],
+    [
+      30,
+      1
+    ],
+    [
+      40,
+      1
+    ],
+    [
+      50,
+      1
+    ],
+    [
+      100,
+      2
+    ],
+    [
+      200,
+      4
+    ]
+  ],
+  "sha256": "418c95a36911a6a9760eec4204aa69b726923bde9e2f58ff256b967d5e814686"
+}

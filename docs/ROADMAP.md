@@ -1,3 +1,6 @@
+# M15.422 ROM Universal Attack Frame Scanner & Hitbox Intersection Engine (`0x00BC8E`..`0x00BE98`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_attack_scanner_engine.py`, `tests/rom_attack_scanner_engine_test.py` (`7/7 PASS`), `data/thor-evidence/rom_attack_scanner_engine_m15_422.json`, and `docs/handoffs/STANDALONE_M15_422_ATTACK_SCANNER_ENGINE_HANDOFF.md`.
+
 # M15.421 ROM Weapon Attack Frame 3D Hitbox Streamer & Dual-Pool Scanner Engine (`0x00BAAC`..`0x00BC8E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_weapon_hitbox_streamer.py`, `tests/rom_weapon_hitbox_streamer_test.py` (`6/6 PASS`), `data/thor-evidence/rom_weapon_hitbox_streamer_m15_421.json`, and `docs/handoffs/STANDALONE_M15_421_WEAPON_HITBOX_STREAMER_HANDOFF.md`.
 
