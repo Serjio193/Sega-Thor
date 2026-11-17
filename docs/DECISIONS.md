@@ -1,3 +1,8 @@
+# ADR-20261117-M15-343-EXPLOSION-SPAWNER — Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase (`0x00E90E`..`0x00EA02`)
+- **Context:** Explosion/FX spawns (`0x00E90E`, `0x00E93A`) allocate entity `0x34` (`0x055E`/`0x855E`) and rate-limit dual spatial SFX (`0x0090021B`, `0x00600382`) to once every 7 frames (`$FF199C - $FF1944`), while `0x00E9DE` toggles phase flags for Shade (`$FF1AA4 == 0x1E`).
+- **Decision:** Extracted all entity IDs, cooldown constants, and phase flags into `data/thor-evidence/rom_explosion_spawner_m15_343.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.127 can implement explosion SFX rate-limiting and Shade phase-flag synchronization.
+
 # ADR-20261117-M15-342-SPATIAL-AUDIO-PAN — Spatial 2D Audio Attenuation & Stereo Panning (`0x00E78E`..`0x00E90C`)
 - **Context:** World-space SFX calls (`0x00E78E`, `0x00E7E8`) attenuate and stereo-pan SFX (`>= 0x200`) by `dist = max(|dx|, |dy| * 1.25)` relative to Ali (`$FF19F0`, `$FF19F4`), culling beyond `272px` (`0x200..0x2FF`) or `7` volume drops (`>= 0x300`).
 - **Decision:** Extracted all distance thresholds, pan flags (`0x40`/`0x80`), and attenuation formulas into `data/thor-evidence/rom_spatial_audio_pan_m15_342.json` with 2/2 passing tests and Standalone handoff.

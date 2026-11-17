@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.343: ROM EXPLOSION SPAWNER, 7-FRAME SFX COOLDOWN & SHADE PHASE (`0x00E90E`..`0x00EA02`) — `0x34`/`0x055E`, 7f SFX Cooldown, Shade `0x1E`; Extractor (`tools/extract_rom_explosion_spawner_cooldown.py` <= 500 lines), Tests (`tests/rom_explosion_spawner_cooldown_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_343_EXPLOSION_SPAWNER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00E90E..0x00EA02` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_explosion_spawner_cooldown.py`, `python -m unittest tests/rom_explosion_spawner_cooldown_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.343, check M16.114 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.342: ROM SPATIAL 2D AUDIO ATTENUATION & STEREO PANNING (`0x00E78E`..`0x00E90C`) — `max(|dx|,|dy|*1.25)`, `0x110`/`7`-Step Cull, `0x40`/`0x80` Pan; Extractor (`tools/extract_rom_spatial_audio_pan.py` <= 500 lines), Tests (`tests/rom_spatial_audio_pan_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_342_SPATIAL_AUDIO_PAN_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00E78E..0x00E90C` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_spatial_audio_pan.py`, `python -m unittest tests/rom_spatial_audio_pan_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

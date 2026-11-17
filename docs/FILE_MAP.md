@@ -1,3 +1,9 @@
+# M15.343 ROM Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase
+- `tools/extract_rom_explosion_spawner_cooldown.py` — ROM extractor & verifier for `0x00E90E..0x00EA02` (entity `0x34` / `0x055E` spawner, 7-frame SFX cooldown `0x0090021B`/`0x00600382`, Shade `0x1E` phase flags).
+- `tests/rom_explosion_spawner_cooldown_test.py` — Unit tests verifying 7-frame SFX cooldown and 16-bit frame wraparound.
+- `data/thor-evidence/rom_explosion_spawner_m15_343.json` — Verified evidence JSON for M15.343.
+- `docs/handoffs/STANDALONE_M15_343_EXPLOSION_SPAWNER_HANDOFF.md` — C++20 Standalone handoff for M16.127.
+
 # M15.342 ROM Spatial 2D Audio Attenuation & Stereo Panning
 - `tools/extract_rom_spatial_audio_pan.py` — ROM extractor & verifier for `0x00E78E..0x00E90C` (`max(|dx|, |dy|*1.25)` distance attenuation, `0x110`/`7`-step cull, `0x40`/`0x60` stereo pan).
 - `tests/rom_spatial_audio_pan_test.py` — Unit tests verifying distance attenuation, stereo panning, and culling.

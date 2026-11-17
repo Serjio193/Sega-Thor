@@ -1,0 +1,31 @@
+{
+  "milestone": "M15.343",
+  "title": "ROM Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase Toggle",
+  "routines": {
+    "spawn_explosion_normal": {
+      "start": "0x00E90E",
+      "end": "0x00E938"
+    },
+    "spawn_explosion_hi": {
+      "start": "0x00E93A",
+      "end": "0x00E96A"
+    },
+    "init_explosion_and_sfx": {
+      "start": "0x00E96C",
+      "end": "0x00E9DC"
+    },
+    "sync_shade_phase_flags": {
+      "start": "0x00E9DE",
+      "end": "0x00EA02"
+    }
+  },
+  "constants": {
+    "entity_type_id": "0x0034",
+    "base_sprite_id": "0x055E",
+    "hi_flag_mask": "0x8000",
+    "sfx_cooldown_frames": 7,
+    "explosion_sfx_1": "0x0090021B",
+    "explosion_sfx_2": "0x00600382",
+    "shade_spirit_id": "0x001E"
+  }
+}
