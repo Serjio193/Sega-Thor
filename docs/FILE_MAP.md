@@ -1,3 +1,9 @@
+# M15.405 ROM Ramp/Bridge Slope Solver, Fractional Height Interpolator & Tile Elevation Engine
+- `tools/extract_rom_slope_elevation_engine.py` — extractor for `0x0099F0..0x009BC0` (48-tile ramp search, LUT 2 mapping `0x0096F8`, flat surface elevation table `$FF1706`, and fractional slope interpolation using `mulu`/`divu`).
+- `tests/rom_slope_elevation_engine_test.py` — `4` unit tests verifying ROM constants, LUT 2 mappings, flat surface lookups, and fractional slope interpolations.
+- `data/thor-evidence/rom_slope_elevation_engine_m15_405.json` — extracted M15.405 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_405_SLOPE_ELEVATION_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.404 ROM Point Tile Solidity, Air/Elevation Integrator & Tile Attribute Sampler
 - `tools/extract_rom_point_tile_integrator.py` — extractor for `0x0098EC..0x0099EE` (point tile solidity probe, slope air-height integration, tile attribute sampler `0x0099B8`, and raw tile reader `0x0099D6`).
 - `tests/rom_point_tile_integrator_test.py` — `4` unit tests verifying ROM constants, descending/ascending slope integrations, and steep wall blockage.

@@ -1,3 +1,6 @@
+# M15.405 ROM Ramp/Bridge Slope Solver, Fractional Height Interpolator & Tile Elevation Engine (`0x0099F0`..`0x009BC0`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_slope_elevation_engine.py`, `tests/rom_slope_elevation_engine_test.py` (`4/4 PASS`), `data/thor-evidence/rom_slope_elevation_engine_m15_405.json`, and `docs/handoffs/STANDALONE_M15_405_SLOPE_ELEVATION_ENGINE_HANDOFF.md`.
+
 # M15.404 ROM Point Tile Solidity, Air/Elevation Integrator & Tile Attribute Sampler (`0x0098EC`..`0x0099EE`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_point_tile_integrator.py`, `tests/rom_point_tile_integrator_test.py` (`4/4 PASS`), `data/thor-evidence/rom_point_tile_integrator_m15_404.json`, and `docs/handoffs/STANDALONE_M15_404_POINT_TILE_INTEGRATOR_HANDOFF.md`.
 

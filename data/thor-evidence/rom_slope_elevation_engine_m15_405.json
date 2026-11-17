@@ -1,0 +1,47 @@
+{
+  "milestone": "M15.405",
+  "title": "ROM Ramp/Bridge Slope Solver, Fractional Height Interpolator (mulu/divu) & Tile Elevation Engine",
+  "routines": {
+    "ramp_search_handler_1": {
+      "start": "0x0099F0",
+      "end": "0x009A60",
+      "bytes": 112,
+      "max_scan_tiles": 48,
+      "bit4_mask": "0x10"
+    },
+    "ramp_search_handler_2": {
+      "start": "0x009A60",
+      "end": "0x009AD0",
+      "bytes": 112,
+      "max_scan_tiles": 48
+    },
+    "tile_elevation_engine": {
+      "start": "0x009AD0",
+      "end": "0x009BC2",
+      "bytes": 242,
+      "layer1_ram": "0x00FF1766",
+      "layer2_ram": "0x00FF1770",
+      "lut2_addr": "0x0096F8",
+      "elevation_table_ram": "0x00FF1706",
+      "slope_math": "mulu.w d3, d1; divu.w d2, d1; add.w d1, d4",
+      "lut2_table": [
+        "0xFF",
+        "0x00",
+        "0x02",
+        "0x01",
+        "0x04",
+        "0x04",
+        "0x03",
+        "0x03",
+        "0x06",
+        "0x06",
+        "0x06",
+        "0x06",
+        "0x05",
+        "0x05",
+        "0x05",
+        "0x05"
+      ]
+    }
+  }
+}
