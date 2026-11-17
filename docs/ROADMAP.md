@@ -1,3 +1,9 @@
+# M16.132 Enemy Loot / 2-Tier Drop-Table Roller (`0x00F476..0x00F53A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `roll_enemy_loot`, `spawn_pickup_entity`, and `write_pickup_to_entity_slot` in `src/game/combat/enemy_loot_drop.hpp/.cpp` covering enemy fixed drop override `+0x8C` (sentinel `0xFFFF` drops nothing, other values drop item directly), `no_drop_flag` (`+0x6F` bit 7), 2-tier drop table roll (`roll <= prob`), pickup entity `0x0008` initialization with `+1.0 px` elevation bias, pop Z velocity `0x00080000` (+8.0 px/frame), timer jitter `prng & 0x3F`, and item attribute table `0x0005CE16` bit 7 sub-action 2 toggle.
+- Qualified `oasis_m16_132_enemy_loot_drop` and the 113-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.131 Rapid-Mash & Triple-Tap Input Ring Detectors (`0x008910..0x0089A8`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

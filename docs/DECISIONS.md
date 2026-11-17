@@ -1,3 +1,17 @@
+# ADR-20261117-M16-132-ENEMY-LOOT-DROP — Enemy Loot / 2-Tier Drop-Table Roller
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.348 extracted `0x00F476..0x00F53A`: `roll_enemy_loot` and `spawn_pickup_entity`.
+2. Enemy fixed drop override at `+0x8C`: if `fixed_drop == 0xFFFF`, drops nothing; otherwise drops the specified fixed item word.
+3. If fixed drop is 0 and `!(flags_6f & 0x80)`: evaluates 2-tier table `(prob1, item1, prob2, item2)` against 16-bit PRNG (`roll <= prob`).
+4. Spawns pickup entity `0x0008` inheriting enemy coordinates with `+1.0 px` elevation bias, initial `vz = 0x00080000` (+8.0 px/frame pop velocity), jittered timer `prng & 0x3F`, and `sub_action = 2` if bit 7 of item attribute table `0x0005CE16[item_id]` is 0.
+
+**Decisions:**
+1. **Dedicated `enemy_loot_drop` Module:**
+   - Added `src/game/combat/enemy_loot_drop.hpp/.cpp` modeling `roll_enemy_loot`, `spawn_pickup_entity`, and `write_pickup_to_entity_slot`.
+
 # ADR-20261117-M16-131-MASH-TRIPLETAP — Rapid-Mash & Triple-Tap Input Ring Detectors
 **Status:** Accepted
 **Date:** 2026-11-17

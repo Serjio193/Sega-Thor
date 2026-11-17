@@ -1,3 +1,15 @@
+# Worklog — 2026-11-17 (M16.132: Enemy Loot / 2-Tier Drop-Table Roller)
+- **Concrete Task**: Implement `src/game/combat/enemy_loot_drop.hpp/.cpp` with `roll_enemy_loot(...)` (`0x00F47A..0x00F4C6`: fixed drop override at `+0x8C` [sentinel `0xFFFF` drops nothing, other values drop item directly], `no_drop_flag` at `+0x6F` bit 7, 2-tier drop table evaluation `[prob1, item1, prob2, item2]` against 16-bit PRNG `roll <= prob`), `spawn_pickup_entity(...)` (`0x00F4C6..0x00F534`: entity type `0x0008`, `pos_z + 1.0 px`, initial pop velocity `vz = 0x00080000` [+8.0 px/frame], timer jitter `prng & 0x3F`, `flags_39 |= 0x01`, item attribute table `0x0005CE16` bit 7 check setting `sub_action = 2` for regular items), and `write_pickup_to_entity_slot(...)` (0xBC-byte entity structure serialization); add `tests/m16_132_enemy_loot_drop_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/combat/enemy_loot_drop.hpp` / `src/game/combat/enemy_loot_drop.cpp`.
+  * Added `tests/m16_132_enemy_loot_drop_test.cpp` (registered as `oasis_m16_132_enemy_loot_drop` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 113/113 tests passed (`ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): 113/113 tests passed (`ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: `enemy_loot_drop.hpp` (87 lines), `enemy_loot_drop.cpp` (116 lines), `m16_132_enemy_loot_drop_test.cpp` (147 lines), `CMakeLists.txt` (267 lines), `project_tests_m16.cmake` (425 lines) <= 500 lines.
+  * Remaining unknowns: Wiring `roll_enemy_loot` and `spawn_pickup_entity` into live enemy death state machines in `StandaloneGameSimulation` is deferred to enemy defeat integration.
+
 # Worklog — 2026-11-17 (M16.131: Rapid-Mash & Triple-Tap Input Ring Detectors)
 - **Concrete Task**: Implement `src/game/input/mash_tripletap_detectors.hpp/.cpp` with `detect_rapid_mash(...)` (`0x008910..0x00894E`: scans 13-frame window from `$FF16E8` in `$FF1668` ring buffer, counts frames with button bit 4 set, clears `$FF16EA = 0` and sets Carry if count >= 3), `detect_triple_tap(...)` (`0x008950..0x0089A8`: scans up to 25 frames from `$FF16E8` clamped to `$FF16EA`, matches 3 cardinal D-pad frames according to `0x0087F4` facing direction mapping [Up 0x01, Right 0x08, Down 0x02, Left 0x04], skips neutral 0 frames, aborts on non-matching direction, clears `$FF16EA = 0` and sets Carry on 3 matches); add `tests/m16_131_mash_tripletap_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
