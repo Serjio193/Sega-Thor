@@ -1,3 +1,9 @@
+# M15.394 ROM Ali Rapid-Mash, Triple-Tap Motion Detectors & Demo Stream Loader
+- `tools/extract_rom_ali_rapid_tripletap_demo.py` — extractor for `0x008910..0x008AA6` (rapid-mash 13-frame bit 4 count >= 3, triple-tap 25-frame 3-matching cardinal D-pad sequence via table `0x0087F4`, demo stream initializer `0x0089B2`, and 9-entry demo asset offset table `0x008A94`).
+- `tests/rom_ali_rapid_tripletap_demo_test.py` — `3` unit tests verifying ROM constants, rapid-mash logic, triple-tap directional recognition, and demo asset offset addresses.
+- `data/thor-evidence/rom_ali_rapid_tripletap_demo_m15_394.json` — extracted M15.394 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_394_ALI_RAPID_TRIPLETAP_DEMO_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.378 ROM Ali Pit-Fall Damage, Safe Respawn Anchor & 3px Coordinate Interpolator
 - `tools/extract_rom_ali_respawn_anchor.py` — extractor for `0x00693C..0x006B28` (20 HP pit damage at timer 10, fatal death state `0x70` & 40f fade, safe respawn anchor `$FF1972`, 63f/12f invulnerability timers, 3px/frame coordinate interpolator `0x006B12`).
 - `tests/rom_ali_respawn_anchor_test.py` — `2` unit tests verifying ROM constants, pit damage application/revive rules, and 1px/3px coordinate interpolator.

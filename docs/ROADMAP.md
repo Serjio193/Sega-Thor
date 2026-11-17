@@ -1,3 +1,6 @@
+# M15.394 ROM Ali Rapid-Mash, Triple-Tap Motion Detectors & Demo Stream Loader (`0x008910`..`0x008AA6`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_rapid_tripletap_demo.py`, `tests/rom_ali_rapid_tripletap_demo_test.py` (`3/3 PASS`), `data/thor-evidence/rom_ali_rapid_tripletap_demo_m15_394.json`, and `docs/handoffs/STANDALONE_M15_394_ALI_RAPID_TRIPLETAP_DEMO_HANDOFF.md`.
+
 # M15.378 ROM Ali Pit-Fall Damage, Safe Respawn Anchor & 3px Coordinate Interpolator (`0x00693C`..`0x006B28`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_respawn_anchor.py`, `tests/rom_ali_respawn_anchor_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_respawn_anchor_m15_378.json`, and `docs/handoffs/STANDALONE_M15_378_ALI_RESPAWN_ANCHOR_HANDOFF.md`.
 

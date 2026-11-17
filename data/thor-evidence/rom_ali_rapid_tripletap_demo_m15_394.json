@@ -1,0 +1,72 @@
+{
+  "milestone": "M15.394",
+  "title": "ROM Ali Rapid-Mash (0x8910), Triple-Tap (0x8950) Motion Detectors & Demo Stream Loader (0x008910..0x008AA6)",
+  "routines": {
+    "rapid_mash_detector": {
+      "start": "0x008910",
+      "end": "0x00894E",
+      "bytes": 64,
+      "scan_window_frames": 13,
+      "button_bit": 4,
+      "required_presses": 3,
+      "ring_buf_ram": "0x00FF1668",
+      "ring_wr_ptr_ram": "0x00FF16E8",
+      "ring_count_ram": "0x00FF16EA"
+    },
+    "triple_tap_detector": {
+      "start": "0x008950",
+      "end": "0x0089B0",
+      "bytes": 98,
+      "max_scan_frames": 25,
+      "required_taps": 3,
+      "facing_pattern_table": "0x0087F4",
+      "ring_buf_ram": "0x00FF1668",
+      "ring_wr_ptr_ram": "0x00FF16E8",
+      "ring_count_ram": "0x00FF16EA"
+    },
+    "demo_stream_initializer": {
+      "start": "0x0089B2",
+      "end": "0x008A92",
+      "bytes": 226,
+      "vblank_flag_ram": "0x00FF164D",
+      "stack_checkpoint_ram": "0x00FF1930",
+      "demo_flag_ram": "0x00FF1996",
+      "demo_index_ram": "0x00FF0BFC",
+      "demo_max_index": 8,
+      "demo_bank_base_rom": "0x1698FE",
+      "decompress_routine": "0x00003820",
+      "decompress_buffer_ram": "0x00FFBFAC",
+      "delta_buffer_ram": "0x00FFDFB2",
+      "delta_count_words": 8190,
+      "gameplay_coordinator": "0x00CA24"
+    },
+    "demo_asset_offsets_table": {
+      "start": "0x008A94",
+      "end": "0x008AA6",
+      "bytes": 18,
+      "entry_count": 9,
+      "offsets": [
+        "0x0000",
+        "0x042C",
+        "0x0BC0",
+        "0x1202",
+        "0x144C",
+        "0x16C8",
+        "0x18E0",
+        "0x1EE8",
+        "0x201E"
+      ],
+      "absolute_rom_addrs": [
+        "0x1698FE",
+        "0x169D2A",
+        "0x16A4BE",
+        "0x16AB00",
+        "0x16AD4A",
+        "0x16AFC6",
+        "0x16B1DE",
+        "0x16B7E6",
+        "0x16B91C"
+      ]
+    }
+  }
+}
