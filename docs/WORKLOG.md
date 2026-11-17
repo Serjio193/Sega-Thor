@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.90: VDP Full Clear, Armlet Glow & CRAM Palette Cycler)
+- **Concrete Task**: Implement `src/game/video/vdp_clear_and_palette_cycle.hpp/.cpp` with `VdpClearRegion` & `kVdpClearRegions` (`0x002B28`: HScroll `0xDC00`, VSRAM `40` words, Tile `0` `0x0000`, SAT `0xD000`, Plane A `0xC000`, Plane B `0xE000`, DMA Fill `0x8F01`/`0x9780`), `step_armlet_glow(glow, spirit_active, timer_ff199e, pulse_ff199f)` (`0x008DD4`), and `PaletteCycleEntry` / `PaletteCycler::step_frame(cram_shadow)` (`0x008E22`); add `tests/m16_90_vdp_clear_and_palette_cycle_test.cpp`; qualify full 50-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/video/vdp_clear_and_palette_cycle.hpp` / `src/game/video/vdp_clear_and_palette_cycle.cpp`.
+  * Added `tests/m16_90_vdp_clear_and_palette_cycle_test.cpp` (registered as `oasis_m16_90_vdp_clear_and_palette_cycle` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 50/50 regression run.
+  * MSVC Debug (`build-debug`): 50/50 regression run.
+  * Remaining unknowns: Loading room-specific `$FF17A2` palette-cycle linked-list entries from ROM area tables into `PaletteCycler::entries` is deferred to future scene-init integration.
+
 # Worklog — 2026-11-17 (M16.89: 3D AABB Solid Entity Sweep & Push-Contact Kernel)
 - **Concrete Task**: Implement `src/game/entities/solid_entity_sweep.hpp/.cpp` with `SolidSweepBlocker`, `SolidSweepResult`, `is_solid_sweep_eligible($3A, $38)`, and `sweep_solid_x_pos(...)` (`0x009DD6`: sweeps up to `21` slots `$FF19E8` stride `0xBC`, skips `$3A` bit 1 / `$38` bit 2, 3D AABB overlap in `(x +/- $42, y + floor_z +/- $44, z + floor_z .. +$4A)`, clamps `dx`, sets `$40` bit 7, `push_timer = 3` (`$6C`), and `nudge_blocker` `+1px` when clearance == `0` and pushable); add `tests/m16_89_solid_entity_sweep_test.cpp`; qualify full 49-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

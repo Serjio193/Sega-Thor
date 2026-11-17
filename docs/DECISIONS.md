@@ -1,3 +1,14 @@
+# ADR-20261117-M16-90-VDP-CLEAR-AND-PALETTE-CYCLE — VDP Full Clear, Armlet Glow & CRAM Palette Cycler
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.306 extracted VDP Full Clear (`0x002B28`, 6 regions with DMA Fill `0x8F01`/`0x9780`), Armlet Glow (`0x008DD4`, `$FF183E` ramp/pulse/decay), and CRAM Palette Cycler (`0x008E22`, `$FF17A2` keyframes into `$FF134C`).
+
+**Decisions:**
+1. **Dedicated `vdp_clear_and_palette_cycle` Module:**
+   - Added `src/game/video/vdp_clear_and_palette_cycle.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-89-SOLID-ENTITY-SWEEP — 3D AABB Solid Entity Sweep & Push-Contact Kernel
 **Status:** Accepted
 **Date:** 2026-11-17

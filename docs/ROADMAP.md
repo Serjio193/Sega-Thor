@@ -1,3 +1,9 @@
+# M16.90 VDP Full Clear, Armlet Glow & CRAM Palette Cycler (`0x002B28`, `0x008DD4..0x008E8E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `kVdpClearRegions` (`0x002B28`), `step_armlet_glow` (`0x008DD4`), and `PaletteCycler::step_frame` (`0x008E22`) in `src/game/video/vdp_clear_and_palette_cycle.hpp/.cpp`.
+- Qualified `oasis_m16_90_vdp_clear_and_palette_cycle` and full 50-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.89 3D AABB Solid Entity Sweep & Push-Contact Kernel (`0x009DD6..0x009EB8`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

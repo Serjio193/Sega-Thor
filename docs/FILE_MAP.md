@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/video/vdp_clear_and_palette_cycle.hpp` / `src/game/video/vdp_clear_and_palette_cycle.cpp`: VDP Full Clear table (`0x002B28`), Armlet Glow state machine (`0x008DD4`), and CRAM Palette Cycler (`0x008E22`) (M16.90).
+- `tests/m16_90_vdp_clear_and_palette_cycle_test.cpp`: Automated M16.90 test qualifying 6 VDP clear regions, armlet glow ramp/pulse/decay, and CRAM keyframe cycling (M16.90).
 - `src/game/entities/solid_entity_sweep.hpp` / `src/game/entities/solid_entity_sweep.cpp`: 3D AABB solid entity `+X` sweep (`0x009DD6`, 21-slot `$FF19E8` stride `0xBC`, `$40` bit 7, `3`-frame `$6C` push timer, `+1px` pushable nudge) (M16.89).
 - `tests/m16_89_solid_entity_sweep_test.cpp`: Automated M16.89 test qualifying eligibility flags, 3D AABB separation, 21-slot bound, push timer, and pushable nudge (M16.89).
 - `src/game/world/terrain_probe_and_clamp.hpp` / `src/game/world/terrain_probe_and_clamp.cpp`: Terrain surface effect LUT (`0x0096E8`, `kTerrainSurfaceLut16`), layer descriptor selector (`$FF1766`/`$FF1770`), and 4-side room boundary clamp (`0x009D4E..0x009DD4`, `0x48` edge-wall flag) (M16.88).
