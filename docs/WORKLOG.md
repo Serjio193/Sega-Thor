@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.105: Room Height-Band Table Builder & Tileset Chunk Loader)
+- **Concrete Task**: Implement `src/game/world/room_height_tileset.hpp/.cpp` with `build_height_band_tables()` (`0x00D43A..0x00D46A`: 4 signed band bytes -> `band_steps_4w` `$FF16FE` + `height_lut_8w` `$FF1706` with `0xF000` sentinel at index 7), `quantize_camera_pos()` (`0x00D48A..0x00D4C4`: `max(0, x & ~7)`), and `flush_vscroll_to_vdp_buffer()` (`0x00D344..0x00D396`: `$FFFF5C` 20-col / `$FF1348` full-screen); add `tests/m16_105_room_height_tileset_test.cpp`; qualify full 65-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/room_height_tileset.hpp` / `src/game/world/room_height_tileset.cpp`.
+  * Added `tests/m16_105_room_height_tileset_test.cpp` (registered as `oasis_m16_105_room_height_tileset` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 65/65 regression run.
+  * MSVC Debug (`build-debug`): 65/65 regression run.
+  * Remaining unknowns: Connecting `build_height_band_tables()` directly into `TerrainElevationProbe` and `town_scene_loader.cpp` is deferred to future world-loader unification.
+
 # Worklog — 2026-11-17 (M16.104: Plane Scroll Delta & VDP H/V-Scroll Buffer Sync)
 - **Concrete Task**: Implement `src/game/world/plane_scroll_sync.hpp/.cpp` with `update_plane_scroll_deltas()` (`0x00D188..0x00D264`: 8px tile-crossing deltas `pending_dx_tiles`/`pending_dy_tiles`, `0x1FF`/`0xFF` H/V-scroll wrap, dirty bits `0..3`, `±10000` anti-overflow wrap), `wrap_camera_to_map_bounds()` (`0x00D266..0x00D2B2`), and `flush_hscroll_to_vdp_buffer()` (`0x00D2B4..0x00D342`: `$FFFB5C` per-line / `$FF1344` full-screen, Plane A `+0` / Plane B `+2`); add `tests/m16_104_plane_scroll_sync_test.cpp`; qualify full 64-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

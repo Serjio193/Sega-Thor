@@ -1,3 +1,9 @@
+# M16.105 Room Height-Band Table Builder & Tileset Chunk Loader (`0x00D344..0x00D4FE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `build_height_band_tables` (`0x00D43A..0x00D46A`, `0xF000` sentinel), `quantize_camera_pos` (`0x00D48A..0x00D4C4`), and `flush_vscroll_to_vdp_buffer` (`0x00D344..0x00D396`) in `src/game/world/room_height_tileset.hpp/.cpp`.
+- Qualified `oasis_m16_105_room_height_tileset` and full 65-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.104 Plane Scroll Delta & VDP H/V-Scroll Buffer Sync (`0x00D188..0x00D342`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-105-ROOM-HEIGHT-TILESET — Room Height-Band Table Builder & Tileset Chunk Loader
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.321 extracted `0x00D344..0x00D4FE`: `build_height_band_tables` (`0xF000` sentinel), `quantize_camera_pos` (`max(0, x & ~7)`), and `flush_vscroll_to_vdp_buffer` (`$FFFF5C` / `$FF1348`).
+
+**Decisions:**
+1. **Dedicated `room_height_tileset` Module:**
+   - Added `src/game/world/room_height_tileset.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-104-PLANE-SCROLL-SYNC — Plane Scroll Delta & VDP H/V-Scroll Buffer Sync
 **Status:** Accepted
 **Date:** 2026-11-17

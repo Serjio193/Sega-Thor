@@ -97,6 +97,7 @@ add_library(oasis_core
     src/game/world/room_area_loader.cpp
     src/game/world/room_warp_sequence.cpp
     src/game/world/plane_scroll_sync.cpp
+    src/game/world/room_height_tileset.cpp
     src/game/world/tilemap_streamer.cpp
     src/game/world/town_scene_loader.cpp
     src/game/world/world_graph.cpp
