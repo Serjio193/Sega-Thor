@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.350: ROM ALI 5-FRAME INPUT-BUFFER ACTION & SPIRIT-BALL DISPATCHER (`0x007D8A`..`0x007E9C`) — 5f Ring, `C > A > B`, Summon Gate; Extractor (`tools/extract_rom_ali_input_dispatch.py` <= 500 lines), Tests (`tests/rom_ali_input_dispatch_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_350_ALI_INPUT_DISPATCH_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x007D8A..0x007E9C` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_ali_input_dispatch.py`, `python -m unittest tests/rom_ali_input_dispatch_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.350, check M16.118 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.349: ROM PICKUP OVERFLOW RECLAIMER, KILL-COUNTER & EVENT VM WAIT-TICK (`0x00F64C`..`0x00F7CE`) — `$FF2ABC`, `0x1101`, `$FF1A7C` Sat, `$FF17B6` VM Tick; Extractor (`tools/extract_rom_kill_counter_vm_tick.py` <= 500 lines), Tests (`tests/rom_kill_counter_vm_tick_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_349_KILL_COUNTER_VM_TICK_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00F64C..0x00F7CE` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_kill_counter_vm_tick.py`, `python -m unittest tests/rom_kill_counter_vm_tick_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

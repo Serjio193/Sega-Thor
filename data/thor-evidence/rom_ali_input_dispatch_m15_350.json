@@ -1,0 +1,25 @@
+{
+  "milestone": "M15.350",
+  "title": "ROM Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher",
+  "routines": {
+    "poll_buffered_input": {
+      "start": "0x007D8A",
+      "end": "0x007DC6"
+    },
+    "dispatch_ali_buffered_buttons": {
+      "start": "0x007DC8",
+      "end": "0x007E9C"
+    }
+  },
+  "constants": {
+    "input_lock_ram": "0x00FF1983",
+    "action_buffer_frames": 5,
+    "priority_order": [
+      "C_summon_bit6",
+      "A_attack_bit4",
+      "B_jump_bit5"
+    ],
+    "summon_state": 20,
+    "summon_sfx": "0x00900359"
+  }
+}

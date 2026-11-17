@@ -1,3 +1,8 @@
+# ADR-20261117-M15-350-ALI-INPUT-DISPATCH — Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher (`0x007D8A`..`0x007E9C`)
+- **Context:** Ali's top-level action dispatcher (`0x007DC8`) ORs up to 5 recent frames from the `$FF1668` input ring (when `$FF1983 == 0`) and dispatches in `C (summon) > A (attack) > B (jump)` priority.
+- **Decision:** Extracted the 5-frame window, priority order, and summon preconditions into `data/thor-evidence/rom_ali_input_dispatch_m15_350.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.134 can implement responsive 5-frame buffered action dispatch with exact priority parity.
+
 # ADR-20261117-M15-349-KILL-COUNTER-VM-TICK — Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick (`0x00F64C`..`0x00F7CE`)
 - **Context:** `0x00F64C..0x00F7CE` reclaims `$FF2ABC` pickup slots (`0x0694 + 9*i`), promotes `$FF0DBB` guaranteed drops (`0x1101`), saturates Ali's kill count (`$FF1A7C`) at `0xFFFF`, and gates Event VM execution on `$FF17B8` bit 1 and `$FF17B6` wait-timer.
 - **Decision:** Extracted all constants and RAM addresses into `data/thor-evidence/rom_kill_counter_vm_tick_m15_349.json` with 2/2 passing tests and Standalone handoff.

@@ -1,3 +1,9 @@
+# M15.350 ROM Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher
+- `tools/extract_rom_ali_input_dispatch.py` — ROM extractor & verifier for `0x007D8A..0x007E9C` (5-frame `$FF1668` input buffer, `C > A > B` priority, `SP > 0` summon gate `0x14`/`0x00900359`).
+- `tests/rom_ali_input_dispatch_test.py` — Unit tests verifying 5-frame buffer priority and summon gate.
+- `data/thor-evidence/rom_ali_input_dispatch_m15_350.json` — Verified evidence JSON for M15.350.
+- `docs/handoffs/STANDALONE_M15_350_ALI_INPUT_DISPATCH_HANDOFF.md` — C++20 Standalone handoff for M16.134.
+
 # M15.349 ROM Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick
 - `tools/extract_rom_kill_counter_vm_tick.py` — ROM extractor & verifier for `0x00F64C..0x00F7CE` (`$FF2ABC` 8-slot pickup reclaim, `0x1101` bonus drop, `$FF1A7C` saturating kill counter, `$FF17B6` VM wait-tick).
 - `tests/rom_kill_counter_vm_tick_test.py` — Unit tests verifying kill-counter saturation and VM wait-tick.
