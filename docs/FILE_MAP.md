@@ -1,3 +1,9 @@
+# M15.306 ROM VDP Full Clear, Armlet Glow & Palette-Cycling Animator
+- `tools/extract_rom_vdp_clear_and_palette_cycle.py` — Extracts VDP clear DMA regions (`0x002B28`), Armlet glow (`0x008DD4`), and CRAM cycler (`0x008E22`).
+- `tests/rom_vdp_clear_and_palette_cycle_test.py` — Unit tests verifying VDP regions, Armlet glow transitions, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_vdp_clear_and_palette_cycle_m15_306.json` — Extracted VDP clear & palette cycler evidence.
+- `docs/handoffs/STANDALONE_M15_306_VDP_CLEAR_AND_PALETTE_CYCLE_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.305 ROM 3D AABB Solid Entity Sweep & Push
 - `tools/extract_rom_solid_entity_sweep.py` — Extracts 21-slot 3D AABB solid sweep & 3-frame push-contact kernel (`0x009DD6`).
 - `tests/rom_solid_entity_sweep_test.py` — Unit tests verifying 3D AABB sweep, nudge, and JSON artifact (`2/2 PASS`).

@@ -1,3 +1,7 @@
+# M15.306 ROM VDP Full Clear, Armlet Glow & Palette-Cycling Animator (`0x002B28`, `0x008DD4`..`0x008E8E`) — COMPLETE / VERIFIED
+- Decoded VDP DMA-Fill clear (`0x002B28`: CRAM 0, HScroll, VSRAM, Tile 0, SAT, Plane A/B), Armlet glow state machine (`0x008DD4`, `$FF183E`, threshold `0x14`), and CRAM palette-cycling animator (`0x008E22`, `$FF17A2 -> $FF134C`).
+- Authored `tools/extract_rom_vdp_clear_and_palette_cycle.py`, `tests/rom_vdp_clear_and_palette_cycle_test.py` (`2/2 PASS`), `data/thor-evidence/rom_vdp_clear_and_palette_cycle_m15_306.json`, and `docs/handoffs/STANDALONE_M15_306_VDP_CLEAR_AND_PALETTE_CYCLE_HANDOFF.md`.
+
 # M15.305 ROM 3D AABB Solid Entity Sweep & Push (`0x009DD6`..`0x009EB8`) — COMPLETE / VERIFIED
 - Decoded 21-slot (`$FF19E8`, stride `0xBC`) swept 3D AABB solid collision (`0x009DD6..0x009EB8`), push-contact timer (`3` frames at `$6C`), `$40` bit 7 flag, and `+1px` pushable blocker nudge.
 - Authored `tools/extract_rom_solid_entity_sweep.py`, `tests/rom_solid_entity_sweep_test.py` (`2/2 PASS`), `data/thor-evidence/rom_solid_entity_sweep_m15_305.json`, and `docs/handoffs/STANDALONE_M15_305_SOLID_ENTITY_SWEEP_HANDOFF.md`.

@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.306: ROM VDP FULL CLEAR, ARMLET GLOW & PALETTE CYCLER (`0x002B28`, `0x008DD4`..`0x008E8E`) — 6 VDP Regions, Armlet `$FF183E`, CRAM Cycler `$FF17A2`; Extractor (`tools/extract_rom_vdp_clear_and_palette_cycle.py` <= 500 lines), Tests (`tests/rom_vdp_clear_and_palette_cycle_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_306_VDP_CLEAR_AND_PALETTE_CYCLE_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x002B28..0x002C20` and `0x008DD4..0x008E8E` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_vdp_clear_and_palette_cycle.py` and `python tests/rom_vdp_clear_and_palette_cycle_test.py` (2/2 PASS).
+- Next: Commit & push M15.306, await M16.89 completion, and continue.
+
 # 2026-11-17 — Milestone M15.305: ROM 3D AABB SOLID ENTITY SWEEP & PUSH (`0x009DD6`..`0x009EB8`) — 21 Slots, 3f Push Timer, +1px Nudge; Extractor (`tools/extract_rom_solid_entity_sweep.py` <= 500 lines), Tests (`tests/rom_solid_entity_sweep_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_305_SOLID_ENTITY_SWEEP_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x009DD6..0x009EB8` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_solid_entity_sweep.py` and `python tests/rom_solid_entity_sweep_test.py` (2/2 PASS).

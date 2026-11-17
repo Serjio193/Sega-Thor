@@ -1,3 +1,7 @@
+# ADR-20261117-M15-306-VDP-CLEAR-AND-PALETTE-CYCLE — VDP Full Clear, Armlet Glow & Palette Cycler (`0x002B28`, `0x008DD4`..`0x008E8E`)
+- **Decision:** Model VDP clear regions (`0x002B28`), Armlet glow (`0x008DD4`, `$FF183E` `0..3`/`4` pulse at `0x14`), and CRAM keyframe palette cycling (`0x008E22`, `$FF17A2`) in Standalone.
+- **Evidence:** Direct Capstone M68K disassembly of `0x002B28..0x002C20` and `0x008DD4..0x008E8E` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-305-SOLID-ENTITY-SWEEP — 3D AABB Solid Entity Sweep & Push (`0x009DD6`..`0x009EB8`)
 - **Decision:** Model solid entity-vs-entity separation and crate/block pushing in Standalone via `0x009DD6`'s 21-slot swept 3D AABB check, `3`-frame push timer (`$6C`), and `+1px` nudge.
 - **Evidence:** Direct Capstone M68K disassembly of `0x009DD6..0x009EB8` in `local-roms/Beyond Oasis (USA).md`.

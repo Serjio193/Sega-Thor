@@ -1,0 +1,54 @@
+{
+  "milestone": "M15.306",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "vdp_clear": {
+    "entry_addr": "0x002B28",
+    "dma_fill_addr": "0x002BD2",
+    "dma_autoinc_reg": "0x8F01",
+    "dma_mode_fill": "0x9780",
+    "regions": [
+      {
+        "name": "hscroll",
+        "vdp_cmd": "0x5C000003",
+        "addr": "0xDC00"
+      },
+      {
+        "name": "vsram",
+        "vdp_cmd": "0x40000010",
+        "words": 40
+      },
+      {
+        "name": "tile_zero",
+        "vdp_cmd": "0x40000000",
+        "bytes_minus_1": 31
+      },
+      {
+        "name": "sat",
+        "vdp_cmd": "0x50000003",
+        "addr": "0xD000"
+      },
+      {
+        "name": "plane_a",
+        "vdp_cmd": "0x40000003",
+        "bytes_minus_1": 4095
+      },
+      {
+        "name": "plane_b",
+        "vdp_cmd": "0x60000003",
+        "bytes_minus_1": 4095
+      }
+    ]
+  },
+  "armlet_glow": {
+    "entry_addr": "0x008DD4",
+    "ram_glow": "0xFF183E",
+    "ram_spirit_active": "0xFF1AA4",
+    "pulse_threshold_ff199e": 20
+  },
+  "palette_cycler": {
+    "entry_addr": "0x008E22",
+    "ram_enable_flag": "0xFF164F",
+    "ram_list_ptr": "0xFF17A2",
+    "cram_shadow_addr": "0xFF134C"
+  }
+}
