@@ -1,3 +1,9 @@
+# M15.318 ROM Room Update Hooks & Warp Transition Sequence
+- `tools/extract_rom_room_warp_sequence.py` — ROM extractor & verifier for `0x00C980..0x00CB0A` (room update hooks, 6-flag warp lock guard, `0x0004->0x0611` redirect, `160x112` camera centering, checkpoint `0x0017DA`, fade `4`).
+- `tests/rom_room_warp_sequence_test.py` — Unit tests verifying warp lock guard and camera centering / room redirect.
+- `data/thor-evidence/rom_room_warp_sequence_m15_318.json` — Verified evidence JSON for M15.318.
+- `docs/handoffs/STANDALONE_M15_318_ROOM_WARP_SEQUENCE_HANDOFF.md` — C++20 Standalone handoff for M16.102.
+
 # M15.317 ROM Dialogue Cursor & Border SAT Builder
 - `tools/extract_rom_dialogue_sat_builder.py` — ROM extractor & verifier for `0x00C756..0x00C84C` (blinking cursor `0x86DC`/`0x96DC` and 4x8 sprite box bars, max 80 sprites).
 - `tests/rom_dialogue_sat_builder_test.py` — Unit tests verifying cursor placement and 8-sprite bar SAT emission.

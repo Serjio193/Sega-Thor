@@ -1,0 +1,49 @@
+{
+  "milestone": "M15.318",
+  "title": "ROM Room Update Hooks & Warp Transition Sequence",
+  "routines": {
+    "room_update_early": {
+      "start": "0x00C980",
+      "end": "0x00C996",
+      "header_rel_offset": 0
+    },
+    "room_update_late": {
+      "start": "0x00C998",
+      "end": "0x00C9B0",
+      "header_rel_offset": 2
+    },
+    "room_warp_guard": {
+      "start": "0x00C9B2",
+      "end": "0x00C9EA"
+    },
+    "warp_door_fade": {
+      "start": "0x00C9EC",
+      "end": "0x00CA0E"
+    },
+    "warp_instant_cut": {
+      "start": "0x00CA10",
+      "end": "0x00CB0A"
+    }
+  },
+  "warp_lock_flags": [
+    "0x00FF17B9",
+    "0x00FF1987",
+    "0x00FF1985",
+    "0x00FF17B8",
+    "0x00FF1983",
+    "0x00FF1982"
+  ],
+  "constants": {
+    "camera_half_w": 160,
+    "camera_half_h": 112,
+    "redirect_src_room": "0x0004",
+    "redirect_dst_room": "0x0611",
+    "checkpoint_flag_offset": "0x19",
+    "checkpoint_flag_bit": 6,
+    "checkpoint_routine": "0x0017DA",
+    "sound_stop_cmd": 2,
+    "sound_cmd_entry": "0x00060004",
+    "fade_speed": 4,
+    "spawn_block_end_ram": "0x00FF178E"
+  }
+}

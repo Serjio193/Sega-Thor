@@ -1,3 +1,8 @@
+# ADR-20261117-M15-318-ROOM-WARP-SEQUENCE — Room Update Hooks & Warp Transition Sequence (`0x00C980`..`0x00CB0A`)
+- **Context:** Room updates dispatch via header relative offsets `+0`/`+2`, while warp triggers (`0x00C9B2`) require 6 lock flags clear, redirect room `0x0004` to `0x0611`, center camera `(x-160, y-112)`, optionally snapshot checkpoint (`0x0017DA`), silence sound, and fade (`4`).
+- **Decision:** Extracted all lock-flag RAM addresses, constants, and warp sequence rules into `data/thor-evidence/rom_room_warp_sequence_m15_318.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.102 can implement exact warp-guard and camera-centering parity.
+
 # ADR-20261117-M15-317-DIALOGUE-SAT-BUILDER — Dialogue Cursor & Border SAT Builder (`0x00C756`..`0x00C84C`)
 - **Context:** Dialogue / choice UI renders a blinking cursor (`0x86DC`/`0x96DC` at X `0x011C`, Y `0x014C - 12 * (3 - min(choice, 3))`) and four 8-sprite horizontal bars (`0x0C00` size/link, X `0x00A0 + 0x20*i`, max 80 SAT entries).
 - **Decision:** Extracted all SAT constants and sprite-emission rules into `data/thor-evidence/rom_dialogue_sat_builder_m15_317.json` with 2/2 passing tests and Standalone handoff.
