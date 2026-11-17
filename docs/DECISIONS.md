@@ -1,3 +1,7 @@
+# ADR-20261117-M15-359-DEMO-STREAM-LOADER — Attract-Mode 9-Slot Demo-Stream Loader & Delta Decoder (`0x0089B2`..`0x008AA5`)
+- **Context:** Attract-mode demo playback (`0x0089B2..0x008AA5`) cycles `$FF0BFC` over 9 LZ-compressed streams (`0x1698FE + u16[0x008A94 + idx*2]`) into `$FFBFAC`, applies an `0x2000`-byte cumulative delta decode at `$FFDFB2`, and hands off replay state to `0x00CA24`.
+- **Decision:** Extract all 9 ROM demo stream addresses, the `$FF0BFC` wrap rule, and the `$FFDFB2` 8KB delta decode loop in `tools/extract_rom_demo_stream_loader.py` and `docs/handoffs/STANDALONE_M15_359_DEMO_STREAM_LOADER_HANDOFF.md`.
+
 # ADR-20261117-M15-358-CHAINED-SUPER-MOTION — Chained F-B-F + 360-Spin Super-Motion Recognizer (`0x008814`..`0x00890E`)
 - **Context:** Ali's chained super-motion (`0x008814..0x00890E`) reuses the M15.357 F-B-F (`0x0087F4`) and 360° spin (`0x008768`) tables in a single continuous pass over the `$FF1668` ring without resetting the 30-frame cap or the ring index between phases.
 - **Decision:** Document the unbounded `$FF16EA` loop and shared-cursor phase transition (re-evaluating the final F-B-F sample as the first spin cardinal) in `tools/extract_rom_chained_super_motion.py` and `docs/handoffs/STANDALONE_M15_358_CHAINED_SUPER_MOTION_HANDOFF.md`.

@@ -1,3 +1,9 @@
+# M15.359 ROM Attract-Mode 9-Slot Demo-Stream Loader & Delta Decoder
+- `tools/extract_rom_demo_stream_loader.py` — extractor for `0x0089B2..0x008AA5` (`$FF0BFC` 0..8 wrap, `0x008A94` 9-entry offset table into `$1698FE`, `0x003820` decompression, `$FFDFB2` 8KB delta decode).
+- `tests/rom_demo_stream_loader_test.py` — `2` unit tests verifying the 9 ROM stream addresses, index wrap, and 8-bit cumulative delta decoding.
+- `data/thor-evidence/rom_demo_stream_loader_m15_359.json` — extracted M15.359 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_359_DEMO_STREAM_LOADER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.358 ROM Chained F-B-F + 360-Spin Super-Motion Recognizer
 - `tools/extract_rom_chained_super_motion.py` — extractor for `0x008814..0x00890E` (unbounded `$FF16EA` scan chaining F-B-F phase into seamless 360° spin phase).
 - `tests/rom_chained_super_motion_test.py` — `2` unit tests verifying ROM opcodes, chained F-B-F + 360° spin match, and perpendicular edge abort.

@@ -1,3 +1,6 @@
+# M15.359 ROM Attract-Mode 9-Slot Demo-Stream Loader & 8KB Delta Decoder (`0x0089B2`..`0x008AA5`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_demo_stream_loader.py`, `tests/rom_demo_stream_loader_test.py` (`2/2 PASS`), `data/thor-evidence/rom_demo_stream_loader_m15_359.json`, and `docs/handoffs/STANDALONE_M15_359_DEMO_STREAM_LOADER_HANDOFF.md`.
+
 # M15.358 ROM Chained F-B-F + 360-Spin Super-Motion Recognizer (`0x008814`..`0x00890E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_chained_super_motion.py`, `tests/rom_chained_super_motion_test.py` (`2/2 PASS`), `data/thor-evidence/rom_chained_super_motion_m15_358.json`, and `docs/handoffs/STANDALONE_M15_358_CHAINED_SUPER_MOTION_HANDOFF.md`.
 

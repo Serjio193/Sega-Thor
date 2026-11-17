@@ -1,0 +1,64 @@
+{
+  "milestone": "M15.359",
+  "rom_range": "0x0089B2..0x008AA5",
+  "demo_index_addr": "0xFF0BFC",
+  "demo_index_max_before_wrap": 8,
+  "stream_base_rom_addr": "0x1698FE",
+  "offset_table_addr": "0x008A94",
+  "decompressor_addr": "0x003820",
+  "decomp_dest_addr": "0xFFBFAC",
+  "delta_buffer_addr": "0xFFDFB2",
+  "delta_loop_count": 8190,
+  "delta_byte_count": 8192,
+  "replay_ptr_addr": "0xFF1998",
+  "replay_limit_addr": "0xFF1928",
+  "replay_limit_value": "0x7F28",
+  "continue_target_addr": "0x00CA24",
+  "streams": [
+    {
+      "index": 0,
+      "offset_u16": "0x0000",
+      "rom_addr": "0x1698FE"
+    },
+    {
+      "index": 1,
+      "offset_u16": "0x042C",
+      "rom_addr": "0x169D2A"
+    },
+    {
+      "index": 2,
+      "offset_u16": "0x0BC0",
+      "rom_addr": "0x16A4BE"
+    },
+    {
+      "index": 3,
+      "offset_u16": "0x1202",
+      "rom_addr": "0x16AB00"
+    },
+    {
+      "index": 4,
+      "offset_u16": "0x144C",
+      "rom_addr": "0x16AD4A"
+    },
+    {
+      "index": 5,
+      "offset_u16": "0x16C8",
+      "rom_addr": "0x16AFC6"
+    },
+    {
+      "index": 6,
+      "offset_u16": "0x18E0",
+      "rom_addr": "0x16B1DE"
+    },
+    {
+      "index": 7,
+      "offset_u16": "0x1EE8",
+      "rom_addr": "0x16B7E6"
+    },
+    {
+      "index": 8,
+      "offset_u16": "0x201E",
+      "rom_addr": "0x16B91C"
+    }
+  ]
+}
