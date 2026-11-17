@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.82: Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool)
+- **Concrete Task**: Implement `src/game/combat/hit_reactions_and_sparks.hpp/.cpp` with `HitReactionKind` (`0, 2, 4, 6`), `apply_hit_reaction_physics` (4 profiles: `0x300/0x2C0/0` grounded or bit 7 + `4` airborne, `0/0/0x70000`, `0x400/0x3C0/0x28000`, `0x700/0x680/0x30000`), `apply_shield_parry` (`0x00900202`, Ali recoil `0x008530` on weapon `$FF198C` in `{6, 10}`, spark spawn), and `HitSparkPool4` (`$FF19C8` 4 slots, `type = 2`, `timer = 5`, `tick_sparks()`); add `tests/m16_82_hit_reactions_and_sparks_test.cpp`; qualify full 42-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/combat/hit_reactions_and_sparks.hpp` / `src/game/combat/hit_reactions_and_sparks.cpp`.
+  * Added `tests/m16_82_hit_reactions_and_sparks_test.cpp` (registered as `oasis_m16_82_hit_reactions_and_sparks` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 42/42 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_82`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 42/42 regression run.
+  * Remaining unknowns: SAT sprite emission of `HitSparkPool4` (`$FF19C8`) into `VdpState` is deferred to future combat-SAT unification.
+
 # Worklog — 2026-11-17 (M16.81: Combat Hitbox Collision, Kill-Rank Damage Scaling & Shield Block)
 - **Concrete Task**: Implement `src/game/combat/combat_hitbox_kernel.hpp/.cpp` with `compute_ali_kill_rank_bonus` (`0x00BD40`: `10/20/30/40/50 -> +1` each, `100 -> +2`, `200 -> +4`, max `+11`), `is_shield_block` (`0x00BFAE`: `guard_flag_6d != 0 && (attacker_facing ^ 2) == defender_facing`), and `resolve_combat_hit` (`dir 3 -> dir 1` mirror, kill-rank bonus, shield block, `90`-frame `0x5A` enemy HP HUD timer `$FF184F`, `6`-frame hit-flash `$83`, reaction dispatch `0, 2, 4, 6` at `0x00BF26`); add `tests/m16_81_combat_hitbox_kernel_test.cpp`; qualify full 41-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

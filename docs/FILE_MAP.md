@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/combat/hit_reactions_and_sparks.hpp` / `src/game/combat/hit_reactions_and_sparks.cpp`: Hit-reaction knockback physics (`0x00BF26`, profiles `0/2/4/6`), shield parry recoil (`0x00BFAE`, SFX `0x00900202`, weapon `6`/`10`), and 4-slot hit-spark pool (`0x00C012`, `$FF19C8`, `timer = 5`) (M16.82).
+- `tests/m16_82_hit_reactions_and_sparks_test.cpp`: Automated M16.82 test qualifying all 4 hit-reaction profiles, shield parry recoil, and 4-slot hit-spark lifecycle (M16.82).
 - `src/game/combat/combat_hitbox_kernel.hpp` / `src/game/combat/combat_hitbox_kernel.cpp`: Combat hitbox collision & kill-rank scaling (`0x00BCBA..0x00BF26`, 7-tier `+11` max bonus, shield block `0x00BFAE`, `90`-frame enemy HP HUD `$FF184F`, `6`-frame hit-flash `$83`, reaction `0/2/4/6`) (M16.81).
 - `tests/m16_81_combat_hitbox_kernel_test.cpp`: Automated M16.81 test qualifying kill-rank bonus tiers, dir 3->1 mirror, shield block, and HUD/flash/reaction outputs (M16.81).
 - `src/game/video/vint_dma_and_input_ring.hpp` / `src/game/video/vint_dma_and_input_ring.cpp`: V-Int LIFO DMA queue (`0x002112`, `$FF164E` bit 1), 64-frame input history ring (`0x0021B2`, `$FF1668`, `0xE0000202` soft-reset), and V-Int frame/countdown timers (`0x0021EC`) (M16.80).

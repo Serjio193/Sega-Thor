@@ -1,3 +1,9 @@
+# M16.82 Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool (0x00BF26..0x00C060) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `HitReactionKind`, `apply_hit_reaction_physics` (all 4 profiles `0/2/4/6` + airborne bit 7 fallthrough), `apply_shield_parry` (`0x00900202`, recoil on weapon `6`/`10`), and `HitSparkPool4` (`$FF19C8`, 4 slots, `type = 2`, `timer = 5`) in `src/game/combat/hit_reactions_and_sparks.hpp/.cpp`.
+- Qualified `oasis_m16_82_hit_reactions_and_sparks` and full 42-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.81 Combat Hitbox Collision, Kill-Rank Damage Scaling & Shield Block (0x00BCBA..0x00BF26) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-82-HIT-REACTIONS-AND-SPARKS — Hit-Reaction Knockback Physics, Shield Parry & Hit-Spark Pool
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.298 extracted the 4 hit-reaction velocity profiles (`0x00BF26`), shield parry recoil (`0x00BFAE`, SFX `0x00900202`, weapon `6`/`10`), and 4-slot hit-spark pool (`0x00C012`, `$FF19C8`, `type = 2`, `timer = 5`).
+
+**Decisions:**
+1. **Dedicated `hit_reactions_and_sparks` Module:**
+   - Added `src/game/combat/hit_reactions_and_sparks.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-81-COMBAT-HITBOX-KERNEL — Combat Hitbox Collision, Kill-Rank Damage Scaling & Shield Block
 **Status:** Accepted
 **Date:** 2026-11-17
