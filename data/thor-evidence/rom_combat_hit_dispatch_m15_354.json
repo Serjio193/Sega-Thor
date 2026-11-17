@@ -1,0 +1,92 @@
+{
+  "milestone": "M15.354",
+  "rom_range": "0x00BC8E..0x00BE96",
+  "entrypoints": [
+    {
+      "name": "scan_primary_pool",
+      "addr": "0x00BC8E",
+      "pool_base": "0xFF19E8",
+      "slot_count": 21,
+      "callback": "0x00BEBA",
+      "sets_hit_marker": false
+    },
+    {
+      "name": "scan_fx_pool",
+      "addr": "0x00BCA4",
+      "pool_base": "0xFF1CD8",
+      "slot_count": 17,
+      "callback": "0x00BE98",
+      "sets_hit_marker": false
+    },
+    {
+      "name": "scan_fx_pool_marked",
+      "addr": "0x00BCBA",
+      "pool_base": "0xFF1CD8",
+      "slot_count": 17,
+      "callback": "0x00BE98",
+      "sets_hit_marker": true,
+      "hit_marker_addr": "0xFF198B",
+      "hit_marker_value": 2
+    },
+    {
+      "name": "scan_ali_only",
+      "addr": "0x00BCD8",
+      "pool_base": "0xFF19E8",
+      "slot_count": 1,
+      "callback": "0x00BEBA",
+      "sets_hit_marker": false
+    }
+  ],
+  "entity_stride_bytes": 188,
+  "combat_record_stride_bytes": 44,
+  "ali_entity_addr": "0xFF19E8",
+  "ali_kill_count_offset": "0x96",
+  "ali_power_bonus_offset": "0x90",
+  "ali_kill_thresholds": [
+    {
+      "min_kills": 10,
+      "delta": 1
+    },
+    {
+      "min_kills": 20,
+      "delta": 1
+    },
+    {
+      "min_kills": 30,
+      "delta": 1
+    },
+    {
+      "min_kills": 40,
+      "delta": 1
+    },
+    {
+      "min_kills": 50,
+      "delta": 1
+    },
+    {
+      "min_kills": 100,
+      "delta": 2
+    },
+    {
+      "min_kills": 200,
+      "delta": 4
+    }
+  ],
+  "post_loop_special_cancel": {
+    "guard_entity": "0xFF19E8",
+    "guard_flag_offset": "0x37",
+    "guard_flag_bit": 3,
+    "attack_index_addr": "0xFF198C",
+    "matching_indices": [
+      6,
+      10
+    ],
+    "target_subroutine": "0x008530"
+  },
+  "verified_opcodes": {
+    "0x00BC90_cb_beba": "0x0000BEBA",
+    "0x00BCA6_cb_be98": "0x0000BE98",
+    "0x00BD14_record_stride": "0x002C",
+    "0x00BE5A_jsr_a2": "0x4E92"
+  }
+}

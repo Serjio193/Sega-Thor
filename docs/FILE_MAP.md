@@ -1,3 +1,9 @@
+# M15.354 ROM Combat Hitbox Dispatch & Ali Damage Scaling
+- `tools/extract_rom_combat_hit_dispatch.py` — extractor for `0x00BC8E..0x00BE96` (`4` entrypoints, `0x2C`-byte frame records, Ali kill-count damage scaling, `hitstop`/`damage_word` pack, and post-loop special cancel).
+- `tests/rom_combat_hit_dispatch_test.py` — `2` unit tests verifying ROM opcodes and Ali kill-bonus damage/hitstop packing.
+- `data/thor-evidence/rom_combat_hit_dispatch_m15_354.json` — extracted M15.354 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_354_COMBAT_HIT_DISPATCH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.353 ROM Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner
 - `tools/extract_rom_weapon_hitbox_builder.py` — ROM extractor & verifier for `0x00B9EC..0x00BB1E` (8-slot `0x5A` FX pool `$FF2ABC`, 17-slot enemy pool `$FF1CD8`, 12B local hitbox with `facing==3` X-mirror).
 - `tests/rom_weapon_hitbox_builder_test.py` — Unit tests verifying `facing == 3` X-mirroring and world translation.

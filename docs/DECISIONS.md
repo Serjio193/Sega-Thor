@@ -1,3 +1,7 @@
+# ADR-20261117-M15-354-COMBAT-HIT-DISPATCH — Combat Hitbox Dispatch & Ali Kill-Bonus Damage Scaling (`0x00BC8E`..`0x00BE96`)
+- **Context:** Melee/projectile attacks in `0x00BC8E..0x00BE96` share a single 3D AABB overlap & hit-dispatch core across 4 pool/callback entrypoints (`$FF19E8` 21 slots vs `$FF1CD8` 17 slots vs Ali-only 1 slot) and pack Ali's 7-threshold kill-count bonus (`+0x96`) plus `+0x90` power bonus with `(hit_flags & 0x0F) + 1` hitstop.
+- **Decision:** Model all 4 entrypoints, `0x2C`-byte frame record search, Ali kill-count thresholds (`10, 20, 30, 40, 50, 100, 200`), and post-loop `$FF198C in {6,10}` cancel explicitly in `tools/extract_rom_combat_hit_dispatch.py` and `docs/handoffs/STANDALONE_M15_354_COMBAT_HIT_DISPATCH_HANDOFF.md`.
+
 # ADR-20261117-M15-353-WEAPON-HITBOX-BUILDER — Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner (`0x00B9EC`..`0x00BB1E`)
 - **Context:** Weapon/attack hitbox queries (`0x00BAAC`, `0x00BAB8`) read 12-byte local AABBs `(dz1, dz2, dx1, dy1, dx2, dy2)`, mirror X `(-dx2, -dx1)` when `facing == 3` (Left), and translate into world space for 21-slot (`$FF19E8`) or 17-slot enemy (`$FF1CD8`) checks.
 - **Decision:** Extracted all pool bases, slot counts, and mirroring rules into `data/thor-evidence/rom_weapon_hitbox_builder_m15_353.json` with 2/2 passing tests and Standalone handoff.

@@ -1,3 +1,6 @@
+# M15.354 ROM Melee/Projectile Combat Hitbox Dispatch, Ali Kill-Bonus Damage Scaling & Hitstop Pack (`0x00BC8E`..`0x00BE96`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_combat_hit_dispatch.py`, `tests/rom_combat_hit_dispatch_test.py` (`2/2 PASS`), `data/thor-evidence/rom_combat_hit_dispatch_m15_354.json`, and `docs/handoffs/STANDALONE_M15_354_COMBAT_HIT_DISPATCH_HANDOFF.md`.
+
 # M15.353 ROM Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner (`0x00B9EC`..`0x00BB1E`) — COMPLETE / VERIFIED
 # M15.352 ROM Resumable 21-Slot Masked 3D Hitbox Iterator (`0x00B852`..`0x00B920`) — COMPLETE / VERIFIED
 # M15.351 ROM Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box (`0x00822C`..`0x008350`) — COMPLETE / VERIFIED
