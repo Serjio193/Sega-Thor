@@ -1,3 +1,9 @@
+# M15.431 ROM Map & Scene Script Dispatcher, 21-Area Script Table & State Manager
+- `tools/extract_rom_map_scene_dispatcher.py` — extractor for `0x00C88C..0x00C9B2` (master area scene loader `load_map_scene_script`, 21-entry area pointer table `0x00C92C`, state flag clearing on scene/area changes, tick `0x00C980`, and subtick `0x00C998`).
+- `tests/rom_map_scene_dispatcher_test.py` — `5` unit tests verifying ROM constants, 21 area table validity, scene script offset resolution, area vs room transition flag clearing, and tick/subtick target jump offsets.
+- `data/thor-evidence/rom_map_scene_dispatcher_m15_431.json` — extracted M15.431 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_431_MAP_SCENE_DISPATCHER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.430 ROM Dialogue Entity Sprite Compositor, Prompt Arrow Indicator & Frame Sync Engine
 - `tools/extract_rom_dialogue_task_compositor.py` — extractor for `0x00C756..0x00C88C` (dialogue task callback `dialogue_task_sprite_compositor`, prompt arrow generator, 32-piece window text line grid `dialogue_emit_line_sprites`, 80-sprite limiter, and frame sync `0x00C84E`).
 - `tests/rom_dialogue_task_compositor_test.py` — `5` unit tests verifying ROM constants, prompt arrow flashing and continue/dismiss tile selection, dynamic Y coordinate scaling, 32-piece window grid layout, and 80-sprite hardware overflow protection.

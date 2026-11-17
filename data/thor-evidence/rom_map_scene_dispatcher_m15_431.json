@@ -1,0 +1,139 @@
+{
+  "routine": "map_scene_script_dispatcher_and_state_manager",
+  "start_address": "0x00C88C",
+  "end_address": "0x00C9B2",
+  "size_bytes": 294,
+  "entry_points": {
+    "dialogue_update_caller_anim": "0x00C88C",
+    "load_map_scene_script": "0x00C8AA",
+    "get_map_scene_script_pointer": "0x00C90E",
+    "exec_map_script_tick": "0x00C980",
+    "exec_map_script_subtick": "0x00C998"
+  },
+  "area_table": {
+    "address": "0x00C92C",
+    "count": 21,
+    "areas": [
+      {
+        "area_id": 0,
+        "address": "0x02C6B8",
+        "ptr_val": 181944
+      },
+      {
+        "area_id": 1,
+        "address": "0x02E56A",
+        "ptr_val": 189802
+      },
+      {
+        "area_id": 2,
+        "address": "0x02F1A4",
+        "ptr_val": 192932
+      },
+      {
+        "area_id": 3,
+        "address": "0x02F9B2",
+        "ptr_val": 194994
+      },
+      {
+        "area_id": 4,
+        "address": "0x02FF80",
+        "ptr_val": 196480
+      },
+      {
+        "area_id": 5,
+        "address": "0x030218",
+        "ptr_val": 197144
+      },
+      {
+        "area_id": 6,
+        "address": "0x030E56",
+        "ptr_val": 200278
+      },
+      {
+        "area_id": 7,
+        "address": "0x031B50",
+        "ptr_val": 203600
+      },
+      {
+        "area_id": 8,
+        "address": "0x0328D6",
+        "ptr_val": 207062
+      },
+      {
+        "area_id": 9,
+        "address": "0x03361C",
+        "ptr_val": 210460
+      },
+      {
+        "area_id": 10,
+        "address": "0x0341A4",
+        "ptr_val": 213412
+      },
+      {
+        "area_id": 11,
+        "address": "0x035528",
+        "ptr_val": 218408
+      },
+      {
+        "area_id": 12,
+        "address": "0x036286",
+        "ptr_val": 221830
+      },
+      {
+        "area_id": 13,
+        "address": "0x037B42",
+        "ptr_val": 228162
+      },
+      {
+        "area_id": 14,
+        "address": "0x038AAC",
+        "ptr_val": 232108
+      },
+      {
+        "area_id": 15,
+        "address": "0x02C6F2",
+        "ptr_val": 182002
+      },
+      {
+        "area_id": 16,
+        "address": "0x038FBA",
+        "ptr_val": 233402
+      },
+      {
+        "area_id": 17,
+        "address": "0x03957C",
+        "ptr_val": 234876
+      },
+      {
+        "area_id": 18,
+        "address": "0x039F7A",
+        "ptr_val": 237434
+      },
+      {
+        "area_id": 19,
+        "address": "0x039F7C",
+        "ptr_val": 237436
+      },
+      {
+        "area_id": 20,
+        "address": "0x039F7E",
+        "ptr_val": 237438
+      }
+    ]
+  },
+  "script_header_layout": {
+    "offset_0x00": "relative_offset_to_tick_callback",
+    "offset_0x02": "relative_offset_to_subtick_callback",
+    "offset_0x1A": "script_initialization_entrypoint"
+  },
+  "memory_map": {
+    "FF0E40": "current_packed_area_scene_id",
+    "FF0E2C": "area_state_flags_16_bytes",
+    "FF0E1C": "map_state_flags_16_bytes",
+    "FF0DB3": "area_trigger_flags_3_bytes",
+    "FF16EC": "active_scene_script_pointer",
+    "FF17B8": "script_pause_flags",
+    "FF1882": "dialogue_caller_entity_ptr"
+  },
+  "code_hex": "2c3900ff188267142c463c2e000023fc0000c8a800ff193c6000c67c4e757e00b07900ff0e406700003443f900ff0e2c22c722c722c722c73c00e04ebc3900ff0e40671843f900ff0e1c22c722c722c722c743f900ff0db312c732c733c000ff0e403e00024000ffe04fe54f227b7032d040d2c0d2d123c900ff16ec41e9001a4ed048e7c0003200024000ffe049e549207b100ed040d0c0d0d04cdf00034e750002c6b80002e56a0002f1a40002f9b20002ff800003021800030e5600031b50000328d60003361c000341a4000355280003628600037b4200038aac0002c6f200038fba0003957c00039f7a00039f7c00039f7e0839000100ff17b86600000c227900ff16ecd2d14ed14e750839000100ff17b86600000e227900ff16ec5489d2d14ed14e75"
+}

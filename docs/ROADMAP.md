@@ -1,3 +1,6 @@
+# M15.431 ROM Map & Scene Script Dispatcher, 21-Area Script Table & State Manager (`0x00C88C`..`0x00C9B2`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_map_scene_dispatcher.py`, `tests/rom_map_scene_dispatcher_test.py` (`5/5 PASS`), `data/thor-evidence/rom_map_scene_dispatcher_m15_431.json`, and `docs/handoffs/STANDALONE_M15_431_MAP_SCENE_DISPATCHER_HANDOFF.md`.
+
 # M15.430 ROM Dialogue Entity Sprite Compositor, Prompt Arrow Indicator & Frame Sync Engine (`0x00C756`..`0x00C88C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dialogue_task_compositor.py`, `tests/rom_dialogue_task_compositor_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dialogue_task_compositor_m15_430.json`, and `docs/handoffs/STANDALONE_M15_430_DIALOGUE_TASK_COMPOSITOR_HANDOFF.md`.
 
