@@ -1,0 +1,27 @@
+{
+  "milestone": "M15.409",
+  "title": "ROM Vertical (\u00b1Y) Solid Dynamic Entity Collision Sweeps",
+  "pool": {
+    "address": "0x00FF19E8",
+    "slots": 21,
+    "stride": 188
+  },
+  "routines": {
+    "sweep_pos_y": {
+      "start": "0x009FA0",
+      "end": "0x00A098",
+      "bytes": 248,
+      "push_opcode": "addq.w #1, $76(a5)",
+      "collision_bit": 7,
+      "reaction_code": 3
+    },
+    "sweep_neg_y": {
+      "start": "0x00A09A",
+      "end": "0x00A196",
+      "bytes": 252,
+      "push_opcode": "subq.w #1, $76(a5)",
+      "collision_bit": 7,
+      "reaction_code": 3
+    }
+  }
+}

@@ -1,3 +1,6 @@
+# M15.409 ROM Vertical (±Y) Solid Dynamic Entity Collision Sweeps (`0x009FA0`..`0x00A196`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_vertical_entity_sweeps.py`, `tests/rom_vertical_entity_sweeps_test.py` (`8/8 PASS`), `data/thor-evidence/rom_vertical_entity_sweeps_m15_409.json`, and `docs/handoffs/STANDALONE_M15_409_VERTICAL_ENTITY_SWEEPS_HANDOFF.md`.
+
 # M15.408 ROM Horizontal (±X) Solid Dynamic Entity Collision Sweeps (`0x009DD6`..`0x009F9E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_horizontal_entity_sweeps.py`, `tests/rom_horizontal_entity_sweeps_test.py` (`9/9 PASS`), `data/thor-evidence/rom_horizontal_entity_sweeps_m15_408.json`, and `docs/handoffs/STANDALONE_M15_408_HORIZONTAL_ENTITY_SWEEPS_HANDOFF.md`.
 

@@ -1,3 +1,9 @@
+# M15.409 ROM Vertical (±Y) Solid Dynamic Entity Collision Sweeps
+- `tools/extract_rom_vertical_entity_sweeps.py` — extractor for `0x009FA0..0x00A196` (vertical dynamic entity collision sweeps ±Y, Group 2 pool `$FF19E8`, 3D AABB overlap, step clamping, Y collision bit 7 on `$41`, and entity push velocity deltas `±1` on `$76`).
+- `tests/rom_vertical_entity_sweeps_test.py` — `8` unit tests verifying ROM constants, vertical entity sweeps, 3D AABB overlaps, clamping, and directional push behavior.
+- `data/thor-evidence/rom_vertical_entity_sweeps_m15_409.json` — extracted M15.409 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_409_VERTICAL_ENTITY_SWEEPS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.408 ROM Horizontal (±X) Solid Dynamic Entity Collision Sweeps
 - `tools/extract_rom_horizontal_entity_sweeps.py` — extractor for `0x009DD6..0x009F9E` (horizontal dynamic entity collision sweeps ±X, Group 2 pool `$FF19E8`, 3D AABB overlap, step clamping, and entity push velocity deltas `±1` on `$72`).
 - `tests/rom_horizontal_entity_sweeps_test.py` — `9` unit tests verifying ROM constants, horizontal entity sweeps, 3D AABB overlaps, clamping, and directional push behavior.
