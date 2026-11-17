@@ -1,3 +1,33 @@
+# ADR-20261117-M16-164-MASTER-SAT-COMPOSITOR — ROM Master Entity SAT Sprite Compositor, Screen Clipping & Dynamic Shadow Blitter (0x00A9A0..0x00AD76)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.415 extracted ROM routines `0x00A9A0..0x00AD76` governing the master entity SAT sprite compositor, screen viewport clipping, dynamic shadow blitting, and frame caching:
+   - `0x00A9A0`: Visibility check testing `flags_36` bit 1 (`btst.b #1, $36(a6)`). Branches directly to RTS exit `0x00ACFC` if bit 1 is set.
+   - `0x00A9D6`: Frame Cache & VRAM DMA Quota Check:
+     * Compares entity `anim_frame` against `frame_cache` at `+0x34(a6)`.
+     * If `new_frame == cached_frame`: cache hit (no DMA needed).
+     * If `cached_frame >= 0` and total required tiles exceed remaining quota `$FF1652.w`: reuses cached frame, sets deferred flag `$FF1651.b = 0xFF`, and suppresses DMA queueing.
+     * Else: updates `frame_cache = new_frame` and queues DMA transfer.
+   - `0x00AB00`: 3D World to 2D Screen Coordinate Projection:
+     * `screen_x = world_x - cam_x + 128` (`0x80`).
+     * `screen_y = (world_y - cam_y + 128) - elev_z`.
+   - Screen Viewport Clipping:
+     * Mega Drive VDP SAT coordinates are clipped if `(screen_y - 0x60) > 0x100` or `(screen_x - 0x60) > 0x160`.
+   - Embedded 4x4 Sprite Tile Count Table (`0x00AD56..0x00AD76`):
+     * 16 entries mapping `(width - 1) * 4 + (height - 1)` to `width * height` tiles.
+   - Dynamic Shadow Blitter (`0x00ACD0..0x00ACFC`):
+     * Uses embedded 4-preset table `0x00ACFE..0x00AD1E` (Preset 0: 1x1 tile `0x0548`, Preset 1: 2x1 tile `0x0549`, Preset 2: 3x1 tile `0x054B`, Preset 3: 4x2 tile `0x054E`).
+     * Positions shadow at ground contact plane `y + ground_h` and emits shadow SAT entry with priority tile attribute `0x8000 | tile_index`.
+   - Enforces hardware 80-sprite limit check on `$FF188A.w` before emitting to `$FF13CC + $FF188C.w`.
+
+**Decisions:**
+1. **Dedicated `master_sat_compositor` Module:**
+   - Added `src/game/render/master_sat_compositor.hpp/.cpp` modeling pure clipping checks, tile count table lookups, frame cache evaluation, world-to-screen projection, dynamic shadow blitting, and raw memory integration `compose_master_entity_sat_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (144/144 M16 tests).
+
 # ADR-20261117-M16-163-DEMO-HUD-SPARK-GENERATOR — ROM Attract Demo Player Script Driver, HUD Frame Render Hook & Hit Spark Generator (0x00A738..0x00A9A0 / 0x00A7E6..0x00A9A0)
 **Status:** Accepted
 **Date:** 2026-11-17

@@ -1,3 +1,24 @@
+# M16.164 ROM Master Entity SAT Sprite Compositor, Screen Clipping & Dynamic Shadow Blitter (`0x00A9A0..0x00AD76`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `is_screen_clipped_y`, `is_screen_clipped_x`, `get_sprite_tile_count`, `evaluate_frame_cache`, `project_world_to_screen`, `blit_dynamic_shadow`, `compose_master_entity_sat`, and `compose_master_entity_sat_raw` in `src/game/render/master_sat_compositor.hpp/.cpp`:
+  - `0x00A9A0`: Visibility check on `flags_36` bit 1 early exiting to RTS `0x00ACFC`.
+  - `0x00A9D6`: Frame Cache & VRAM DMA Quota Check:
+    - Compares `anim_frame` against `frame_cache` at `+0x34(a6)`.
+    - Quota overflow handling: if `cached_frame >= 0` and total required tiles exceed `$FF1652.w`, retains cached frame, sets deferred flag `$FF1651.b = 0xFF`, and suppresses DMA queueing.
+    - Otherwise updates cache and queues DMA.
+  - `0x00AB00`: 3D world to 2D screen coordinate projection:
+    - `screen_x = world_x - cam_x + 128`.
+    - `screen_y = (world_y - cam_y + 128) - elev_z`.
+  - Mega Drive screen viewport clipping: `[0x60, 0x160]` for Y and `[0x60, 0x1C0]` for X.
+  - Embedded 4x4 Sprite Tile Count Table (`0x00AD56..0x00AD76`): 16 entries for `width * height`.
+  - Dynamic Shadow Blitter (`0x00ACD0..0x00ACFC`):
+    - 4-preset table (`0x00ACFE..0x00AD1E`): Preset 0 (1x1 tile `0x0548`), Preset 1 (2x1 tile `0x0549`), Preset 2 (3x1 tile `0x054B`), Preset 3 (4x2 tile `0x054E`).
+    - Ground plane positioning `y + ground_h` and priority tile attribute `0x8000 | tile_index`.
+  - Hardware 80-sprite limit check on `$FF188A.w`.
+  - Raw 64KB RAM window integration helper `compose_master_entity_sat_raw`.
+- Qualified `oasis_m16_164_master_sat_compositor` and the 144-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.163 ROM Attract Demo Player Script Driver, HUD Frame Render Hook & Hit Spark Generator (`0x00A738..0x00A9A0` / `0x00A7E6..0x00A9A0`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
