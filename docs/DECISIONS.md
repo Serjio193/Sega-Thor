@@ -1,3 +1,34 @@
+# ADR-20261117-M16-155-BOUNDING-BOX-PUSHABLE-LATCH — ROM 2D Bounding Tile Box Sampler, Type 0x56 Pushable Block Scanner & Ground Latch (0x009BC2..0x009D4E)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.406 extracted ROM routines `0x009BC2..0x009D4E` governing 2D tile bounding box sampling, type 0x56 pushable block solid collision detection, point tile layer reads, and ground surface parameter latching:
+   - `0x009BC2..0x009BF2`: `sample_entity_bounding_tile_box_dispatch`:
+     * Selects collision layer `$FF1766` vs `$FF1770` based on bit 7 of `$FF16F0`.
+     * Reads `X (+0x08)`, `Y (+0x0C)`, and `Radius (+0x46)` from entity slot and dispatches to `0x009BF2`.
+   - `0x009BF2..0x009C40`: `sample_bounding_tile_box`:
+     * Computes column span `[(X - rad) >> 3 .. (X + rad) >> 3]` and row span `[(Y - rad) >> 3 .. (Y + rad) >> 3]`.
+     * Accumulates tile attributes: `or_accum |= tile_byte`, `and_accum &= tile_byte`.
+   - `0x009C40..0x009C7C`: `read_point_tile_layer`:
+     * Reads point tile byte from active layer at entity `(X, Y)`.
+   - `0x009C7C..0x009D00`: `scan_pushable_block_solid_collision`:
+     * Scans up to 6 slots at `$FF2D8C` (stride 90 bytes / `0x5A`).
+     * Filters for pushable block entities (`type == 0x0056`).
+     * Performs 2D AABB overlap test using block radii `+0x42`/`+0x44` and entity radii `+0x42`/`+0x44`.
+     * Overlap sets Carry flag (`ori.b #1, ccr`) to signal solid obstacle collision; non-overlap clears Carry (`andi.b #0xFE, ccr`).
+   - `0x009D00..0x009D4E`: `latch_entity_ground_surface`:
+     * Samples 2D tile bounding box via `0x009BF2`.
+     * Stores `+0x6F(a6) = or_accum` and `+0x6E(a6) = and_accum`.
+     * Maps `and_accum & 0x0F` through 16-byte LUT `0x0096E8` into `+0x70(a6)` (ground surface type).
+     * Probes entity ground elevation via `probe_entity_elevation` and writes into `+0x14(a6)`.
+
+**Decisions:**
+1. **Dedicated `bounding_box_pushable_latch` Module:**
+   - Added `src/game/player/bounding_box_pushable_latch.hpp/.cpp` modeling `sample_bounding_tile_box`, `sample_entity_bounding_tile_box_dispatch`, `read_point_tile_layer`, `scan_pushable_block_solid_collision`, `scan_pushable_block_solid_collision_raw`, and `latch_entity_ground_surface`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (135/135 M16 tests).
+
 # ADR-20261117-M16-154-SLOPE-ELEVATION-ENGINE — ROM Ramp/Bridge Slope Solver, Fractional Height Interpolator (mulu/divu) & Tile Elevation Engine (0x0099F0..0x009BC0)
 **Status:** Accepted
 **Date:** 2026-11-17

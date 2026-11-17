@@ -1,3 +1,14 @@
+# M16.155 ROM 2D Bounding Tile Box Sampler, Type 0x56 Pushable Block Scanner & Ground Latch (`0x009BC2..0x009D4E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `sample_bounding_tile_box`, `sample_entity_bounding_tile_box_dispatch`, `read_point_tile_layer`, `scan_pushable_block_solid_collision`, `scan_pushable_block_solid_collision_raw`, and `latch_entity_ground_surface` in `src/game/player/bounding_box_pushable_latch.hpp/.cpp`:
+  - `sample_entity_bounding_tile_box_dispatch` (`0x009BC2..0x009BF2`): selects layer 1 (`$FF1766`) or layer 2 (`$FF1770`) based on bit 7 of `$FF16F0`, reads entity `X (+0x08)`, `Y (+0x0C)`, `Radius (+0x46)`, and dispatches to bounding box sampler `0x009BF2`.
+  - `sample_bounding_tile_box` (`0x009BF2..0x009C40`): calculates tile column span `(x - rad) >> 3` .. `(x + rad) >> 3` and row span `(y - rad) >> 3` .. `(y + rad) >> 3`; loops across tile box accumulating `or.b` into `d4` and `and.b` into `d5`.
+  - `read_point_tile_layer` (`0x009C40..0x009C7C`): reads point tile attribute byte from active layer.
+  - `scan_pushable_block_solid_collision` (`0x009C7C..0x009D00`): scans up to 6 slots at `$FF2D8C` (stride 90 bytes); filters by `type == 0x0056` (Pushable block); tests 2D AABB overlap with entity radius `+0x42` and `+0x44`; sets Carry flag on overlap, clears Carry flag if no overlap.
+  - `latch_entity_ground_surface` (`0x009D00..0x009D4E`): samples bounding box via `0x009BF2`; stores `+0x6F(a6) = or_accum` and `+0x6E(a6) = and_accum`; maps surface type through 16-byte LUT `0x0096E8` into `+0x70(a6)`; latches ground elevation via `probe_entity_elevation` into `+0x14(a6)`.
+- Qualified `oasis_m16_155_bounding_box_pushable_latch` and the 135-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.154 ROM Ramp/Bridge Slope Solver, Fractional Height Interpolator (mulu/divu) & Tile Elevation Engine (`0x0099F0..0x009BC0`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
