@@ -1,0 +1,40 @@
+{
+  "milestone": "M15.315",
+  "title": "ROM Z80-Safe VDP DMA Executor & HUD Portrait DMA",
+  "routines": {
+    "hud_portrait_dma": {
+      "start": "0x002632",
+      "end": "0x002678",
+      "requested_portrait_ram": "0x00FF183E",
+      "cached_portrait_ram": "0x00FF183F",
+      "portrait_table_rom": "0x000AA3EC",
+      "portrait_stride_bytes": 96,
+      "vram_dst": "0xF1C0",
+      "len_words": "0x0060",
+      "dma_desc_ptr_ram": "0x00FF1892"
+    },
+    "vdp_dma_exec_regs": {
+      "start": "0x0027A6",
+      "end": "0x0027FA"
+    },
+    "vdp_dma_exec_struct": {
+      "start": "0x0027FC",
+      "end": "0x002896"
+    }
+  },
+  "hardware_ports": {
+    "z80_busreq": "0x00A11100",
+    "vdp_data": "0x00C00000",
+    "vdp_ctrl": "0x00C00004",
+    "vdp_reg1_shadow_ram": "0x00FF0BF4",
+    "vdp_reg1_dma_enable_bit": 4,
+    "irq_mask_sr": "0x0700"
+  },
+  "dma_reg_prefixes": [
+    "0x9400",
+    "0x9300",
+    "0x9500",
+    "0x9600",
+    "0x9700"
+  ]
+}

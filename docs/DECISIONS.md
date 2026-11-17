@@ -1,3 +1,8 @@
+# ADR-20261117-M15-315-VDP-DMA-EXEC — Z80-Safe VDP DMA Executor & HUD Portrait DMA (`0x002632`..`0x002896`)
+- **Context:** Direct VDP DMA (`0x0027A6`, `0x0027FC`) masks IRQs (`0x0700`), halts the Z80 (`$A11100`), enables VDP reg 1 bit 4 on `$FF0BF4`, programs regs `0x94..0x97`, and triggers DMA; `0x002632` uploads 96-word HUD portraits from `0x0AA3EC` to VRAM `0xF1C0`.
+- **Decision:** Extracted all hardware ports, register encodings, and HUD portrait constants into `data/thor-evidence/rom_vdp_dma_exec_m15_315.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.99 can implement exact VDP DMA command serialization and HUD portrait selection.
+
 # ADR-20261117-M15-314-TERRAIN-ELEVATION-PROBE — Terrain Elevation & Ledge Probe (`0x00938E`..`0x0096F7`)
 - **Context:** Entity X/Y terrain probes (`0x00938E`, `0x0094D2`, `0x0095AA`) aggregate 8px tile spans via OR/AND, decode elevation via the 16-byte Gray-code LUT `0x0096E8`, and test `delta` against `0x70(a6)` including ledge drops (`<= -2` via `0xFF1706` -> `0xFF196E`).
 - **Decision:** Extracted the LUT, RAM addresses, and probe parameters into `data/thor-evidence/rom_terrain_elevation_probe_m15_314.json` with 2/2 passing tests and Standalone handoff.

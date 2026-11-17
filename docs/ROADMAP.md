@@ -1,3 +1,4 @@
+# M15.315 ROM Z80-Safe VDP DMA Executor & HUD Portrait DMA (`0x002632`..`0x002678`, `0x0027A6`..`0x002896`) — COMPLETE / VERIFIED
 # M15.314 ROM Terrain Elevation & Ledge Probe (`0x00938E`..`0x0096F7`) — COMPLETE / VERIFIED
 # M15.313 ROM Incremental Row/Col VDP Plane Scroller (`0x0023CC`..`0x002630`) — COMPLETE / VERIFIED
 # M15.312 ROM V-Int Sound Tick & HUD Slide Offset (`0x002380`..`0x0023CA`) — COMPLETE / VERIFIED

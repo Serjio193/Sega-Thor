@@ -1,3 +1,9 @@
+# M15.315 ROM Z80-Safe VDP DMA Executor & HUD Portrait DMA
+- `tools/extract_rom_vdp_dma_exec.py` — ROM extractor & verifier for `0x002632..0x002678` (HUD portrait DMA `0x0AA3EC` -> `0xF1C0`) and `0x0027A6..0x002896` (Z80-safe VDP DMA regs `0x94..0x97`).
+- `tests/rom_vdp_dma_exec_test.py` — Unit tests verifying VDP DMA command word encoding and portrait source address calculation.
+- `data/thor-evidence/rom_vdp_dma_exec_m15_315.json` — Verified evidence JSON for M15.315.
+- `docs/handoffs/STANDALONE_M15_315_VDP_DMA_EXEC_HANDOFF.md` — C++20 Standalone handoff for M16.99.
+
 # M15.314 ROM Terrain Elevation & Ledge Probe
 - `tools/extract_rom_terrain_elevation_probe.py` — ROM extractor & verifier for `0x00938E..0x0096F7` (X/Y terrain span probes, ledge scan up to `0x0180` px, and 16-byte Gray-code LUT `0x0096E8`).
 - `tests/rom_terrain_elevation_probe_test.py` — Unit tests verifying ROM LUT/constants and elevation/ledge probe decisions.

@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.315: ROM Z80-SAFE VDP DMA EXECUTOR & HUD PORTRAIT DMA (`0x002632`..`0x002678`, `0x0027A6`..`0x002896`) — Regs `0x94..0x97`, `$A11100`, `$FF0BF4`, Portrait `0x0AA3EC`->`0xF1C0`; Extractor (`tools/extract_rom_vdp_dma_exec.py` <= 500 lines), Tests (`tests/rom_vdp_dma_exec_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_315_VDP_DMA_EXEC_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x002632..0x002678` and `0x0027A6..0x002896` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_vdp_dma_exec.py`, `python -m unittest tests/rom_vdp_dma_exec_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.315, assign M16.98, and proceed to M15.316.
+
 # 2026-11-17 — Milestone M15.314: ROM TERRAIN ELEVATION & LEDGE PROBE (`0x00938E`..`0x0096F7`) — X/Y Span Probes, `0x0096E8` 16B LUT, `0x0180` Ledge Scan; Extractor (`tools/extract_rom_terrain_elevation_probe.py` <= 500 lines), Tests (`tests/rom_terrain_elevation_probe_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_314_TERRAIN_ELEVATION_PROBE_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00938E..0x0096F7` in `local-roms/Beyond Oasis (USA).md` (3 directional probes + span aggregators + 16-byte LUT `0x0096E8`).
 - Verified `python tools/extract_rom_terrain_elevation_probe.py`, `python -m unittest tests/rom_terrain_elevation_probe_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
