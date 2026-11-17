@@ -1,3 +1,8 @@
+# ADR-20261117-M15-330-CONSUMABLE-EFFECTS — Consumable Item Validation & HP/SP/Spirit Restore (`0x005236`..`0x005472`)
+- **Context:** Consumables (`0x1A..0x2A`) validate against Area `0x10`, spirit unlock/active flags (`$FF0D7A`, `$FF1AA4`), and `HP < MaxHP` / `SP < MaxSP`, then dispatch via `0x00532C` to summon spirits or restore 25%/50%/75%/100% HP/SP (`0x00A00234`).
+- **Decision:** Extracted the 17-entry jump table, validation predicates, and heal tiers into `data/thor-evidence/rom_consumable_effects_m15_330.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.114 can implement exact consumable gating and HP/SP/spirit restoration.
+
 # ADR-20261117-M15-329-FOOD-MENU — 4x4 Food/Consumable Menu Use & Drop (`0x00474E`..`0x00494A`)
 - **Context:** The 4x4 consumable menu (`$FF0E51`, `$FF0D90`) validates consumption via `0x005236` (playing `0x00A00256` and setting a 90-frame timer at `$FF1856`) and guards item drops against `0x009C40` terrain bit 7 and `0x05CE16[id]` bit 5 (undroppable).
 - **Decision:** Extracted all table/RAM addresses, timers, and drop guards into `data/thor-evidence/rom_food_menu_m15_329.json` with 2/2 passing tests and Standalone handoff.

@@ -1,0 +1,56 @@
+{
+  "milestone": "M15.330",
+  "title": "ROM Consumable Item Validation & HP/SP/Spirit Restore Engine",
+  "routines": {
+    "can_use_consumable": {
+      "start": "0x005236",
+      "end": "0x00530A"
+    },
+    "apply_consumable": {
+      "start": "0x00530C",
+      "end": "0x005472"
+    }
+  },
+  "jump_table_0x00532C": [
+    "0x005378",
+    "0x00537A",
+    "0x00537C",
+    "0x00537E",
+    "0x00539A",
+    "0x0053A4",
+    "0x0053AE",
+    "0x0053BE",
+    "0x0053EA",
+    "0x0053F4",
+    "0x0053FE",
+    "0x00540E",
+    "0x00543A",
+    "0x005440",
+    "0x005446",
+    "0x00544C",
+    "0x00544A"
+  ],
+  "constants": {
+    "blocked_area_id": "0x10",
+    "item_id_min": "0x1A",
+    "item_id_max": "0x2A",
+    "spirit_gem_range": [
+      "0x1A",
+      "0x1D"
+    ],
+    "hp_food_range": [
+      "0x1E",
+      "0x21"
+    ],
+    "sp_food_range": [
+      "0x22",
+      "0x25"
+    ],
+    "elixir_range": [
+      "0x26",
+      "0x2A"
+    ],
+    "heal_sfx_cmd": "0x00A00234",
+    "summon_routine_rom": "0x00007E9E"
+  }
+}

@@ -1,3 +1,4 @@
+# M15.330 ROM Consumable Item Validation & HP/SP/Spirit Restore (`0x005236`..`0x005472`) — COMPLETE / VERIFIED
 # M15.329 ROM 4x4 Food/Consumable Menu Use & Drop (`0x00474E`..`0x00494A`) — COMPLETE / VERIFIED
 # M15.328 ROM Ring Menu 4x2 Cursor Wrap & Item Drop Handler (`0x00462E`..`0x0046E2`) — COMPLETE / VERIFIED
 # M15.327 ROM Ring/Spirit Menu Entry Guard & Input Loop (`0x004416`..`0x00455C`) — COMPLETE / VERIFIED

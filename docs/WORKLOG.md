@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.330: ROM CONSUMABLE ITEM VALIDATION & HP/SP/SPIRIT RESTORE (`0x005236`..`0x005472`) — `0x1A..0x2A` (17 Entries `0x00532C`), 25/50/75/100% Heal, `0x00A00234`; Extractor (`tools/extract_rom_consumable_effects.py` <= 500 lines), Tests (`tests/rom_consumable_effects_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_330_CONSUMABLE_EFFECTS_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x005236..0x005472` and extracted 17-entry jump table `0x00532C` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_consumable_effects.py`, `python -m unittest tests/rom_consumable_effects_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.330, check M16.106 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.329: ROM 4X4 FOOD/CONSUMABLE MENU USE & DROP (`0x00474E`..`0x00494A`) — `$FF0E51`/`$FF0D90`, `0x005236` Consume (`90f`), `0x05CE16` Bit-5 Guard; Extractor (`tools/extract_rom_food_menu.py` <= 500 lines), Tests (`tests/rom_food_menu_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_329_FOOD_MENU_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00474E..0x00494A` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_food_menu.py`, `python -m unittest tests/rom_food_menu_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

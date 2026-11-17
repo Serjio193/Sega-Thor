@@ -1,3 +1,9 @@
+# M15.330 ROM Consumable Item Validation & HP/SP/Spirit Restore
+- `tools/extract_rom_consumable_effects.py` — ROM extractor & verifier for `0x005236..0x005472` (17-entry jump table `0x00532C` for IDs `0x1A..0x2A`, spirit summon & 25/50/75/100% HP/SP heal tiers, `0x00A00234` SFX).
+- `tests/rom_consumable_effects_test.py` — Unit tests verifying consumable validation rules and heal tiers.
+- `data/thor-evidence/rom_consumable_effects_m15_330.json` — Verified evidence JSON for M15.330.
+- `docs/handoffs/STANDALONE_M15_330_CONSUMABLE_EFFECTS_HANDOFF.md` — C++20 Standalone handoff for M16.114.
+
 # M15.329 ROM 4x4 Food/Consumable Menu Use & Drop
 - `tools/extract_rom_food_menu.py` — ROM extractor & verifier for `0x00474E..0x00494A` (4x4 cursor `$FF0E51`, 16-slot food inventory `$FF0D90`, `0x005236` consume check + 90f timer `$FF1856`, `0x05CE16` bit-5 undroppable guard).
 - `tests/rom_food_menu_test.py` — Unit tests verifying 4x4 cursor wrap and undroppable/terrain drop guards.
