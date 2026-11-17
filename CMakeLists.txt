@@ -109,6 +109,7 @@ add_library(oasis_core
     src/game/player/master_frame_sequencer.cpp
     src/game/player/entity_constructor_lifecycle.cpp
     src/game/player/anim_palette_entity_stepper.cpp
+    src/game/player/entity_sim_anim_preflight.cpp
     src/game/input/mash_tripletap_detectors.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp

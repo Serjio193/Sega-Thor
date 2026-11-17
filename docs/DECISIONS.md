@@ -1,3 +1,33 @@
+# ADR-20261117-M16-147-ENTITY-SIM-ANIM-PREFLIGHT — ROM Universal Entity Simulation Machine, Animation Frame Stepper & Terrain Pre-flight (0x008F22..0x009084)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.398 extracted ROM routines `0x008F22..0x009084` governing universal entity freeze/slow-motion simulation, animation keyframe stepping, and terrain collision pre-flight:
+   - `0x008F22..0x008F84`: `entity_sim_freeze_slowmo`:
+     * Handles stun/pause sub-timer `+0x9D`: when `+0x9D > 0`, decrements timer, zeros velocities `+0x72 = 0`, `+0x76 = 0`, and exits early (`frozen = true`).
+     * Handles sub-timer `+0x9C`: decrements timer if non-zero.
+     * Evaluates global freeze flag `$FF17B8` bit 1: for non-player entities (`type > 2`), zeros velocities and bypasses simulation, while preserving player entities (`type <= 2`).
+     * Checks animation lock flag `+0x37` bit 0, skipping keyframe stepping if set.
+     * Evaluates slow-motion flag `$FF17B8` bit 0 or local `timer_9c`: arithmetic shifts velocities right by 1 (`+0x72 >>= 1`, `+0x76 >>= 1`) for non-player entities.
+   - `0x008F84..0x009040`: `anim_frame_stepper`:
+     * Detects state transition: `cur_state != prev_state`, setting previous state `+0x2C = cur_state`, frame offset `+0x30 = -4`, timer `+0x2E = 0`, and clearing loop mark bit 2 on `+0x37`.
+     * Steps keyframe timer: when timer expires (< 0), advances frame offset by +4, decodes sprite asset ID into `+0x32`, and sets frame duration `(dur >> 1) - 1` into `+0x2E`.
+     * Detects loop marker bit 15 on frame duration: sets loop mark bit 2 on `+0x37`; on loop frame reset, loops back to frame offset 0.
+     * Triggers animation cycle completion flag bit 1 on `+0x37` when timer reaches 0 on loop frame.
+   - `0x009040..0x009084`: `terrain_collision_preflight`:
+     * Clears collision result flags `+0x40 = 0`, `+0x41 = 0`.
+     * Checks intangible bit 4 on `+0x37`, bypassing terrain collision if set.
+     * Selects active collision layer tilemap based on `$FF16F0` bit 7 (`$FF1766` Layer 1 vs `$FF1770` Layer 2).
+     * Checks flying bit 1 on `+0x38`, dispatching to flying collision handler.
+     * Evaluates X velocity: branches to SweepY when `vel_x == 0`, SweepNegX when `vel_x < 0`, or sets `+0x40 = 0x11` and SweepPosX when `vel_x > 0`.
+
+**Decisions:**
+1. **Dedicated `entity_sim_anim_preflight` Module:**
+   - Added `src/game/player/entity_sim_anim_preflight.hpp/.cpp` modeling `step_entity_freeze_slowmo`, `step_entity_animation`, `pack_anim_sequence`, and `preflight_terrain_collision`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-146-ANIM-PALETTE-ENTITY-STEPPER — ROM Animated Palette CRAM Sequencer & 3-Group Entity Master Stepper (0x008E22..0x008F22)
 **Status:** Accepted
 **Date:** 2026-11-17

@@ -1,3 +1,12 @@
+# M16.147 ROM Universal Entity Simulation Machine, Animation Frame Stepper & Terrain Pre-flight (`0x008F22..0x009084`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_entity_freeze_slowmo`, `step_entity_animation`, `pack_anim_sequence`, and `preflight_terrain_collision` in `src/game/player/entity_sim_anim_preflight.hpp/.cpp`:
+  - Simulation freeze & slow-motion handler: decrements sub-timers `+0x9C`/`+0x9D`, evaluates global freeze `$FF17B8` bit 1 (zeroing velocities for `type > 2`), checks animation lock bit 0 on `+0x37`, and evaluates slow-motion `$FF17B8` bit 0 (halving velocities for `type > 2`).
+  - Animation frame stepper: detects state changes `+0x2A` vs `+0x2C`, steps keyframe timer, advances frame offset with loop point detection via bit 15 of duration, decodes sprite asset ID to `+0x32`, and triggers animation cycle completion bit 1 on `+0x37`.
+  - Terrain collision pre-flight: clears collision flags `+0x40`/`+0x41`, evaluates intangible bit 4 on `+0x37`, selects layer tilemap from `$FF16F0` bit 7, checks flying bit 1 on `+0x38`, and branches on X velocity (zero -> SweepY, negative -> SweepNegX, positive -> sets `0x11` on `+0x40` and SweepPosX).
+- Qualified `oasis_m16_147_entity_sim_anim_preflight` and the 127-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.146 ROM Animated Palette CRAM Sequencer & 3-Group Entity Master Stepper (`0x008E22..0x008F22`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
