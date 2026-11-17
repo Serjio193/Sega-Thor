@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.300: ROM HUD HP/SP/ENEMY GAUGE BAR VDP RENDERER (`0x00267C`..`0x0027A4`) — 48-Row Differential Renderer, `(cur*47)/max+1`; Extractor (`tools/extract_rom_hud_gauge_bars.py` <= 500 lines), Tests (`tests/rom_hud_gauge_bars_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_300_HUD_GAUGE_BARS_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00267C..0x0027A4` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_hud_gauge_bars.py` and `python tests/rom_hud_gauge_bars_test.py` (2/2 PASS).
+- Next: Commit & push M15.300, await M16.83 completion, and continue.
+
 # 2026-11-17 — Milestone M15.299: ROM ALI COMMAND-INPUT SPECIAL MOVES (`0x0086B4`, `0x008778`) — 360° Spin Slash (30f, LUT `0x008768`), F-B-F Lunge (`0x0087F4`); Extractor (`tools/extract_rom_special_move_inputs.py` <= 500 lines), Tests (`tests/rom_special_move_inputs_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_299_SPECIAL_MOVE_INPUTS_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x0086B4..0x008813` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_special_move_inputs.py` and `python tests/rom_special_move_inputs_test.py` (2/2 PASS).

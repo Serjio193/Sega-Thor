@@ -1,3 +1,7 @@
+# M15.300 ROM HUD HP/SP/Enemy Gauge Bar VDP Renderer (`0x00267C`..`0x0027A4`) — COMPLETE / VERIFIED
+- Decoded V-Int differential HUD gauge renderer (`0x00267C..0x0027A4`) for Ali HP (`0xF0E0`, `0x4E2222E4`), Ali SP (`0xF280`, `0x4E6666E4`), and Target Enemy HP (`0xF420`, `0xDE4444ED`), 48-row fill formula `((cur * 47) / max) + 1`, and erase mask `0x00EEEE00`.
+- Authored `tools/extract_rom_hud_gauge_bars.py`, `tests/rom_hud_gauge_bars_test.py` (`2/2 PASS`), `data/thor-evidence/rom_hud_gauge_bars_m15_300.json`, and `docs/handoffs/STANDALONE_M15_300_HUD_GAUGE_BARS_HANDOFF.md`.
+
 # M15.299 ROM Ali Command-Input Special Moves (`0x0086B4`, `0x008778`) — COMPLETE / VERIFIED
 - Decoded 360-degree Spin Slash detector (`0x0086B4`, 30-frame window, 16-byte D-pad LUT `0x008768`, CW/CCW 4-cardinal sequence) and Forward-Back-Forward Lunge detector (`0x008778`, 4x8-byte seq/mask table `0x0087F4`, perpendicular cancel).
 - Authored `tools/extract_rom_special_move_inputs.py`, `tests/rom_special_move_inputs_test.py` (`2/2 PASS`), `data/thor-evidence/rom_special_move_inputs_m15_299.json`, and `docs/handoffs/STANDALONE_M15_299_SPECIAL_MOVE_INPUTS_HANDOFF.md`.

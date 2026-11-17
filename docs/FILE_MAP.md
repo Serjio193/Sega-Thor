@@ -1,3 +1,9 @@
+# M15.300 ROM HUD HP/SP/Enemy Gauge Bar VDP Renderer
+- `tools/extract_rom_hud_gauge_bars.py` — Extracts Ali HP/SP and Enemy HP VDP commands, 4bpp fills, and 48-row scaler (`0x00271C`).
+- `tests/rom_hud_gauge_bars_test.py` — Unit tests verifying VDP commands, 48-row scaling, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_hud_gauge_bars_m15_300.json` — Extracted HUD gauge bar evidence.
+- `docs/handoffs/STANDALONE_M15_300_HUD_GAUGE_BARS_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.299 ROM Ali Command-Input Special Moves
 - `tools/extract_rom_special_move_inputs.py` — Extracts 360° Spin Slash LUT (`0x008768`) and 4-facing F-B-F Lunge table (`0x0087F4`).
 - `tests/rom_special_move_inputs_test.py` — Unit tests verifying special-move LUTs/sequences and JSON artifact (`2/2 PASS`).

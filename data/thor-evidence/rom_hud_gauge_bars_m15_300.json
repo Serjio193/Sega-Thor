@@ -1,0 +1,37 @@
+{
+  "milestone": "M15.300",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "gauge_renderer": {
+    "entry_addr": "0x00267C",
+    "kernel_addr": "0x00271C",
+    "max_rows": 48,
+    "scale_numerator": 47,
+    "erase_or_mask": "0x00EEEE00",
+    "cache_values_addr": "0xFF1840",
+    "cache_rows_addr": "0xFF184C"
+  },
+  "gauges": [
+    {
+      "name": "ali_hp",
+      "vdp_cmd": "0x70E00003",
+      "fill_pattern_4bpp": "0x4E2222E4",
+      "entity_base": "0xFF19E8",
+      "stat_offset": "0x88"
+    },
+    {
+      "name": "ali_sp",
+      "vdp_cmd": "0x72800003",
+      "fill_pattern_4bpp": "0x4E6666E4",
+      "entity_base": "0xFF19E8",
+      "stat_offset": "0x8C"
+    },
+    {
+      "name": "target_enemy_hp",
+      "vdp_cmd": "0x74200003",
+      "fill_pattern_4bpp": "0xDE4444ED",
+      "entity_ptr": "0xFF1850",
+      "timer_addr": "0xFF184F",
+      "stat_offset": "0x88"
+    }
+  ]
+}

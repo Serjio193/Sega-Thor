@@ -1,3 +1,7 @@
+# ADR-20261117-M15-300-HUD-GAUGE-BARS — HUD HP/SP/Enemy Gauge Bar VDP Renderer (`0x00267C`..`0x0027A4`)
+- **Decision:** Model the three 48-row vertical HUD gauges (`Ali HP`, `Ali SP`, `Target Enemy HP`) in Standalone using `0x00271C`'s exact fill height formula (`0 -> 0`, `cur >= max -> 48`, else `(cur * 47) / max + 1`) and differential erase mask `0x00EEEE00`.
+- **Evidence:** Direct Capstone M68K disassembly of `0x00267C..0x0027A4` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-299-SPECIAL-MOVE-INPUTS — Ali Command-Input Special Moves (`0x0086B4`, `0x008778`)
 - **Decision:** Model Ali's 360° Spin Slash (`0x0086B4`, 30-frame window, CW/CCW 4-cardinal sequence) and F-B-F Lunge (`0x008778`, `0x0087F4` 4-facing table with perpendicular cancel) over `InputHistoryRing64` in Standalone.
 - **Evidence:** Direct Capstone M68K disassembly of `0x0086B4..0x008813` in `local-roms/Beyond Oasis (USA).md`.
