@@ -1,3 +1,48 @@
+# ADR-20261117-M16-139-COMBAT-HIT-APPLY — ROM Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark (0x00BE98..0x00C0BC)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.355 extracted ROM routines `0x00BE98..0x00C0BC` governing enemy gauge latching, guard deflection, special recoil cancel, 4-tier knockback with airborne fallback, 4-direction velocity signs, and 4-slot 3D intersection hit-spark spawning:
+   - `0x00BE98..0x00BEB8`: `update_enemy_gauge_latch`: if `target != $FF19E8` and `!(target.flags_3a & 0x01)`, sets HUD gauge timer `$FF184F = 0x5A` (90 frames) and target pointer `$FF1850 = target.ram_addr`.
+   - `0x00BEBA..0x00BED2`, `0x00BFAE..0x00C010`: Guard / shield deflect:
+     * If `target.guard (+0x6D) != 0` and `target.facing == (attacker.facing ^ 2)`:
+       - Records attacker pointer to `target+0x7E`.
+       - Records hitstop to `target+0x82` and `attacker+0x82`.
+       - Records damage word to `target+0x86`.
+       - Records attacker facing to `target+0x84`.
+       - Clears `target+0x9D = 0`.
+       - Does NOT apply knockback velocities or reaction stun timer.
+       - If `attacker == $FF19E8` (Ali) and `attack_index in {6, 10}`, triggers special recoil cancel (`0x008530`).
+       - Spawns hit-spark (`0x00C012`).
+       - If bit 3 of `attacker+0x37` was clear, sets bit 3 and triggers block SFX `0x00900202`.
+     * If facing check fails: clears `target.guard = 0` (guard broken) and falls through to normal hit apply.
+   - `0x00BED4..0x00BFAC`: Normal hit apply:
+     * Records attacker pointer, hitstop on both, damage word, reaction timer `target+0x83 = 6`, clears `target+0x9D = 0`, records attacker facing to `target+0x84`.
+     * Spawns hit-spark (`0x00C012`).
+     * If bit 3 of `attacker+0x37` was clear, sets bit 3 and triggers hit SFX from frame record.
+     * Computes knockback tier `(damage_word >> 14) & 3`:
+       - Tier 0: if `target.pos_z == 0`, `vx_mag = 0x300`, `vy_mag = 0x2C0`, `vz = 0`; else sets bit 15 of damage word (`0x8000`) and falls through to Tier 2.
+       - Tier 1: `vx_mag = 0`, `vy_mag = 0`, `vz = 0x70000`.
+       - Tier 2: `vx_mag = 0x400`, `vy_mag = 0x3C0`, `vz = 0x28000`.
+       - Tier 3: `vx_mag = 0x700`, `vy_mag = 0x680`, `vz = 0x30000`.
+     * Computes directional velocity signs via `0x00E2D4` for cardinal facings (0: Up `[0, -vy]`, 1: Right `[vx, 0]`, 2: Down `[0, vy]`, 3: Left `[-vx, 0]`).
+   - `0x00C012..0x00C0BC`: 4-slot hit-spark spawner at `$FF19C8`:
+     * Searches for first free 8-byte slot with `type == 0`.
+     * Sets `type = 2`, `timer = 5`.
+     * Clamped 3D AABB intersection:
+       `mid_z = clamp_midpoint(att_z1, att_z2, tgt_z1, tgt_z2)`
+       `mid_x = clamp_midpoint(att_x1, att_x2, tgt_x1, tgt_x2)`
+       `mid_y = clamp_midpoint(att_y1, att_y2, tgt_y1, tgt_y2)`
+       where `clamp_midpoint(a_min, a_max, b_min, b_max) = lo + ((hi - lo) >> 1)`.
+     * Stores `slot.pos_x = mid_x`, `slot.pos_y = mid_y - mid_z`.
+
+**Decisions:**
+1. **Dedicated `combat_hit_apply` Module:**
+   - Added `src/game/combat/combat_hit_apply.hpp/.cpp` modeling `clamp_midpoint`, `spawn_hit_spark`, `update_enemy_gauge_latch`, `compute_knockback`, and `apply_combat_hit`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-138-COMBAT-HIT-DISPATCH — Combat Hitbox Dispatcher & Ali Damage Scaling
 **Status:** Accepted
 **Date:** 2026-11-17

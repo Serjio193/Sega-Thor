@@ -1,3 +1,15 @@
+# M16.139 ROM Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark (`0x00BE98..0x00C0BC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `clamp_midpoint`, `spawn_hit_spark`, `update_enemy_gauge_latch`, `compute_knockback`, and `apply_combat_hit` in `src/game/combat/combat_hit_apply.hpp/.cpp`:
+  - Enemy gauge latching: sets `$FF184F = 0x5A` (90 frames) and `$FF1850 = target.ram_addr` when `target != Ali` and `!(target.flags_3a & 0x01)`.
+  - Guard / shield deflection check with opposite facing `target.facing == (attacker.facing ^ 2)`: retains guard, sets hitstop on both, sets damage word and hit facing, triggers hit spark, triggers block SFX `0x00900202` on bit 3 of `attacker.flags_37`, and evaluates special recoil cancel `0x008530` for Ali attack indices 6 and 10; clears `target.guard = 0` on facing mismatch (guard broken).
+  - Normal damage hit apply: records last attacker, sets hitstop on both, sets damage word, sets reaction timer `target+0x83 = 6`, clears `field_9d = 0`, sets hit facing, spawns hit spark, and triggers hit SFX from frame record when bit 3 of `flags_37` is newly set.
+  - 4-tier knockback table: Tier 0 grounded (0x300, 0x2C0, vz=0) vs airborne fallback to Tier 2 with bit 15 set, Tier 1 pop-up (0, 0, vz=0x70000), Tier 2 (0x400, 0x3C0, vz=0x28000), Tier 3 (0x700, 0x680, vz=0x30000).
+  - Directional knockback velocity signs computed via `0x00E2D4` for cardinal facings (Up: `[0, -vy]`, Right: `[vx, 0]`, Down: `[0, vy]`, Left: `[-vx, 0]`).
+  - 4-slot 3D intersection hit-spark pool allocation at `$FF19C8` with clamped AABB midpoint projection: `mid_x` and `mid_y - mid_z`.
+- Qualified `oasis_m16_139_combat_hit_apply` and the 120-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.138 Combat Hitbox Dispatcher & Ali Damage Scaling (`0x00BC8E..0x00BE96`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
