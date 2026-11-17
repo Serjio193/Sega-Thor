@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.307: ROM WRAM ENTITY & EFFECT POOL ALLOCATORS (`0x00D9BE`..`0x00DA60`) — 4 Pools (`8/6/18/17`), VRAM `0x694+9*i`; Extractor (`tools/extract_rom_entity_pool_allocators.py` <= 500 lines), Tests (`tests/rom_entity_pool_allocators_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_307_ENTITY_POOL_ALLOCATORS_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00D9A4..0x00DA60` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_entity_pool_allocators.py` and `python tests/rom_entity_pool_allocators_test.py` (2/2 PASS).
+- Next: Commit & push M15.307, await M16.90 completion, and continue.
+
 # 2026-11-17 — Milestone M15.306: ROM VDP FULL CLEAR, ARMLET GLOW & PALETTE CYCLER (`0x002B28`, `0x008DD4`..`0x008E8E`) — 6 VDP Regions, Armlet `$FF183E`, CRAM Cycler `$FF17A2`; Extractor (`tools/extract_rom_vdp_clear_and_palette_cycle.py` <= 500 lines), Tests (`tests/rom_vdp_clear_and_palette_cycle_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_306_VDP_CLEAR_AND_PALETTE_CYCLE_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x002B28..0x002C20` and `0x008DD4..0x008E8E` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_vdp_clear_and_palette_cycle.py` and `python tests/rom_vdp_clear_and_palette_cycle_test.py` (2/2 PASS).

@@ -1,3 +1,7 @@
+# M15.307 ROM WRAM Entity & Effect Pool Allocators (`0x00D9BE`..`0x00DA60`) — COMPLETE / VERIFIED
+- Decoded all 4 WRAM object pool allocators (`$FF2ABC` 8x`0x5A` VRAM `0x694+9*i`, `$FF2D8C` 6x`0x5A`, `$FF1C1C` 18x`0xBC`, `$FF1CD8` 17x`0xBC` with `$FF184F` stale-HUD invalidation).
+- Authored `tools/extract_rom_entity_pool_allocators.py`, `tests/rom_entity_pool_allocators_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_pool_allocators_m15_307.json`, and `docs/handoffs/STANDALONE_M15_307_ENTITY_POOL_ALLOCATORS_HANDOFF.md`.
+
 # M15.306 ROM VDP Full Clear, Armlet Glow & Palette-Cycling Animator (`0x002B28`, `0x008DD4`..`0x008E8E`) — COMPLETE / VERIFIED
 - Decoded VDP DMA-Fill clear (`0x002B28`: CRAM 0, HScroll, VSRAM, Tile 0, SAT, Plane A/B), Armlet glow state machine (`0x008DD4`, `$FF183E`, threshold `0x14`), and CRAM palette-cycling animator (`0x008E22`, `$FF17A2 -> $FF134C`).
 - Authored `tools/extract_rom_vdp_clear_and_palette_cycle.py`, `tests/rom_vdp_clear_and_palette_cycle_test.py` (`2/2 PASS`), `data/thor-evidence/rom_vdp_clear_and_palette_cycle_m15_306.json`, and `docs/handoffs/STANDALONE_M15_306_VDP_CLEAR_AND_PALETTE_CYCLE_HANDOFF.md`.

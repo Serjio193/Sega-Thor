@@ -1,3 +1,9 @@
+# M15.307 ROM WRAM Entity & Effect Pool Allocators
+- `tools/extract_rom_entity_pool_allocators.py` — Extracts all 4 WRAM object pools (`0x00D9BE..0x00DA2A`), strides, capacities, and VRAM tile step.
+- `tests/rom_entity_pool_allocators_test.py` — Unit tests verifying pool bases, capacities, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_entity_pool_allocators_m15_307.json` — Extracted entity pool allocator evidence.
+- `docs/handoffs/STANDALONE_M15_307_ENTITY_POOL_ALLOCATORS_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.306 ROM VDP Full Clear, Armlet Glow & Palette-Cycling Animator
 - `tools/extract_rom_vdp_clear_and_palette_cycle.py` — Extracts VDP clear DMA regions (`0x002B28`), Armlet glow (`0x008DD4`), and CRAM cycler (`0x008E22`).
 - `tests/rom_vdp_clear_and_palette_cycle_test.py` — Unit tests verifying VDP regions, Armlet glow transitions, and JSON artifact (`2/2 PASS`).

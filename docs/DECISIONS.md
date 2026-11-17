@@ -1,3 +1,7 @@
+# ADR-20261117-M15-307-ENTITY-POOL-ALLOCATORS — WRAM Entity & Effect Pool Allocators (`0x00D9BE`..`0x00DA60`)
+- **Decision:** Model runtime entity & effect allocation in Standalone using the 4 fixed-capacity WRAM pools (`8` effects `0x5A` VRAM `0x694+9*i`, `6` specials `0x5A`, `18` full `0xBC`, `17` enemies `0xBC`) and `$FF184F` stale-HUD invalidation.
+- **Evidence:** Direct Capstone M68K disassembly of `0x00D9A4..0x00DA60` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-306-VDP-CLEAR-AND-PALETTE-CYCLE — VDP Full Clear, Armlet Glow & Palette Cycler (`0x002B28`, `0x008DD4`..`0x008E8E`)
 - **Decision:** Model VDP clear regions (`0x002B28`), Armlet glow (`0x008DD4`, `$FF183E` `0..3`/`4` pulse at `0x14`), and CRAM keyframe palette cycling (`0x008E22`, `$FF17A2`) in Standalone.
 - **Evidence:** Direct Capstone M68K disassembly of `0x002B28..0x002C20` and `0x008DD4..0x008E8E` in `local-roms/Beyond Oasis (USA).md`.

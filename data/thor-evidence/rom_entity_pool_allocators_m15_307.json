@@ -1,0 +1,37 @@
+{
+  "milestone": "M15.307",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "pools": [
+    {
+      "name": "effect_pool_8",
+      "allocator_addr": "0x00D9BE",
+      "ram_base": "0xFF2ABC",
+      "slot_count": 8,
+      "slot_stride_bytes": 90,
+      "vram_tile_base": "0x0694",
+      "vram_tile_step": 9
+    },
+    {
+      "name": "special_pool_6",
+      "allocator_addr": "0x00D9F0",
+      "ram_base": "0xFF2D8C",
+      "slot_count": 6,
+      "slot_stride_bytes": 90
+    },
+    {
+      "name": "full_entity_pool_18",
+      "allocator_addr": "0x00DA1A",
+      "ram_base": "0xFF1C1C",
+      "slot_count": 18,
+      "slot_stride_bytes": 188
+    },
+    {
+      "name": "enemy_entity_pool_17",
+      "allocator_addr": "0x00DA2A",
+      "ram_base": "0xFF1CD8",
+      "slot_count": 17,
+      "slot_stride_bytes": 188,
+      "clears_enemy_hud_if_reused": true
+    }
+  ]
+}
