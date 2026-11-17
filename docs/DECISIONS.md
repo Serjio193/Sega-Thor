@@ -1,3 +1,8 @@
+# ADR-20261117-M15-352-RESUMABLE-HITBOX-ITER — Resumable 21-Slot Masked 3D Hitbox Iterator (`0x00B852`..`0x00B920`)
+- **Context:** Multi-target hitbox queries (`0x00B852`/`0x00B912`) iterate the 21-slot `0xBC` entity pool (`0x00FF19E8`) using a 21-bit slot mask, skipping self and inactive (`<= 0`) slots, and snapshot registers `d0-d7` at `$FF194A..$FF1969` to resume iteration.
+- **Decision:** Extracted the pool geometry and iterator save-range into `data/thor-evidence/rom_resumable_hitbox_iter_m15_352.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.136 can implement resumable masked 3D hitbox iteration.
+
 # ADR-20261117-M15-351-ALI-JUMP-PICKUP — Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box (`0x00822C`..`0x008350`)
 - **Context:** Ali's jump (`0x00822C`) launches with `vz = +7.0` (`0x00070000`) into running jump (`22`) or standing jump (`16`), while `0x0082AE` collects `0x08` pickups within `±6px` and `0x0082F8` probes 4 facing-dependent interaction boxes.
 - **Decision:** Extracted all jump parameters, pickup offsets, and 4-dir probe boxes into `data/thor-evidence/rom_ali_jump_pickup_m15_351.json` with 2/2 passing tests and Standalone handoff.

@@ -1,3 +1,9 @@
+# M15.352 ROM Resumable 21-Slot Masked 3D Hitbox Iterator
+- `tools/extract_rom_resumable_hitbox_iter.py` — ROM extractor & verifier for `0x00B852..0x00B920` (21-slot `0xBC`-stride masked 3D hitbox iterator with `$FF194A..$FF1969` resume state).
+- `tests/rom_resumable_hitbox_iter_test.py` — Unit tests verifying slot-mask filtering and multi-hit iteration.
+- `data/thor-evidence/rom_resumable_hitbox_iter_m15_352.json` — Verified evidence JSON for M15.352.
+- `docs/handoffs/STANDALONE_M15_352_RESUMABLE_HITBOX_ITER_HANDOFF.md` — C++20 Standalone handoff for M16.136.
+
 # M15.351 ROM Ali Jump Trigger, Pickup Probe & 4-Dir Interaction Box
 - `tools/extract_rom_ali_jump_pickup.py` — ROM extractor & verifier for `0x00822C..0x008350` (running/standing jump `vz=0x00070000` states `22`/`16`, `±6px` pickup probe, 4 directional interact boxes).
 - `tests/rom_ali_jump_pickup_test.py` — Unit tests verifying jump state selection and interact boxes.

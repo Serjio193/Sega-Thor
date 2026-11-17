@@ -1,0 +1,25 @@
+{
+  "milestone": "M15.352",
+  "title": "ROM Resumable 21-Slot Masked 3D Hitbox Iterator",
+  "routines": {
+    "find_first_3d_point_hit": {
+      "start": "0x00B852",
+      "end": "0x00B910"
+    },
+    "find_next_3d_point_hit": {
+      "start": "0x00B912",
+      "end": "0x00B920"
+    },
+    "find_first_3d_box_hit": {
+      "start": "0x00B922",
+      "end": "0x00B99E"
+    }
+  },
+  "constants": {
+    "entity_pool_ram": "0x00FF19E8",
+    "entity_slot_count": 21,
+    "entity_stride_bytes": "0x00BC",
+    "iter_save_ram_start": "0x00FF194A",
+    "iter_save_ram_end": "0x00FF196A"
+  }
+}

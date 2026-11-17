@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.352: ROM RESUMABLE 21-SLOT MASKED 3D HITBOX ITERATOR (`0x00B852`..`0x00B920`) — `21x0xBC` Masked Scan & `$FF194A` Resume; Extractor (`tools/extract_rom_resumable_hitbox_iter.py` <= 500 lines), Tests (`tests/rom_resumable_hitbox_iter_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_352_RESUMABLE_HITBOX_ITER_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00B852..0x00B920` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_resumable_hitbox_iter.py`, `python -m unittest tests/rom_resumable_hitbox_iter_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.352, check M16.119 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.351: ROM ALI JUMP TRIGGER, PICKUP PROBE & 4-DIR INTERACTION BOX (`0x00822C`..`0x008350`) — `0x00070000` Jump (`22`/`16`), `±6px` Pickup, 4-Dir Boxes; Extractor (`tools/extract_rom_ali_jump_pickup.py` <= 500 lines), Tests (`tests/rom_ali_jump_pickup_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_351_ALI_JUMP_PICKUP_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00822C..0x008350` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_ali_jump_pickup.py`, `python -m unittest tests/rom_ali_jump_pickup_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
