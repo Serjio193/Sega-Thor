@@ -1,3 +1,7 @@
+# ADR-20261117-M15-373-GAME-OVER-BANNER — Game Over Banner & Palette Line (`0x005F92`..`0x0060C8`)
+- **Context:** `0x005F92..0x0060C8` runs the fatal death sequence: 40-frame delay timer (`$FF1992`), "GAME OVER" graphic decompression from ROM `0x0541FE` to RAM `$FF3FAC`, VRAM tile DMA (`0x40000003`), nametable base `0xE000`, 16-color CRAM palette loading from `0x0060CA`, and Start/A/B/C (`0xF0`) interactive button wait loop.
+- **Decision:** Extract exact banner ROM address, 16 CRAM palette values (`0x0060CA`), and button wait masks in `tools/extract_rom_game_over_banner.py` and `docs/handoffs/STANDALONE_M15_373_GAME_OVER_BANNER_HANDOFF.md`.
+
 # ADR-20261117-M15-372-ALI-JUMP-LANDING-BUFFER — Ali Jump Arc, Landing & Command-Motion Buffer (`0x005DE4`..`0x005F6E`)
 - **Context:** `0x005DE4..0x005F6E` links Ali's jump arc (`vz = 0x50000`, `0x180` horizontal velocity), terrain impact (pit detection vs normal SFX `0x00500342` / roll SFX `0x00800203`), 12-frame post-landing invulnerability (`$FF198E = 12`), and 5-stage special command-motion cascade (`0x008814 -> 0x0086B4 -> 0x008778 -> 0x008910 -> 0x008950`).
 - **Decision:** Extract exact jump velocity constants, landing SFX IDs, and command-motion priority order in `tools/extract_rom_ali_jump_landing_buffer.py` and `docs/handoffs/STANDALONE_M15_372_ALI_JUMP_LANDING_BUFFER_HANDOFF.md`.

@@ -1,3 +1,6 @@
+# M15.373 ROM Game Over Death Sequence, Banner Decompressor (`0x0541FE`) & Palette Line (`0x0060CA`) (`0x005F92`..`0x0060C8`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_game_over_banner.py`, `tests/rom_game_over_banner_test.py` (`2/2 PASS`), `data/thor-evidence/rom_game_over_banner_m15_373.json`, and `docs/handoffs/STANDALONE_M15_373_GAME_OVER_BANNER_HANDOFF.md`.
+
 # M15.372 ROM Ali Jump Arc, Landing Impact & Command-Motion Buffer (`0x005DE4`..`0x005F6E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_jump_landing_buffer.py`, `tests/rom_ali_jump_landing_buffer_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_jump_landing_buffer_m15_372.json`, and `docs/handoffs/STANDALONE_M15_372_ALI_JUMP_LANDING_BUFFER_HANDOFF.md`.
 

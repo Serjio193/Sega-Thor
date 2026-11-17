@@ -1,0 +1,43 @@
+{
+  "milestone": "M15.373",
+  "rom_range": "0x005F92..0x0060C8",
+  "post_death_delay_frames": 40,
+  "game_over_sfx": "0x00D00355",
+  "banner_graphic": {
+    "rom_addr": "0x0541FE",
+    "ram_buffer": "0xFF3FAC",
+    "vdp_command": "0x40000003",
+    "nametable_addr": "0xE000"
+  },
+  "palette_line_3": {
+    "source_rom_addr": "0x0060CA",
+    "cram_shadow_addr": "0xFF13AC",
+    "color_count": 16,
+    "colors": [
+      "0x0000",
+      "0x08CE",
+      "0x06AC",
+      "0x048A",
+      "0x0268",
+      "0x0046",
+      "0x0024",
+      "0x0002",
+      "0x00E0",
+      "0x00E0",
+      "0x00E0",
+      "0x00E0",
+      "0x00E0",
+      "0x00E0",
+      "0x00E0",
+      "0x00E0"
+    ]
+  },
+  "button_wait_mask": {
+    "start_bit": 7,
+    "c_bit": 6,
+    "b_bit": 5,
+    "a_bit": 4,
+    "pad_addr": "0xFF165E",
+    "target_continue_menu": "0x0060EA"
+  }
+}

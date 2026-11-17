@@ -1,3 +1,9 @@
+# M15.373 ROM Game Over Banner & Palette Line
+- `tools/extract_rom_game_over_banner.py` — extractor for `0x005F92..0x0060C8` (40f post-death delay, `0x0541FE` banner decompression to `$FF3FAC`, `0x40000003` VDP DMA, `0x0060CA` 16-color CRAM palette, `0xF0` button wait loop).
+- `tests/rom_game_over_banner_test.py` — `2` unit tests verifying ROM banner/palette constants and Start/A/B/C button wait gate.
+- `data/thor-evidence/rom_game_over_banner_m15_373.json` — extracted M15.373 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_373_GAME_OVER_BANNER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.372 ROM Ali Jump Arc, Landing & Command-Motion Buffer
 - `tools/extract_rom_ali_jump_landing_buffer.py` — extractor for `0x005DE4..0x005F6E` (`vz = 0x50000` takeoff, `0x180` air speed, pit vs safe landing, 12f post-landing invuln & 5-tier command motion cascade).
 - `tests/rom_ali_jump_landing_buffer_test.py` — `2` unit tests verifying ROM command motion priority hierarchy and jump arc gravity/landing transitions.
