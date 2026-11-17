@@ -1,0 +1,60 @@
+{
+  "milestone": "M15.399",
+  "title": "ROM Horizontal (\u00b1X) Tilemap Raycaster, Surface Height Probe & 0x0096E8 Terrain LUT",
+  "routines": {
+    "pos_x_raycaster": {
+      "start": "0x009084",
+      "end": "0x009128",
+      "bytes": 164,
+      "direction_code": "0x11",
+      "boundary_clamp": "0x009D4E",
+      "solid_entity_sweep": "0x009DD6",
+      "tile_solid_probe": "0x00938E",
+      "surface_height_probe": "0x009BF2",
+      "surface_height_store": "0x009AD6",
+      "terrain_lut_addr": "0x0096E8"
+    },
+    "neg_x_raycaster": {
+      "start": "0x009128",
+      "end": "0x0091C6",
+      "bytes": 158,
+      "direction_code": "0x13",
+      "boundary_clamp": "0x009D70",
+      "solid_entity_sweep": "0x009EBA",
+      "tile_solid_probe": "0x00938E",
+      "surface_height_probe": "0x009BF2",
+      "surface_height_store": "0x009AD6",
+      "terrain_lut_addr": "0x0096E8"
+    },
+    "final_x_write_and_cleanup": {
+      "start": "0x0091C6",
+      "end": "0x0091F6",
+      "bytes": 48,
+      "x_pos_offset": "0x08",
+      "x_vel_offset": "0x72"
+    },
+    "terrain_surface_lut": {
+      "start": "0x0096E8",
+      "end": "0x0096F8",
+      "bytes": 16,
+      "table": [
+        "0xFF",
+        "0x00",
+        "0x02",
+        "0x01",
+        "0x04",
+        "0xFF",
+        "0x03",
+        "0xFF",
+        "0x06",
+        "0x07",
+        "0xFF",
+        "0xFF",
+        "0x05",
+        "0xFF",
+        "0xFF",
+        "0xFF"
+      ]
+    }
+  }
+}

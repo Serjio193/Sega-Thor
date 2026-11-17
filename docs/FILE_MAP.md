@@ -1,3 +1,9 @@
+# M15.399 ROM Horizontal (±X) Tilemap Raycaster, Surface Height Probe & 0x0096E8 Terrain LUT
+- `tools/extract_rom_horizontal_raycaster.py` — extractor for `0x009084..0x0091F6` (positive/negative X raycaster, subpixel integration, 8-px tile step distances, boundary/entity clamps, and 16-byte surface type table `0x0096E8`).
+- `tests/rom_horizontal_raycaster_test.py` — `5` unit tests verifying ROM constants, LUT mappings, tile boundary distances, and horizontal raycasting sweeps.
+- `data/thor-evidence/rom_horizontal_raycaster_m15_399.json` — extracted M15.399 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_399_HORIZONTAL_RAYCASTER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.398 ROM Universal Entity Simulation Machine, Animation Frame Stepper & Terrain Pre-flight
 - `tools/extract_rom_entity_sim_anim_preflight.py` — extractor for `0x008F22..0x009084` (freeze/slowmo gates, animation frame stepper with duration/loop decoding, terrain layer select `$FF16F0`, and +X move code `0x11`).
 - `tests/rom_entity_sim_anim_preflight_test.py` — `4` unit tests verifying ROM constants, freeze/slowmo gates, animation frame stepping, and layer selection.

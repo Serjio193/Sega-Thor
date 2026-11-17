@@ -1,3 +1,6 @@
+# M15.399 ROM Horizontal (±X) Tilemap Raycaster, Surface Height Probe & 0x0096E8 Terrain LUT (`0x009084`..`0x0091F6`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_horizontal_raycaster.py`, `tests/rom_horizontal_raycaster_test.py` (`5/5 PASS`), `data/thor-evidence/rom_horizontal_raycaster_m15_399.json`, and `docs/handoffs/STANDALONE_M15_399_HORIZONTAL_RAYCASTER_HANDOFF.md`.
+
 # M15.398 ROM Universal Entity Simulation Machine, Animation Frame Stepper & Terrain Pre-flight (`0x008F22`..`0x009084`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_sim_anim_preflight.py`, `tests/rom_entity_sim_anim_preflight_test.py` (`4/4 PASS`), `data/thor-evidence/rom_entity_sim_anim_preflight_m15_398.json`, and `docs/handoffs/STANDALONE_M15_398_ENTITY_SIM_ANIM_PREFLIGHT_HANDOFF.md`.
 
