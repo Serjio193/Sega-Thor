@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.76: New Game Initialization & Secret Start Chords)
+- **Concrete Task**: Implement `src/game/ui/new_game_init.hpp/.cpp` with `NewGameStartState` (`$FF0D80 = 0x01FF`, `entity_id = 2`, `facing = 2`, `max_hp = hp = 200`, `max_sp = sp = 0`, `base_attack = 10`, `active_spirit = 0`, `start_room_id = 0x001B`, `cam = (96, 0)`, `pos = (256, 80)`), `NewGameChordBranch`, and `initialize_new_game(input_ff165e_l)` covering all 4 secret chords (`0xD6000100 -> 0x03C8DE`, `0xC9000200 -> 0x001450`, `0xCA000100 -> 0x001394` `$FF0D7A = 0x80`, `0x90000000 -> 0x03E7F4`); add `tests/m16_76_new_game_init_test.cpp`; qualify full 36-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/new_game_init.hpp` / `src/game/ui/new_game_init.cpp`.
+  * Added `tests/m16_76_new_game_init_test.cpp` (registered as `oasis_m16_76_new_game_init` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 36/36 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_76`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 36/36 regression run.
+  * Remaining unknowns: Intro cutscene (`0x03BF86`) and secret menu (`0x03C8DE`) / debug start (`0x001450`) implementations are deferred to future frontend/boot-flow integration.
+
 # Worklog — 2026-11-17 (M16.75: Save/Load File Select Menu)
 - **Concrete Task**: Implement `src/game/ui/file_select_menu.hpp/.cpp` with `FileSelectMenuState` (`$FF10A8` cursor `0..5`, `$FF10AA` `occupied_mask`, `$FF19A8` `copy_src_slot`, `$2025C9` `last_slot`, `Main`/`CopySource`/`CopyDest`/`EraseSelect`), 2D grid navigation (`0x0006F6`: Right bit 0 set, Left bit 0 clear, Up `-2`, Down `+2` up to `max_row`, skip `excluded_slot`, SFX `0x006003A6`), Confirm (`0x001300` NewGame / `0x00161C` ContinueGame + `$2025C9` + SFX `0x00A00256`, Copy/Erase guards & SFX `0x00A00253`), and Cancel (`Mode 0x04` / submode back); add `tests/m16_75_file_select_menu_test.cpp`; qualify full 35-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

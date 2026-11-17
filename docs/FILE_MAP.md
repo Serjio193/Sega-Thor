@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/new_game_init.hpp` / `src/game/ui/new_game_init.cpp`: New Game initialization (`0x001300..0x00144F`: `HP=200`, `ATK=10`, `Room=0x001B`, `Pos=(256,80)`) and 4 secret start chords (`0xD6000100`, `0xC9000200`, `0xCA000100`, `0x90000000`) (M16.76).
+- `tests/m16_76_new_game_init_test.cpp`: Automated M16.76 test qualifying normal New Game stats/spawn and all 4 secret start chords (M16.76).
 - `src/game/ui/file_select_menu.hpp` / `src/game/ui/file_select_menu.cpp`: Save/Load File Select Menu (`0x0004C6..0x000D30`), 2x3 grid navigation (`0x0006F6`), New/Continue/Copy/Erase flows (`0x000B04`/`0x000C46`), and `$2025C9` last-slot persistence (M16.75).
 - `tests/m16_75_file_select_menu_test.cpp`: Automated M16.75 test qualifying 2D grid navigation, Copy/Erase guards, New/Continue dispatch, and Cancel to Title (M16.75).
 - `src/game/ui/world_map_and_records.hpp` / `src/game/ui/world_map_and_records.cpp`: World Map pin math (`0x004B4E`/`0x004BAE`/`0x004BE8`), `"Rank00"`/`"Race00"` odd-byte SRAM clear-record codecs (`0x001DDC..0x001ECE`), and Attract/Demo stream lookup + delta-decoder (`0x008A94`/`0x008A30`) (M16.74).

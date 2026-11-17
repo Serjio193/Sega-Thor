@@ -1,3 +1,14 @@
+# ADR-20261117-M16-76-NEW-GAME-INIT — New Game Initialization & Secret Start Chords (0x001300..0x00144F)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.291 extracted New Game initialization (`0x001300`: `$FF0D80 = 0x01FF`, `HP=200`, `ATK=10`, `Room=0x001B`, `Cam=(96,0)`, `Pos=(256,80)`) and 4 secret P1+P2 input chords on `$FF165E.L`.
+
+**Decisions:**
+1. **Dedicated `new_game_init` Module:**
+   - Added `src/game/ui/new_game_init.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-75-FILE-SELECT-MENU — Save/Load File Select Menu (0x0004C6..0x000D30)
 **Status:** Accepted
 **Date:** 2026-11-17

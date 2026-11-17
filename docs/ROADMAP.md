@@ -1,3 +1,9 @@
+# M16.76 New Game Initialization & Secret Start Chords (0x001300..0x00144F) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `NewGameStartState`, `NewGameChordBranch`, and `initialize_new_game(input_ff165e_l)` (`HP=200`, `ATK=10`, `Room=0x001B`, `Cam=(96,0)`, `Pos=(256,80)`, and 4 secret chords `0xD6000100`/`0xC9000200`/`0xCA000100`/`0x90000000`) in `src/game/ui/new_game_init.hpp/.cpp`.
+- Qualified `oasis_m16_76_new_game_init` and full 36-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.75 Save/Load File Select Menu (0x0004C6..0x000D30) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
