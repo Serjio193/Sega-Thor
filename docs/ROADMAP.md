@@ -1,3 +1,12 @@
+# M16.154 ROM Ramp/Bridge Slope Solver, Fractional Height Interpolator (mulu/divu) & Tile Elevation Engine (`0x0099F0..0x009BC0`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `probe_tile_elevation`, `probe_entity_elevation`, `evaluate_ramp_search_handler_1`, `evaluate_ramp_search_handler_2`, `step_ramp_search_handler_1`, and `step_ramp_search_handler_2` in `src/game/player/slope_elevation_engine.hpp/.cpp`:
+  - `tile_elevation_engine` (`0x009AD0..0x009BC0`): custom elevation probe (`0x009AD0`) and entity elevation probe (`0x009AD6`) indexing layer tile buffer `(y >> 3) << stride_shift + (x >> 3)`, mapping 4-bit attribute through 16-byte LUT2 `0x0096F8`; if `0xFF`, returns void/pit elevation entry 7; if even surface code, looks up flat elevation `$FF1706[code]`; if odd surface code, performs fractional height slope interpolation (`0x009B26..0x009B9C`): scans upward and downward across contiguous rows with identical attribute, compares upper tile surface code to fallback to flat if upper code is lower (`bcs`), computes total Y span `d2`, reads base tier height `$FF1706[code - 1]` and next tier height `$FF1706[code + 1]`, and computes `fraction = (height_delta * d3) / total_span` (via M68K `mulu.w` and `divu.w`).
+  - `ramp_search_handler_1` (`0x0099F0..0x009A60`): scans up to 48 tiles along Y rows searching for walkable ramp tiles with bit 4 clear; probes candidate elevation via `probe_tile_elevation`; validates elevation clearance `prev_h - new_h >= scan_offset`; updates entity coordinates `Y += scan_offset`, `air_height += scan_offset`, branches to `ContinueSlopeTraversal` (`0x009944`); failure branches to `BlockedWall` (`0x009918`) or `PassableGroundCommit` (`0x0099AA` if `prev_h < 0`).
+  - `ramp_search_handler_2` (`0x009A60..0x009AD0`): secondary ramp search with identical clearance logic, routing all failures to `PassableGroundCommit` (`0x0099AA`).
+- Qualified `oasis_m16_154_slope_elevation_engine` and the 134-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.153 ROM Point Tile Solidity, Air/Elevation Integrator & Tile Attribute Sampler (`0x0098EC..0x0099EE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

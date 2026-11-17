@@ -1,3 +1,36 @@
+# ADR-20261117-M16-154-SLOPE-ELEVATION-ENGINE — ROM Ramp/Bridge Slope Solver, Fractional Height Interpolator (mulu/divu) & Tile Elevation Engine (0x0099F0..0x009BC0)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.405 extracted ROM routines `0x0099F0..0x009BC0` governing ramp/bridge searching, slope height fractional interpolation via `mulu`/`divu`, tile elevation probing, and layer collision map selection:
+   - `0x009AD0..0x009BC0`: `tile_elevation_engine`:
+     * Entry `0x009AD0`: custom elevation probe using coordinates `(d5=X, d4=Y)` and active layer in `a0`.
+     * Entry `0x009AD6`: entity elevation probe selecting layer 1 (`$FF1766`) or layer 2 (`$FF1770`) based on bit 7 of `$FF16F0`, reading coordinates from `+0x08(a6)` and `+0x0C(a6)`.
+     * Reads tile attribute byte `offset = (Y >> 3) << shift + (X >> 3)`, masked with `0x0F`.
+     * Maps through 16-byte LUT2 at `0x0096F8`: `[0xFF, 0x00, 0x02, 0x01, 0x04, 0x04, 0x03, 0x03, 0x06, 0x06, 0x06, 0x06, 0x05, 0x05, 0x05, 0x05]`.
+     * Surface code `0xFF`: returns entry 7 of `$FF1706` (void/pit elevation `-4096`).
+     * Even surface code: returns flat elevation from table `$FF1706[code]`.
+     * Odd surface code: performs fractional slope interpolation:
+       - Scans contiguous tile rows upward and downward with identical attribute to compute total Y span `d2`.
+       - If upper tile has lower surface code than current (`bcs` at `0x009B6A`), falls back to flat surface.
+       - Base height `base_h = $FF1706[code - 1]`, next tier height `next_h = $FF1706[code + 1]`.
+       - Computes fraction: `fraction = ((next_h - base_h) * d3) / total_span` via `mulu.w` and `divu.w`.
+       - Returns `base_h + fraction`.
+   - `0x0099F0..0x009A60`: `ramp_search_handler_1`:
+     * Scans up to 48 tiles along Y rows for walkable bridge/ramp tiles with bit 4 clear.
+     * Probes candidate elevation and validates clearance `prev_h - new_h >= scan_offset`.
+     * On success, advances `Y` and `air_height` by `scan_offset` and continues slope traversal loop (`0x009944`).
+     * Failures route to `BlockedWall` (`0x009918`) or `PassableGroundCommit` (`0x0099AA` if `prev_h < 0`).
+   - `0x009A60..0x009AD0`: `ramp_search_handler_2`:
+     * Secondary ramp climb search with identical clearance logic, routing all failures to `PassableGroundCommit` (`0x0099AA`).
+
+**Decisions:**
+1. **Dedicated `slope_elevation_engine` Module:**
+   - Added `src/game/player/slope_elevation_engine.hpp/.cpp` modeling `probe_tile_elevation`, `probe_entity_elevation`, `evaluate_ramp_search_handler_1`, `evaluate_ramp_search_handler_2`, `step_ramp_search_handler_1`, and `step_ramp_search_handler_2`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (134/134 M16 tests).
+
 # ADR-20261117-M16-153-POINT-TILE-INTEGRATOR — ROM Point Tile Solidity, Air/Elevation Integrator & Tile Attribute Sampler (0x0098EC..0x0099EE)
 **Status:** Accepted
 **Date:** 2026-11-17

@@ -116,6 +116,7 @@ add_library(oasis_core
     src/game/player/vertical_wall_probe.cpp
     src/game/player/flying_raycaster.cpp
     src/game/player/point_tile_integrator.cpp
+    src/game/player/slope_elevation_engine.cpp
     src/game/input/mash_tripletap_detectors.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp
