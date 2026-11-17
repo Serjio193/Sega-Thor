@@ -1,3 +1,6 @@
+# M15.419 ROM Entity Special Dynamic FX Halo, Swirl & SAT Piece Compositor Subsystem (Part 2: `0x00B56E`..`0x00B79A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dynamic_fx_renderer_p2.py`, `tests/rom_dynamic_fx_renderer_p2_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dynamic_fx_renderer_p2_m15_419.json`, and `docs/handoffs/STANDALONE_M15_419_DYNAMIC_FX_RENDERER_P2_HANDOFF.md`.
+
 # M15.418 ROM Entity Special Dynamic FX, Aura, Wave & Attachment SAT Renderer (Part 1: `0x00B34C`..`0x00B56E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dynamic_fx_renderer_p1.py`, `tests/rom_dynamic_fx_renderer_p1_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dynamic_fx_renderer_p1_m15_418.json`, and `docs/handoffs/STANDALONE_M15_418_DYNAMIC_FX_RENDERER_P1_HANDOFF.md`.
 

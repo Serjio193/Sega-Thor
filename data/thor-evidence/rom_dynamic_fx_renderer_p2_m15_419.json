@@ -1,0 +1,187 @@
+{
+  "subsystem": "ROM Entity Special Dynamic FX Halo, Swirl & SAT Piece Compositor Subsystem",
+  "milestone": "M15.419",
+  "rom_range": {
+    "start": "0x00B56E",
+    "end": "0x00B79A",
+    "size_bytes": 556,
+    "sha256": "dd3b575d8d32eb02ea7aa50721a93ca72b8781fdf53bab5404d3ffa63ec73817"
+  },
+  "embedded_tables": {
+    "halo_table": {
+      "address": "0x00B5D0",
+      "entries": [
+        {
+          "step": 0,
+          "frame_flag": 255,
+          "dx": 3,
+          "dy": 3
+        },
+        {
+          "step": 1,
+          "frame_flag": 6,
+          "dx": 6,
+          "dy": 3
+        },
+        {
+          "step": 2,
+          "frame_flag": 6,
+          "dx": 6,
+          "dy": 3
+        },
+        {
+          "step": 3,
+          "frame_flag": 6,
+          "dx": -4,
+          "dy": 3
+        },
+        {
+          "step": 4,
+          "frame_flag": 6,
+          "dx": -4,
+          "dy": 3
+        },
+        {
+          "step": 5,
+          "frame_flag": 5,
+          "dx": -4,
+          "dy": 3
+        },
+        {
+          "step": 6,
+          "frame_flag": 5,
+          "dx": -4,
+          "dy": 3
+        },
+        {
+          "step": 7,
+          "frame_flag": 4,
+          "dx": -4,
+          "dy": 3
+        },
+        {
+          "step": 8,
+          "frame_flag": 4,
+          "dx": -4,
+          "dy": 3
+        },
+        {
+          "step": 9,
+          "frame_flag": 6,
+          "dx": 3,
+          "dy": 1
+        },
+        {
+          "step": 10,
+          "frame_flag": 6,
+          "dx": 3,
+          "dy": 1
+        },
+        {
+          "step": 11,
+          "frame_flag": 5,
+          "dx": 3,
+          "dy": 1
+        },
+        {
+          "step": 12,
+          "frame_flag": 5,
+          "dx": 3,
+          "dy": 1
+        },
+        {
+          "step": 13,
+          "frame_flag": 4,
+          "dx": 3,
+          "dy": 1
+        },
+        {
+          "step": 14,
+          "frame_flag": 4,
+          "dx": 3,
+          "dy": 1
+        },
+        {
+          "step": 15,
+          "frame_flag": 6,
+          "dx": -2,
+          "dy": 4
+        },
+        {
+          "step": 16,
+          "frame_flag": 6,
+          "dx": -2,
+          "dy": 4
+        },
+        {
+          "step": 17,
+          "frame_flag": 5,
+          "dx": -2,
+          "dy": 4
+        },
+        {
+          "step": 18,
+          "frame_flag": 5,
+          "dx": -2,
+          "dy": 4
+        },
+        {
+          "step": 19,
+          "frame_flag": 4,
+          "dx": -2,
+          "dy": 4
+        },
+        {
+          "step": 20,
+          "frame_flag": 4,
+          "dx": -2,
+          "dy": 4
+        }
+      ]
+    },
+    "swirl_sequence": {
+      "address": "0x00B660",
+      "frames": [
+        20,
+        20,
+        20,
+        22,
+        22,
+        22,
+        24,
+        24,
+        24
+      ]
+    }
+  },
+  "fx_blitter": {
+    "entry": "0x00B6A6",
+    "frame_table": "0x0003F326",
+    "vram_tile_base": "0x055E",
+    "viewport_clipping": {
+      "y": [
+        "0x60",
+        "0x160"
+      ],
+      "x": [
+        "0x60",
+        "0x1C0"
+      ]
+    },
+    "max_sprites": 80
+  },
+  "raw_piece_blitter": {
+    "entry": "0x00B730",
+    "screen_bias": "0x0080",
+    "viewport_clipping": {
+      "y": [
+        "0x60",
+        "0x160"
+      ],
+      "x": [
+        "0x60",
+        "0x1C0"
+      ]
+    }
+  }
+}

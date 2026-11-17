@@ -1,3 +1,9 @@
+# M15.419 ROM Entity Special Dynamic FX Halo, Swirl & SAT Piece Compositor Subsystem (Part 2)
+- `tools/extract_rom_dynamic_fx_renderer_p2.py` — extractor for `0x00B56E..0x00B79A` (bit 2 halo emitter, bit 1 swirl emitter, universal FX piece blitter 0x055E, and raw piece blitter).
+- `tests/rom_dynamic_fx_renderer_p2_test.py` — `5` unit tests verifying ROM constants, halo bit clear, swirl Y offset, universal FX blitter, and raw piece blitter.
+- `data/thor-evidence/rom_dynamic_fx_renderer_p2_m15_419.json` — extracted M15.419 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_419_DYNAMIC_FX_RENDERER_P2_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.418 ROM Entity Special Dynamic FX, Aura, Wave & Attachment SAT Renderer (Part 1)
 - `tools/extract_rom_dynamic_fx_renderer_p1.py` — extractor for `0x00B34C..0x00B56E` (master FX dispatcher, bit 0 aura emitter, bit 3 wave ring emitter, bit 4 ground ripple emitter, and tables `0x00B42C`, `0x00B4C8`, `0x00B4E0`, `0x00B556`).
 - `tests/rom_dynamic_fx_renderer_p1_test.py` — `5` unit tests verifying ROM constants, dispatcher logic, aura tables, wave ring table selection, and ripple cycle completion.
