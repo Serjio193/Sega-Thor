@@ -47,6 +47,7 @@ add_library(oasis_core
     src/game/combat/explosion_spawner.cpp
     src/game/combat/projectile_latch_burst.cpp
     src/game/combat/projectile_hit_knockback.cpp
+    src/game/combat/bomb_detonation.cpp
     src/game/save/sram_save_system.cpp
     src/game/items/item_effects.cpp
     src/game/items/item_attribute_tables.cpp

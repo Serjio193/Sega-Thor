@@ -1,3 +1,9 @@
+# M16.130 Bomb Detonation Blast Spawner & Screen-Shake (`0x00ED04..0x00EDA8`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `detonate_bomb_slot` in `src/game/combat/bomb_detonation.hpp/.cpp` covering detonation flag `$FF198F = 0xFF`, clearing Ali lock `Ali +0x06 = 0`, converting bomb entity slot to blast hazard type `0x003A` (58), dropping Z coordinate by 4.0 px with `>= 0` clamping, inheriting and masking palette word `Ali +0x5A & 0x97FF`, configuring fire damage `0x8007` and enemy hit-type `2`, activating flags (`0x36 |= 8`, `0x38 |= 8`, `0x3C |= 2`), setting sub-action and state to `8`, dispatching dual spatial SFX `0x00B00225` and `0x00600382`, and triggering 4-frame screen-shake `$FF17C4 = 4`.
+- Qualified `oasis_m16_130_bomb_detonation` and the 111-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.129 Projectile Hit Knockback, Enemy Gauge Timer & Gravity (`0x00EB40..0x00EC58`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

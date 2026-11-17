@@ -1,3 +1,23 @@
+# ADR-20261117-M16-130-BOMB-DETONATION — Bomb Detonation Blast Spawner & Screen-Shake
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.346 extracted `0x00ED04..0x00EDA8`: `detonate_bomb_slot` (`0x00ED04..0x00EDA8`).
+2. Bomb detonation sets RAM flag `$FF198F = 0xFF` and clears Ali's projectile lock word `Ali +0x06 = 0` (`$FF19EE = 0`).
+3. Re-initializes bomb entity slot as blast hazard entity type `0x003A` (58).
+4. Drops Z position by `0x00040000` (4.0 px) and clamps `>= 0`.
+5. Inherits Ali's palette/tile base `Ali +0x5A` masked with `0x97FF` (clearing bits 11, 13, 14 via `andi.w #$F7FF` and `andi.w #$9FFF`).
+6. Sets blast damage word `+0xA8 = 0x8007` (fire element bit 15 + 7 damage), hit-type `+0xA6 = 2` (hits enemies).
+7. Sets collision flag `+0x36 |= 0x08`, render flag `+0x38 |= 0x08`, behavior flag `+0x3C |= 0x02`.
+8. Sets sub-action `+0x04 = 8` and entity state `+0x2A = 8`.
+9. Triggers dual spatial SFX `0x00B00225` and `0x00600382`.
+10. Triggers 4-frame screen-shake by setting RAM `$FF17C4 = 4`.
+
+**Decisions:**
+1. **Dedicated `bomb_detonation` Module:**
+   - Added `src/game/combat/bomb_detonation.hpp/.cpp` modeling `detonate_bomb_slot`.
+
 # ADR-20261117-M16-129-PROJECTILE-HIT-KNOCKBACK — Projectile Hit Knockback, Enemy Gauge Timer & Gravity
 **Status:** Accepted
 **Date:** 2026-11-17
