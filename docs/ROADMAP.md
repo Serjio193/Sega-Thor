@@ -1,3 +1,6 @@
+# M15.432 ROM Room Warp Controller, Camera Centering, Cutscene Locks & Player Ali Spawn Reset Engine (`0x00C9B2`..`0x00CC12`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_room_warp_engine.py`, `tests/rom_room_warp_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_room_warp_engine_m15_432.json`, and `docs/handoffs/STANDALONE_M15_432_ROOM_WARP_ENGINE_HANDOFF.md`.
+
 # M15.431 ROM Map & Scene Script Dispatcher, 21-Area Script Table & State Manager (`0x00C88C`..`0x00C9B2`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_map_scene_dispatcher.py`, `tests/rom_map_scene_dispatcher_test.py` (`5/5 PASS`), `data/thor-evidence/rom_map_scene_dispatcher_m15_431.json`, and `docs/handoffs/STANDALONE_M15_431_MAP_SCENE_DISPATCHER_HANDOFF.md`.
 

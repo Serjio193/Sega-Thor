@@ -1,3 +1,9 @@
+# M15.432 ROM Room Warp Controller, Camera Centering, Cutscene Locks & Player Ali Spawn Reset Engine
+- `tools/extract_rom_room_warp_engine.py` — extractor for `0x00C9B2..0x00CC12` (cutscene lock checker `check_cutscene_script_lock`, immediate/fade warp setup, camera centering, room 4 override, and Ali sky drop reset).
+- `tests/rom_room_warp_engine_test.py` — `5` unit tests verifying ROM constants, cutscene lock aborts, camera centering coordinate calculation, room 4 override, and Player Ali ground vs sky drop spawn initialization.
+- `data/thor-evidence/rom_room_warp_engine_m15_432.json` — extracted M15.432 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_432_ROOM_WARP_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.431 ROM Map & Scene Script Dispatcher, 21-Area Script Table & State Manager
 - `tools/extract_rom_map_scene_dispatcher.py` — extractor for `0x00C88C..0x00C9B2` (master area scene loader `load_map_scene_script`, 21-entry area pointer table `0x00C92C`, state flag clearing on scene/area changes, tick `0x00C980`, and subtick `0x00C998`).
 - `tests/rom_map_scene_dispatcher_test.py` — `5` unit tests verifying ROM constants, 21 area table validity, scene script offset resolution, area vs room transition flag clearing, and tick/subtick target jump offsets.

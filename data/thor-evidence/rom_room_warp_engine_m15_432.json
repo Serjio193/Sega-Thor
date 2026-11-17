@@ -1,0 +1,48 @@
+{
+  "routine": "room_warp_camera_centering_and_player_spawn_engine",
+  "start_address": "0x00C9B2",
+  "end_address": "0x00CC12",
+  "size_bytes": 608,
+  "entry_points": {
+    "check_cutscene_script_lock": "0x00C9B2",
+    "warp_room_entry_immediate": "0x00C9EC",
+    "warp_room_entry_fade": "0x00CA10",
+    "room_transition_execute": "0x00CA3E",
+    "spawn_player_ali_in_room": "0x00CB64"
+  },
+  "camera_midpoint": {
+    "offset_x": -160,
+    "offset_y": -112
+  },
+  "special_overrides": {
+    "room_4_to_0611": {
+      "source": "0x0004",
+      "replacement": "0x0611"
+    }
+  },
+  "ali_spawn_defaults": {
+    "entity_slot": "0xFF19E8",
+    "idle_frame": "0x003F",
+    "visible_flag": "0x01",
+    "tangible_layer": "0x10",
+    "falling_pose_elevation": 240,
+    "falling_pose_mode": 6
+  },
+  "memory_map": {
+    "FF17B9": "cutscene_active_flag",
+    "FF1987": "transition_busy_flag",
+    "FF1985": "pause_menu_flag",
+    "FF17B8": "script_pause_and_lock_flags",
+    "FF1983": "secondary_lock_flag",
+    "FF1982": "tertiary_lock_flag",
+    "FF19FE": "warp_transition_mode",
+    "FF17BE": "immediate_warp_flag",
+    "FF17BC": "fade_flag",
+    "FF17BB": "blackout_flag",
+    "FF17BA": "room_loaded_flag",
+    "FF178E": "camera_spawn_coords_storage",
+    "FF1972": "player_spawn_coord_cache",
+    "FF1984": "spawn_lock_flag"
+  },
+  "code_hex": "4a3900ff17b9662e4a3900ff1987660000264a3900ff1985661c0839000200ff17b866124a3900ff1983660a4a3900ff198266024e75588f4e7533c500ff19fe50f900ff17be3203044100a048413204044100702401484336046000003050f900ff17bc50f900ff17bb33fc000200ff19fe3203044100a0484132040441007024014843360451f900ff17be0c4000046604303c06116100fec4082800060019660a0839000600ff16f167064eb9000017da50f900ff17ba51f900ff17b851f900ff17b951f900ff198851f900ff1858427900ff177e427900ff17802f0070024eb900060004201f41f900ff178e48e070001c3900ff164f6700001e51f900ff164f41f90000047643f900ff134e32d87c0622d851cefffc0cb900ff10b400ff1892671208f9000100ff164e0839000100ff164e66f64a3900ff17bf661c4a3900ff17be675c33fc000400ff18964eb900002e786100036a605448e7e0e043f900ff134c45f900ff18a6303c001f24d951c8fffc343c00204240323c003f41f900ff134c43f900ff18a645f90005d6864eb90000302e524051caffe04cdf0707600c427900ff18964eb900002e786100c0f841f900ff19e87c003c0348464243214300082146000c42a8001042a8007242a8007642a8007a317c00000004317c0000002a317cffff002c317cffff0034317cffff005c317c003f0032117c0001003642280037117c0010003842280039426800864a3900ff17bc66084a3900ff17bb672242a8004e42a80052217c000000010056317c00f00010317c00060004317c0006002a43f900ff197232e8000832a8000c51f900ff198451f900ff1982"
+}
