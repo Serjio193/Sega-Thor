@@ -1,3 +1,4 @@
+# M15.348 ROM Enemy Loot / 2-Tier Drop-Table Roller (`0x00F476`..`0x00F53A`) — COMPLETE / VERIFIED
 # M15.347 ROM Rapid-Mash & Triple-Tap Input Ring Detectors (`0x008910`..`0x0089A8`) — COMPLETE / VERIFIED
 # M15.346 ROM Bomb Detonation Blast Spawner & Screen-Shake Trigger (`0x00ED04`..`0x00EDA8`) — COMPLETE / VERIFIED
 # M15.345 ROM Projectile Hit Knockback, Enemy Gauge Timer & Gravity (`0x00EB40`..`0x00EC58`) — COMPLETE / VERIFIED

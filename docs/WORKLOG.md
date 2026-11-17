@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.348: ROM ENEMY LOOT / 2-TIER DROP-TABLE ROLLER (`0x00F476`..`0x00F53A`) — Fixed `0x8C`, 2-Tier PRNG, Pickup `0x0008` (`0x00080000`); Extractor (`tools/extract_rom_enemy_loot_drop.py` <= 500 lines), Tests (`tests/rom_enemy_loot_drop_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_348_ENEMY_LOOT_DROP_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00F476..0x00F53A` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_enemy_loot_drop.py`, `python -m unittest tests/rom_enemy_loot_drop_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.348, check M16.117 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.347: ROM RAPID-MASH & TRIPLE-TAP INPUT RING DETECTORS (`0x008910`..`0x0089A8`) — `13f`/`3x` Mash, `25f`/`3x` Tap on `$FF1668`; Extractor (`tools/extract_rom_mash_tripletap.py` <= 500 lines), Tests (`tests/rom_mash_tripletap_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_347_MASH_TRIPLETAP_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x008910..0x0089A8` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_mash_tripletap.py`, `python -m unittest tests/rom_mash_tripletap_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

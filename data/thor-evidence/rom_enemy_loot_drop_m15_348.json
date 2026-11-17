@@ -1,0 +1,16 @@
+{
+  "milestone": "M15.348",
+  "title": "ROM Enemy Loot / 2-Tier Drop-Table Roller",
+  "routine": {
+    "start": "0x00F476",
+    "end": "0x00F53A"
+  },
+  "constants": {
+    "fixed_drop_offset": "0x8C",
+    "no_drop_sentinel": "0xFFFF",
+    "pickup_entity_type": "0x0008",
+    "pickup_pop_z_vel_16_16": "0x00080000",
+    "pickup_timer_jitter_mask": "0x3F",
+    "item_flags_table_rom": "0x0005CE16"
+  }
+}

@@ -1,3 +1,8 @@
+# ADR-20261117-M15-348-ENEMY-LOOT-DROP — Enemy Loot / 2-Tier Drop-Table Roller (`0x00F476`..`0x00F53A`)
+- **Context:** Defeated enemies (`0x00F476`) either drop a fixed override (`0x8C`, `0xFFFF` = none) or evaluate a 2-tier PRNG probability table `(prob1, item1, prob2, item2)`, spawning pickup entity `0x0008` with `vz = +8.0 px/frame` (`0x00080000`) and `0..63` frame jitter.
+- **Decision:** Extracted all drop-table offsets, sentinels, and pickup spawn constants into `data/thor-evidence/rom_enemy_loot_drop_m15_348.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.132 can implement enemy loot drops with exact probability parity.
+
 # ADR-20261117-M15-347-MASH-TRIPLETAP — Rapid-Mash & Triple-Tap Input Ring Detectors (`0x008910`..`0x0089A8`)
 - **Context:** Ali's special-input ring (`$FF1668`, 64 frames) also detects rapid button mashes (`>= 3` bit-4 presses within `13` frames at `0x008910`) and triple-tap facing dashes (`3` matching direction nibbles within `25` frames at `0x008950`).
 - **Decision:** Extracted both ring-window sizes and match thresholds into `data/thor-evidence/rom_mash_tripletap_m15_347.json` with 2/2 passing tests and Standalone handoff.

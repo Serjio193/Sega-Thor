@@ -1,3 +1,9 @@
+# M15.348 ROM Enemy Loot / 2-Tier Drop-Table Roller
+- `tools/extract_rom_enemy_loot_drop.py` — ROM extractor & verifier for `0x00F476..0x00F53A` (fixed drop `0x8C`, `0xFFFF` no-drop, 2-tier PRNG drop table, pickup `0x0008` pop `vz=0x00080000`).
+- `tests/rom_enemy_loot_drop_test.py` — Unit tests verifying fixed overrides and 2-tier PRNG loot rolls.
+- `data/thor-evidence/rom_enemy_loot_drop_m15_348.json` — Verified evidence JSON for M15.348.
+- `docs/handoffs/STANDALONE_M15_348_ENEMY_LOOT_DROP_HANDOFF.md` — C++20 Standalone handoff for M16.132.
+
 # M15.347 ROM Rapid-Mash & Triple-Tap Input Ring Detectors
 - `tools/extract_rom_mash_tripletap.py` — ROM extractor & verifier for `0x008910..0x0089A8` (`13f` rapid-mash `>=3` bit-4 detector, `25f` triple-tap `3`-match facing detector on `$FF1668` ring).
 - `tests/rom_mash_tripletap_test.py` — Unit tests verifying rapid-mash and triple-tap ring detection.
