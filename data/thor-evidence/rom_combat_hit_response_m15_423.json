@@ -1,0 +1,61 @@
+{
+  "routine": "Entity Combat Hit Response, Knockback & Trajectory Physics Calculator",
+  "start_address": "0x00BE98",
+  "end_address": "0x00C012",
+  "size_bytes": 378,
+  "knockback_trajectories": {
+    "0": {
+      "name": "light_knockback",
+      "grounded": {
+        "h_speed_x": 768,
+        "h_speed_y": 704,
+        "v_impulse": 0
+      },
+      "airborne": {
+        "h_speed_x": 1024,
+        "h_speed_y": 960,
+        "v_impulse": 163840,
+        "set_air_flag": true
+      }
+    },
+    "1": {
+      "name": "none",
+      "grounded": {
+        "h_speed_x": 0,
+        "h_speed_y": 0,
+        "v_impulse": 0
+      },
+      "airborne": {
+        "h_speed_x": 0,
+        "h_speed_y": 0,
+        "v_impulse": 0
+      }
+    },
+    "2": {
+      "name": "heavy_knockback",
+      "speed": {
+        "h_speed_x": 1024,
+        "h_speed_y": 960,
+        "v_impulse": 163840
+      }
+    },
+    "3": {
+      "name": "severe_launch",
+      "speed": {
+        "h_speed_x": 1792,
+        "h_speed_y": 1664,
+        "v_impulse": 196608
+      }
+    },
+    "popup": {
+      "name": "vertical_popup",
+      "speed": {
+        "h_speed_x": 0,
+        "h_speed_y": 0,
+        "v_impulse": 458752
+      }
+    }
+  },
+  "shield_block_sfx": "0x00900202",
+  "sha256": "4ab6e5ffa30e0c9e8e7c5cdfcefc951c3c2fc90660726be79f184a5a828f53be"
+}

@@ -1,3 +1,6 @@
+# M15.423 ROM Entity Combat Hit Response, Knockback & Trajectory Physics Calculator (`0x00BE98`..`0x00C012`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_combat_hit_response.py`, `tests/rom_combat_hit_response_test.py` (`5/5 PASS`), `data/thor-evidence/rom_combat_hit_response_m15_423.json`, and `docs/handoffs/STANDALONE_M15_423_COMBAT_HIT_RESPONSE_HANDOFF.md`.
+
 # M15.422 ROM Universal Attack Frame Scanner & Hitbox Intersection Engine (`0x00BC8E`..`0x00BE98`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_attack_scanner_engine.py`, `tests/rom_attack_scanner_engine_test.py` (`7/7 PASS`), `data/thor-evidence/rom_attack_scanner_engine_m15_422.json`, and `docs/handoffs/STANDALONE_M15_422_ATTACK_SCANNER_ENGINE_HANDOFF.md`.
 

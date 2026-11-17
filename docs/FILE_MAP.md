@@ -1,3 +1,9 @@
+# M15.423 ROM Entity Combat Hit Response, Knockback & Trajectory Physics Calculator
+- `tools/extract_rom_combat_hit_response.py` — extractor for `0x00BE98..0x00C012` (combat hit response, shield facing calculation, unblocked damage/hitstun application, 4-mode knockback trajectory table `0x00BF26`, air juggle bounce, and shield clash handler).
+- `tests/rom_combat_hit_response_test.py` — `5` unit tests verifying ROM constants, shield facing logic, knockback mode resolution, knockback velocity parameters, and HUD tracking triggers.
+- `data/thor-evidence/rom_combat_hit_response_m15_423.json` — extracted M15.423 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_423_COMBAT_HIT_RESPONSE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.422 ROM Universal Attack Frame Scanner & Hitbox Intersection Engine
 - `tools/extract_rom_attack_scanner_engine.py` — extractor for `0x00BC8E..0x00BE98` (universal attack frame scanner, 4 entrypoints, 44-byte frame descriptors, 7-threshold strength rank table, damage bit packing, directional hitbox mirroring, 3D AABB overlap, and durability reduction).
 - `tests/rom_attack_scanner_engine_test.py` — `7` unit tests verifying ROM constants, strength rank thresholds, damage packing, directional hitbox mirroring, 3D intersection checks, target filter logic, and durability trigger conditions.
