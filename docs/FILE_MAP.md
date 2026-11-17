@@ -1,3 +1,9 @@
+# M15.297 ROM Combat Hitbox Collision & Kill-Rank Scaling
+- `tools/extract_rom_combat_hitbox_kernel.py` — Extracts hitbox record layout, Ali kill-rank bonus curve (`+1..+11`), shield guard, and HUD/flash timers.
+- `tests/rom_combat_hitbox_kernel_test.py` — Unit tests verifying kill-rank curve, hitbox constants, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_combat_hitbox_kernel_m15_297.json` — Extracted combat hitbox kernel evidence.
+- `docs/handoffs/STANDALONE_M15_297_COMBAT_HITBOX_KERNEL_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.296 ROM V-Int DMA Queue & 64-Frame Input History Ring
 - `tools/extract_rom_vint_and_input_ring.py` — Extracts V-Int DMA queue (`$FF10B4`), soft-reset chord (`0xE0000202`), and 64-entry input ring (`$FF1668`).
 - `tests/rom_vint_and_input_ring_test.py` — Unit tests verifying V-Int & input ring constants and JSON artifact (`2/2 PASS`).

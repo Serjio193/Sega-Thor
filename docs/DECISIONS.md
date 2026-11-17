@@ -1,3 +1,7 @@
+# ADR-20261117-M15-297-COMBAT-HITBOX-KERNEL — Combat Hitbox Collision & Kill-Rank Scaling (`0x00BCBA`..`0x00BF26`)
+- **Decision:** Model Beyond Oasis's combat hitbox resolution in Standalone with the `0x2C`-byte animation-frame hitbox lookup, Ali's 7-tier kill-rank damage bonus (`+1..+11`), opposite-facing shield guard (`$6D`), `90`-frame enemy HP HUD, and `6`-frame hit-flash.
+- **Evidence:** Direct Capstone M68K disassembly of `0x00BCBA..0x00BD90` and `0x00BE96..0x00BF30` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-296-VINT-AND-INPUT-RING — V-Int DMA Queue & Input History Ring (`0x001F76`..`0x002218`)
 - **Decision:** Model Beyond Oasis's V-Int services in Standalone with the 8-byte LIFO VDP DMA queue (`$FF10B4..$FF1892`), `0xE0000202` soft-reset chord, 64-entry reverse-indexed input history ring (`$FF1668`), and `$FF1656`/`$FF1658`/`$FF1654` frame counters.
 - **Evidence:** Direct Capstone M68K disassembly of `0x002112..0x002218` and vector `0x000078` in `local-roms/Beyond Oasis (USA).md`.

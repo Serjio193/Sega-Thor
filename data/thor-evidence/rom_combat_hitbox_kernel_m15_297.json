@@ -1,0 +1,54 @@
+{
+  "milestone": "M15.297",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "hitbox_kernel": {
+    "player_attack_entry": "0x00BCBA",
+    "enemy_attack_entry": "0x00BCD8",
+    "player_contact_cb": "0x00BE98",
+    "enemy_contact_cb": "0x00BEBA",
+    "shield_block_target": "0x00BFAE",
+    "reaction_table_addr": "0x00BF26",
+    "enemy_slot_count": 17,
+    "hitbox_record_bytes": 44,
+    "dir_box_stride_bytes": 12,
+    "enemy_hp_hud_frames": 90,
+    "hit_flash_frames": 6
+  },
+  "kill_rank_damage_bonuses": [
+    {
+      "kills": 10,
+      "delta": 1,
+      "total_bonus": 1
+    },
+    {
+      "kills": 20,
+      "delta": 1,
+      "total_bonus": 2
+    },
+    {
+      "kills": 30,
+      "delta": 1,
+      "total_bonus": 3
+    },
+    {
+      "kills": 40,
+      "delta": 1,
+      "total_bonus": 4
+    },
+    {
+      "kills": 50,
+      "delta": 1,
+      "total_bonus": 5
+    },
+    {
+      "kills": 100,
+      "delta": 2,
+      "total_bonus": 7
+    },
+    {
+      "kills": 200,
+      "delta": 4,
+      "total_bonus": 11
+    }
+  ]
+}

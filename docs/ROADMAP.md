@@ -1,3 +1,7 @@
+# M15.297 ROM Combat Hitbox Collision & Kill-Rank Scaling (`0x00BCBA`..`0x00BF26`) — COMPLETE / VERIFIED
+- Decoded player/enemy hitbox collision (`0x00BCBA`/`0x00BCD8`), `0x2C`-byte frame records, Ali kill-rank damage bonus (`10,20,30,40,50,100,200` -> `+1..+11`), shield opposite-facing guard block (`$6D`), `90`-frame enemy HP HUD (`$FF184F`), and `6`-frame hit-flash (`$83`).
+- Authored `tools/extract_rom_combat_hitbox_kernel.py`, `tests/rom_combat_hitbox_kernel_test.py` (`2/2 PASS`), `data/thor-evidence/rom_combat_hitbox_kernel_m15_297.json`, and `docs/handoffs/STANDALONE_M15_297_COMBAT_HITBOX_KERNEL_HANDOFF.md`.
+
 # M15.296 ROM V-Int DMA Queue & 64-Frame Input History Ring (`0x001F76`..`0x002218`) — COMPLETE / VERIFIED
 - Decoded V-Int vector (`0x001F76`), LIFO 8B VDP DMA queue (`$FF10B4..$FF1892`), soft-reset chord (`0xE0000202 -> 0x00020E`), 64-frame input history ring (`$FF1668`, `-2 & 0x7E`, max `0x3F`), and frame counters (`$FF1656`/`$FF1658`/`$FF1654`).
 - Authored `tools/extract_rom_vint_and_input_ring.py`, `tests/rom_vint_and_input_ring_test.py` (`2/2 PASS`), `data/thor-evidence/rom_vint_and_input_ring_m15_296.json`, and `docs/handoffs/STANDALONE_M15_296_VINT_AND_INPUT_RING_HANDOFF.md`.

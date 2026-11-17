@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.297: ROM COMBAT HITBOX COLLISION & KILL-RANK SCALING (`0x00BCBA`..`0x00BF26`) — 7-Tier Kill Bonus (`+1..+11`), Shield Block, `90`f Enemy HUD, `6`f Flash; Extractor (`tools/extract_rom_combat_hitbox_kernel.py` <= 500 lines), Tests (`tests/rom_combat_hitbox_kernel_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_297_COMBAT_HITBOX_KERNEL_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00BCBA..0x00BD90` and `0x00BE96..0x00BF30` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_combat_hitbox_kernel.py` and `python tests/rom_combat_hitbox_kernel_test.py` (2/2 PASS).
+- Next: Commit & push M15.297, await M16.80 completion, and continue.
+
 # 2026-11-17 — Milestone M15.296: ROM V-INT DMA QUEUE & 64-FRAME INPUT HISTORY RING (`0x001F76`..`0x002218`) — `$FF10B4` 8B DMA Queue, `0xE0000202` Reset, 64-Frame Input Ring `$FF1668`; Extractor (`tools/extract_rom_vint_and_input_ring.py` <= 500 lines), Tests (`tests/rom_vint_and_input_ring_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_296_VINT_AND_INPUT_RING_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x002112..0x002218` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_vint_and_input_ring.py` and `python tests/rom_vint_and_input_ring_test.py` (2/2 PASS).
