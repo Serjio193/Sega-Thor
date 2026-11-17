@@ -1,3 +1,17 @@
+# ADR-20261117-M16-127-EXPLOSION-SPAWNER — Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.343 extracted `0x00E90E..0x00EA02`: `spawn_explosion_normal` (`0x00E90E..0x00E938`), `spawn_explosion_hi` (`0x00E93A..0x00E96A`), `init_explosion_and_sfx` (`0x00E96C..0x00E9DC`), and `sync_shade_phase_flags` (`0x00E9DE..0x00EA02`).
+2. Explosions initialize entity type `0x0034` with 16.16 coordinates, sprite `0x055E` (or `0x855E` for hi variant), timer `0`, and base coordinate mirrors at `+0x4E`/`+0x52`.
+3. Cooldown prevents duplicate explosion sounds within 7 frames (`$FF199C - $FF1944 < 7`), triggering dual spatial SFX `0x0090021B` and `0x00600382`.
+4. Shade spirit (`0x001E`) sync sets bit 1 on collision flags `+0x36` and bit 2 on render flags `+0x38`, and clears them when another spirit is active.
+
+**Decisions:**
+1. **Dedicated `explosion_spawner` Module:**
+   - Added `src/game/combat/explosion_spawner.hpp/.cpp` modeling `check_and_update_explosion_sfx_cooldown`, `sync_shade_phase_flags`, `spawn_explosion`, `spawn_explosion_normal`, `spawn_explosion_hi`, and `write_explosion_to_entity_slot`.
+
 # ADR-20261117-M16-126-SPATIAL-AUDIO — Spatial 2D Audio Attenuation & Stereo Panning
 **Status:** Accepted
 **Date:** 2026-11-17

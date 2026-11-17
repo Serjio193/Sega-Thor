@@ -1,3 +1,15 @@
+# Worklog — 2026-11-17 (M16.127: Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase)
+- **Concrete Task**: Implement `src/game/combat/explosion_spawner.hpp/.cpp` with `spawn_explosion(...)` (`0x00E90E..0x00E9DC`: entity type `0x0034`, coordinates to 16.16 fixed-point, base coordinates mirrored at `+0x4E`/`+0x52`, timer 0, sprite `0x055E` / `0x855E` for hi variant), `check_and_update_explosion_sfx_cooldown(...)` (`0x00E9AA..0x00E9DC`: 7-frame window `$FF199C - $FF1944 < 7`, signed negative `bmi` reset, dual SFX `0x0090021B` + `0x00600382`), `sync_shade_phase_flags(...)` (`0x00E9DE..0x00EA02`: Shade spirit `0x1E` toggles `0x36` bit 1 and `0x38` bit 2), and `write_explosion_to_entity_slot(...)` (0xBC-byte entity structure serialization); add `tests/m16_127_explosion_spawner_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/combat/explosion_spawner.hpp` / `src/game/combat/explosion_spawner.cpp`.
+  * Added `tests/m16_127_explosion_spawner_test.cpp` (registered as `oasis_m16_127_explosion_spawner` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 108/108 tests passed (`ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): 108/108 tests passed (`ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: `explosion_spawner.hpp` (102 lines), `explosion_spawner.cpp` (157 lines), `m16_127_explosion_spawner_test.cpp` (132 lines), `CMakeLists.txt` (262 lines), `project_tests_m16.cmake` (405 lines) <= 500 lines.
+  * Remaining unknowns: Wiring `spawn_explosion` directly into projectile detonation callbacks in `StandaloneGameSimulation` is deferred to combat effect dispatcher integration.
+
 # Worklog — 2026-11-17 (M16.126: Spatial 2D Audio Attenuation & Stereo Panning)
 - **Concrete Task**: Implement `src/game/audio/spatial_audio.hpp/.cpp` with `calculate_spatial_audio(...)` (`0x00E78E..0x00E90C`: distance metric `dist = max(|dx|, |dy| + (|dy| >> 2))`, low-sound passthrough for `sound_id < 0x0200`, 3-tier FM/PSG bank 2 distance attenuation at 176/224 and cull at 272 with stereo panning `0x40`/`0x80` at `|dx| >= 96`, and high-res distance attenuation with 88-pixel deadzone, `(eff_dist >> 5) + 1` drop up to 7, and stereo panning `0x42`/`0x82` at `|dx| >= 64`) and `calculate_spatial_audio_to_player(...)`; add `tests/m16_126_spatial_audio_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

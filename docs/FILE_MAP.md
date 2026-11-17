@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/combat/explosion_spawner.hpp` / `src/game/combat/explosion_spawner.cpp`: Explosion spawner, 7-frame SFX cooldown & Shade phase sync (`0x00E90E..0x00EA02`, entity type `0x0034`, sprite `0x055E`/`0x855E`, 7-frame SFX cooldown with `0x0090021B` + `0x00600382`, and Shade `0x1E` phase flag sync on `0x36`/`0x38`) (M16.127).
+- `tests/m16_127_explosion_spawner_test.cpp`: Automated M16.127 test qualifying SFX cooldown 7f window and 16-bit wrap/negative, Shade spirit flags 0x36/0x38, normal & hi explosion dispatch, and 0xBC entity slot byte writing (M16.127).
 - `src/game/audio/spatial_audio.hpp` / `src/game/audio/spatial_audio.cpp`: Spatial 2D audio attenuation & stereo panning (`0x00E78E..0x00E90C`, Manhattan/aspect distance metric `max(|dx|, |dy| + (|dy| >> 2))`, 3-tier bank-2 attenuation/cull & stereo pan, high-res attenuation/cull & stereo pan, low-sound pass-through) (M16.126).
 - `tests/m16_126_spatial_audio_test.cpp`: Automated M16.126 test qualifying low sound pass-through, FM/PSG bank 2 distance attenuation & stereo panning, and high-res distance attenuation & panning (M16.126).
 - `src/game/math/isqrt_atan2.hpp` / `src/game/math/isqrt_atan2.cpp`: Integer square root (Heron's method, `0x0400` cap, `0x00E6BA..0x00E6EE`) and 256-step `atan2` angle LUT (`0x00E6F0..0x00E78C`, 9-word tangent LUT `0x0005D906`, `0`=Right, `64`=Up, `128`=Left, `192`=Down) (M16.125).

@@ -1,3 +1,9 @@
+# M16.127 Explosion Spawner, 7-Frame SFX Cooldown & Shade Phase (`0x00E90E..0x00EA02`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `spawn_explosion`, `spawn_explosion_normal`, `spawn_explosion_hi`, `check_and_update_explosion_sfx_cooldown`, `sync_shade_phase_flags`, and `write_explosion_to_entity_slot` in `src/game/combat/explosion_spawner.hpp/.cpp`.
+- Qualified `oasis_m16_127_explosion_spawner` and the 108-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.126 Spatial 2D Audio Attenuation & Stereo Panning (`0x00E78E..0x00E90C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
