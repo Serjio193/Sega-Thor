@@ -1,3 +1,6 @@
+# M15.408 ROM Horizontal (±X) Solid Dynamic Entity Collision Sweeps (`0x009DD6`..`0x009F9E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_horizontal_entity_sweeps.py`, `tests/rom_horizontal_entity_sweeps_test.py` (`9/9 PASS`), `data/thor-evidence/rom_horizontal_entity_sweeps_m15_408.json`, and `docs/handoffs/STANDALONE_M15_408_HORIZONTAL_ENTITY_SWEEPS_HANDOFF.md`.
+
 # M15.407 ROM 4-Direction World Boundary Clamp Subsystem (`0x009D4E`..`0x009DD6`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_boundary_clamps.py`, `tests/rom_boundary_clamps_test.py` (`9/9 PASS`), `data/thor-evidence/rom_boundary_clamps_m15_407.json`, and `docs/handoffs/STANDALONE_M15_407_BOUNDARY_CLAMPS_HANDOFF.md`.
 

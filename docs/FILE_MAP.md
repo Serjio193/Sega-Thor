@@ -1,3 +1,9 @@
+# M15.408 ROM Horizontal (±X) Solid Dynamic Entity Collision Sweeps
+- `tools/extract_rom_horizontal_entity_sweeps.py` — extractor for `0x009DD6..0x009F9E` (horizontal dynamic entity collision sweeps ±X, Group 2 pool `$FF19E8`, 3D AABB overlap, step clamping, and entity push velocity deltas `±1` on `$72`).
+- `tests/rom_horizontal_entity_sweeps_test.py` — `9` unit tests verifying ROM constants, horizontal entity sweeps, 3D AABB overlaps, clamping, and directional push behavior.
+- `data/thor-evidence/rom_horizontal_entity_sweeps_m15_408.json` — extracted M15.408 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_408_HORIZONTAL_ENTITY_SWEEPS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.407 ROM 4-Direction World Boundary Clamp Subsystem
 - `tools/extract_rom_boundary_clamps.py` — extractor for `0x009D4E..0x009DD6` (4-direction world boundary clamps ±X, ±Y, map tile dimensions, remaining distance clamps, and wall collision flag mask `0x48`).
 - `tests/rom_boundary_clamps_test.py` — `9` unit tests verifying ROM boundary clamps, step clamping, and collision flag updates across all four cardinal directions.

@@ -1,0 +1,27 @@
+{
+  "milestone": "M15.408",
+  "title": "ROM Horizontal (\u00b1X) Solid Dynamic Entity Collision Sweeps",
+  "pool": {
+    "address": "0x00FF19E8",
+    "slots": 21,
+    "stride": 188
+  },
+  "routines": {
+    "sweep_pos_x": {
+      "start": "0x009DD6",
+      "end": "0x009EB8",
+      "bytes": 226,
+      "push_opcode": "addq.w #1, $72(a5)",
+      "collision_bit": 7,
+      "reaction_code": 3
+    },
+    "sweep_neg_x": {
+      "start": "0x009EBA",
+      "end": "0x009F9E",
+      "bytes": 228,
+      "push_opcode": "subq.w #1, $72(a5)",
+      "collision_bit": 7,
+      "reaction_code": 3
+    }
+  }
+}
