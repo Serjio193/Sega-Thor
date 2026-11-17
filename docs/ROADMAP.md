@@ -1,3 +1,9 @@
+# M16.114 Consumable Item Validation & HP/SP/Spirit Restore (`0x005236..0x005472`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `can_use_consumable` (`0x005236..0x00530A`) and `apply_consumable_effect` (`0x00530C..0x005472`) in `src/game/player/consumable_effects.hpp/.cpp` (reusing `oasis::game::items` logic).
+- Qualified `oasis_m16_114_consumable_effects` and the 95-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.113 4x4 Food/Consumable Menu Use & Drop (`0x00474E..0x00494A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

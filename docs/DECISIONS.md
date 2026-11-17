@@ -1,3 +1,14 @@
+# ADR-20261117-M16-114-CONSUMABLE-EFFECTS — Consumable Item Validation & HP/SP/Spirit Restore
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.330 extracted `0x005236..0x005472`: `can_use_consumable` (Area `0x10` block, Spirit Gems `0x1A..0x1D`, HP/SP/Elixirs `0x1E..0x2A`) and `apply_consumable_effect` (25%/50%/75%/100% restore tiers, Spirit Gem summon, heal SFX `0x00A00234`).
+
+**Decisions:**
+1. **Dedicated `consumable_effects` Player Wrapper Module:**
+   - Added `src/game/player/consumable_effects.hpp/.cpp` delegating to `oasis::game::items` (`item_effects.hpp`) to avoid duplicating logic.
+
 # ADR-20261117-M16-113-FOOD-MENU — 4x4 Food/Consumable Menu Use & Drop
 **Status:** Accepted
 **Date:** 2026-11-17

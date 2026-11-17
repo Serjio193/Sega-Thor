@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.114: Consumable Item Validation & HP/SP/Spirit Restore)
+- **Concrete Task**: Implement `src/game/player/consumable_effects.hpp/.cpp` with `can_use_consumable(...)` (`0x005236..0x00530A`: Area `0x10` block, Spirit Gems `0x1A..0x1D`, HP Foods `0x1E..0x21`, SP Foods `0x22..0x25`, Elixirs `0x26..0x2A`) and `apply_consumable_effect(...)` (`0x00530C..0x005472`: 25%/50%/75%/100% HP/SP restore tiers clamped to Max, Spirit Gem SP refill + summon trigger, heal SFX `0x00A00234`), delegating to `oasis::game::items`; add `tests/m16_114_consumable_effects_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/player/consumable_effects.hpp` / `src/game/player/consumable_effects.cpp`.
+  * Added `tests/m16_114_consumable_effects_test.cpp` (registered as `oasis_m16_114_consumable_effects` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `95/95` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `95/95` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Consolidating `oasis::game::player::consumable_effects` and `oasis::game::items::item_effects` call sites in `StandaloneGameSimulation` is deferred to future player-item unification.
+
 # Worklog — 2026-11-17 (M16.113: 4x4 Food/Consumable Menu Use & Drop)
 - **Concrete Task**: Implement `src/game/ui/food_menu.hpp/.cpp` with `step_cursor_4x4(cursor, dcol, drow)` (`0x004906..0x00494A`: 4 cols x 4 rows, `(row << 2) | col`) and `try_drop_food_item(inventory, cursor, item_flags_table, terrain_blocked)` (`0x004896..0x004904`: checks `terrain_blocked`, `item_id != 0`, and bit 5 undroppable flag from `0x05CE16`) plus consume timer constants (`0x005A` = 90 frames, SFX `0x00A00256`); add `tests/m16_113_food_menu_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
