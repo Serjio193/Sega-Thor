@@ -1,3 +1,9 @@
+# M15.336 ROM Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics
+- `tools/extract_rom_ai_steering_gravity.py` — ROM extractor & verifier for `0x00E398..0x00E520` (4-way steering, Manhattan distance, 16.16 fixed-point aim, `0x300`/`0x2E0` launch arc, `0x0000C000` Z-gravity).
+- `tests/rom_ai_steering_gravity_test.py` — Unit tests verifying AI steering, fixed-point aim, and Z-gravity zero-skip.
+- `data/thor-evidence/rom_ai_steering_gravity_m15_336.json` — Verified evidence JSON for M15.336.
+- `docs/handoffs/STANDALONE_M15_336_AI_STEERING_GRAVITY_HANDOFF.md` — C++20 Standalone handoff for M16.120.
+
 # M15.335 ROM Entity Sprite-DMA Budget Throttle & Frame Lookup
 - `tools/extract_rom_sprite_dma_throttle.py` — ROM extractor & verifier for `0x00A9A0..0x00AAA5` (V-Int DMA budget `$FF1652` throttle, `$FF1651` backlog flag, `0x0200`/`0x0300` fallback, shadow visibility rule).
 - `tests/rom_sprite_dma_throttle_test.py` — Unit tests verifying DMA budget throttling and shadow visibility predicates.

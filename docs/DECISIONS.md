@@ -1,3 +1,8 @@
+# ADR-20261117-M15-336-AI-STEERING-GRAVITY — Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics (`0x00E398`..`0x00E520`)
+- **Context:** Enemy AI and projectile helpers (`0x00E398..0x00E520`) compute 4-way facing + Manhattan distance, normalized 16.16 aim vectors, `0x300`/`0x2E0` knockback launch arcs (`vz = +6.0`), and `0x0000C000` Z-gravity with exact-zero sentinel skip.
+- **Decision:** Extracted all constants and physics formulas into `data/thor-evidence/rom_ai_steering_gravity_m15_336.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.120 can implement enemy steering, aiming, and vertical arc physics with exact fixed-point parity.
+
 # ADR-20261117-M15-335-SPRITE-DMA-THROTTLE — Entity Sprite-DMA Budget Throttle & Frame Lookup (`0x00A9A0`..`0x00AAA5`)
 - **Context:** Entity rendering (`0x00A9A0`) gates sprite tile DMA uploads against `$FF1652` (remaining V-Int DMA words), falling back to the cached frame (`0x34(a6)`) and setting `$FF1651` when over budget, and evaluates shadow visibility from `Z` (`0x10(a6)`) and `0x36(a6)`.
 - **Decision:** Extracted all throttle offsets, RAM flags, and shadow rules into `data/thor-evidence/rom_sprite_dma_throttle_m15_335.json` with 2/2 passing tests and Standalone handoff.

@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.336: ROM ENEMY AI STEERING, FIXED-POINT AIM & Z-GRAVITY PHYSICS (`0x00E398`..`0x00E520`) — 4-Way Chase, 16.16 Aim, `0x00060000` Launch, `0x0000C000` Gravity; Extractor (`tools/extract_rom_ai_steering_gravity.py` <= 500 lines), Tests (`tests/rom_ai_steering_gravity_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_336_AI_STEERING_GRAVITY_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00E398..0x00E520` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_ai_steering_gravity.py`, `python -m unittest tests/rom_ai_steering_gravity_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.336, check M16.110 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.335: ROM ENTITY SPRITE-DMA BUDGET THROTTLE & FRAME LOOKUP (`0x00A9A0`..`0x00AAA5`) — `$FF1652` Budget, `$FF1651` Throttle, Shadow Rule; Extractor (`tools/extract_rom_sprite_dma_throttle.py` <= 500 lines), Tests (`tests/rom_sprite_dma_throttle_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_335_SPRITE_DMA_THROTTLE_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00A9A0..0x00AAA5` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_sprite_dma_throttle.py`, `python -m unittest tests/rom_sprite_dma_throttle_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
