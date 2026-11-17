@@ -1,0 +1,291 @@
+{
+  "subsystem": "ROM Entity Special Dynamic FX, Aura, Wave & Attachment SAT Renderer (Part 1)",
+  "milestone": "M15.418",
+  "rom_range": {
+    "start": "0x00B34C",
+    "end": "0x00B56E",
+    "size_bytes": 546,
+    "sha256": "780c99c9f67ca0d5461fdf066131faa2c10307a715e0a64f19247feaf97bdcee"
+  },
+  "embedded_tables": {
+    "bit0_aura_table": {
+      "address": "0x00B42C",
+      "entries": [
+        {
+          "step": 0,
+          "flag": 255,
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "step": 1,
+          "flag": 7,
+          "dx": 4,
+          "dy": 4
+        },
+        {
+          "step": 2,
+          "flag": 8,
+          "dx": 4,
+          "dy": 4
+        },
+        {
+          "step": 3,
+          "flag": 8,
+          "dx": 4,
+          "dy": 4
+        },
+        {
+          "step": 4,
+          "flag": 9,
+          "dx": 4,
+          "dy": 4
+        },
+        {
+          "step": 5,
+          "flag": 9,
+          "dx": 4,
+          "dy": 4
+        },
+        {
+          "step": 6,
+          "flag": 10,
+          "dx": 4,
+          "dy": 4
+        },
+        {
+          "step": 7,
+          "flag": 255,
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "step": 8,
+          "flag": 255,
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "step": 9,
+          "flag": 255,
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "step": 10,
+          "flag": 7,
+          "dx": -4,
+          "dy": -4
+        },
+        {
+          "step": 11,
+          "flag": 8,
+          "dx": -4,
+          "dy": -4
+        },
+        {
+          "step": 12,
+          "flag": 8,
+          "dx": -4,
+          "dy": -4
+        },
+        {
+          "step": 13,
+          "flag": 9,
+          "dx": -4,
+          "dy": -4
+        },
+        {
+          "step": 14,
+          "flag": 9,
+          "dx": -4,
+          "dy": -4
+        },
+        {
+          "step": 15,
+          "flag": 10,
+          "dx": -4,
+          "dy": -4
+        }
+      ]
+    },
+    "bit3_small_wave_table": {
+      "address": "0x00B4C8",
+      "entries": [
+        {
+          "step": 0,
+          "b0": 0,
+          "b1": 0,
+          "b2": -8
+        },
+        {
+          "step": 1,
+          "b0": 0,
+          "b1": 0,
+          "b2": -8
+        },
+        {
+          "step": 2,
+          "b0": 1,
+          "b1": 0,
+          "b2": -8
+        },
+        {
+          "step": 3,
+          "b0": 1,
+          "b1": 0,
+          "b2": -8
+        },
+        {
+          "step": 4,
+          "b0": 2,
+          "b1": 0,
+          "b2": -8
+        },
+        {
+          "step": 5,
+          "b0": 2,
+          "b1": 0,
+          "b2": -8
+        },
+        {
+          "step": 6,
+          "b0": 3,
+          "b1": 0,
+          "b2": -8
+        },
+        {
+          "step": 7,
+          "b0": 3,
+          "b1": 0,
+          "b2": -8
+        }
+      ]
+    },
+    "bit3_large_wave_table": {
+      "address": "0x00B4E0",
+      "entries": [
+        {
+          "step": 0,
+          "b0": 30,
+          "b1": 0,
+          "b2": -12
+        },
+        {
+          "step": 1,
+          "b0": 30,
+          "b1": 0,
+          "b2": -12
+        },
+        {
+          "step": 2,
+          "b0": 31,
+          "b1": 0,
+          "b2": -12
+        },
+        {
+          "step": 3,
+          "b0": 31,
+          "b1": 0,
+          "b2": -12
+        },
+        {
+          "step": 4,
+          "b0": 32,
+          "b1": 0,
+          "b2": -12
+        },
+        {
+          "step": 5,
+          "b0": 32,
+          "b1": 0,
+          "b2": -12
+        },
+        {
+          "step": 6,
+          "b0": 33,
+          "b1": 0,
+          "b2": -12
+        },
+        {
+          "step": 7,
+          "b0": 33,
+          "b1": 0,
+          "b2": -12
+        },
+        {
+          "step": 8,
+          "b0": 34,
+          "b1": 0,
+          "b2": -12
+        },
+        {
+          "step": 9,
+          "b0": 34,
+          "b1": 0,
+          "b2": -12
+        }
+      ]
+    },
+    "bit4_ripple_table": {
+      "address": "0x00B556",
+      "entries": [
+        {
+          "step": 0,
+          "b0": 59,
+          "b1": 0,
+          "b2": 0
+        },
+        {
+          "step": 1,
+          "b0": 59,
+          "b1": 0,
+          "b2": 0
+        },
+        {
+          "step": 2,
+          "b0": 60,
+          "b1": 0,
+          "b2": 0
+        },
+        {
+          "step": 3,
+          "b0": 60,
+          "b1": 0,
+          "b2": 0
+        },
+        {
+          "step": 4,
+          "b0": 61,
+          "b1": 0,
+          "b2": 0
+        },
+        {
+          "step": 5,
+          "b0": 61,
+          "b1": 0,
+          "b2": 0
+        },
+        {
+          "step": 6,
+          "b0": 62,
+          "b1": 0,
+          "b2": 0
+        },
+        {
+          "step": 7,
+          "b0": 62,
+          "b1": 0,
+          "b2": 0
+        }
+      ]
+    }
+  },
+  "mode_flags_39": {
+    "bit0": "Aura / spark emitter (0x00B3D2)",
+    "bit1": "Energy swirl emitter (0x00B610)",
+    "bit2": "Pulsing halo emitter (0x00B56E)",
+    "bit3": "Shadow / wave ring emitter (0x00B45C)",
+    "bit4": "Ground ripple / flame attachment emitter (0x00B4FE)"
+  }
+}

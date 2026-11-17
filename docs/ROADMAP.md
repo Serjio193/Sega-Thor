@@ -1,3 +1,6 @@
+# M15.418 ROM Entity Special Dynamic FX, Aura, Wave & Attachment SAT Renderer (Part 1: `0x00B34C`..`0x00B56E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dynamic_fx_renderer_p1.py`, `tests/rom_dynamic_fx_renderer_p1_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dynamic_fx_renderer_p1_m15_418.json`, and `docs/handoffs/STANDALONE_M15_418_DYNAMIC_FX_RENDERER_P1_HANDOFF.md`.
+
 # M15.417 ROM Entity Secondary Weapon & Auxiliary Overlay SAT Compositor (`0x00B15E`..`0x00B34C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_weapon_overlay_compositor.py`, `tests/rom_weapon_overlay_compositor_test.py` (`5/5 PASS`), `data/thor-evidence/rom_weapon_overlay_compositor_m15_417.json`, and `docs/handoffs/STANDALONE_M15_417_WEAPON_OVERLAY_COMPOSITOR_HANDOFF.md`.
 
