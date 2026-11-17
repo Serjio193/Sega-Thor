@@ -1,3 +1,9 @@
+# M16.94 Entity Animation Frame Sequencer (`0x008FE0..0x0090FC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `AnimKeyframe4`, `EntityAnimState`, `step_anim_keyframe` (`0x008FF0..0x009041`), and `step_anim_tick` in `src/game/entities/entity_anim_sequencer.hpp/.cpp`.
+- Qualified `oasis_m16_94_entity_anim_sequencer` and full 54-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.93 Room Tilemap & Collision Layer Descriptor Builder (`0x00D500..0x00D7BF`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

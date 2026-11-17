@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/entities/entity_anim_sequencer.hpp` / `src/game/entities/entity_anim_sequencer.cpp`: 4-byte entity animation keyframe sequencer (`0x008FF0..0x009041`, `AnimKeyframe4`, `EntityAnimState`, `step_anim_keyframe`, `step_anim_tick`) (M16.94).
+- `tests/m16_94_entity_anim_sequencer_test.cpp`: Automated M16.94 test qualifying keyframe duration math, `swing_hit_once` clear, `last_frame` wrap, and `anim_completed` flag (M16.94).
 - `src/game/world/room_layer_loader.hpp` / `src/game/world/room_layer_loader.cpp`: Room tilemap & collision layer descriptor builder (`0x00D500..0x00D7BF`, `compute_row_shift` `0x00D7B0`, `decode_room_layer_header`) (M16.93).
 - `tests/m16_93_room_layer_loader_test.cpp`: Automated M16.93 test qualifying `compute_row_shift`, 2x1 room header layout, and dual-plane collision offsets (M16.93).
 - `src/game/entities/prng_lfsr.hpp` / `src/game/entities/prng_lfsr.cpp`: 16-bit LFSR PRNG (`$FF1928`, seed `0x7F28`, `next_rng16` `0x00E268`, `rand_u16` `0x00E2A2`, `rand_u8` `0x00E2BA`) (M16.92).

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-94-ENTITY-ANIM-SEQUENCER — Entity Animation Frame Sequencer
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.310 extracted the 4-byte entity animation keyframe sequencer (`0x008FF0..0x009041`: `0x8000` last frame, `timer_2e = max(0, ((flags_dur & 0x7FFF) >> 1) - 1)`, `$37` bits 1/2/3).
+
+**Decisions:**
+1. **Dedicated `entity_anim_sequencer` Module:**
+   - Added `src/game/entities/entity_anim_sequencer.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-93-ROOM-LAYER-LOADER — Room Tilemap & Collision Layer Descriptor Builder
 **Status:** Accepted
 **Date:** 2026-11-17

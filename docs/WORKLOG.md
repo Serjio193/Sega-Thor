@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.94: Entity Animation Frame Sequencer)
+- **Concrete Task**: Implement `src/game/entities/entity_anim_sequencer.hpp/.cpp` with `AnimKeyframe4` (`frame_id`, `flags_dur`, `is_last_frame()` `0x8000`), `EntityAnimState` (`cursor_bytes` `+0x30`, `timer_2e` `+0x2E`, `frame_id_32` `+0x32`, `combat_flags_37` `+0x37`), `step_anim_keyframe(keyframes, state)` (`0x008FF0..0x009041`), and `step_anim_tick(keyframes, state)`; add `tests/m16_94_entity_anim_sequencer_test.cpp`; qualify full 54-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/entities/entity_anim_sequencer.hpp` / `src/game/entities/entity_anim_sequencer.cpp`.
+  * Added `tests/m16_94_entity_anim_sequencer_test.cpp` (registered as `oasis_m16_94_entity_anim_sequencer` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 54/54 regression run.
+  * MSVC Debug (`build-debug`): 54/54 regression run.
+  * Remaining unknowns: Full `0x009042` physics-stepper integration across all entity families is deferred to future entity-update loop unification.
+
 # Worklog — 2026-11-17 (M16.93: Room Tilemap & Collision Layer Descriptor Builder)
 - **Concrete Task**: Implement `src/game/world/room_layer_loader.hpp/.cpp` with `RoomLayerSpec` (`tiles_w`, `tiles_h`, `row_shift`, `tilemap_offset`, `tilemap_bytes`, `has_collision`, `collision_offset`, `collision_bytes`), `RoomLayerLayout` (`plane_a` `0xC000`, `plane_b` `0xE000`, `tileset_dma_words = 0x2000`), `compute_row_shift(tiles_w)` (`0x00D7B0`: `ctz(tiles_w * 2)`), and `decode_room_layer_header(header4)` (`0x00D560..0x00D620`); add `tests/m16_93_room_layer_loader_test.cpp`; qualify full 53-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
