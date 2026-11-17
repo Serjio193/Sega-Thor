@@ -1,3 +1,14 @@
+# ADR-20261117-M16-87-VELOCITY-VECTOR-MATH — 8-Direction Fixed-Point Velocity Vector & Cardinal Facing Kernel
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.303 extracted the 8-direction 16.16 fixed-point velocity constructor (`0x00E2D4`, table `0x00E2F2`, `0.75` diagonal scaling `(v >> 1) + (v >> 2)`) and cardinal facing resolver (`0x00E338`).
+
+**Decisions:**
+1. **Dedicated `velocity_vector_math` Module:**
+   - Added `src/game/entities/velocity_vector_math.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-86-ENTITY-STRUCT-LAYOUT — Entity Struct Constructor & 0x03F2FA 32-Byte Descriptor Field Map
 **Status:** Accepted
 **Date:** 2026-11-17

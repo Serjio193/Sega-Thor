@@ -26,6 +26,7 @@ add_library(oasis_core
     src/game/scripts/event_router.cpp
     src/game/entities/entity_pool.cpp
     src/game/entities/entity_struct_layout.cpp
+    src/game/entities/velocity_vector_math.cpp
     src/game/entities/raw_record_initializer.cpp
     src/game/entities/sparse_word_store.cpp
     src/game/entities/screen_entity.cpp

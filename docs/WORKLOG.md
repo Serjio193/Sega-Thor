@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.87: 8-Direction Fixed-Point Velocity Vector & Cardinal Facing Kernel)
+- **Concrete Task**: Implement `src/game/entities/velocity_vector_math.hpp/.cpp` with `VelocityFixed16_16`, `compute_8dir_velocity(speed_x, speed_y, direction)` (`0x00E2D4`: `(sx << 8, sy << 8)`, N/E/S/W full speed, NE/SE/SW/NW scaled by `(v >> 1) + (v >> 2)` = `0.75`), and `compute_cardinal_facing(vx, vy)` (`0x00E338`: `|vx| <= |vy| -> vy < 0 ? 0 : 2`; else `vx < 0 ? 3 : 1`); add `tests/m16_87_velocity_vector_math_test.cpp`; qualify full 47-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/entities/velocity_vector_math.hpp` / `src/game/entities/velocity_vector_math.cpp`.
+  * Added `tests/m16_87_velocity_vector_math_test.cpp` (registered as `oasis_m16_87_velocity_vector_math` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 47/47 regression run.
+  * MSVC Debug (`build-debug`): 47/47 regression run.
+  * Remaining unknowns: None for the deterministic `0x00E2D4`/`0x00E338` math kernels; wiring into all enemy steering routines is deferred to future per-enemy integration.
+
 # Worklog — 2026-11-17 (M16.86: Entity Struct Constructor & `0x03F2FA` 32-Byte Descriptor Field Map)
 - **Concrete Task**: Implement `src/game/entities/entity_struct_layout.hpp/.cpp` with `EntityDescriptor32`, `decode_entity_descriptor32(rom, entity_id)` (`0x03F2FA + (entity_id - 2) * 16`), `EntityConstructorState` (all 16 unpacked fields + `secondary_ai_ptr` gated by `< $FF2954`), `init_entity_from_descriptor(rom, entity_id, is_lightweight_slot)` (`0x008D06`: clears `0x5D` or `0x2C` words and sets timers `0x5C/0x2C/0x34 = 0xFFFF`), and `reinit_entity_pointers(...)` (`0x008DA4`); add `tests/m16_86_entity_struct_layout_test.cpp`; qualify full 46-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

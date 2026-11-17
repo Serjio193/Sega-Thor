@@ -1,3 +1,9 @@
+# M16.87 8-Direction Fixed-Point Velocity Vector & Cardinal Facing Kernel (`0x00E2D4..0x00E36E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `VelocityFixed16_16`, `compute_8dir_velocity` (`0x00E2D4`, `0.75` diagonal scale via `(v >> 1) + (v >> 2)`), and `compute_cardinal_facing` (`0x00E338`) in `src/game/entities/velocity_vector_math.hpp/.cpp`.
+- Qualified `oasis_m16_87_velocity_vector_math` and full 47-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.86 Entity Struct Constructor & `0x03F2FA` 32-Byte Descriptor Field Map (`0x008D06..0x008DCE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
