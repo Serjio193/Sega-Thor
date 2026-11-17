@@ -1,3 +1,4 @@
+# M15.322 ROM Inventory/Menu Sprite & Font DMA Strip Emitter (`0x004000`..`0x00417A`) — COMPLETE / VERIFIED
 # M15.321 ROM Room Height-Band Table Builder & Tileset Chunk Loader (`0x00D344`..`0x00D4FE`) — COMPLETE / VERIFIED
 # M15.320 ROM Plane Scroll Delta & VDP H/V-Scroll Buffer Sync (`0x00D188`..`0x00D342`) — COMPLETE / VERIFIED
 # M15.319 ROM Camera Deadzone Follow, Screen Shake & HUD Slide Trigger (`0x00CEEA`..`0x00D114`) — COMPLETE / VERIFIED

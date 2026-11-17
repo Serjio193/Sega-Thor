@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.322: ROM INVENTORY/MENU SPRITE & FONT DMA STRIP EMITTER (`0x004000`..`0x00417A`) — `0x86DD`/`0x85D0`, 16B LUT `0x0040CE`, `<=4`-Tile Strips, `+0x30` Remap; Extractor (`tools/extract_rom_menu_sprite_dma.py` <= 500 lines), Tests (`tests/rom_menu_sprite_dma_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_322_MENU_SPRITE_DMA_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x004000..0x00417A` and extracted `0x0040CE` LUT in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_menu_sprite_dma.py`, `python -m unittest tests/rom_menu_sprite_dma_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.322, assign M16.102, and continue.
+
 # 2026-11-17 — Milestone M15.321: ROM ROOM HEIGHT-BAND TABLE BUILDER & TILESET CHUNK LOADER (`0x00D344`..`0x00D4FE`) — `$FF1706` 8-Word LUT (`0xF000`), `0x05CE96`->`0x003820`->`$FF3FA8`, VScroll Flush; Extractor (`tools/extract_rom_room_height_tileset.py` <= 500 lines), Tests (`tests/rom_room_height_tileset_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_321_ROOM_HEIGHT_TILESET_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00D344..0x00D4FE` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_room_height_tileset.py`, `python -m unittest tests/rom_room_height_tileset_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

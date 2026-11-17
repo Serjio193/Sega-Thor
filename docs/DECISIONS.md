@@ -1,3 +1,8 @@
+# ADR-20261117-M15-322-MENU-SPRITE-DMA — Inventory/Menu Sprite & Font DMA Strip Emitter (`0x004000`..`0x00417A`)
+- **Context:** Inventory/menu UI builds SAT pairs (`0x86DD` + `0x85D0+qty`), chunks text into `<= 4`-tile horizontal sprites, queues font tile DMAs via the 16-byte LUT `0x0040CE` (`1..16` tiles), and remaps ASCII `0x2B..0x2F` by `+0x30`.
+- **Decision:** Extracted the LUT, font bases (`0x152F5A`/`0x15375A`), and SAT/DMA rules into `data/thor-evidence/rom_menu_sprite_dma_m15_322.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.106 can render inventory/menu text strips and item quantities with exact hardware parity.
+
 # ADR-20261117-M15-321-ROOM-HEIGHT-TILESET — Room Height-Band Table Builder & Tileset Chunk Loader (`0x00D344`..`0x00D4FE`)
 - **Context:** `0x00D406` builds the 8-entry elevation height LUT `$FF1706` (`0xF000` sentinel) from 4 signed room-header band bytes, zeroes Plane A/B structs (`$FF1716`/`$FF173E`), quantizes camera to 8px, and decompresses 4 tileset chunks (`0x05CE96` -> `0x003820` -> `$FF3FA8`).
 - **Decision:** Extracted all table addresses, constants, and VScroll flush rules into `data/thor-evidence/rom_room_height_tileset_m15_321.json` with 2/2 passing tests and Standalone handoff.

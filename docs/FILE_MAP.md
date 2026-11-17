@@ -1,3 +1,9 @@
+# M15.322 ROM Inventory/Menu Sprite & Font DMA Strip Emitter
+- `tools/extract_rom_menu_sprite_dma.py` — ROM extractor & verifier for `0x004000..0x00417A` (item/digit pair `0x86DD`/`0x85D0`, 16B sprite-tile LUT `0x0040CE`, `<=4`-tile font strips from `0x152F5A`/`0x15375A`, `0x2B..0x2F` `+0x30` remap).
+- `tests/rom_menu_sprite_dma_test.py` — Unit tests verifying font strip chunking and ASCII remap.
+- `data/thor-evidence/rom_menu_sprite_dma_m15_322.json` — Verified evidence JSON for M15.322.
+- `docs/handoffs/STANDALONE_M15_322_MENU_SPRITE_DMA_HANDOFF.md` — C++20 Standalone handoff for M16.106.
+
 # M15.321 ROM Room Height-Band Table Builder & Tileset Chunk Loader
 - `tools/extract_rom_room_height_tileset.py` — ROM extractor & verifier for `0x00D344..0x00D4FE` (`$FF16FE`/`$FF1706` 4-band height LUT with `0xF000` sentinel, 8px camera quantization, 4-slot `0x05CE96` -> `0x003820` -> `$FF3FA8` decompression, and VScroll flush).
 - `tests/rom_room_height_tileset_test.py` — Unit tests verifying height-band table construction and camera quantization.
