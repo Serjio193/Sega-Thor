@@ -1,3 +1,9 @@
+# M15.365 ROM Room/Event Script VM Dispatcher & Cutscene Lock
+- `tools/extract_rom_event_script_vm.py` — extractor for `0x00F788..0x00F8C6` (31-opcode jump table `0x00F7D0`, `$FF17B6` wait-timer, `$FF17BD` cutscene lock & unlock).
+- `tests/rom_event_script_vm_test.py` — `2` unit tests verifying the 31 ROM VM opcodes and wait/cutscene/VM gate transitions.
+- `data/thor-evidence/rom_event_script_vm_m15_365.json` — extracted M15.365 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_365_EVENT_SCRIPT_VM_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.364 ROM Entity AI Dispatch Table, Iso Extent Updater & FX Loops
 - `tools/extract_rom_entity_ai_fx_dispatch.py` — extractor for `0x00DEEC..0x00E150` (89-entry AI handler table `0x00DF54..0x00E0B7`, isometric half-extent updater, `$FF2D8C` 6-slot FX loop, `$FF2ABC` 8-slot pickup loop).
 - `tests/rom_entity_ai_fx_dispatch_test.py` — `2` unit tests verifying the 89-entry AI table and isometric `0.75` half-extent formula.

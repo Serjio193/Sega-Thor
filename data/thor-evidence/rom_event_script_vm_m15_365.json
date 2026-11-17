@@ -1,0 +1,139 @@
+{
+  "milestone": "M15.365",
+  "rom_range": "0x00F788..0x00F8C6",
+  "timestop_addr": "0xFF17B8",
+  "timestop_bit": 1,
+  "wait_timer_addr": "0xFF17B6",
+  "cutscene_lock_timer_addr": "0xFF17BD",
+  "cutscene_handler_index_addr": "0xFF183A",
+  "cutscene_jump_table_addr": "0x00F8C8",
+  "vm_pc_addr": "0xFF17B2",
+  "opcode_table_addr": "0x00F7D0",
+  "opcode_count": 31,
+  "opcodes": [
+    {
+      "opcode": "0x00",
+      "handler_addr": "0x00F91C"
+    },
+    {
+      "opcode": "0x01",
+      "handler_addr": "0x00FCCE"
+    },
+    {
+      "opcode": "0x02",
+      "handler_addr": "0x00F920"
+    },
+    {
+      "opcode": "0x03",
+      "handler_addr": "0x00F942"
+    },
+    {
+      "opcode": "0x04",
+      "handler_addr": "0x00F96A"
+    },
+    {
+      "opcode": "0x05",
+      "handler_addr": "0x00FAAC"
+    },
+    {
+      "opcode": "0x06",
+      "handler_addr": "0x00FC6C"
+    },
+    {
+      "opcode": "0x07",
+      "handler_addr": "0x00FC94"
+    },
+    {
+      "opcode": "0x08",
+      "handler_addr": "0x00FCA6"
+    },
+    {
+      "opcode": "0x09",
+      "handler_addr": "0x010034"
+    },
+    {
+      "opcode": "0x0A",
+      "handler_addr": "0x00FCB8"
+    },
+    {
+      "opcode": "0x0B",
+      "handler_addr": "0x00FCC4"
+    },
+    {
+      "opcode": "0x0C",
+      "handler_addr": "0x010086"
+    },
+    {
+      "opcode": "0x0D",
+      "handler_addr": "0x0100AA"
+    },
+    {
+      "opcode": "0x0E",
+      "handler_addr": "0x00FD8C"
+    },
+    {
+      "opcode": "0x0F",
+      "handler_addr": "0x010140"
+    },
+    {
+      "opcode": "0x10",
+      "handler_addr": "0x010170"
+    },
+    {
+      "opcode": "0x11",
+      "handler_addr": "0x0101A0"
+    },
+    {
+      "opcode": "0x12",
+      "handler_addr": "0x00FAB2"
+    },
+    {
+      "opcode": "0x13",
+      "handler_addr": "0x0101D0"
+    },
+    {
+      "opcode": "0x14",
+      "handler_addr": "0x0101E4"
+    },
+    {
+      "opcode": "0x15",
+      "handler_addr": "0x00FEDE"
+    },
+    {
+      "opcode": "0x16",
+      "handler_addr": "0x00FF1A"
+    },
+    {
+      "opcode": "0x17",
+      "handler_addr": "0x00FE0A"
+    },
+    {
+      "opcode": "0x18",
+      "handler_addr": "0x00FF98"
+    },
+    {
+      "opcode": "0x19",
+      "handler_addr": "0x00FFDE"
+    },
+    {
+      "opcode": "0x1A",
+      "handler_addr": "0x0100D6"
+    },
+    {
+      "opcode": "0x1B",
+      "handler_addr": "0x0100E4"
+    },
+    {
+      "opcode": "0x1C",
+      "handler_addr": "0x0100EE"
+    },
+    {
+      "opcode": "0x1D",
+      "handler_addr": "0x0100F8"
+    },
+    {
+      "opcode": "0x1E",
+      "handler_addr": "0x00F854"
+    }
+  ]
+}

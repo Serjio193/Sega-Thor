@@ -1,3 +1,7 @@
+# ADR-20261117-M15-365-EVENT-SCRIPT-VM — Room/Event Script VM Dispatcher & Cutscene Lock (`0x00F788`..`0x00F8C6`)
+- **Context:** `0x00F788..0x00F8C6` drives Beyond Oasis's room/event script VM (`$FF17B2` PC, 31 opcodes `0x00..0x1E` at `0x00F7D0`), `$FF17B6` wait-timer, and `$FF17BD` cutscene lock (`0x00F894`).
+- **Decision:** Extract all 31 even-aligned VM opcode handlers and the wait/cutscene/VM gate transitions in `tools/extract_rom_event_script_vm.py` and `docs/handoffs/STANDALONE_M15_365_EVENT_SCRIPT_VM_HANDOFF.md`.
+
 # ADR-20261117-M15-364-ENTITY-AI-FX-DISPATCH — Entity AI Dispatch Table, Iso Extent Updater & FX Loops (`0x00DEEC`..`0x00E150`)
 - **Context:** `0x00DEEC..0x00E150` implements the 3 main-loop entity/FX/pickup update loops (`0x00DEEC`, `0x00E0BA`, `0x00E0F4`), the 89-entry AI pointer table (`0x00DF54..0x00E0B7` for types `0x16..0xC6`), and the facing-swapped isometric `0.75 * h` hitbox half-extent updater.
 - **Decision:** Extract all 89 ROM AI handler pointers, `$FF17B8` bit-1 time-stop guards, and the isometric half-extent formula in `tools/extract_rom_entity_ai_fx_dispatch.py` and `docs/handoffs/STANDALONE_M15_364_ENTITY_AI_FX_DISPATCH_HANDOFF.md`.

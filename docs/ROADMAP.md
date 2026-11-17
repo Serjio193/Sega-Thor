@@ -1,3 +1,6 @@
+# M15.365 ROM Room/Event Script VM Dispatcher & Cutscene Lock (`0x00F788`..`0x00F8C6`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_event_script_vm.py`, `tests/rom_event_script_vm_test.py` (`2/2 PASS`), `data/thor-evidence/rom_event_script_vm_m15_365.json`, and `docs/handoffs/STANDALONE_M15_365_EVENT_SCRIPT_VM_HANDOFF.md`.
+
 # M15.364 ROM Entity AI Dispatch Table, Iso Extent Updater & FX Loops (`0x00DEEC`..`0x00E150`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_ai_fx_dispatch.py`, `tests/rom_entity_ai_fx_dispatch_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_ai_fx_dispatch_m15_364.json`, and `docs/handoffs/STANDALONE_M15_364_ENTITY_AI_FX_DISPATCH_HANDOFF.md`.
 
