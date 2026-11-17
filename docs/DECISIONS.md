@@ -1,3 +1,14 @@
+# ADR-20261117-M16-126-SPATIAL-AUDIO — Spatial 2D Audio Attenuation & Stereo Panning
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.342 extracted `0x00E78E..0x00E90C`: `play_spatial_at_xy` and `play_spatial_at_entity` with 2D distance calculation `dist = max(|dx|, |dy| * 1.25)`, unattenuated low sound IDs `< 0x200`, FM/PSG bank 2 stepping (`176px`/`224px`, cull at `272px`, pan at `96px`), and hi-res sound dropping (`drop = ((dist - 88) >> 5) + 1`, cull at `> 7`, pan at `64px`).
+
+**Decisions:**
+1. **Dedicated `spatial_audio` Module:**
+   - Added `src/game/audio/spatial_audio.hpp/.cpp` modeling `compute_spatial_sfx`, `apply_spatial_audio`, `play_spatial_at_xy`, and `play_spatial_at_entity`.
+
 # ADR-20261117-M16-125-ISQRT-ATAN2 — Integer Square Root & 256-Step atan2 Angle LUT
 **Status:** Accepted
 **Date:** 2026-11-17

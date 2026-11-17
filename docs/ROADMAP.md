@@ -1,3 +1,9 @@
+# M16.126 Spatial 2D Audio Attenuation & Stereo Panning (`0x00E78E..0x00E90C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `calculate_spatial_audio` and `calculate_spatial_audio_to_player` in `src/game/audio/spatial_audio.hpp/.cpp` covering distance metric `dist = max(|dx|, |dy| + (|dy| >> 2))`, low-sound passthrough (`sound_id < 0x0200`), FM/PSG bank 2 distance attenuation & stereo panning (`0x0200 <= sound_id < 0x0300`), and high-res distance attenuation & stereo panning (`sound_id >= 0x0300`).
+- Qualified `oasis_m16_126_spatial_audio` and the 107-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.125 Integer Square Root & 256-Step atan2 Angle LUT (`0x00E6BA..0x00E78C`, `0x05D906`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

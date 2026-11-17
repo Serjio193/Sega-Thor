@@ -1,3 +1,15 @@
+# Worklog — 2026-11-17 (M16.126: Spatial 2D Audio Attenuation & Stereo Panning)
+- **Concrete Task**: Implement `src/game/audio/spatial_audio.hpp/.cpp` with `calculate_spatial_audio(...)` (`0x00E78E..0x00E90C`: distance metric `dist = max(|dx|, |dy| + (|dy| >> 2))`, low-sound passthrough for `sound_id < 0x0200`, 3-tier FM/PSG bank 2 distance attenuation at 176/224 and cull at 272 with stereo panning `0x40`/`0x80` at `|dx| >= 96`, and high-res distance attenuation with 88-pixel deadzone, `(eff_dist >> 5) + 1` drop up to 7, and stereo panning `0x42`/`0x82` at `|dx| >= 64`) and `calculate_spatial_audio_to_player(...)`; add `tests/m16_126_spatial_audio_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/audio/spatial_audio.hpp` / `src/game/audio/spatial_audio.cpp`.
+  * Added `tests/m16_126_spatial_audio_test.cpp` (registered as `oasis_m16_126_spatial_audio` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 107/107 tests passed (`ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): 107/107 tests passed (`ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: `spatial_audio.hpp` (65 lines), `spatial_audio.cpp` (112 lines), `m16_126_spatial_audio_test.cpp` (80 lines), `CMakeLists.txt` (261 lines), `project_tests_m16.cmake` (401 lines) <= 500 lines.
+  * Remaining unknowns: Wiring `calculate_spatial_audio_to_player()` directly into the sound trigger dispatcher in `StandaloneGameSimulation` is deferred to audio playback integration.
+
 # Worklog — 2026-11-17 (M16.125: Integer Square Root & 256-Step atan2 Angle LUT)
 - **Concrete Task**: Implement `src/game/math/isqrt_atan2.hpp/.cpp` with `isqrt_u32(...)` (`0x00E6BA..0x00E6EE`: Heron's method with `0x0400` initial cap), `atan_q1(...)` (`0x00E768..0x00E78C`: 8-step angle 0..64 with 9-threshold tangent LUT `0x0005D906`), `atan2_256(...)` (`0x00E722..0x00E766`: 256-step angle `0`=Right, `64`=Up, `128`=Left, `192`=Down), `atan2_to_point(...)` (`0x00E6F0..0x00E704`), and `atan2_to_player(...)` (`0x00E706..0x00E720`); add `tests/m16_125_isqrt_atan2_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

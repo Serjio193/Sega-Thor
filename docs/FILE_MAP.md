@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/audio/spatial_audio.hpp` / `src/game/audio/spatial_audio.cpp`: Spatial 2D audio attenuation & stereo panning (`0x00E78E..0x00E90C`, Manhattan/aspect distance metric `max(|dx|, |dy| + (|dy| >> 2))`, 3-tier bank-2 attenuation/cull & stereo pan, high-res attenuation/cull & stereo pan, low-sound pass-through) (M16.126).
+- `tests/m16_126_spatial_audio_test.cpp`: Automated M16.126 test qualifying low sound pass-through, FM/PSG bank 2 distance attenuation & stereo panning, and high-res distance attenuation & panning (M16.126).
 - `src/game/math/isqrt_atan2.hpp` / `src/game/math/isqrt_atan2.cpp`: Integer square root (Heron's method, `0x0400` cap, `0x00E6BA..0x00E6EE`) and 256-step `atan2` angle LUT (`0x00E6F0..0x00E78C`, 9-word tangent LUT `0x0005D906`, `0`=Right, `64`=Up, `128`=Left, `192`=Down) (M16.125).
 - `tests/m16_125_isqrt_atan2_test.cpp`: Automated M16.125 test qualifying `isqrt_u32`, 8-step `atan_q1`, 256-step `atan2_256` quadrants/octants, and `atan2_to_point` / `atan2_to_player` (M16.125).
 - `src/game/player/ali_attack_dispatch.hpp` / `src/game/player/ali_attack_dispatch.cpp`: Ali attack action & weapon-class state dispatcher (`0x008002..0x00814C`: ground & airborne attacks for dagger `0x0A`, sword `0x0C`, bow `0x0E`, bomb `0x10`, 21f air-kick stun, bow SFX `0x00600377`, input ring clear) (M16.124).
