@@ -1,3 +1,7 @@
+# ADR-20261117-M15-355-HIT-APPLY-SPARK — Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark (`0x00BE98`..`0x00C0BC`)
+- **Context:** `0x00BE98..0x00C0BC` implements the shared hit-resolution callbacks (`0x00BE98` / `0x00BEBA`) used by M15.354, including opposite-facing shield deflect (`+0x6D`, SFX `0x00900202`), the 4-tier knockback jump table at `0x00BF26`, and the 4-slot `$FF19C8` hit-spark spawner (`0x00C012`).
+- **Decision:** Capture the enemy gauge latch (`$FF184F=0x5A`), guard deflect branch, 4 knockback velocity profiles (`0x300/0x2C0`, `0/0+0x70000`, `0x400/0x3C0+0x28000`, `0x700/0x680+0x30000`), and clamped AABB intersection midpoint spark placement in `tools/extract_rom_hit_apply_spark.py` and `docs/handoffs/STANDALONE_M15_355_HIT_APPLY_SPARK_HANDOFF.md`.
+
 # ADR-20261117-M15-354-COMBAT-HIT-DISPATCH — Combat Hitbox Dispatch & Ali Kill-Bonus Damage Scaling (`0x00BC8E`..`0x00BE96`)
 - **Context:** Melee/projectile attacks in `0x00BC8E..0x00BE96` share a single 3D AABB overlap & hit-dispatch core across 4 pool/callback entrypoints (`$FF19E8` 21 slots vs `$FF1CD8` 17 slots vs Ali-only 1 slot) and pack Ali's 7-threshold kill-count bonus (`+0x96`) plus `+0x90` power bonus with `(hit_flags & 0x0F) + 1` hitstop.
 - **Decision:** Model all 4 entrypoints, `0x2C`-byte frame record search, Ali kill-count thresholds (`10, 20, 30, 40, 50, 100, 200`), and post-loop `$FF198C in {6,10}` cancel explicitly in `tools/extract_rom_combat_hit_dispatch.py` and `docs/handoffs/STANDALONE_M15_354_COMBAT_HIT_DISPATCH_HANDOFF.md`.

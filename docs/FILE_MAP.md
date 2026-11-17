@@ -1,3 +1,9 @@
+# M15.355 ROM Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark
+- `tools/extract_rom_hit_apply_spark.py` — extractor for `0x00BE98..0x00C0BC` (`$FF184F` enemy gauge latch, `+0x6D` shield deflect, `0x00BF26` 4-way knockback table, `$FF19C8` 4-slot hit-spark spawner).
+- `tests/rom_hit_apply_spark_test.py` — `2` unit tests verifying ROM jump-table targets, knockback tiers, and 3D intersection midpoint calculation.
+- `data/thor-evidence/rom_hit_apply_spark_m15_355.json` — extracted M15.355 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_355_HIT_APPLY_SPARK_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.354 ROM Combat Hitbox Dispatch & Ali Damage Scaling
 - `tools/extract_rom_combat_hit_dispatch.py` — extractor for `0x00BC8E..0x00BE96` (`4` entrypoints, `0x2C`-byte frame records, Ali kill-count damage scaling, `hitstop`/`damage_word` pack, and post-loop special cancel).
 - `tests/rom_combat_hit_dispatch_test.py` — `2` unit tests verifying ROM opcodes and Ali kill-bonus damage/hitstop packing.

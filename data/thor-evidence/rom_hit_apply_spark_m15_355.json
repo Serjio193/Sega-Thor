@@ -1,0 +1,62 @@
+{
+  "milestone": "M15.355",
+  "rom_range": "0x00BE98..0x00C0BC",
+  "enemy_gauge_latch": {
+    "timer_addr": "0xFF184F",
+    "timer_frames": 90,
+    "target_ptr_addr": "0xFF1850",
+    "skip_if_ali": "0xFF19E8",
+    "hide_flag_offset": "0x3A",
+    "hide_flag_bit": 0
+  },
+  "guard_deflect": {
+    "guard_flag_offset": "0x6D",
+    "facing_offset": "0x16",
+    "opposite_xor_mask": 2,
+    "block_sfx_id": "0x00900202"
+  },
+  "knockback_jump_table": [
+    "0x00BF2E",
+    "0x00BF98",
+    "0x00BF58",
+    "0x00BF78"
+  ],
+  "knockback_profiles": [
+    {
+      "tier": 0,
+      "target_addr": "0x00BF2E",
+      "vx_mag": 768,
+      "vy_mag": 704,
+      "vz": 0,
+      "airborne_falls_through_to": 2
+    },
+    {
+      "tier": 1,
+      "target_addr": "0x00BF98",
+      "vx_mag": 0,
+      "vy_mag": 0,
+      "vz": 458752
+    },
+    {
+      "tier": 2,
+      "target_addr": "0x00BF58",
+      "vx_mag": 1024,
+      "vy_mag": 960,
+      "vz": 163840
+    },
+    {
+      "tier": 3,
+      "target_addr": "0x00BF78",
+      "vx_mag": 1792,
+      "vy_mag": 1664,
+      "vz": 196608
+    }
+  ],
+  "hit_spark_pool": {
+    "base_addr": "0xFF19C8",
+    "slot_count": 4,
+    "slot_stride_bytes": 8,
+    "spark_type": 2,
+    "spark_timer": 5
+  }
+}

@@ -1,3 +1,6 @@
+# M15.355 ROM Hit-Apply, Guard Deflect, 4-Way Knockback & Hit-Spark (`0x00BE98`..`0x00C0BC`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_hit_apply_spark.py`, `tests/rom_hit_apply_spark_test.py` (`2/2 PASS`), `data/thor-evidence/rom_hit_apply_spark_m15_355.json`, and `docs/handoffs/STANDALONE_M15_355_HIT_APPLY_SPARK_HANDOFF.md`.
+
 # M15.354 ROM Melee/Projectile Combat Hitbox Dispatch, Ali Kill-Bonus Damage Scaling & Hitstop Pack (`0x00BC8E`..`0x00BE96`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_combat_hit_dispatch.py`, `tests/rom_combat_hit_dispatch_test.py` (`2/2 PASS`), `data/thor-evidence/rom_combat_hit_dispatch_m15_354.json`, and `docs/handoffs/STANDALONE_M15_354_COMBAT_HIT_DISPATCH_HANDOFF.md`.
 
