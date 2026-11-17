@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.302: ROM ENTITY STRUCT CONSTRUCTOR & `0x03F2FA` FIELD MAP (`0x008D06`) — 16 Descriptor Fields -> `0xBC` Struct; Extractor (`tools/extract_rom_entity_struct_layout.py` <= 500 lines), Tests (`tests/rom_entity_struct_layout_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_302_ENTITY_STRUCT_LAYOUT_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x008D06..0x008DC0` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_entity_struct_layout.py` and `python tests/rom_entity_struct_layout_test.py` (2/2 PASS).
+- Next: Commit & push M15.302, await M16.85 completion, and continue.
+
 # 2026-11-17 — Milestone M15.301: ROM SOUND DRIVER 11-CHANNEL FM/PSG/SFX RAM MAP (`0x0604E6`..`0x06064B`) — 6 FM + 3 PSG + 2 SFX, Fade/Stop; Extractor (`tools/extract_rom_sound_channels.py` <= 500 lines), Tests (`tests/rom_sound_channels_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_301_SOUND_CHANNELS_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x0604E6..0x06064B` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_sound_channels.py` and `python tests/rom_sound_channels_test.py` (2/2 PASS).

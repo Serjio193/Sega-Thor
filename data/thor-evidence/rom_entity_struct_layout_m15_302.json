@@ -1,0 +1,155 @@
+{
+  "milestone": "M15.302",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "constructor": {
+    "entry_addr": "0x008D06",
+    "reinit_ptrs_addr": "0x008DA4",
+    "master_table_addr": "0x03F2FA",
+    "descriptor_stride_bytes": 32,
+    "full_entity_clear_words": 93,
+    "light_entity_clear_words": 44,
+    "light_entity_ram_threshold": "0xFF2954"
+  },
+  "descriptor_fields": [
+    {
+      "rom_off": "0x00",
+      "size": 2,
+      "entity_offsets": [
+        "0x4A"
+      ],
+      "role": "height_z"
+    },
+    {
+      "rom_off": "0x02",
+      "size": 1,
+      "entity_offsets": [
+        "0x46",
+        "0x42",
+        "0x44"
+      ],
+      "role": "radius_extent"
+    },
+    {
+      "rom_off": "0x03",
+      "size": 1,
+      "entity_offsets": [
+        "0x48"
+      ],
+      "role": "hitbox_half_w"
+    },
+    {
+      "rom_off": "0x04",
+      "size": 1,
+      "entity_offsets": [
+        "0x49"
+      ],
+      "role": "hitbox_half_h"
+    },
+    {
+      "rom_off": "0x05",
+      "size": 1,
+      "entity_offsets": [
+        "0x3D"
+      ],
+      "role": "weight_flags"
+    },
+    {
+      "rom_off": "0x06",
+      "size": 1,
+      "entity_offsets": [
+        "0x4C"
+      ],
+      "role": "shadow_z_offset"
+    },
+    {
+      "rom_off": "0x07",
+      "size": 1,
+      "entity_offsets": [
+        "0x3A"
+      ],
+      "role": "trait_flags (bit0=spirit)"
+    },
+    {
+      "rom_off": "0x08",
+      "size": 1,
+      "entity_offsets": [
+        "0x36"
+      ],
+      "role": "collision_flags"
+    },
+    {
+      "rom_off": "0x09",
+      "size": 1,
+      "entity_offsets": [
+        "0x37"
+      ],
+      "role": "combat_flags"
+    },
+    {
+      "rom_off": "0x0A",
+      "size": 1,
+      "entity_offsets": [
+        "0x38"
+      ],
+      "role": "render_flags"
+    },
+    {
+      "rom_off": "0x0B",
+      "size": 1,
+      "entity_offsets": [
+        "0x3C"
+      ],
+      "role": "behavior_flags"
+    },
+    {
+      "rom_off": "0x0C",
+      "size": 4,
+      "entity_offsets": [
+        "0x1A"
+      ],
+      "role": "vram_tile_ptr"
+    },
+    {
+      "rom_off": "0x10",
+      "size": 4,
+      "entity_offsets": [
+        "0x1E"
+      ],
+      "role": "sprite_frame_ptr"
+    },
+    {
+      "rom_off": "0x14",
+      "size": 4,
+      "entity_offsets": [
+        "0x26"
+      ],
+      "role": "anim_script_ptr"
+    },
+    {
+      "rom_off": "0x18",
+      "size": 4,
+      "entity_offsets": [
+        "0x22"
+      ],
+      "role": "hitbox_table_ptr"
+    },
+    {
+      "rom_off": "0x1C",
+      "size": 4,
+      "entity_offsets": [
+        "0x5E"
+      ],
+      "role": "secondary_ai_ptr (<$FF2954 only)"
+    }
+  ],
+  "sample_ali_id2": {
+    "height_z": 48,
+    "radius_extent": 10,
+    "hitbox_half_w": 10,
+    "hitbox_half_h": 10,
+    "vram_tile_ptr": "0x13CDFC",
+    "sprite_frame_ptr": "0x0C0000",
+    "anim_script_ptr": "0x03FF7A",
+    "hitbox_table_ptr": "0x058000"
+  }
+}

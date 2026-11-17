@@ -1,3 +1,7 @@
+# M15.302 ROM Entity Struct Constructor & `0x03F2FA` Field Map (`0x008D06`) — COMPLETE / VERIFIED
+- Decoded universal entity constructor (`0x008D06`, `0x5D` vs `0x2C` words clear at `$FF2954` threshold) and all 16 fields of the 32-byte `0x03F2FA` master descriptor -> `0xBC`-byte entity struct.
+- Authored `tools/extract_rom_entity_struct_layout.py`, `tests/rom_entity_struct_layout_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_struct_layout_m15_302.json`, and `docs/handoffs/STANDALONE_M15_302_ENTITY_STRUCT_LAYOUT_HANDOFF.md`.
+
 # M15.301 ROM Sound Driver 11-Channel FM/PSG/SFX RAM Map (`0x0604E6`..`0x06064B`) — COMPLETE / VERIFIED
 - Decoded all 11 sound driver channels (`6` FM at `$FF0022..$FF0414` stride `0xCA`, `3` PSG at `$FF049E..$FF05B2` stride `0x8A`, `2` SFX at `$FF0628`/`$FF06F2` stride `0xCA`) and System cmds `0x00` stop (`0x0604E6`) & `0x07` fade (`0x060516`, step `2`, timer `0x7E`).
 - Authored `tools/extract_rom_sound_channels.py`, `tests/rom_sound_channels_test.py` (`2/2 PASS`), `data/thor-evidence/rom_sound_channels_m15_301.json`, and `docs/handoffs/STANDALONE_M15_301_SOUND_CHANNELS_HANDOFF.md`.

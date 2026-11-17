@@ -1,3 +1,7 @@
+# ADR-20261117-M15-302-ENTITY-STRUCT-LAYOUT — Entity Struct Constructor & `0x03F2FA` Field Map (`0x008D06`)
+- **Decision:** Model entity construction in Standalone directly from `0x008D06`'s 16-field 32-byte descriptor unpacker (`0x03F2FA`, `$FF2954` lightweight threshold).
+- **Evidence:** Direct Capstone M68K disassembly of `0x008D06..0x008DC0` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-301-SOUND-CHANNELS — Sound Driver 11-Channel FM/PSG/SFX RAM Map (`0x0604E6`..`0x06064B`)
 - **Decision:** Model the Beyond Oasis sound driver's 11-channel layout in Standalone (`6 FM` stride `0xCA`, `3 PSG` stride `0x8A`, `2 SFX` stride `0xCA`) with System cmds `0x00` mute & `0x07` fade (`step=2`, `timer=0x7E`).
 - **Evidence:** Direct Capstone M68K disassembly of `0x0604E6..0x06064B` in `local-roms/Beyond Oasis (USA).md`.

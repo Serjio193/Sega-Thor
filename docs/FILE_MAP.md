@@ -1,3 +1,9 @@
+# M15.302 ROM Entity Struct Constructor & `0x03F2FA` Field Map
+- `tools/extract_rom_entity_struct_layout.py` — Extracts `0x008D06` constructor & all 16 fields of the 32B `0x03F2FA` descriptor.
+- `tests/rom_entity_struct_layout_test.py` — Unit tests verifying table/threshold constants and Ali sample (`2/2 PASS`).
+- `data/thor-evidence/rom_entity_struct_layout_m15_302.json` — Extracted entity struct field map evidence.
+- `docs/handoffs/STANDALONE_M15_302_ENTITY_STRUCT_LAYOUT_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.301 ROM Sound Driver 11-Channel FM/PSG/SFX RAM Map
 - `tools/extract_rom_sound_channels.py` — Extracts 11 sound driver channel RAM bases (`$FF0022..$FF06F2`) & fade/stop params.
 - `tests/rom_sound_channels_test.py` — Unit tests verifying all 11 channels and JSON artifact (`2/2 PASS`).
