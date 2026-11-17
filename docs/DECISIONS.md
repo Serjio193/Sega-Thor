@@ -1,3 +1,31 @@
+# ADR-20261117-M16-138-COMBAT-HIT-DISPATCH — Combat Hitbox Dispatcher & Ali Damage Scaling
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.354 extracted `0x00BC8E..0x00BE96`: four combat entry points (`0x00BC8E`, `0x00BCA4`, `0x00BCBA`, `0x00BCD8`), frame record lookup (`0x00BCEA..0x00BD18`), Ali damage scaling and hitstop pack (`0x00BD1A..0x00BDA0`), 3D AABB overlap scan and callback (`0x00BDA2..0x00BE64`), and post-loop special cancel (`0x00BE68..0x00BE96`).
+2. Four Entrypoints:
+   - `dispatch_combat_hit_primary` (`0x00BC8E`): callback `0x00BEBA`, candidate pool `$FF19E8` (21 slots).
+   - `dispatch_combat_hit_fx` (`0x00BCA4`): callback `0x00BE98`, candidate pool `$FF1CD8` (17 slots, slots 4..20).
+   - `dispatch_combat_hit_fx_marked` (`0x00BCBA`): callback `0x00BE98`, sets hit marker `$FF198B = 2`, candidate pool `$FF1CD8` (17 slots).
+   - `dispatch_combat_hit_ali_only` (`0x00BCD8`): callback `0x00BEBA`, candidate pool `$FF19E8` (1 slot, Ali only).
+3. Frame Record Lookup & Damage Scaling:
+   - Aborts early if bit 3 of `attacker.flags_37` is set.
+   - Searches 44-byte (`0x2C`) combat records matching `attacker.frame_id`; terminates on negative `frame_id`.
+   - Local hitbox selected by facing `(facing == 3 ? 1 : facing)`; facing 3 mirrors X `[-dx2, -dx1]`.
+   - If attacker is Ali (`$FF19E8`), applies cumulative kill count bonus:
+     * `>= 10 (+1), >= 20 (+1), >= 30 (+1), >= 40 (+1), >= 50 (+1), >= 100 (+2), >= 200 (+4)` (max +11).
+   - `hitstop = (hit_flags & 0x0F) + 1`.
+   - `damage_word = (((hit_flags & 0xF0) << 8) | dmg) + attacker.power_bonus`.
+4. Overlap & Special Cancel:
+   - Filters candidate targets: skips caller self, inactive slots (`state <= 0`), `flags_38 & 0x08`, and already-in-hitstop (`hitstop != 0`).
+   - Invokes hit callback on each matching target.
+   - If attacker is Ali, bit 3 of `flags_37` became set, and `attack_index` is 6 or 10, triggers special recoil cancel (`0x008530`).
+
+**Decisions:**
+1. **Dedicated `combat_hit_dispatch` Module:**
+   - Added `src/game/combat/combat_hit_dispatch.hpp/.cpp` modeling `compute_damage_pack`, `dispatch_combat_hit`, `dispatch_combat_hit_primary`, `dispatch_combat_hit_fx`, `dispatch_combat_hit_fx_marked`, and `dispatch_combat_hit_ali_only`.
+
 # ADR-20261117-M16-137-WEAPON-HITBOX-BUILDER — Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner
 **Status:** Accepted
 **Date:** 2026-11-17

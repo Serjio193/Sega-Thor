@@ -1,3 +1,15 @@
+# M16.138 Combat Hitbox Dispatcher & Ali Damage Scaling (`0x00BC8E..0x00BE96`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `compute_damage_pack`, `dispatch_combat_hit`, `dispatch_combat_hit_primary`, `dispatch_combat_hit_fx`, `dispatch_combat_hit_fx_marked`, and `dispatch_combat_hit_ali_only` in `src/game/combat/combat_hit_dispatch.hpp/.cpp`:
+  - Four entrypoints routing candidate pools (`$FF19E8` 21 slots vs `$FF1CD8` 17 slots vs 1 slot Ali), default callbacks (`0x00BEBA` vs `0x00BE98`), and hit marker (`$FF198B = 2`).
+  - 44-byte combat frame record scan matching `attacker.frame_id` with early abort on `attacker.flags_37` bit 3.
+  - Facing 3 (Left) X mirroring and 3D translation with elevation.
+  - Ali cumulative kill count damage bonus thresholds (+1 at 10, 20, 30, 40, 50; +2 at 100; +4 at 200) up to +11, hitstop byte packing, and power bonus.
+  - 3D AABB overlap with entity target filtering (self, inactive, `flags_38 & 0x08`, and `hitstop != 0`).
+  - Post-loop special recoil cancel trigger (`0x008530`) when Ali deflects/clangs on attack index 6 or 10.
+- Qualified `oasis_m16_138_combat_hit_dispatch` and the 119-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.137 Facing-Mirrored 3D Weapon Hitbox Builder & FX-Pool Scanner (`0x00B9EC..0x00BB1E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

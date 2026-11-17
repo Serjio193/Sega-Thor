@@ -52,6 +52,7 @@ add_library(oasis_core
     src/game/combat/kill_counter_vm_tick.cpp
     src/game/combat/resumable_hitbox_iter.cpp
     src/game/combat/weapon_hitbox_builder.cpp
+    src/game/combat/combat_hit_dispatch.cpp
     src/game/save/sram_save_system.cpp
     src/game/items/item_effects.cpp
     src/game/items/item_attribute_tables.cpp
