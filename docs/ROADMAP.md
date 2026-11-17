@@ -1,3 +1,6 @@
+# M15.446 ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Function Pointer Table (`0x00DEEC`..`0x00E0BA`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_dispatcher.py`, `tests/rom_entity_dispatcher_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_dispatcher_m15_446.json`, and `docs/handoffs/STANDALONE_M15_446_ENTITY_DISPATCHER_HANDOFF.md`.
+
 # M15.445 ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem (`0x00DDA2`..`0x00DEEC`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_aabb_force_fields.py`, `tests/rom_aabb_force_fields_test.py` (`5/5 PASS`), `data/thor-evidence/rom_aabb_force_fields_m15_445.json`, and `docs/handoffs/STANDALONE_M15_445_AABB_FORCE_FIELDS_HANDOFF.md`.
 

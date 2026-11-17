@@ -1,0 +1,869 @@
+{
+  "routine": "master_group2_entity_tick_dispatcher",
+  "description": "ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Function Pointer Table",
+  "start_address": "0x00DEEC",
+  "end_address": "0x00E0BA",
+  "byte_count": 462,
+  "code_bytes": 104,
+  "table_bytes": 356,
+  "table_entry_count": 89,
+  "table_min_type": "0x16",
+  "table_max_type": "0xC6",
+  "pool": {
+    "base_address": "$FF1AA4",
+    "entity_count": 20,
+    "stride": 188,
+    "pause_flag": "$FF17B8 (bit 1)"
+  },
+  "post_tick_calc": {
+    "source_raw_extents": "+$48 (X) and +$49 (Y)",
+    "swap_flag": "+$17 bit 0",
+    "effective_half_width": "+$42",
+    "effective_half_height": "+$44",
+    "formula_height": "d2 = (raw_y + 1) / 2; effective_y = d2 + (d2 / 2)"
+  },
+  "instructions": [
+    {
+      "address": "0x00DEEC",
+      "mnemonic": "btst.b",
+      "op_str": "#$1, $ff17b8.l",
+      "bytes": "0839000100ff17b8",
+      "size": 8
+    },
+    {
+      "address": "0x00DEF4",
+      "mnemonic": "bne.w",
+      "op_str": "$df52",
+      "bytes": "6600005c",
+      "size": 4
+    },
+    {
+      "address": "0x00DEF8",
+      "mnemonic": "lea.l",
+      "op_str": "$ff1aa4.l, a6",
+      "bytes": "4df900ff1aa4",
+      "size": 6
+    },
+    {
+      "address": "0x00DEFE",
+      "mnemonic": "moveq",
+      "op_str": "#$13, d7",
+      "bytes": "7e13",
+      "size": 2
+    },
+    {
+      "address": "0x00DF00",
+      "mnemonic": "move.w",
+      "op_str": "$0(a6), d6",
+      "bytes": "3c2e0000",
+      "size": 4
+    },
+    {
+      "address": "0x00DF04",
+      "mnemonic": "ble.w",
+      "op_str": "$df4a",
+      "bytes": "6f000044",
+      "size": 4
+    },
+    {
+      "address": "0x00DF08",
+      "mnemonic": "cmpi.w",
+      "op_str": "#$16, d6",
+      "bytes": "0c460016",
+      "size": 4
+    },
+    {
+      "address": "0x00DF0C",
+      "mnemonic": "bcs.w",
+      "op_str": "$df4a",
+      "bytes": "6500003c",
+      "size": 4
+    },
+    {
+      "address": "0x00DF10",
+      "mnemonic": "add.w",
+      "op_str": "d6, d6",
+      "bytes": "dc46",
+      "size": 2
+    },
+    {
+      "address": "0x00DF12",
+      "mnemonic": "movea.l",
+      "op_str": "$df28(pc, d6.w), a0",
+      "bytes": "207b6014",
+      "size": 4
+    },
+    {
+      "address": "0x00DF16",
+      "mnemonic": "movem.l",
+      "op_str": "d7/a6, -(a7)",
+      "bytes": "48e70102",
+      "size": 4
+    },
+    {
+      "address": "0x00DF1A",
+      "mnemonic": "jsr",
+      "op_str": "(a0)",
+      "bytes": "4e90",
+      "size": 2
+    },
+    {
+      "address": "0x00DF1C",
+      "mnemonic": "movem.l",
+      "op_str": "(a7)+, d7/a6",
+      "bytes": "4cdf4080",
+      "size": 4
+    },
+    {
+      "address": "0x00DF20",
+      "mnemonic": "clr.w",
+      "op_str": "d1",
+      "bytes": "4241",
+      "size": 2
+    },
+    {
+      "address": "0x00DF22",
+      "mnemonic": "move.w",
+      "op_str": "d1, d2",
+      "bytes": "3401",
+      "size": 2
+    },
+    {
+      "address": "0x00DF24",
+      "mnemonic": "move.b",
+      "op_str": "$48(a6), d1",
+      "bytes": "122e0048",
+      "size": 4
+    },
+    {
+      "address": "0x00DF28",
+      "mnemonic": "move.b",
+      "op_str": "$49(a6), d2",
+      "bytes": "142e0049",
+      "size": 4
+    },
+    {
+      "address": "0x00DF2C",
+      "mnemonic": "btst.b",
+      "op_str": "#$0, $17(a6)",
+      "bytes": "082e00000017",
+      "size": 6
+    },
+    {
+      "address": "0x00DF32",
+      "mnemonic": "beq.w",
+      "op_str": "$df38",
+      "bytes": "67000004",
+      "size": 4
+    },
+    {
+      "address": "0x00DF36",
+      "mnemonic": "exg.l",
+      "op_str": "d1, d2",
+      "bytes": "c342",
+      "size": 2
+    },
+    {
+      "address": "0x00DF38",
+      "mnemonic": "move.w",
+      "op_str": "d1, $42(a6)",
+      "bytes": "3d410042",
+      "size": 4
+    },
+    {
+      "address": "0x00DF3C",
+      "mnemonic": "addq.w",
+      "op_str": "#$1, d2",
+      "bytes": "5242",
+      "size": 2
+    },
+    {
+      "address": "0x00DF3E",
+      "mnemonic": "lsr.w",
+      "op_str": "#$1, d2",
+      "bytes": "e24a",
+      "size": 2
+    },
+    {
+      "address": "0x00DF40",
+      "mnemonic": "move.w",
+      "op_str": "d2, d1",
+      "bytes": "3202",
+      "size": 2
+    },
+    {
+      "address": "0x00DF42",
+      "mnemonic": "lsr.w",
+      "op_str": "#$1, d2",
+      "bytes": "e24a",
+      "size": 2
+    },
+    {
+      "address": "0x00DF44",
+      "mnemonic": "add.w",
+      "op_str": "d1, d2",
+      "bytes": "d441",
+      "size": 2
+    },
+    {
+      "address": "0x00DF46",
+      "mnemonic": "move.w",
+      "op_str": "d2, $44(a6)",
+      "bytes": "3d420044",
+      "size": 4
+    },
+    {
+      "address": "0x00DF4A",
+      "mnemonic": "lea.l",
+      "op_str": "$bc(a6), a6",
+      "bytes": "4dee00bc",
+      "size": 4
+    },
+    {
+      "address": "0x00DF4E",
+      "mnemonic": "dbra",
+      "op_str": "d7, $df00",
+      "bytes": "51cfffb0",
+      "size": 4
+    },
+    {
+      "address": "0x00DF52",
+      "mnemonic": "rts",
+      "op_str": "",
+      "bytes": "4e75",
+      "size": 2
+    },
+    {
+      "address": "0x00E0B8",
+      "mnemonic": "rts",
+      "op_str": "",
+      "bytes": "4e75",
+      "size": 2
+    }
+  ],
+  "jump_table": [
+    {
+      "index": 0,
+      "entity_type": "0x16",
+      "table_addr": "0x00DF54",
+      "handler_addr": "0x0115C8",
+      "is_dummy": false
+    },
+    {
+      "index": 1,
+      "entity_type": "0x18",
+      "table_addr": "0x00DF58",
+      "handler_addr": "0x011B4E",
+      "is_dummy": false
+    },
+    {
+      "index": 2,
+      "entity_type": "0x1A",
+      "table_addr": "0x00DF5C",
+      "handler_addr": "0x01254C",
+      "is_dummy": false
+    },
+    {
+      "index": 3,
+      "entity_type": "0x1C",
+      "table_addr": "0x00DF60",
+      "handler_addr": "0x012F1E",
+      "is_dummy": false
+    },
+    {
+      "index": 4,
+      "entity_type": "0x1E",
+      "table_addr": "0x00DF64",
+      "handler_addr": "0x01387C",
+      "is_dummy": false
+    },
+    {
+      "index": 5,
+      "entity_type": "0x20",
+      "table_addr": "0x00DF68",
+      "handler_addr": "0x00E20A",
+      "is_dummy": false
+    },
+    {
+      "index": 6,
+      "entity_type": "0x22",
+      "table_addr": "0x00DF6C",
+      "handler_addr": "0x01A184",
+      "is_dummy": false
+    },
+    {
+      "index": 7,
+      "entity_type": "0x24",
+      "table_addr": "0x00DF70",
+      "handler_addr": "0x014848",
+      "is_dummy": false
+    },
+    {
+      "index": 8,
+      "entity_type": "0x26",
+      "table_addr": "0x00DF74",
+      "handler_addr": "0x021F44",
+      "is_dummy": false
+    },
+    {
+      "index": 9,
+      "entity_type": "0x28",
+      "table_addr": "0x00DF78",
+      "handler_addr": "0x0194AE",
+      "is_dummy": false
+    },
+    {
+      "index": 10,
+      "entity_type": "0x2A",
+      "table_addr": "0x00DF7C",
+      "handler_addr": "0x00E0B8",
+      "is_dummy": true
+    },
+    {
+      "index": 11,
+      "entity_type": "0x2C",
+      "table_addr": "0x00DF80",
+      "handler_addr": "0x0254EA",
+      "is_dummy": false
+    },
+    {
+      "index": 12,
+      "entity_type": "0x2E",
+      "table_addr": "0x00DF84",
+      "handler_addr": "0x00E25C",
+      "is_dummy": false
+    },
+    {
+      "index": 13,
+      "entity_type": "0x30",
+      "table_addr": "0x00DF88",
+      "handler_addr": "0x015AE2",
+      "is_dummy": false
+    },
+    {
+      "index": 14,
+      "entity_type": "0x32",
+      "table_addr": "0x00DF8C",
+      "handler_addr": "0x018072",
+      "is_dummy": false
+    },
+    {
+      "index": 15,
+      "entity_type": "0x34",
+      "table_addr": "0x00DF90",
+      "handler_addr": "0x00EA04",
+      "is_dummy": false
+    },
+    {
+      "index": 16,
+      "entity_type": "0x36",
+      "table_addr": "0x00DF94",
+      "handler_addr": "0x01C772",
+      "is_dummy": false
+    },
+    {
+      "index": 17,
+      "entity_type": "0x38",
+      "table_addr": "0x00DF98",
+      "handler_addr": "0x01AC90",
+      "is_dummy": false
+    },
+    {
+      "index": 18,
+      "entity_type": "0x3A",
+      "table_addr": "0x00DF9C",
+      "handler_addr": "0x00EDAA",
+      "is_dummy": false
+    },
+    {
+      "index": 19,
+      "entity_type": "0x3C",
+      "table_addr": "0x00DFA0",
+      "handler_addr": "0x017D12",
+      "is_dummy": false
+    },
+    {
+      "index": 20,
+      "entity_type": "0x3E",
+      "table_addr": "0x00DFA4",
+      "handler_addr": "0x00E0B8",
+      "is_dummy": true
+    },
+    {
+      "index": 21,
+      "entity_type": "0x40",
+      "table_addr": "0x00DFA8",
+      "handler_addr": "0x016BD0",
+      "is_dummy": false
+    },
+    {
+      "index": 22,
+      "entity_type": "0x42",
+      "table_addr": "0x00DFAC",
+      "handler_addr": "0x016C5C",
+      "is_dummy": false
+    },
+    {
+      "index": 23,
+      "entity_type": "0x44",
+      "table_addr": "0x00DFB0",
+      "handler_addr": "0x016CBE",
+      "is_dummy": false
+    },
+    {
+      "index": 24,
+      "entity_type": "0x46",
+      "table_addr": "0x00DFB4",
+      "handler_addr": "0x0173D6",
+      "is_dummy": false
+    },
+    {
+      "index": 25,
+      "entity_type": "0x48",
+      "table_addr": "0x00DFB8",
+      "handler_addr": "0x01778C",
+      "is_dummy": false
+    },
+    {
+      "index": 26,
+      "entity_type": "0x4A",
+      "table_addr": "0x00DFBC",
+      "handler_addr": "0x016D5C",
+      "is_dummy": false
+    },
+    {
+      "index": 27,
+      "entity_type": "0x4C",
+      "table_addr": "0x00DFC0",
+      "handler_addr": "0x016DCE",
+      "is_dummy": false
+    },
+    {
+      "index": 28,
+      "entity_type": "0x4E",
+      "table_addr": "0x00DFC4",
+      "handler_addr": "0x016F7C",
+      "is_dummy": false
+    },
+    {
+      "index": 29,
+      "entity_type": "0x50",
+      "table_addr": "0x00DFC8",
+      "handler_addr": "0x0170E0",
+      "is_dummy": false
+    },
+    {
+      "index": 30,
+      "entity_type": "0x52",
+      "table_addr": "0x00DFCC",
+      "handler_addr": "0x0171C4",
+      "is_dummy": false
+    },
+    {
+      "index": 31,
+      "entity_type": "0x54",
+      "table_addr": "0x00DFD0",
+      "handler_addr": "0x00E0B8",
+      "is_dummy": true
+    },
+    {
+      "index": 32,
+      "entity_type": "0x56",
+      "table_addr": "0x00DFD4",
+      "handler_addr": "0x00E0B8",
+      "is_dummy": true
+    },
+    {
+      "index": 33,
+      "entity_type": "0x58",
+      "table_addr": "0x00DFD8",
+      "handler_addr": "0x021B2C",
+      "is_dummy": false
+    },
+    {
+      "index": 34,
+      "entity_type": "0x5A",
+      "table_addr": "0x00DFDC",
+      "handler_addr": "0x0178EA",
+      "is_dummy": false
+    },
+    {
+      "index": 35,
+      "entity_type": "0x5C",
+      "table_addr": "0x00DFE0",
+      "handler_addr": "0x0178EA",
+      "is_dummy": false
+    },
+    {
+      "index": 36,
+      "entity_type": "0x5E",
+      "table_addr": "0x00DFE4",
+      "handler_addr": "0x0178EA",
+      "is_dummy": false
+    },
+    {
+      "index": 37,
+      "entity_type": "0x60",
+      "table_addr": "0x00DFE8",
+      "handler_addr": "0x0178EA",
+      "is_dummy": false
+    },
+    {
+      "index": 38,
+      "entity_type": "0x62",
+      "table_addr": "0x00DFEC",
+      "handler_addr": "0x017908",
+      "is_dummy": false
+    },
+    {
+      "index": 39,
+      "entity_type": "0x64",
+      "table_addr": "0x00DFF0",
+      "handler_addr": "0x0179A8",
+      "is_dummy": false
+    },
+    {
+      "index": 40,
+      "entity_type": "0x66",
+      "table_addr": "0x00DFF4",
+      "handler_addr": "0x0179D4",
+      "is_dummy": false
+    },
+    {
+      "index": 41,
+      "entity_type": "0x68",
+      "table_addr": "0x00DFF8",
+      "handler_addr": "0x025B32",
+      "is_dummy": false
+    },
+    {
+      "index": 42,
+      "entity_type": "0x6A",
+      "table_addr": "0x00DFFC",
+      "handler_addr": "0x00E144",
+      "is_dummy": false
+    },
+    {
+      "index": 43,
+      "entity_type": "0x6C",
+      "table_addr": "0x00E000",
+      "handler_addr": "0x01F5A4",
+      "is_dummy": false
+    },
+    {
+      "index": 44,
+      "entity_type": "0x6E",
+      "table_addr": "0x00E004",
+      "handler_addr": "0x01EB54",
+      "is_dummy": false
+    },
+    {
+      "index": 45,
+      "entity_type": "0x70",
+      "table_addr": "0x00E008",
+      "handler_addr": "0x01DF1C",
+      "is_dummy": false
+    },
+    {
+      "index": 46,
+      "entity_type": "0x72",
+      "table_addr": "0x00E00C",
+      "handler_addr": "0x01D140",
+      "is_dummy": false
+    },
+    {
+      "index": 47,
+      "entity_type": "0x74",
+      "table_addr": "0x00E010",
+      "handler_addr": "0x027C8A",
+      "is_dummy": false
+    },
+    {
+      "index": 48,
+      "entity_type": "0x76",
+      "table_addr": "0x00E014",
+      "handler_addr": "0x0283E6",
+      "is_dummy": false
+    },
+    {
+      "index": 49,
+      "entity_type": "0x78",
+      "table_addr": "0x00E018",
+      "handler_addr": "0x00E9DE",
+      "is_dummy": false
+    },
+    {
+      "index": 50,
+      "entity_type": "0x7A",
+      "table_addr": "0x00E01C",
+      "handler_addr": "0x00E0B8",
+      "is_dummy": true
+    },
+    {
+      "index": 51,
+      "entity_type": "0x7C",
+      "table_addr": "0x00E020",
+      "handler_addr": "0x00E0B8",
+      "is_dummy": true
+    },
+    {
+      "index": 52,
+      "entity_type": "0x7E",
+      "table_addr": "0x00E024",
+      "handler_addr": "0x0172C2",
+      "is_dummy": false
+    },
+    {
+      "index": 53,
+      "entity_type": "0x80",
+      "table_addr": "0x00E028",
+      "handler_addr": "0x028810",
+      "is_dummy": false
+    },
+    {
+      "index": 54,
+      "entity_type": "0x82",
+      "table_addr": "0x00E02C",
+      "handler_addr": "0x028D8C",
+      "is_dummy": false
+    },
+    {
+      "index": 55,
+      "entity_type": "0x84",
+      "table_addr": "0x00E030",
+      "handler_addr": "0x02903C",
+      "is_dummy": false
+    },
+    {
+      "index": 56,
+      "entity_type": "0x86",
+      "table_addr": "0x00E034",
+      "handler_addr": "0x01CD5A",
+      "is_dummy": false
+    },
+    {
+      "index": 57,
+      "entity_type": "0x88",
+      "table_addr": "0x00E038",
+      "handler_addr": "0x020BDA",
+      "is_dummy": false
+    },
+    {
+      "index": 58,
+      "entity_type": "0x8A",
+      "table_addr": "0x00E03C",
+      "handler_addr": "0x020684",
+      "is_dummy": false
+    },
+    {
+      "index": 59,
+      "entity_type": "0x8C",
+      "table_addr": "0x00E040",
+      "handler_addr": "0x01FA78",
+      "is_dummy": false
+    },
+    {
+      "index": 60,
+      "entity_type": "0x8E",
+      "table_addr": "0x00E044",
+      "handler_addr": "0x029452",
+      "is_dummy": false
+    },
+    {
+      "index": 61,
+      "entity_type": "0x90",
+      "table_addr": "0x00E048",
+      "handler_addr": "0x0269EE",
+      "is_dummy": false
+    },
+    {
+      "index": 62,
+      "entity_type": "0x92",
+      "table_addr": "0x00E04C",
+      "handler_addr": "0x029E32",
+      "is_dummy": false
+    },
+    {
+      "index": 63,
+      "entity_type": "0x94",
+      "table_addr": "0x00E050",
+      "handler_addr": "0x019098",
+      "is_dummy": false
+    },
+    {
+      "index": 64,
+      "entity_type": "0x96",
+      "table_addr": "0x00E054",
+      "handler_addr": "0x01933E",
+      "is_dummy": false
+    },
+    {
+      "index": 65,
+      "entity_type": "0x98",
+      "table_addr": "0x00E058",
+      "handler_addr": "0x016EBC",
+      "is_dummy": false
+    },
+    {
+      "index": 66,
+      "entity_type": "0x9A",
+      "table_addr": "0x00E05C",
+      "handler_addr": "0x015316",
+      "is_dummy": false
+    },
+    {
+      "index": 67,
+      "entity_type": "0x9C",
+      "table_addr": "0x00E060",
+      "handler_addr": "0x02A652",
+      "is_dummy": false
+    },
+    {
+      "index": 68,
+      "entity_type": "0x9E",
+      "table_addr": "0x00E064",
+      "handler_addr": "0x02A374",
+      "is_dummy": false
+    },
+    {
+      "index": 69,
+      "entity_type": "0xA0",
+      "table_addr": "0x00E068",
+      "handler_addr": "0x02A9F4",
+      "is_dummy": false
+    },
+    {
+      "index": 70,
+      "entity_type": "0xA2",
+      "table_addr": "0x00E06C",
+      "handler_addr": "0x02AD2C",
+      "is_dummy": false
+    },
+    {
+      "index": 71,
+      "entity_type": "0xA4",
+      "table_addr": "0x00E070",
+      "handler_addr": "0x02B194",
+      "is_dummy": false
+    },
+    {
+      "index": 72,
+      "entity_type": "0xA6",
+      "table_addr": "0x00E074",
+      "handler_addr": "0x02BDF2",
+      "is_dummy": false
+    },
+    {
+      "index": 73,
+      "entity_type": "0xA8",
+      "table_addr": "0x00E078",
+      "handler_addr": "0x02C27A",
+      "is_dummy": false
+    },
+    {
+      "index": 74,
+      "entity_type": "0xAA",
+      "table_addr": "0x00E07C",
+      "handler_addr": "0x02BF3E",
+      "is_dummy": false
+    },
+    {
+      "index": 75,
+      "entity_type": "0xAC",
+      "table_addr": "0x00E080",
+      "handler_addr": "0x023D02",
+      "is_dummy": false
+    },
+    {
+      "index": 76,
+      "entity_type": "0xAE",
+      "table_addr": "0x00E084",
+      "handler_addr": "0x0246CC",
+      "is_dummy": false
+    },
+    {
+      "index": 77,
+      "entity_type": "0xB0",
+      "table_addr": "0x00E088",
+      "handler_addr": "0x00E0B8",
+      "is_dummy": true
+    },
+    {
+      "index": 78,
+      "entity_type": "0xB2",
+      "table_addr": "0x00E08C",
+      "handler_addr": "0x016ADE",
+      "is_dummy": false
+    },
+    {
+      "index": 79,
+      "entity_type": "0xB4",
+      "table_addr": "0x00E090",
+      "handler_addr": "0x022CE0",
+      "is_dummy": false
+    },
+    {
+      "index": 80,
+      "entity_type": "0xB6",
+      "table_addr": "0x00E094",
+      "handler_addr": "0x017E28",
+      "is_dummy": false
+    },
+    {
+      "index": 81,
+      "entity_type": "0xB8",
+      "table_addr": "0x00E098",
+      "handler_addr": "0x02B582",
+      "is_dummy": false
+    },
+    {
+      "index": 82,
+      "entity_type": "0xBA",
+      "table_addr": "0x00E09C",
+      "handler_addr": "0x016A64",
+      "is_dummy": false
+    },
+    {
+      "index": 83,
+      "entity_type": "0xBC",
+      "table_addr": "0x00E0A0",
+      "handler_addr": "0x016F10",
+      "is_dummy": false
+    },
+    {
+      "index": 84,
+      "entity_type": "0xBE",
+      "table_addr": "0x00E0A4",
+      "handler_addr": "0x01906C",
+      "is_dummy": false
+    },
+    {
+      "index": 85,
+      "entity_type": "0xC0",
+      "table_addr": "0x00E0A8",
+      "handler_addr": "0x0247AA",
+      "is_dummy": false
+    },
+    {
+      "index": 86,
+      "entity_type": "0xC2",
+      "table_addr": "0x00E0AC",
+      "handler_addr": "0x025054",
+      "is_dummy": false
+    },
+    {
+      "index": 87,
+      "entity_type": "0xC4",
+      "table_addr": "0x00E0B0",
+      "handler_addr": "0x025114",
+      "is_dummy": false
+    },
+    {
+      "index": 88,
+      "entity_type": "0xC6",
+      "table_addr": "0x00E0B4",
+      "handler_addr": "0x016CBE",
+      "is_dummy": false
+    }
+  ]
+}

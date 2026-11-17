@@ -1,3 +1,9 @@
+# M15.446 ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Function Pointer Table
+- `tools/extract_rom_entity_dispatcher.py` — extractor for `0x00DEEC..0x00E0BA` (Group 2 entity sweep, 89-entry action jump table, and post-tick isometric footprint calculation).
+- `tests/rom_entity_dispatcher_test.py` — `5` unit tests verifying ROM constants, pool traversal bounds, jump table target addresses, 3/4 isometric projection math, and dummy handler parity.
+- `data/thor-evidence/rom_entity_dispatcher_m15_446.json` — extracted M15.446 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_446_ENTITY_DISPATCHER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.445 ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem
 - `tools/extract_rom_aabb_force_fields.py` — extractor for `0x00DDA2..0x00DEEC` (21-entity pool traversal, 3D AABB intersection test, force vector displacement, airborne elevation boost, and conveyor immunity flags).
 - `tests/rom_aabb_force_fields_test.py` — `5` unit tests verifying ROM constants, entity pool iteration bounds and status tests, 3D AABB bounding box math, elevation boost doubling, and conveyor immunity bitmask evaluation.
