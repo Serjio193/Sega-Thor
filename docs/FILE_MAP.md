@@ -5330,6 +5330,10 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
 - docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).
 
+- tools/extract_rom_ali_item_pickup_inventory.py — M15.386 ROM Ali item pickup dispatcher, inventory storage & jewel upgrades extractor.
+- tests/rom_ali_item_pickup_inventory_test.py — M15.386 unit tests for item pickup, weapon/food storage, spirit jewels, and full-bag reject.
+- data/thor-evidence/rom_ali_item_pickup_inventory_m15_386.json — M15.386 evidence database.
+- docs/handoffs/STANDALONE_M15_386_ALI_ITEM_PICKUP_INVENTORY_HANDOFF.md — M15.386 C++20 Standalone handoff.
 - tools/extract_rom_ali_combo_cartwheel_finisher.py — M15.385 ROM Ali combat combo chains, 6-cartwheel super finisher & ripple stun callback extractor.
 - tests/rom_ali_combo_cartwheel_finisher_test.py — M15.385 unit tests for rapid spin facing, combo chains, cartwheel alternation, and 6-cartwheel super finisher.
 - data/thor-evidence/rom_ali_combo_cartwheel_finisher_m15_385.json — M15.385 evidence database.

@@ -12271,6 +12271,13 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
 
+## 2026-11-17 - Milestone M15.386: ROM Ali Item Pickup Dispatcher, Inventory Storage, Jewel Upgrades & Full-Bag Audio Rejection (0x007A28..0x007C3C)
+
+- Decoded item pickup category classifier (`0x007A28..0x007A68`): routes item ID `$FF1976` into weapons (`0x01..0x0C`), jewels/gems (`0x0D..0x10`), rank upgrade (`0x11`), spirit jewels (`0x12..0x15`), keys (`0x16..0x19`), or food/consumables (`0x1A..0x3F`).
+- Decoded item classification table `0x05CE56.l` and SFX dispatch (`0x007A6C..0x007AF0`): maps categories to SFX `#$508`, `#$50D`, `#$C0035F`, `#$C00360`, `#$C00361`.
+- Decoded 8-slot weapon scanner (`$FF0D80`) and 16-slot food scanner (`$FF0D90`): locates first free 16-bit word slot; on bag overflow, routes to full bag audio rejection (`state = 0x3C, anim = 0x44`, SFX `#$C00255`).
+- Decoded spirit jewel upgrades (`$FF0DB6`, capped at 15; +5 to current and max SP when spirit active) and rank upgrade (`$FF1A7E` < 200; `HP = level*2 + 0xC6`, `SP += 2`).
+
 ## 2026-11-17 - Milestone M15.385: ROM Ali Combat Combo Chains, 6-Cartwheel Super Finisher & Ripple Stun Callback (0x00780E..0x007A28)
 
 - Decoded rapid spin 360-degree facing rotation (`0x00780E..0x007850`): evaluates frame counter `+0x30(a6)` at thresholds 4, 8, 12, 16 to rotate facing direction `d1 = 3, 2, 1, 0`.
