@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/file_select_menu.hpp` / `src/game/ui/file_select_menu.cpp`: Save/Load File Select Menu (`0x0004C6..0x000D30`), 2x3 grid navigation (`0x0006F6`), New/Continue/Copy/Erase flows (`0x000B04`/`0x000C46`), and `$2025C9` last-slot persistence (M16.75).
+- `tests/m16_75_file_select_menu_test.cpp`: Automated M16.75 test qualifying 2D grid navigation, Copy/Erase guards, New/Continue dispatch, and Cancel to Title (M16.75).
 - `src/game/ui/world_map_and_records.hpp` / `src/game/ui/world_map_and_records.cpp`: World Map pin math (`0x004B4E`/`0x004BAE`/`0x004BE8`), `"Rank00"`/`"Race00"` odd-byte SRAM clear-record codecs (`0x001DDC..0x001ECE`), and Attract/Demo stream lookup + delta-decoder (`0x008A94`/`0x008A30`) (M16.74).
 - `tests/m16_74_world_map_and_records_test.cpp`: Automated M16.74 test qualifying overworld/dungeon pin math, `"Rank00"`/`"Race00"` SRAM codecs, and attract demo lookup/delta-decoding (M16.74).
 - `src/game/player/player_action_machine.hpp` / `src/game/player/player_action_machine.cpp`: Complete 59-state Ali player table (`0x0059BA..0x005A2F`), pre-dispatch HP/SP warnings/regen/hazard/respawn tick (`0x005580..0x0057AE`), and death/auto-revive/game-over state machine (`0x005F92`, `0x00611E`) (M16.73).

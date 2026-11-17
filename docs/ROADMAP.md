@@ -1,3 +1,9 @@
+# M16.75 Save/Load File Select Menu (0x0004C6..0x000D30) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `FileSelectMenuState` (`$FF10A8`, `$FF10AA`, `$FF19A8`, `$2025C9`), 2D grid navigation (`0x0006F6`, SFX `0x006003A6`), New/Continue (`0x001300`/`0x00161C`), Copy/Erase flows (`0x000B04`/`0x000C46`, SFX `0x00A00256`/`0x00A00253`), and Cancel (`Mode 0x04`) in `src/game/ui/file_select_menu.hpp/.cpp`.
+- Qualified `oasis_m16_75_file_select_menu` and full 35-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.74 World Map Pin Math (0x004950..0x004C27), SRAM Clear Records ("Rank00"/"Race00") & Attract/Demo Stream Table (0x008A94) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

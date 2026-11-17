@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.75: Save/Load File Select Menu)
+- **Concrete Task**: Implement `src/game/ui/file_select_menu.hpp/.cpp` with `FileSelectMenuState` (`$FF10A8` cursor `0..5`, `$FF10AA` `occupied_mask`, `$FF19A8` `copy_src_slot`, `$2025C9` `last_slot`, `Main`/`CopySource`/`CopyDest`/`EraseSelect`), 2D grid navigation (`0x0006F6`: Right bit 0 set, Left bit 0 clear, Up `-2`, Down `+2` up to `max_row`, skip `excluded_slot`, SFX `0x006003A6`), Confirm (`0x001300` NewGame / `0x00161C` ContinueGame + `$2025C9` + SFX `0x00A00256`, Copy/Erase guards & SFX `0x00A00253`), and Cancel (`Mode 0x04` / submode back); add `tests/m16_75_file_select_menu_test.cpp`; qualify full 35-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/file_select_menu.hpp` / `src/game/ui/file_select_menu.cpp`.
+  * Added `tests/m16_75_file_select_menu_test.cpp` (registered as `oasis_m16_75_file_select_menu` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 35/35 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_75`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 35/35 regression run.
+  * Remaining unknowns: Visual VDP rendering of the 4 save-file summary cards and Copy/Erase confirmation prompts is deferred to frontend/boot-flow integration.
+
 # Worklog — 2026-11-17 (M16.74: World Map Pin Math, SRAM Clear Records & Attract Demo Stream Table)
 - **Concrete Task**: Implement `src/game/ui/world_map_and_records.hpp/.cpp` with `compute_world_map_pin` (`0x004B4E`: `(160, 120)` center, `0x004BE8` dungeon pins with `+6` for `0x0F01`, `0x004BAE` 29 overworld offsets + `(x >> 6, y >> 6)`), `encode_rank00_sram_block` / `decode_rank00_sram_block` (`"Rank00"` + 130 bytes + `u16_be` byte-sum checksum at stride 2), `decode_race00_best_time` (`"Race00"` + `u32_be` at stride 2), `lookup_attract_demo_rom_addr` (`0x008A94`, 9 slots relative to `0x1698FE`), and `delta_decode_demo_stream` (`0x008A30` prefix-sum mod 256); add `tests/m16_74_world_map_and_records_test.cpp`; qualify full 34-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

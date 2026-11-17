@@ -39,6 +39,7 @@ add_library(oasis_core
     src/game/ui/ring_menu_and_rank.cpp
     src/game/ui/game_mode_flow.cpp
     src/game/ui/world_map_and_records.cpp
+    src/game/ui/file_select_menu.cpp
     src/game/enemy/enemy_ai_0030_0048.cpp
     src/game/enemy/dungeon_enemy_dispatch.cpp
     src/game/enemy/heavy_enemy_dispatch.cpp

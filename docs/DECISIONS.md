@@ -1,3 +1,14 @@
+# ADR-20261117-M16-75-FILE-SELECT-MENU — Save/Load File Select Menu (0x0004C6..0x000D30)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.290 extracted the 2x3 File Select Menu (`0x0004C6..0x000D30`), 2D grid navigation (`0x0006F6`), Copy/Erase flows (`0x000B04`/`0x000C46`), and `$2025C9` last-slot persistence.
+
+**Decisions:**
+1. **Dedicated `file_select_menu` Module:**
+   - Added `src/game/ui/file_select_menu.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-74-WORLD-MAP-RECORDS-ATTRACT — World Map Pin Math, SRAM Clear Records & Attract Demo Stream Table
 **Status:** Accepted
 **Date:** 2026-11-17
