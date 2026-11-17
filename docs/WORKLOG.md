@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.319: ROM CAMERA DEADZONE FOLLOW, SCREEN SHAKE & HUD SLIDE TRIGGER (`0x00CEEA`..`0x00D114`) — `[0x78,0xC8]`/`[0x68,0x80]`, `±3`/`0x1E` Ramp, `0x50`/`0xF0` HUD, `$FF17C4` Shake; Extractor (`tools/extract_rom_camera_follow.py` <= 500 lines), Tests (`tests/rom_camera_follow_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_319_CAMERA_FOLLOW_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00CEEA..0x00D114` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_camera_follow.py`, `python -m unittest tests/rom_camera_follow_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.319, await M16.100 completion, and continue.
+
 # 2026-11-17 — Milestone M15.318: ROM ROOM UPDATE HOOKS & WARP TRANSITION SEQUENCE (`0x00C980`..`0x00CB0A`) — +0/+2 Hooks, 6-Flag Lock Guard, `0x0004->0x0611`, `160x112` Center, `0x0017DA`; Extractor (`tools/extract_rom_room_warp_sequence.py` <= 500 lines), Tests (`tests/rom_room_warp_sequence_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_318_ROOM_WARP_SEQUENCE_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00C980..0x00CB0A` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_room_warp_sequence.py`, `python -m unittest tests/rom_room_warp_sequence_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

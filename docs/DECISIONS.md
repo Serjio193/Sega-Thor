@@ -1,3 +1,8 @@
+# ADR-20261117-M15-319-CAMERA-FOLLOW — Camera Deadzone Follow, Screen Shake & HUD Slide Trigger (`0x00CEEA`..`0x00D114`)
+- **Context:** Camera tracking (`0x00CEEA`) uses `[0x78, 0xC8]` X and `[0x68, 0x80]` Y deadzones with `±3`/`±0x1E` smooth catch-up, triggers HUD slide `$FF1859` at `0x50`/`0xF0` or camera X delta, supports locked-center mode (`$FF16F1 & 8`), and applies alternating Y shake (`$FF17C4`).
+- **Decision:** Extracted all thresholds, RAM addresses, and smooth-follow rules into `data/thor-evidence/rom_camera_follow_m15_319.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.103 can implement exact camera follow, shake, and HUD-slide coupling.
+
 # ADR-20261117-M15-318-ROOM-WARP-SEQUENCE — Room Update Hooks & Warp Transition Sequence (`0x00C980`..`0x00CB0A`)
 - **Context:** Room updates dispatch via header relative offsets `+0`/`+2`, while warp triggers (`0x00C9B2`) require 6 lock flags clear, redirect room `0x0004` to `0x0611`, center camera `(x-160, y-112)`, optionally snapshot checkpoint (`0x0017DA`), silence sound, and fade (`4`).
 - **Decision:** Extracted all lock-flag RAM addresses, constants, and warp sequence rules into `data/thor-evidence/rom_room_warp_sequence_m15_318.json` with 2/2 passing tests and Standalone handoff.

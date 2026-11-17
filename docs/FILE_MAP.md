@@ -1,3 +1,9 @@
+# M15.319 ROM Camera Deadzone Follow, Screen Shake & HUD Slide Trigger
+- `tools/extract_rom_camera_follow.py` — ROM extractor & verifier for `0x00CEEA..0x00D114` (X/Y deadzones `[0x78, 0xC8]` / `[0x68, 0x80]`, smooth ramp, HUD slide triggers `0x50`/`0xF0`, shake `$FF17C4`).
+- `tests/rom_camera_follow_test.py` — Unit tests verifying deadzone follow, HUD slide trigger, and screen shake.
+- `data/thor-evidence/rom_camera_follow_m15_319.json` — Verified evidence JSON for M15.319.
+- `docs/handoffs/STANDALONE_M15_319_CAMERA_FOLLOW_HANDOFF.md` — C++20 Standalone handoff for M16.103.
+
 # M15.318 ROM Room Update Hooks & Warp Transition Sequence
 - `tools/extract_rom_room_warp_sequence.py` — ROM extractor & verifier for `0x00C980..0x00CB0A` (room update hooks, 6-flag warp lock guard, `0x0004->0x0611` redirect, `160x112` camera centering, checkpoint `0x0017DA`, fade `4`).
 - `tests/rom_room_warp_sequence_test.py` — Unit tests verifying warp lock guard and camera centering / room redirect.

@@ -1,3 +1,4 @@
+# M15.319 ROM Camera Deadzone Follow, Screen Shake & HUD Slide Trigger (`0x00CEEA`..`0x00D114`) — COMPLETE / VERIFIED
 # M15.318 ROM Room Update Hooks & Warp Transition Sequence (`0x00C980`..`0x00CB0A`) — COMPLETE / VERIFIED
 # M15.317 ROM Dialogue Cursor & Border SAT Builder (`0x00C756`..`0x00C84C`) — COMPLETE / VERIFIED
 # M15.316 ROM Room & Area Transition Loader (`0x00C8AA`..`0x00C96B`) — COMPLETE / VERIFIED

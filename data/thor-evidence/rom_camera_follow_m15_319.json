@@ -1,0 +1,35 @@
+{
+  "milestone": "M15.319",
+  "title": "ROM Camera Deadzone Follow, Screen Shake & HUD Slide Trigger",
+  "routine": {
+    "start": "0x00CEEA",
+    "end": "0x00D114"
+  },
+  "constants": {
+    "deadzone_x_min": 120,
+    "deadzone_x_max": 200,
+    "deadzone_y_min": 104,
+    "deadzone_y_max": 128,
+    "hud_slide_left_threshold": 80,
+    "hud_slide_right_threshold": 240,
+    "hud_slide_rev_snap": "0x0138",
+    "hud_slide_fwd_snap": "0x0020",
+    "smooth_step_px": 3,
+    "catchup_threshold_px": 32,
+    "catchup_bias_px": 30,
+    "catchup_up_min_delta": -6,
+    "locked_center_x": 160,
+    "locked_center_y": 120
+  },
+  "ram_state": {
+    "player_x": "0x00FF19F0",
+    "player_y": "0x00FF19F4",
+    "player_z": "0x00FF19F8",
+    "cam_max_x": "0x00FF177A",
+    "cam_max_y": "0x00FF177C",
+    "instant_snap_flag": "0x00FF17BA",
+    "shake_timer": "0x00FF17C4",
+    "hud_slide_dir": "0x00FF1859",
+    "hud_slide_offset": "0x00FF185A"
+  }
+}
