@@ -1,3 +1,6 @@
+# M15.471 ROM Script Virtual Machine Scene Entity Limit Checker, Parameter Buffer Indexer & ID Allocator Subsystem (`0x01027C`..`0x0103B0`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_script_vm_entity_limits.py`, `tests/rom_script_vm_entity_limits_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_entity_limits_m15_471.json`, and `docs/handoffs/STANDALONE_M15_471_ENTITY_LIMITS_HANDOFF.md`.
+
 # M15.470 ROM Script Virtual Machine Opcodes $0F..$11, $13, $14 & State Query Subroutines: Persistent Modifiers, GOSUB & Ali Vital Metrics (`0x010140`..`0x01027C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_script_vm_control_state.py`, `tests/rom_script_vm_control_state_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_control_state_m15_470.json`, and `docs/handoffs/STANDALONE_M15_470_SCRIPT_CONTROL_STATE_HANDOFF.md`.
 

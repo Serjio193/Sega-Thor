@@ -1,3 +1,9 @@
+# M15.471 ROM Script Virtual Machine Scene Entity Limit Checker, Parameter Buffer Indexer & ID Allocator Subsystem
+- `tools/extract_rom_script_vm_entity_limits.py` — extractor for `0x01027C..0x0103B0` (Script entity limit evaluators for Opcodes $01, $0E, and $17, parameter word buffer indexing, and Pool 2 duplicate ID scanner).
+- `tests/rom_script_vm_entity_limits_test.py` — `4` unit tests verifying single entity limit success/exhaustion, compound entity dual ID allocation, and Pool 2 active slot ID matching.
+- `data/thor-evidence/rom_script_vm_entity_limits_m15_471.json` — extracted M15.471 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_471_ENTITY_LIMITS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.470 ROM Script Virtual Machine Opcodes $0F..$11, $13, $14 & State Query Subroutines: Persistent Modifiers, GOSUB & Ali Vital Metrics
 - `tools/extract_rom_script_vm_control_state.py` — extractor for `0x010140..0x01027C` (Script opcodes $0F/$10/$11 persistent bit modifiers for Banks 1, 2, 3, $13 GOSUB, $14 RETURN, living enemy counter, active entity counter, entity type finder, and Ali HP/SP percentage calculations).
 - `tests/rom_script_vm_control_state_test.py` — `4` unit tests verifying opcodes $0F/$10/$11 bit modifications, opcodes $13/$14 subroutine jump/return, entity counters and search, and Ali HP/SP percentage math.
