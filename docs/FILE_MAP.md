@@ -1,3 +1,9 @@
+# M15.489 ROM Dytto Water Tornado Steering/Bounce & Efreet Spirit Master 14-State Dispatcher / Command Starters
+- `tools/extract_rom_efreet_dispatch_tornado.py` — extractor for `0x0123E2..0x012680` (Water Tornado steering/bounce `0x0123E2`, Efreet master tick & 14-entry jump table `0x01254C`/`0x0125AE`, Dash Charge `0x0125CA`, Flame Breath `0x012608`, Fireball Meltdown `0x01263C`, Hit Reaction `0x012672`).
+- `tests/rom_efreet_dispatch_tornado_test.py` — `5` unit tests verifying evidence/jump table, tornado wall/viewport bounce, Button-A steering & `$05D706` velocity, Efreet 35-frame SP drain & dispatcher, and command starters.
+- `data/thor-evidence/rom_efreet_dispatch_tornado_m15_489.json` — extracted M15.489 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_489_EFREET_DISPATCH_TORNADO_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.488 ROM Dytto Spirit Idle Follow, Auto-Rescue Heal Trigger, Circular Orbit & Dismissal Physics Subsystem
 - `tools/extract_rom_dytto_follow_dismissal.py` — extractor for `0x0120D4..0x0123E2` (approach states `$02/$04/$06/$1A` & buzzer `0x0120D4`, State `$00` command dispatch/auto-rescue/orbit/follow `0x0121AA`, dismissal States `$1C/$1E` `0x012314`, and elevation trackers `0x0123AE`/`0x0123B4`).
 - `tests/rom_dytto_follow_dismissal_test.py` — `5` unit tests verifying approach transitions & buzzer, command dispatch & auto-rescue heal, 18px follow & `$05D706` orbit math, dismissal fall/despawn, and elevation tracking.

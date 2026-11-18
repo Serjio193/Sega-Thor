@@ -1,3 +1,6 @@
+# M15.489 ROM Dytto Water Tornado Steering/Bounce & Efreet Spirit Master 14-State Dispatcher / Command Starters (`0x0123E2`..`0x012680`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_efreet_dispatch_tornado.py`, `tests/rom_efreet_dispatch_tornado_test.py` (`5/5 PASS`), `data/thor-evidence/rom_efreet_dispatch_tornado_m15_489.json`, and `docs/handoffs/STANDALONE_M15_489_EFREET_DISPATCH_TORNADO_HANDOFF.md`.
+
 # M15.488 ROM Dytto Spirit Idle Follow, Auto-Rescue Heal Trigger, Circular Orbit & Dismissal Physics Subsystem (`0x0120D4`..`0x0123E2`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dytto_follow_dismissal.py`, `tests/rom_dytto_follow_dismissal_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dytto_follow_dismissal_m15_488.json`, and `docs/handoffs/STANDALONE_M15_488_DYTTO_FOLLOW_DISMISSAL_HANDOFF.md`.
 

@@ -1,3 +1,12 @@
+# Reverse Engineering Notes — Milestone M15.489 (`0x0123E2`..`0x012680`): Dytto Water Tornado Steering/Bounce & Efreet Spirit Master 14-State Dispatcher / Command Starters
+- **Original ROM Addresses:** `0x0123E2..0x012680` (670 bytes: 188 M68K instructions + 28-byte 14-entry relative jump table at `0x0125AE..0x0125CA`).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_efreet_dispatch_tornado.py` and `data/thor-evidence/rom_efreet_dispatch_tornado_m15_489.json`:
+  * `0x0123E2..0x01254C`: `AI_Dytto_WaterTornadoSteeringAndTrigVelocity` — `0x0123AE` elevation, `+$40`/`+$41` bit 6 reflections, `[cam_x..cam_x+$140, cam_y..cam_y+$E0]` bounce, Button A `0x00E706` steering vs 7-frame `0x00E268` drift, `$2000` ramp up to `$80000`, and `$05D706` velocity integration.
+  * `0x01254C..0x0125CA`: `AI_Efreet_MasterTickAndDispatcher` — 35-frame (`0x23`) SP drain timer `+$8E` (`0x012BA8` dismiss on SP=0, `+$36` bit 1 blink on SP<=1) and 14-entry table `0x0125AE..0x0125CA` (`$00..$1A`).
+  * `0x0125CA..0x012680`: `AI_Efreet_TryStartDashCharge` (`8 SP`, `0x00E2D4`, `#$800258`), `AI_Efreet_TryStartFlameBreath` (`6 SP`, `$FF1C1C` `$FFFE`, `0x012C4E`), `AI_Efreet_TryStartFireballMeltdown` (`25 SP`, `+$AE=$60`, `+$AF=$FF0DB7+$10`), and `AI_Efreet_StartHitReaction` (`State $10`, `+$2A=$0A`).
+- **Assumptions:** Shared callees `0x00E706`, `0x00E682`, `0x00E36E`, `0x00E268`, `0x00E2D4`, `0x00E7FC`, and downstream Efreet states (`0x012680+`) reside in adjacent slices.
+- **Test Status:** Verified via `tests/rom_efreet_dispatch_tornado_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.488 (`0x0120D4`..`0x0123E2`): Dytto Spirit Idle Follow, Auto-Rescue Heal Trigger, Circular Orbit & Dismissal Physics Subsystem
 - **Original ROM Addresses:** `0x0120D4..0x0123E2` (782 bytes, 219 M68K instructions).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_dytto_follow_dismissal.py` and `data/thor-evidence/rom_dytto_follow_dismissal_m15_488.json`:
