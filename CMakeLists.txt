@@ -60,6 +60,7 @@ add_library(oasis_core
     src/game/combat/combat_hit_response.cpp
     src/game/combat/hit_spark_generator.cpp
     src/game/hud/decimal_formatter.cpp
+    src/game/collision/player_rect_collision.cpp
     src/game/save/sram_save_system.cpp
     src/game/items/item_effects.cpp
     src/game/items/item_attribute_tables.cpp

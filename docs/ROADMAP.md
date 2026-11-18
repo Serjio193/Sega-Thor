@@ -1,3 +1,25 @@
+# M16.175 ROM Tile Rect vs Player Ali AABB Containment & Overlap Collision Testers (`0x00C17A..0x00C222`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `unpack_tile_rect_pixel_bounds`, `unpack_registers_pixel_bounds`, `is_player_inside_pixel_bounds`, `does_player_overlap_pixel_bounds`, `is_player_inside_rect`, `does_player_overlap_rect`, `is_player_inside_packed`, `does_player_overlap_packed`, and raw 64KB RAM window integration helpers in `src/game/collision/player_rect_collision.hpp/.cpp` and `include/game/collision/player_rect_collision.hpp`:
+  - 2 ingress entry points:
+    * `0x00C17A` (`player_inside_rect`): strict containment test (Carry = 1 if player AABB is completely inside tile rect, Carry = 0 otherwise).
+    * `0x00C1CE` (`player_overlaps_rect`): intersection/overlap test (Carry = 1 if player AABB intersects tile rect, Carry = 0 if disjoint).
+  - Coordinate unpacking & scaling:
+    * Packed registers `d1 = (x_min << 16) | y_min` and `d2 = (x_max << 16) | y_max`.
+    * Scaled by 8 via `asl.l #3, d1`, `asl.l #3, d2`.
+    * Extent bias added `addi.l #$00070007, d2` yielding inclusive pixel boundaries `[x_min * 8, x_max * 8 + 7]` and `[y_min * 8, y_max * 8 + 7]`.
+  - Player Ali AABB evaluation ($FF19E8):
+    * Position `world_x = +0x08`, `world_y = +0x0C` and collision radius `rad = +0x46`.
+    * `px_min = world_x - rad`, `px_max = world_x + rad`, `py_min = world_y - rad`, `py_max = world_y + rad`.
+  - Geometric logic:
+    * Containment: `px_min >= rect_x_min && px_max <= rect_x_max && py_min >= rect_y_min && py_max <= rect_y_max`.
+    * Overlap: `px_min <= rect_x_max && px_max >= rect_x_min && py_min <= rect_y_max && py_max >= rect_y_min`.
+  - Register preservation:
+    * Full `d0-d6/a0` register preservation via `movem.l`.
+  - Raw 64KB RAM window integration helpers at `$FF19E8`.
+- Qualified `oasis_m16_175_player_rect_collision` and the 155-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.174 ROM Fixed-Width & Space-Padded Decimal String Formatters (`0x00C0BE..0x00C17A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

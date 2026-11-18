@@ -1,3 +1,34 @@
+# ADR-20261118-M16-175-PLAYER-RECT-COLLISION — ROM Tile Rect vs Player Ali AABB Containment & Overlap Collision Testers (0x00C17A..0x00C222)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.426 extracted ROM routines `0x00C17A..0x00C222` (168 bytes) governing 2D tile rectangle spatial queries against Player Ali AABB used across over 150 scripts, triggers, and room transitions:
+   - 2 ingress entry points:
+     * `0x00C17A` (`player_inside_rect`): strict containment test (returns Carry = 1 if player AABB is completely inside tile rectangle; Carry = 0 otherwise).
+     * `0x00C1CE` (`player_overlaps_rect`): intersection/overlap test (returns Carry = 1 if player AABB intersects or touches tile rectangle; Carry = 0 if disjoint).
+   - Coordinate unpacking & scaling:
+     * Packed input registers `d1 = (tile_x_min << 16) | tile_y_min` and `d2 = (tile_x_max << 16) | tile_y_max`.
+     * Multiplies coordinates by 8 via 32-bit shift: `asl.l #3, d1`, `asl.l #3, d2`.
+     * Adds pixel extent bias: `addi.l #$00070007, d2` providing inclusive bounds `[tile_x_min * 8, tile_x_max * 8 + 7]` and `[tile_y_min * 8, tile_y_max * 8 + 7]`.
+   - Player Ali AABB construction ($FF19E8):
+     * Position `world_x = +0x08(a0)`, `world_y = +0x0C(a0)` and collision radius `rad = +0x46(a0)`.
+     * `px_min = world_x - rad`, `px_max = world_x + rad`.
+     * `py_min = world_y - rad`, `py_max = world_y + rad`.
+   - Containment conditions (`0x00C17A`):
+     * `px_min >= rect_x_min && px_max <= rect_x_max && py_min >= rect_y_min && py_max <= rect_y_max`.
+   - Overlap conditions (`0x00C1CE`):
+     * `px_min <= rect_x_max && px_max >= rect_x_min && py_min <= rect_y_max && py_max >= rect_y_min`.
+   - Register preservation:
+     * Preserves registers `d0-d6/a0` across call via `movem.l d0-d6/a0, -(sp)` / `movem.l (sp)+, d0-d6/a0`, signalling outcome strictly via CCR Carry.
+   - Raw 64KB RAM window integration helpers at `$FF19E8`.
+
+**Decisions:**
+1. **Dedicated `player_rect_collision` Module:**
+   - Added `src/game/collision/player_rect_collision.hpp/.cpp` and `include/game/collision/player_rect_collision.hpp` modeling `is_player_inside_rect`, `does_player_overlap_rect`, packed register unpackers, and raw memory window integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (155/155 M16 tests).
+
 # ADR-20261118-M16-174-DECIMAL-FORMATTER — ROM Fixed-Width & Space-Padded Decimal String Formatters (0x00C0BE..0x00C17A)
 **Status:** Accepted
 **Date:** 2026-11-18
