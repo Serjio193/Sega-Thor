@@ -1,3 +1,45 @@
+# ADR-20261118-M16-172-COMBAT-HIT-RESPONSE — ROM Entity Combat Hit Response, Knockback & Trajectory Physics Calculator (0x00BE98..0x00C012)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.423 extracted ROM routines `0x00BE98..0x00C012` governing combat hit response, target HUD tracking, shield guarding, stun cooldowns, trajectory physics, knockback modes, and blocked hit handling:
+   - 2 ingress entry points:
+     * `combat_hit_response_tracked` (`0x00BE98`): if target != player (`$FF19E8`) and status protect bit 0 of `$3A` is clear, sets HUD boss/enemy health tracking timer `$FF184F = 0x5A` (90 frames) and target `$FF1850 = target`. Falls through to `0x00BEBA`.
+     * `combat_hit_response_direct` (`0x00BEBA`): evaluates hit directly without HUD tracking.
+   - Shield guard and facing evaluation:
+     * Checks guard flag `$6D(target)`. If 0 -> unblocked hit (`0x00BED4`).
+     * If guarding (`$6D != 0`):
+       - Opponent facing check: `opp_facing = attacker_facing ^ 2`.
+       - If `opp_facing == target_facing`: shield block active -> branches to blocked hit (`0x00BFAE`).
+       - If facing does not match: flank/rear hit breaks guard (`$6D = 0`) -> proceeds to unblocked hit (`0x00BED4`).
+   - Unblocked Hit Response (`0x00BED4`):
+     * Sets attacker backlink `+$7E(target) = attacker`.
+     * Sets stun cooldown `+$82(target) = stun_duration` and `+$82(attacker) = 0x0C` (or attacker cooldown).
+     * Sets target damage `+$86(target) = damage_word`, reaction mode `+$83(target) = 6`, stun state `+$9D(target) = 0`, hit facing `+$84(target) = attacker_facing`.
+     * Sets bit 3 of `flags_37(attacker)`. If newly set, plays hit SFX `a3[4]`.
+     * Calls hit spark generator hook `0x00C012`.
+     * Knockback trajectory modes (`(rol.w #3, damage_word) & 6`):
+       - Mode 0 (Light): Grounded: `(0x0300, 0x02C0)`, vertical impulse = 0. Airborne: sets air juggle bit 7 on `+$86(target)`, `(0x0400, 0x03C0)`, vertical impulse = `0x00028000`.
+       - Mode 1 (VerticalPopup): Horizontal speed = 0, vertical impulse = `0x00070000`.
+       - Mode 2 (Heavy): `(0x0400, 0x03C0)`, vertical impulse = `0x00028000`.
+       - Mode 3 (Severe): `(0x0700, 0x0680)`, vertical impulse = `0x00030000`.
+     * 8-Way directional velocity projection (`0x00E2D4`): projects velocities based on attacker facing direction.
+   - Blocked Hit Response (`0x00BFAE`):
+     * Ali shield durability reduction if attack type is 6 or 10.
+     * Sets target attacker backlink `+$7E(target) = attacker`.
+     * Sets stun cooldown `+$82(target) = stun_duration`.
+     * Sets damage `+$86(target) = damage_word` and hit facing `+$84(target) = attacker_facing`.
+     * Plays shield clash SFX `0x00900202`.
+     * Zeroes knockback velocities (`vel_x = 0, vel_y = 0, impulse_z = 0`).
+   - Raw 64KB RAM window integration helpers for full emulation fidelity.
+
+**Decisions:**
+1. **Dedicated `combat_hit_response` Module:**
+   - Added `src/game/combat/combat_hit_response.hpp/.cpp` and `include/game/combat/combat_hit_response.hpp` modeling hit response dispatch, shield guarding, stun cooldowns, trajectory physics, knockback modes, blocked hit handling, and raw memory integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (152/152 M16 tests).
+
 # ADR-20261118-M16-171-ATTACK-SCANNER-ENGINE — ROM Universal Attack Frame Scanner & 3D Hitbox Intersection Engine (0x00BC8E..0x00BE98)
 **Status:** Accepted
 **Date:** 2026-11-18
