@@ -1,3 +1,6 @@
+# M15.476 ROM Entity AI Player Elemental Blade Attack Parry & Shield Interception Engine (`0x010A74`..`0x010BF0`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_ai_blade_parry.py`, `tests/rom_entity_ai_blade_parry_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_ai_blade_parry_m15_476.json`, and `docs/handoffs/STANDALONE_M15_476_BLADE_PARRY_HANDOFF.md`.
+
 # M15.475 ROM Entity AI Isometric Projected Melee Hitbox & Reverse-Facing Collision Detection Engine (`0x010916`..`0x010A74`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_ai_isometric_hitbox.py`, `tests/rom_entity_ai_isometric_hitbox_test.py` (`4/4 PASS`), `data/thor-evidence/rom_entity_ai_isometric_hitbox_m15_475.json`, and `docs/handoffs/STANDALONE_M15_475_ISOMETRIC_HITBOX_HANDOFF.md`.
 

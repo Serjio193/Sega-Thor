@@ -1,3 +1,9 @@
+# M15.476 ROM Entity AI Player Elemental Blade Attack Parry & Shield Interception Engine
+- `tools/extract_rom_entity_ai_blade_parry.py` — extractor for `0x010A74..0x010BF0` (Elemental Blade Type $34 pre-filter, head-on facing comparison, 3D vertical elevation overlap, and 4-way shield reach interception via jump table 0x010ADA).
+- `tests/rom_entity_ai_blade_parry_test.py` — `5` unit tests verifying head-on parry success, type/state filters, rear attack rejection, vertical overlap limits, and 4-way shield reach calculations.
+- `data/thor-evidence/rom_entity_ai_blade_parry_m15_476.json` — extracted M15.476 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_476_BLADE_PARRY_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.475 ROM Entity AI Isometric Projected Melee Hitbox & Reverse-Facing Collision Detection Engine
 - `tools/extract_rom_entity_ai_isometric_hitbox.py` — extractor for `0x010916..0x010A74` (4 specialized entrypoints for normal/reverse facing, isometric y+z projection, 24px elevation gate, and 4-way facing hitbox tests via jump table 0x010956).
 - `tests/rom_entity_ai_isometric_hitbox_test.py` — `4` unit tests verifying isometric depth contribution, reverse facing inversion, elevation gate bypass/filtering, and 4-way directional attack box hits.
