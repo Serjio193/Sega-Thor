@@ -1,3 +1,35 @@
+# ADR-20261118-M16-181-ROOM-WARP-ENGINE — ROM Room Warp Controller, Camera Centering, Cutscene Locks & Player Ali Spawn Reset Engine (0x00C9B2..0x00CC12)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.432 extracted ROM routines `0x00C9B2..0x00CC12` (608 bytes) governing room warp entry sequences, Genesis 320x224 camera centering, cutscene/dialogue/transition lock evaluation, special room ID remapping, and Player Ali entity slot reset:
+   - Cutscene, dialogue, and transition locks (`0x00C9B2..0x00C9EA`):
+     * Evaluates 6 lock flags in RAM: `$FF17B9 != 0` (cutscene active), `$FF1987 != 0` (transition busy), `$FF1985 != 0` (pause menu), `$FF17B8 & 0x04 != 0` (cutscene lock bit 2), `$FF1983 != 0` (secondary lock), `$FF1982 != 0` (tertiary lock).
+     * If any flag is set, pops the return address off the stack (`addq.l #4, a7; rts`) to abort initiating actions.
+   - Genesis 320x224 camera centering (`0x00C9F8..0x00CA0C`, `0x00CA24..0x00CA38`):
+     * Calculates `camera_x = (target_x - 160) & 0xFFFF` and `camera_y = (target_y - 112) & 0xFFFF`.
+     * Packs registers: `packed_camera = (camera_x << 16) | camera_y`, `packed_spawn = (target_x << 16) | target_y`.
+     * Stores coordinates into RAM at `$FF178E`.
+   - Special room ID overrides & transition orchestration (`0x00CA3E..0x00CA64`):
+     * Special room 4 remapping: if `room_id == 4`, remaps target to `0x0611`.
+     * Resolves scene script pointer via `0x00C90E`.
+     * Evaluates bit 6 on script header `+0x19` to invoke BGM music engine (`0x0017DA`).
+     * Invokes sound driver mute command (`0x060004`, `d0 = 2`).
+   - Player Ali entity spawn slot reset (`$FF19E8`, `0x00CB64..0x00CC12`):
+     * Sets 16.16 fixed coordinates at `+$08` (spawn_x) and `+$0C` (spawn_y).
+     * Clears elevation (`+$10`), velocities (`+$72, +$76, +$7A`), status/damage words.
+     * Sets defaults: mode `+$04 = 0`, facing `+$2A = 0`, invalidation tags `+$2C = 0xFFFF, +$34 = 0xFFFF, +$5C = 0xFFFF`, idle frame `+$32 = 0x003F`, visible `+$36 = 1`, tangible layer `+$38 = 0x10`.
+     * Sky drop falling pose: if fade transition active (`$FF17BC != 0 || $FF17BB != 0`), sets elevation `+$10 = 240` (`0x00F0` pixels in air), action mode `+$04 = 6`, facing `+$2A = 6`, falling animation counter `+$56 = 1`.
+     * Updates spawn cache at `$FF1972` and clears spawn locks (`$FF1984 = 0, $FF1982 = 0`).
+   - Raw 64KB RAM window integration helpers at `$FF19E8`, `$FF17B9`, `$FF1987`, `$FF1985`, `$FF17B8`, `$FF1983`, `$FF1982`, `$FF19FE`, `$FF17BE`, `$FF17BC`, `$FF17BB`, `$FF17BA`, `$FF178E`, `$FF1972`, `$FF1984`.
+
+**Decisions:**
+1. **Dedicated `room_warp_engine` Module:**
+   - Added `src/game/world/room_warp_engine.hpp/.cpp` and `include/game/world/room_warp_engine.hpp` modeling `calculate_camera_center`, `check_cutscene_script_lock`, `apply_room_id_overrides`, `spawn_player_ali`, `check_cutscene_script_lock_raw`, `warp_room_entry_immediate_raw`, `warp_room_entry_fade_raw`, and `spawn_player_ali_in_room_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (162/162 M16 tests).
+
 # ADR-20261118-M16-180-MAP-SCENE-DISPATCHER — ROM Map & Scene Script Dispatcher, 21-Area Script Table & State Manager (0x00C88C..0x00C9B2)
 **Status:** Accepted
 **Date:** 2026-11-18

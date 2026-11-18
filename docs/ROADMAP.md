@@ -1,3 +1,25 @@
+# M16.181 ROM Room Warp Controller, Camera Centering, Cutscene Locks & Player Ali Spawn Reset Engine (`0x00C9B2..0x00CC12`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `calculate_camera_center`, `check_cutscene_script_lock`, `apply_room_id_overrides`, `spawn_player_ali`, `execute_room_warp`, `check_cutscene_script_lock_raw`, `calculate_camera_center_raw`, `apply_room_id_overrides_raw`, and `spawn_player_ali_raw` in `src/game/world/room_warp_engine.hpp/.cpp` and `include/game/world/room_warp_engine.hpp`:
+  - Cutscene script lock check (`0x00C9B2`):
+    * Evaluates 6 RAM flags: dialogue/cutscene active `$FF17B9`, transition busy `$FF1987`, pause/menu active `$FF1985`, cutscene lock bit 2 `$FF17B8 & 0x04`, secondary transition lock `$FF1983`, and tertiary transition lock `$FF1982`.
+    * Aborts/returns locked if any flag is set.
+  - Camera centering calculation (`0x00C9F8..0x00CA0C`, `0x00CA24..0x00CA38`):
+    * `camera_x = (target_x - 160) & 0xFFFF` (centers 320px screen).
+    * `camera_y = (target_y - 112) & 0xFFFF` (centers 224px screen).
+    * Packs `(camera_x << 16) | camera_y` into `$FF178E` and `(target_x << 16) | target_y` into `$FF1792`.
+  - Room ID override remapping (`0x00CA3E`):
+    * Remaps `room_id == 4` to special room ID `0x0611`.
+  - Player Ali spawn reset engine (`0x00CB64..0x00CC12`):
+    * Entity slot `$FF19E8`: resets 16.16 positions `+0x08`, `+0x0C`, zeroing elevation `+0x10`, velocities `+0x72`, `+0x76`, `+0x7A`, and damage/status `+0x86`.
+    * Initializes default mode `+0x04 = 0`, facing `+0x2A = 0`, cache tags `+0x2C = 0xFFFF`, `+0x34 = 0xFFFF`, `+0x5C = 0xFFFF`, idle frame `+0x32 = 0x003F`, visible `+0x36 = 1`, and layer `+0x38 = 0x10`.
+    * Dynamic sky drop pose: triggered when fade transition flags `$FF17BC` or `$FF17BB` are non-zero, configuring elevation `+0x10 = 240` (0x00F0), mode `+0x04 = 6`, facing `+0x2A = 6`, and falling anim counter `+0x56 = 1`.
+    * Caches spawn coordinates into `$FF1972` and clears `$FF1984 = 0` and `$FF1982 = 0`.
+  - Raw 64KB RAM window integration helpers at `$FF17B9`, `$FF1987`, `$FF1985`, `$FF17B8`, `$FF1983`, `$FF1982`, `$FF178E`, `$FF1792`, `$FF19E8`, `$FF17BC`, `$FF17BB`, `$FF1972`, `$FF1984`.
+  - Cleanroom `thor::world` namespace aliases.
+- Qualified `oasis_m16_181_room_warp_engine` and the 162-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.180 ROM Map & Scene Script Dispatcher, 21-Area Script Table & State Manager (`0x00C88C..0x00C9B2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
