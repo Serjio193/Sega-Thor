@@ -1,3 +1,9 @@
+# M15.461 ROM Enemy Defeat Loot Drop & Chest Item Spawner Subsystem
+- `tools/extract_rom_item_drop_engine.py` — extractor for `0x00F476..0x00F64C` (Enemy defeat loot drop evaluator, 2-tier PRNG drop tables, fixed chest loot spawner, 6-byte record table at $43830, and persistent collection bitmask checks across 3 RAM banks).
+- `tests/rom_item_drop_engine_test.py` — `4` unit tests verifying ROM constants, enemy drop table PRNG evaluations, chest collection bitmask tests, and item launch velocity.
+- `data/thor-evidence/rom_item_drop_engine_m15_461.json` — extracted M15.461 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_461_ITEM_DROP_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.460 ROM Player Ali Bow Arrow Projectile Spawner, Ground/Water Offsets & Parabolic Launch Physics
 - `tools/extract_rom_bow_arrow_engine.py` — extractor for `0x00F396..0x00F476` (Ground/Water bow arrow spawners, launch offset tables 0x00F3A0 and 0x00F3B2, shared arrow projectile initializer at $FF1B60, 16px elevation threshold for high/low parabolic launch arcs, and 8-way velocity projection).
 - `tests/rom_bow_arrow_engine_test.py` — `5` unit tests verifying ROM constants, ground/water launch offset tables, elevation-dependent parabolic trajectory selection, and anchor calculation.

@@ -1,3 +1,6 @@
+# M15.461 ROM Enemy Defeat Loot Drop & Chest Item Spawner Subsystem (`0x00F476`..`0x00F64C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_item_drop_engine.py`, `tests/rom_item_drop_engine_test.py` (`4/4 PASS`), `data/thor-evidence/rom_item_drop_engine_m15_461.json`, and `docs/handoffs/STANDALONE_M15_461_ITEM_DROP_ENGINE_HANDOFF.md`.
+
 # M15.460 ROM Player Ali Bow Arrow Projectile Spawner, Ground/Water Offsets & Parabolic Launch Physics (`0x00F396`..`0x00F476`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_bow_arrow_engine.py`, `tests/rom_bow_arrow_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_arrow_engine_m15_460.json`, and `docs/handoffs/STANDALONE_M15_460_BOW_ARROW_ENGINE_HANDOFF.md`.
 
