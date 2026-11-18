@@ -1,3 +1,38 @@
+# ADR-20261118-M16-180-MAP-SCENE-DISPATCHER — ROM Map & Scene Script Dispatcher, 21-Area Script Table & State Manager (0x00C88C..0x00C9B2)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.431 extracted ROM routines `0x00C88C..0x00C9B2` (294 bytes) governing map and scene script dispatching, the 21-area script pointer table, map/scene transition state management, and pause-gated tick execution:
+   - Scene script loading & state transition management (`0x00C8AA`):
+     * Input: packed `(area_id << 8) | scene_id` in `d0.w`.
+     * Tests against `$FF0E40` (current packed map ID).
+     * If `target_id != current_id`:
+       - Clears 16 bytes at `$FF0E2C..$FF0E3C` (area state flags).
+       - If `target_area != current_area` (`(target_id >> 8) != (current_id >> 8)`):
+         * Clears 16 bytes at `$FF0E1C..$FF0E2C` (map state flags).
+         * Clears 3 bytes at `$FF0DB3..$FF0DB6` (area trigger flags).
+       - Updates `$FF0E40 = target_id`.
+     * Saves resolved `script_ptr` into `$FF16EC`.
+     * Returns initialization routine entrypoint: `script_ptr + 0x1A`.
+   - 21-Area script pointer table (`0x00C92C`):
+     * 21 32-bit absolute ROM addresses for Areas 00..14 (`0x00..0x14`):
+       `0x02C6B8, 0x02E56A, 0x02F1A4, 0x02F9B2, 0x02FF80, 0x030218, 0x030E56, 0x031B50, 0x0328D6, 0x03361C, 0x0341A4, 0x035528, 0x036286, 0x037B42, 0x038AAC, 0x02C6F2, 0x038FBA, 0x03957C, 0x039F7A, 0x039F7C, 0x039F7E`.
+     * Scene pointer calculation (`0x00C90E`): reads 16-bit signed relative offset at `area_base + scene_id * 2`, returns `(area_base + scene_id * 2) + offset`.
+   - Script tick & subtick execution (`0x00C980`, `0x00C998`):
+     * Checks pause flag bit 1 on `$FF17B8`: if set (`btst #1, $FF17B8 != 0`), script ticks are bypassed.
+     * Main tick target: `script_ptr + read_be16(rom, script_ptr)`.
+     * Subtick target: `(script_ptr + 2) + read_be16(rom, script_ptr + 2)`.
+   - Dialogue caller entity animation hook (`0x00C88C`):
+     * Checks caller entity pointer `$FF1882`. If non-null, sets `$FF193C = 0x00C8A8` and invokes animation routine.
+   - Raw 64KB RAM window integration helpers at `$FF0E40`, `$FF0E2C..$FF0E3C`, `$FF0E1C..$FF0E2C`, `$FF0DB3..$FF0DB6`, `$FF16EC`, `$FF17B8`, `$FF1882`, `$FF193C`.
+
+**Decisions:**
+1. **Dedicated `map_scene_dispatcher` Module:**
+   - Added `src/game/map/map_scene_dispatcher.hpp/.cpp` and `include/game/map/map_scene_dispatcher.hpp` modeling `resolve_scene_script_pointer`, `load_scene_script`, `can_tick_script`, `get_script_tick_target`, `get_script_subtick_target`, `update_dialogue_caller_anim`, `load_map_scene_script_raw`, `exec_map_script_tick_raw`, and `exec_map_script_subtick_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (161/161 M16 tests).
+
 # ADR-20261118-M16-179-DIALOGUE-TASK-COMPOSITOR — ROM Dialogue Entity Sprite Compositor, Prompt Arrow Indicator & Frame Sync Engine (0x00C756..0x00C88C)
 **Status:** Accepted
 **Date:** 2026-11-18

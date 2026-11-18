@@ -1,3 +1,26 @@
+# M16.180 ROM Map & Scene Script Dispatcher, 21-Area Script Table & State Manager (`0x00C88C..0x00C9B2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `resolve_scene_script_pointer`, `load_scene_script`, `can_tick_script`, `get_script_tick_target`, `get_script_subtick_target`, `update_dialogue_caller_anim`, `load_map_scene_script_raw`, `exec_map_script_tick_raw`, and `exec_map_script_subtick_raw` in `src/game/map/map_scene_dispatcher.hpp/.cpp` and `include/game/map/map_scene_dispatcher.hpp`:
+  - Scene script loading & state transition management (`0x00C8AA`):
+    * Input: packed `(area_id << 8) | scene_id`.
+    * State clearing: clears 16-byte area flags `$FF0E2C..$FF0E3C` on scene change.
+    * Area transition: clears 16-byte map flags `$FF0E1C..$FF0E2C` and 3-byte trigger flags `$FF0DB3..$FF0DB6` when area changes.
+    * Updates current map ID `$FF0E40` and active script pointer `$FF16EC`.
+    * Returns script initialization routine entrypoint: `script_ptr + 0x1A`.
+  - 21-Area script pointer table (`0x00C92C`):
+    * 21 32-bit absolute ROM addresses for Areas 00..14 (`0x00..0x14`).
+    * Resolves scene script pointers using 16-bit relative signed offsets: `(area_base + scene_id * 2) + offset`.
+  - Pause-gated tick execution (`0x00C980`, `0x00C998`):
+    * Checks pause flag bit 1 on `$FF17B8`.
+    * Calculates main tick target: `script_ptr + read_be16(script_ptr)`.
+    * Calculates subtick target: `(script_ptr + 2) + read_be16(script_ptr + 2)`.
+  - Dialogue caller entity animation hook (`0x00C88C`):
+    * Gated on non-null `$FF1882`, sets `$FF193C = 0x00C8A8`, and runs animation callback.
+  - Raw 64KB RAM window integration helpers at `$FF0E40`, `$FF0E2C..$FF0E3C`, `$FF0E1C..$FF0E2C`, `$FF0DB3..$FF0DB6`, `$FF16EC`, `$FF17B8`, `$FF1882`, `$FF193C`.
+  - Cleanroom `thor::script` namespace aliases.
+- Qualified `oasis_m16_180_map_scene_dispatcher` and the 161-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.179 ROM Dialogue Entity Sprite Compositor, Prompt Arrow Indicator & Frame Sync Engine (`0x00C756..0x00C88C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
