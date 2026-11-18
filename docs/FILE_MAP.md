@@ -1,3 +1,9 @@
+# M15.463 ROM Cutscene & Event Script Virtual Machine Core, 98-Opcode Dispatcher & Camera Pan Engine
+- `tools/extract_rom_script_vm_core.py` — extractor for `0x00F788..0x00F920` (Cutscene script bytecode virtual machine tick loop, 98-entry opcode jump table at $F7D0, 4-way camera pan engine, and Opcode 0 frame yield).
+- `tests/rom_script_vm_core_test.py` — `4` unit tests verifying pause and delay flags, camera pan directional movements and completion locks, and bytecode interpretation frame yielding.
+- `data/thor-evidence/rom_script_vm_core_m15_463.json` — extracted M15.463 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_463_SCRIPT_VM_CORE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.462 ROM Drop Item Slot Allocation Eviction Probe, Ground Shadow Spawner & Ali Kill Counter Engine
 - `tools/extract_rom_drop_probe_shadow.py` — extractor for `0x00F64C..0x00F788` (8-slot drop item allocation probe at $FF2ABC, 2-pass distance/protection eviction, ground shadow particle entity spawner Type $6A, and Ali kill counter credit at $FF1A7C).
 - `tests/rom_drop_probe_shadow_test.py` — `4` unit tests verifying ROM constants, 2-pass eviction probe and fallback panic trap, ground shadow spawner state cloning, and Ali kill credit with saturating clamp.

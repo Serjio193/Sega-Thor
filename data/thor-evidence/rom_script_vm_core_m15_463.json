@@ -1,0 +1,1062 @@
+{
+  "milestone": "M15.463",
+  "title": "ROM Cutscene & Event Script Virtual Machine Core, 98-Opcode Dispatcher & Camera Pan Engine",
+  "range": {
+    "start": "0x00F788",
+    "end": "0x00F920",
+    "size_bytes": 408
+  },
+  "bytecode_table": {
+    "base_address": "0x00F7D0",
+    "opcode_count": 98,
+    "entries": [
+      {
+        "opcode": "0x00",
+        "table_addr": "0x00F7D0",
+        "rel_offset": 332,
+        "target_addr": "0x00F91C"
+      },
+      {
+        "opcode": "0x01",
+        "table_addr": "0x00F7D2",
+        "rel_offset": 1276,
+        "target_addr": "0x00FCCE"
+      },
+      {
+        "opcode": "0x02",
+        "table_addr": "0x00F7D4",
+        "rel_offset": 332,
+        "target_addr": "0x00F920"
+      },
+      {
+        "opcode": "0x03",
+        "table_addr": "0x00F7D6",
+        "rel_offset": 364,
+        "target_addr": "0x00F942"
+      },
+      {
+        "opcode": "0x04",
+        "table_addr": "0x00F7D8",
+        "rel_offset": 402,
+        "target_addr": "0x00F96A"
+      },
+      {
+        "opcode": "0x05",
+        "table_addr": "0x00F7DA",
+        "rel_offset": 722,
+        "target_addr": "0x00FAAC"
+      },
+      {
+        "opcode": "0x06",
+        "table_addr": "0x00F7DC",
+        "rel_offset": 1168,
+        "target_addr": "0x00FC6C"
+      },
+      {
+        "opcode": "0x07",
+        "table_addr": "0x00F7DE",
+        "rel_offset": 1206,
+        "target_addr": "0x00FC94"
+      },
+      {
+        "opcode": "0x08",
+        "table_addr": "0x00F7E0",
+        "rel_offset": 1222,
+        "target_addr": "0x00FCA6"
+      },
+      {
+        "opcode": "0x09",
+        "table_addr": "0x00F7E2",
+        "rel_offset": 2130,
+        "target_addr": "0x010034"
+      },
+      {
+        "opcode": "0x0A",
+        "table_addr": "0x00F7E4",
+        "rel_offset": 1236,
+        "target_addr": "0x00FCB8"
+      },
+      {
+        "opcode": "0x0B",
+        "table_addr": "0x00F7E6",
+        "rel_offset": 1246,
+        "target_addr": "0x00FCC4"
+      },
+      {
+        "opcode": "0x0C",
+        "table_addr": "0x00F7E8",
+        "rel_offset": 2206,
+        "target_addr": "0x010086"
+      },
+      {
+        "opcode": "0x0D",
+        "table_addr": "0x00F7EA",
+        "rel_offset": 2240,
+        "target_addr": "0x0100AA"
+      },
+      {
+        "opcode": "0x0E",
+        "table_addr": "0x00F7EC",
+        "rel_offset": 1440,
+        "target_addr": "0x00FD8C"
+      },
+      {
+        "opcode": "0x0F",
+        "table_addr": "0x00F7EE",
+        "rel_offset": 2386,
+        "target_addr": "0x010140"
+      },
+      {
+        "opcode": "0x10",
+        "table_addr": "0x00F7F0",
+        "rel_offset": 2432,
+        "target_addr": "0x010170"
+      },
+      {
+        "opcode": "0x11",
+        "table_addr": "0x00F7F2",
+        "rel_offset": 2478,
+        "target_addr": "0x0101A0"
+      },
+      {
+        "opcode": "0x12",
+        "table_addr": "0x00F7F4",
+        "rel_offset": 702,
+        "target_addr": "0x00FAB2"
+      },
+      {
+        "opcode": "0x13",
+        "table_addr": "0x00F7F6",
+        "rel_offset": 2522,
+        "target_addr": "0x0101D0"
+      },
+      {
+        "opcode": "0x14",
+        "table_addr": "0x00F7F8",
+        "rel_offset": 2540,
+        "target_addr": "0x0101E4"
+      },
+      {
+        "opcode": "0x15",
+        "table_addr": "0x00F7FA",
+        "rel_offset": 1764,
+        "target_addr": "0x00FEDE"
+      },
+      {
+        "opcode": "0x16",
+        "table_addr": "0x00F7FC",
+        "rel_offset": 1822,
+        "target_addr": "0x00FF1A"
+      },
+      {
+        "opcode": "0x17",
+        "table_addr": "0x00F7FE",
+        "rel_offset": 1548,
+        "target_addr": "0x00FE0A"
+      },
+      {
+        "opcode": "0x18",
+        "table_addr": "0x00F800",
+        "rel_offset": 1944,
+        "target_addr": "0x00FF98"
+      },
+      {
+        "opcode": "0x19",
+        "table_addr": "0x00F802",
+        "rel_offset": 2012,
+        "target_addr": "0x00FFDE"
+      },
+      {
+        "opcode": "0x1A",
+        "table_addr": "0x00F804",
+        "rel_offset": 2258,
+        "target_addr": "0x0100D6"
+      },
+      {
+        "opcode": "0x1B",
+        "table_addr": "0x00F806",
+        "rel_offset": 2270,
+        "target_addr": "0x0100E4"
+      },
+      {
+        "opcode": "0x1C",
+        "table_addr": "0x00F808",
+        "rel_offset": 2278,
+        "target_addr": "0x0100EE"
+      },
+      {
+        "opcode": "0x1D",
+        "table_addr": "0x00F80A",
+        "rel_offset": 2286,
+        "target_addr": "0x0100F8"
+      },
+      {
+        "opcode": "0x1E",
+        "table_addr": "0x00F80C",
+        "rel_offset": 72,
+        "target_addr": "0x00F854"
+      },
+      {
+        "opcode": "0x1F",
+        "table_addr": "0x00F80E",
+        "rel_offset": 18663,
+        "target_addr": "0x0140F5"
+      },
+      {
+        "opcode": "0x20",
+        "table_addr": "0x00F810",
+        "rel_offset": -2,
+        "target_addr": "0x00F80E"
+      },
+      {
+        "opcode": "0x21",
+        "table_addr": "0x00F812",
+        "rel_offset": 8313,
+        "target_addr": "0x01188B"
+      },
+      {
+        "opcode": "0x22",
+        "table_addr": "0x00F814",
+        "rel_offset": 255,
+        "target_addr": "0x00F913"
+      },
+      {
+        "opcode": "0x23",
+        "table_addr": "0x00F816",
+        "rel_offset": 6066,
+        "target_addr": "0x010FC8"
+      },
+      {
+        "opcode": "0x24",
+        "table_addr": "0x00F818",
+        "rel_offset": 16961,
+        "target_addr": "0x013A59"
+      },
+      {
+        "opcode": "0x25",
+        "table_addr": "0x00F81A",
+        "rel_offset": 4624,
+        "target_addr": "0x010A2A"
+      },
+      {
+        "opcode": "0x26",
+        "table_addr": "0x00F81C",
+        "rel_offset": 3073,
+        "target_addr": "0x01041D"
+      },
+      {
+        "opcode": "0x27",
+        "table_addr": "0x00F81E",
+        "rel_offset": 10,
+        "target_addr": "0x00F828"
+      },
+      {
+        "opcode": "0x28",
+        "table_addr": "0x00F820",
+        "rel_offset": 26368,
+        "target_addr": "0x015F20"
+      },
+      {
+        "opcode": "0x29",
+        "table_addr": "0x00F822",
+        "rel_offset": 26,
+        "target_addr": "0x00F83C"
+      },
+      {
+        "opcode": "0x2A",
+        "table_addr": "0x00F824",
+        "rel_offset": 3073,
+        "target_addr": "0x010425"
+      },
+      {
+        "opcode": "0x2B",
+        "table_addr": "0x00F826",
+        "rel_offset": 18,
+        "target_addr": "0x00F838"
+      },
+      {
+        "opcode": "0x2C",
+        "table_addr": "0x00F828",
+        "rel_offset": 26368,
+        "target_addr": "0x015F28"
+      },
+      {
+        "opcode": "0x2D",
+        "table_addr": "0x00F82A",
+        "rel_offset": 18,
+        "target_addr": "0x00F83C"
+      },
+      {
+        "opcode": "0x2E",
+        "table_addr": "0x00F82C",
+        "rel_offset": 3073,
+        "target_addr": "0x01042D"
+      },
+      {
+        "opcode": "0x2F",
+        "table_addr": "0x00F82E",
+        "rel_offset": 19,
+        "target_addr": "0x00F841"
+      },
+      {
+        "opcode": "0x30",
+        "table_addr": "0x00F830",
+        "rel_offset": 26368,
+        "target_addr": "0x015F30"
+      },
+      {
+        "opcode": "0x31",
+        "table_addr": "0x00F832",
+        "rel_offset": 10,
+        "target_addr": "0x00F83C"
+      },
+      {
+        "opcode": "0x32",
+        "table_addr": "0x00F834",
+        "rel_offset": 3073,
+        "target_addr": "0x010435"
+      },
+      {
+        "opcode": "0x33",
+        "table_addr": "0x00F836",
+        "rel_offset": 20,
+        "target_addr": "0x00F84A"
+      },
+      {
+        "opcode": "0x34",
+        "table_addr": "0x00F838",
+        "rel_offset": 26112,
+        "target_addr": "0x015E38"
+      },
+      {
+        "opcode": "0x35",
+        "table_addr": "0x00F83A",
+        "rel_offset": 20,
+        "target_addr": "0x00F84E"
+      },
+      {
+        "opcode": "0x36",
+        "table_addr": "0x00F83C",
+        "rel_offset": -11711,
+        "target_addr": "0x00CA7D"
+      },
+      {
+        "opcode": "0x37",
+        "table_addr": "0x00F83E",
+        "rel_offset": 17403,
+        "target_addr": "0x013C39"
+      },
+      {
+        "opcode": "0x38",
+        "table_addr": "0x00F840",
+        "rel_offset": 4240,
+        "target_addr": "0x0108D0"
+      },
+      {
+        "opcode": "0x39",
+        "table_addr": "0x00F842",
+        "rel_offset": -11567,
+        "target_addr": "0x00CB13"
+      },
+      {
+        "opcode": "0x3A",
+        "table_addr": "0x00F844",
+        "rel_offset": 20113,
+        "target_addr": "0x0146D5"
+      },
+      {
+        "opcode": "0x3B",
+        "table_addr": "0x00F846",
+        "rel_offset": 9160,
+        "target_addr": "0x011C0E"
+      },
+      {
+        "opcode": "0x3C",
+        "table_addr": "0x00F848",
+        "rel_offset": 255,
+        "target_addr": "0x00F947"
+      },
+      {
+        "opcode": "0x3D",
+        "table_addr": "0x00F84A",
+        "rel_offset": 6066,
+        "target_addr": "0x010FFC"
+      },
+      {
+        "opcode": "0x3E",
+        "table_addr": "0x00F84C",
+        "rel_offset": 24778,
+        "target_addr": "0x015916"
+      },
+      {
+        "opcode": "0x3F",
+        "table_addr": "0x00F84E",
+        "rel_offset": 19679,
+        "target_addr": "0x01452D"
+      },
+      {
+        "opcode": "0x40",
+        "table_addr": "0x00F850",
+        "rel_offset": 32767,
+        "target_addr": "0x01784F"
+      },
+      {
+        "opcode": "0x41",
+        "table_addr": "0x00F852",
+        "rel_offset": 20085,
+        "target_addr": "0x0146C7"
+      },
+      {
+        "opcode": "0x42",
+        "table_addr": "0x00F854",
+        "rel_offset": 21128,
+        "target_addr": "0x014ADC"
+      },
+      {
+        "opcode": "0x43",
+        "table_addr": "0x00F856",
+        "rel_offset": 5080,
+        "target_addr": "0x010C2E"
+      },
+      {
+        "opcode": "0x44",
+        "table_addr": "0x00F858",
+        "rel_offset": 255,
+        "target_addr": "0x00F957"
+      },
+      {
+        "opcode": "0x45",
+        "table_addr": "0x00F85A",
+        "rel_offset": 6077,
+        "target_addr": "0x011017"
+      },
+      {
+        "opcode": "0x46",
+        "table_addr": "0x00F85C",
+        "rel_offset": 13272,
+        "target_addr": "0x012C34"
+      },
+      {
+        "opcode": "0x47",
+        "table_addr": "0x00F85E",
+        "rel_offset": 255,
+        "target_addr": "0x00F95D"
+      },
+      {
+        "opcode": "0x48",
+        "table_addr": "0x00F860",
+        "rel_offset": 6202,
+        "target_addr": "0x01109A"
+      },
+      {
+        "opcode": "0x49",
+        "table_addr": "0x00F862",
+        "rel_offset": 13272,
+        "target_addr": "0x012C3A"
+      },
+      {
+        "opcode": "0x4A",
+        "table_addr": "0x00F864",
+        "rel_offset": 255,
+        "target_addr": "0x00F963"
+      },
+      {
+        "opcode": "0x4B",
+        "table_addr": "0x00F866",
+        "rel_offset": 6204,
+        "target_addr": "0x0110A2"
+      },
+      {
+        "opcode": "0x4C",
+        "table_addr": "0x00F868",
+        "rel_offset": 9160,
+        "target_addr": "0x011C30"
+      },
+      {
+        "opcode": "0x4D",
+        "table_addr": "0x00F86A",
+        "rel_offset": 255,
+        "target_addr": "0x00F969"
+      },
+      {
+        "opcode": "0x4E",
+        "table_addr": "0x00F86C",
+        "rel_offset": 6066,
+        "target_addr": "0x01101E"
+      },
+      {
+        "opcode": "0x4F",
+        "table_addr": "0x00F86E",
+        "rel_offset": 20729,
+        "target_addr": "0x014967"
+      },
+      {
+        "opcode": "0x50",
+        "table_addr": "0x00F870",
+        "rel_offset": 255,
+        "target_addr": "0x00F96F"
+      },
+      {
+        "opcode": "0x51",
+        "table_addr": "0x00F872",
+        "rel_offset": 6530,
+        "target_addr": "0x0111F4"
+      },
+      {
+        "opcode": "0x52",
+        "table_addr": "0x00F874",
+        "rel_offset": 13308,
+        "target_addr": "0x012C70"
+      },
+      {
+        "opcode": "0x53",
+        "table_addr": "0x00F876",
+        "rel_offset": 2,
+        "target_addr": "0x00F878"
+      },
+      {
+        "opcode": "0x54",
+        "table_addr": "0x00F878",
+        "rel_offset": 255,
+        "target_addr": "0x00F977"
+      },
+      {
+        "opcode": "0x55",
+        "table_addr": "0x00F87A",
+        "rel_offset": 6636,
+        "target_addr": "0x011266"
+      },
+      {
+        "opcode": "0x56",
+        "table_addr": "0x00F87C",
+        "rel_offset": 13308,
+        "target_addr": "0x012C78"
+      },
+      {
+        "opcode": "0x57",
+        "table_addr": "0x00F87E",
+        "rel_offset": 2,
+        "target_addr": "0x00F880"
+      },
+      {
+        "opcode": "0x58",
+        "table_addr": "0x00F880",
+        "rel_offset": 255,
+        "target_addr": "0x00F97F"
+      },
+      {
+        "opcode": "0x59",
+        "table_addr": "0x00F882",
+        "rel_offset": 6674,
+        "target_addr": "0x011294"
+      },
+      {
+        "opcode": "0x5A",
+        "table_addr": "0x00F884",
+        "rel_offset": 12345,
+        "target_addr": "0x0128BD"
+      },
+      {
+        "opcode": "0x5B",
+        "table_addr": "0x00F886",
+        "rel_offset": 255,
+        "target_addr": "0x00F985"
+      },
+      {
+        "opcode": "0x5C",
+        "table_addr": "0x00F888",
+        "rel_offset": 6202,
+        "target_addr": "0x0110C2"
+      },
+      {
+        "opcode": "0x5D",
+        "table_addr": "0x00F88A",
+        "rel_offset": 13248,
+        "target_addr": "0x012C4A"
+      },
+      {
+        "opcode": "0x5E",
+        "table_addr": "0x00F88C",
+        "rel_offset": 255,
+        "target_addr": "0x00F98B"
+      },
+      {
+        "opcode": "0x5F",
+        "table_addr": "0x00F88E",
+        "rel_offset": 6654,
+        "target_addr": "0x01128C"
+      },
+      {
+        "opcode": "0x60",
+        "table_addr": "0x00F890",
+        "rel_offset": 22671,
+        "target_addr": "0x01511F"
+      },
+      {
+        "opcode": "0x61",
+        "table_addr": "0x00F892",
+        "rel_offset": 20085,
+        "target_addr": "0x014707"
+      }
+    ]
+  },
+  "camera_pan_table": {
+    "base_address": "0x00F8C8",
+    "mode_count": 4,
+    "entries": [
+      {
+        "mode": 0,
+        "name": "PanUp",
+        "table_addr": "0x00F8C8",
+        "rel_offset": 8,
+        "target_addr": "0x00F8D0"
+      },
+      {
+        "mode": 1,
+        "name": "PanRight",
+        "table_addr": "0x00F8CA",
+        "rel_offset": 26,
+        "target_addr": "0x00F8E4"
+      },
+      {
+        "mode": 2,
+        "name": "PanDown",
+        "table_addr": "0x00F8CC",
+        "rel_offset": 42,
+        "target_addr": "0x00F8F6"
+      },
+      {
+        "mode": 3,
+        "name": "PanLeft",
+        "table_addr": "0x00F8CE",
+        "rel_offset": 58,
+        "target_addr": "0x00F908"
+      }
+    ]
+  },
+  "subroutines": [
+    {
+      "name": "ScriptEngine_MainTickAndDispatchLoop",
+      "start": "0x00F788",
+      "end": "0x00F7D0",
+      "size_bytes": 72,
+      "description": "Checks script disabled flag bit 1 of $FF17B8 (exits if set). Checks delay timer $FF17B6 (decrements and exits if > 0). If camera pan timer $FF17BD != 0, delegates to pan runner at $F894. Otherwise loads script PC a0 from $FF17B2 and enters bytecode interpretation loop: reads opcode byte *(a0)++, indexes 98-entry jump table at $F7D0, calls handler via jsr (a1), writes updated PC to $FF17B2, and repeats until an opcode handler exits."
+    },
+    {
+      "name": "ScriptEngine_CameraPanModeRunner",
+      "start": "0x00F894",
+      "end": "0x00F8C8",
+      "size_bytes": 52,
+      "description": "Reads camera pan direction mode from $FF183A, indexes 4-entry mode table at $F8C8, and calls directional displacement updater. Decrements pan timer $FF17BD; upon reaching 0, clears camera lock flag $FF1982, and clears player movement suppression flags $FF19EC and $FF1A12."
+    },
+    {
+      "name": "ScriptEngine_DirectionalCameraPanHandlers",
+      "start": "0x00F8D0",
+      "end": "0x00F91C",
+      "size_bytes": 76,
+      "description": "Applies subpixel velocity from $FF183C to camera coordinates: Mode 0 (Up): camera Y ($FF1A5E) -= speed << 16. Mode 1 (Right): camera X ($FF1A5A) += speed << 16. Mode 2 (Down): camera Y ($FF1A5E) += speed << 16. Mode 3 (Left): camera X ($FF1A5A) -= speed << 16."
+    },
+    {
+      "name": "ScriptEngine_Opcode00_FrameYieldExit",
+      "start": "0x00F91C",
+      "end": "0x00F920",
+      "size_bytes": 4,
+      "description": "Opcode 0x00 implementation: executes addq.l #4, sp; rts, cleanly exiting interpreter loop."
+    }
+  ],
+  "disassembly": {
+    "main_loop": [
+      {
+        "address": "0x00F788",
+        "mnemonic": "btst.b",
+        "op_str": "#$1, $ff17b8.l",
+        "bytes": "0839000100ff17b8",
+        "size": 8
+      },
+      {
+        "address": "0x00F790",
+        "mnemonic": "beq.w",
+        "op_str": "$f796",
+        "bytes": "67000004",
+        "size": 4
+      },
+      {
+        "address": "0x00F794",
+        "mnemonic": "rts",
+        "op_str": "",
+        "bytes": "4e75",
+        "size": 2
+      },
+      {
+        "address": "0x00F796",
+        "mnemonic": "move.b",
+        "op_str": "$ff17b6.l, d1",
+        "bytes": "123900ff17b6",
+        "size": 6
+      },
+      {
+        "address": "0x00F79C",
+        "mnemonic": "beq.w",
+        "op_str": "$f7aa",
+        "bytes": "6700000c",
+        "size": 4
+      },
+      {
+        "address": "0x00F7A0",
+        "mnemonic": "subq.b",
+        "op_str": "#$1, d1",
+        "bytes": "5301",
+        "size": 2
+      },
+      {
+        "address": "0x00F7A2",
+        "mnemonic": "move.b",
+        "op_str": "d1, $ff17b6.l",
+        "bytes": "13c100ff17b6",
+        "size": 6
+      },
+      {
+        "address": "0x00F7A8",
+        "mnemonic": "rts",
+        "op_str": "",
+        "bytes": "4e75",
+        "size": 2
+      },
+      {
+        "address": "0x00F7AA",
+        "mnemonic": "move.b",
+        "op_str": "$ff17bd.l, d1",
+        "bytes": "123900ff17bd",
+        "size": 6
+      },
+      {
+        "address": "0x00F7B0",
+        "mnemonic": "bne.w",
+        "op_str": "$f894",
+        "bytes": "660000e2",
+        "size": 4
+      },
+      {
+        "address": "0x00F7B4",
+        "mnemonic": "movea.l",
+        "op_str": "$ff17b2.l, a0",
+        "bytes": "207900ff17b2",
+        "size": 6
+      },
+      {
+        "address": "0x00F7BA",
+        "mnemonic": "clr.w",
+        "op_str": "d1",
+        "bytes": "4241",
+        "size": 2
+      },
+      {
+        "address": "0x00F7BC",
+        "mnemonic": "move.b",
+        "op_str": "(a0), d1",
+        "bytes": "1210",
+        "size": 2
+      },
+      {
+        "address": "0x00F7BE",
+        "mnemonic": "add.w",
+        "op_str": "d1, d1",
+        "bytes": "d241",
+        "size": 2
+      },
+      {
+        "address": "0x00F7C0",
+        "mnemonic": "lea.l",
+        "op_str": "$f7d0(pc, d1.w), a1",
+        "bytes": "43fb100e",
+        "size": 4
+      },
+      {
+        "address": "0x00F7C4",
+        "mnemonic": "adda.w",
+        "op_str": "(a1), a1",
+        "bytes": "d2d1",
+        "size": 2
+      },
+      {
+        "address": "0x00F7C6",
+        "mnemonic": "jsr",
+        "op_str": "(a1)",
+        "bytes": "4e91",
+        "size": 2
+      },
+      {
+        "address": "0x00F7C8",
+        "mnemonic": "move.l",
+        "op_str": "a0, $ff17b2.l",
+        "bytes": "23c800ff17b2",
+        "size": 6
+      },
+      {
+        "address": "0x00F7CE",
+        "mnemonic": "bra.b",
+        "op_str": "$f7ba",
+        "bytes": "60ea",
+        "size": 2
+      }
+    ],
+    "pan_runner": [
+      {
+        "address": "0x00F894",
+        "mnemonic": "move.w",
+        "op_str": "$ff183a.l, d0",
+        "bytes": "303900ff183a",
+        "size": 6
+      },
+      {
+        "address": "0x00F89A",
+        "mnemonic": "add.w",
+        "op_str": "d0, d0",
+        "bytes": "d040",
+        "size": 2
+      },
+      {
+        "address": "0x00F89C",
+        "mnemonic": "lea.l",
+        "op_str": "$f8c8(pc, d0.w), a0",
+        "bytes": "41fb002a",
+        "size": 4
+      },
+      {
+        "address": "0x00F8A0",
+        "mnemonic": "adda.w",
+        "op_str": "(a0), a0",
+        "bytes": "d0d0",
+        "size": 2
+      },
+      {
+        "address": "0x00F8A2",
+        "mnemonic": "jsr",
+        "op_str": "(a0)",
+        "bytes": "4e90",
+        "size": 2
+      },
+      {
+        "address": "0x00F8A4",
+        "mnemonic": "subq.b",
+        "op_str": "#$1, d1",
+        "bytes": "5301",
+        "size": 2
+      },
+      {
+        "address": "0x00F8A6",
+        "mnemonic": "move.b",
+        "op_str": "d1, $ff17bd.l",
+        "bytes": "13c100ff17bd",
+        "size": 6
+      },
+      {
+        "address": "0x00F8AC",
+        "mnemonic": "bne.w",
+        "op_str": "$f8c6",
+        "bytes": "66000018",
+        "size": 4
+      },
+      {
+        "address": "0x00F8B0",
+        "mnemonic": "sf.b",
+        "op_str": "$ff1982.l",
+        "bytes": "51f900ff1982",
+        "size": 6
+      },
+      {
+        "address": "0x00F8B6",
+        "mnemonic": "move.w",
+        "op_str": "#$0, $ff19ec.l",
+        "bytes": "33fc000000ff19ec",
+        "size": 8
+      },
+      {
+        "address": "0x00F8BE",
+        "mnemonic": "move.w",
+        "op_str": "#$0, $ff1a12.l",
+        "bytes": "33fc000000ff1a12",
+        "size": 8
+      },
+      {
+        "address": "0x00F8C6",
+        "mnemonic": "rts",
+        "op_str": "",
+        "bytes": "4e75",
+        "size": 2
+      }
+    ],
+    "pan_directions": [
+      {
+        "address": "0x00F8D0",
+        "mnemonic": "move.w",
+        "op_str": "$ff183c.l, d0",
+        "bytes": "303900ff183c",
+        "size": 6
+      },
+      {
+        "address": "0x00F8D6",
+        "mnemonic": "neg.w",
+        "op_str": "d0",
+        "bytes": "4440",
+        "size": 2
+      },
+      {
+        "address": "0x00F8D8",
+        "mnemonic": "swap",
+        "op_str": "d0",
+        "bytes": "4840",
+        "size": 2
+      },
+      {
+        "address": "0x00F8DA",
+        "mnemonic": "clr.w",
+        "op_str": "d0",
+        "bytes": "4240",
+        "size": 2
+      },
+      {
+        "address": "0x00F8DC",
+        "mnemonic": "add.l",
+        "op_str": "d0, $ff1a5e.l",
+        "bytes": "d1b900ff1a5e",
+        "size": 6
+      },
+      {
+        "address": "0x00F8E2",
+        "mnemonic": "rts",
+        "op_str": "",
+        "bytes": "4e75",
+        "size": 2
+      },
+      {
+        "address": "0x00F8E4",
+        "mnemonic": "move.w",
+        "op_str": "$ff183c.l, d0",
+        "bytes": "303900ff183c",
+        "size": 6
+      },
+      {
+        "address": "0x00F8EA",
+        "mnemonic": "swap",
+        "op_str": "d0",
+        "bytes": "4840",
+        "size": 2
+      },
+      {
+        "address": "0x00F8EC",
+        "mnemonic": "clr.w",
+        "op_str": "d0",
+        "bytes": "4240",
+        "size": 2
+      },
+      {
+        "address": "0x00F8EE",
+        "mnemonic": "add.l",
+        "op_str": "d0, $ff1a5a.l",
+        "bytes": "d1b900ff1a5a",
+        "size": 6
+      },
+      {
+        "address": "0x00F8F4",
+        "mnemonic": "rts",
+        "op_str": "",
+        "bytes": "4e75",
+        "size": 2
+      },
+      {
+        "address": "0x00F8F6",
+        "mnemonic": "move.w",
+        "op_str": "$ff183c.l, d0",
+        "bytes": "303900ff183c",
+        "size": 6
+      },
+      {
+        "address": "0x00F8FC",
+        "mnemonic": "swap",
+        "op_str": "d0",
+        "bytes": "4840",
+        "size": 2
+      },
+      {
+        "address": "0x00F8FE",
+        "mnemonic": "clr.w",
+        "op_str": "d0",
+        "bytes": "4240",
+        "size": 2
+      },
+      {
+        "address": "0x00F900",
+        "mnemonic": "add.l",
+        "op_str": "d0, $ff1a5e.l",
+        "bytes": "d1b900ff1a5e",
+        "size": 6
+      },
+      {
+        "address": "0x00F906",
+        "mnemonic": "rts",
+        "op_str": "",
+        "bytes": "4e75",
+        "size": 2
+      },
+      {
+        "address": "0x00F908",
+        "mnemonic": "move.w",
+        "op_str": "$ff183c.l, d0",
+        "bytes": "303900ff183c",
+        "size": 6
+      },
+      {
+        "address": "0x00F90E",
+        "mnemonic": "neg.w",
+        "op_str": "d0",
+        "bytes": "4440",
+        "size": 2
+      },
+      {
+        "address": "0x00F910",
+        "mnemonic": "swap",
+        "op_str": "d0",
+        "bytes": "4840",
+        "size": 2
+      },
+      {
+        "address": "0x00F912",
+        "mnemonic": "clr.w",
+        "op_str": "d0",
+        "bytes": "4240",
+        "size": 2
+      },
+      {
+        "address": "0x00F914",
+        "mnemonic": "add.l",
+        "op_str": "d0, $ff1a5a.l",
+        "bytes": "d1b900ff1a5a",
+        "size": 6
+      },
+      {
+        "address": "0x00F91A",
+        "mnemonic": "rts",
+        "op_str": "",
+        "bytes": "4e75",
+        "size": 2
+      }
+    ],
+    "frame_exit": [
+      {
+        "address": "0x00F91C",
+        "mnemonic": "addq.l",
+        "op_str": "#$4, a7",
+        "bytes": "588f",
+        "size": 2
+      },
+      {
+        "address": "0x00F91E",
+        "mnemonic": "rts",
+        "op_str": "",
+        "bytes": "4e75",
+        "size": 2
+      }
+    ]
+  }
+}

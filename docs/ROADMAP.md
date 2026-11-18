@@ -1,3 +1,6 @@
+# M15.463 ROM Cutscene & Event Script Virtual Machine Core, 98-Opcode Dispatcher & Camera Pan Engine (`0x00F788`..`0x00F920`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_script_vm_core.py`, `tests/rom_script_vm_core_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_core_m15_463.json`, and `docs/handoffs/STANDALONE_M15_463_SCRIPT_VM_CORE_HANDOFF.md`.
+
 # M15.462 ROM Drop Item Slot Allocation Eviction Probe, Ground Shadow Spawner & Ali Kill Counter Engine (`0x00F64C`..`0x00F788`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_drop_probe_shadow.py`, `tests/rom_drop_probe_shadow_test.py` (`4/4 PASS`), `data/thor-evidence/rom_drop_probe_shadow_m15_462.json`, and `docs/handoffs/STANDALONE_M15_462_DROP_PROBE_SHADOW_HANDOFF.md`.
 
