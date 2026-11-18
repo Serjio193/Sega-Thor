@@ -1,3 +1,9 @@
+# M15.449 ROM Player Ali Targeting, Normalized Aim Vector & Environmental Velocity Engine
+- `tools/extract_rom_player_targeting.py` — extractor for `0x00E398..0x00E502` (Player Ali quadrant targeting, Manhattan distance calculation, motion table loading with minimum 16px distance clamp, `divs.w` fixed-point aim vector normalization, and projectile launch physics).
+- `tests/rom_player_targeting_test.py` — `5` unit tests verifying ROM constants, quadrant direction resolution, motion table loading and distance clamping, `divs.w` fixed-point aim normalization, and projectile launch suppression / speed parameters.
+- `data/thor-evidence/rom_player_targeting_m15_449.json` — extracted M15.449 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_449_PLAYER_TARGETING_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.448 ROM Core PRNG Subsystem, 8-Way Directional Velocity Projector & Cardinal Angle Resolver
 - `tools/extract_rom_prng_vector_engine.py` — extractor for `0x00E25C..0x00E398` (entity lifecycle timer countdown, 16-bit LFSR PRNG step, word/byte integer range scaling, 8-way directional projection with 0.75x isometric diagonals, 4-way cardinal angle resolution, and water surface terrain probe).
 - `tests/rom_prng_vector_engine_test.py` — `5` unit tests verifying ROM constants, entity timer countdown, LFSR PRNG Galois shifts and range scaling, 8-way projection diagonals, and 4-way cardinal angle quadrant resolution.
