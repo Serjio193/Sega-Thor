@@ -1,3 +1,32 @@
+# ADR-20261118-M16-174-DECIMAL-FORMATTER — ROM Fixed-Width & Space-Padded Decimal String Formatters (0x00C0BE..0x00C17A)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.425 extracted ROM routines `0x00C0BE..0x00C17A` (188 bytes) governing fixed-width zero-padded and space-padded 16-bit decimal string formatting for HUD, menus, and save files:
+   - 2 ingress entry points:
+     * `0x00C0BE` (`format_dec_fixed5`): formats 16-bit unsigned value `d0` into 5 zero-padded ASCII characters `'0'..'9'` at `$FF192A..$FF192E` (e.g. `42` -> `"00042"`).
+     * `0x00C114` (`format_dec_spaces`): formats 16-bit unsigned value `d0` into 5 space-padded ASCII characters `' '` / `'0'..'9'` at `$FF192A..$FF192E` (e.g. `42` -> `"   42"`, `0` -> `"    0"`).
+   - Division sequence & register preservation:
+     * Saves `d0` on stack via `movem.l d0, -(sp)` and restores on exit via `movem.l (sp)+, d0`.
+     * Zero-extends `d0.w` with `andi.l #$FFFF, d0`.
+     * Successive division by 10000, 1000, 100, 10 via `divu.w`.
+     * Remainder swapped from high word to low word for each stage.
+     * Units stage is unconditional from divide-by-10 remainder.
+     * Rewinds buffer pointer back to `$FF192A` via `lea -4(a0), a0`.
+   - Leading zero suppression logic (`0x00C114`):
+     * Tests quotient at each stage (`tst.b d0`).
+     * If zero: writes ASCII space `' '` (`0x20`), continues suppression loop.
+     * If non-zero: branches to digit output path in `format_dec_fixed5` (`0x00C0D2`, `0x00C0E0`, `0x00C0EE`, or `0x00C0FC`), ensuring all subsequent stages output decimal digits `'0'..'9'`.
+     * Units stage is unconditional: always outputs digit `d0.b + '0'`.
+   - Raw 64KB RAM window integration helpers at `$FF192A`.
+
+**Decisions:**
+1. **Dedicated `decimal_formatter` Module:**
+   - Added `src/game/hud/decimal_formatter.hpp/.cpp` and `include/game/hud/decimal_formatter.hpp` modeling `format_dec_fixed5`, `format_dec_spaces`, `DecimalFormatter` class, and raw memory window integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (154/154 M16 tests).
+
 # ADR-20261118-M16-173-HIT-SPARK-GENERATOR — ROM Combat Hit Spark Particle Generator & 3D Overlap Centerpoint Calculator (0x00C012..0x00C0BE)
 **Status:** Accepted
 **Date:** 2026-11-18

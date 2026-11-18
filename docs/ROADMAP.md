@@ -1,3 +1,24 @@
+# M16.174 ROM Fixed-Width & Space-Padded Decimal String Formatters (`0x00C0BE..0x00C17A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `format_dec_fixed5`, `format_dec_spaces`, `DecimalFormatter` class, and raw 64KB RAM window integration helpers in `src/game/hud/decimal_formatter.hpp/.cpp` and `include/game/hud/decimal_formatter.hpp`:
+  - 2 ingress entry points:
+    * `0x00C0BE` (`format_dec_fixed5`): formats 16-bit unsigned value `d0` into 5 zero-padded ASCII characters `'0'..'9'` at `$FF192A..$FF192E` (e.g. `42` -> `"00042"`).
+    * `0x00C114` (`format_dec_spaces`): formats 16-bit unsigned value `d0` into 5 space-padded ASCII characters `' '` / `'0'..'9'` at `$FF192A..$FF192E` (e.g. `42` -> `"   42"`, `0` -> `"    0"`).
+  - Division sequence & register preservation:
+    * Preserves register `d0` across call via `movem.l d0, -(sp)` / `movem.l (sp)+, d0`.
+    * Successive division by 10000, 1000, 100, 10 via `divu.w`.
+    * Remainder swapped from high word to low word for each subsequent stage.
+    * Units stage unconditionally formats remainder + `'0'`.
+    * Pointer rewind to string start `$FF192A` via `lea -4(a0), a0`.
+  - Leading space suppression logic (`0x00C114`):
+    * Tests quotient at each stage (`tst.b d0`).
+    * If zero: writes ASCII space `' '` (`0x20`), continues suppression loop.
+    * If non-zero: branches directly into digit output path of `format_dec_fixed5`, formatting all remaining digits as `'0'..'9'`.
+    * Units stage is unconditional: always formats as digit.
+  - Raw 64KB RAM window integration helpers at `$FF192A`.
+- Qualified `oasis_m16_174_decimal_formatter` and the 154-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.173 ROM Combat Hit Spark Particle Generator & 3D Overlap Centerpoint Calculator (`0x00C012..0x00C0BE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
