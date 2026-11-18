@@ -1,3 +1,14 @@
+# Reverse Engineering Notes — Milestone M15.483 (`0x0115C8`..`0x01171C`): Spirit Entity Orb Kinematics, Scale Table & Diamond Vertex Generator
+- **Original ROM Addresses:** `0x0115C8..0x01171C` (340 bytes, 100 instructions + 18-byte embedded scale table at `0x0116D2..0x0116E4`).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_spirit_orb_kinematics.py` and `data/thor-evidence/rom_spirit_orb_kinematics_m15_483.json`:
+  * `0x0115C8..0x0115D8`: State dispatch (`+$04(a6)`: 0 -> `0x01171C`, 1 -> `0x011646`, else State 2 at `0x0115D8`).
+  * `0x0115D8..0x011646`: `AI_SpiritOrb_State2_FrictionKinematics` — subtracts/adds `0x00018000` toward 0 on `+$4E(a6)` and `+$52(a6)`, integrates into `+$72(a6)` / `+$76(a6)`, increments `+$2(a6)`, despawns (`0x0119C8`) at `timer >= 7`, else samples `0x0116D2[timer - 1]` and calls `0x0116E4`.
+  * `0x011646..0x0116D2`: `AI_SpiritOrb_State1_OrbAnimationAndTargetSnap` — increments `+$2(a6)`, uses forward index `timer - 1` for `timer < 9`, reverse index `26 - timer` for `9 <= timer < 27`, and at `timer >= 27` checks `$FF19A6 == 3` to snap position/elevation to Ali (`$FF19E8`) with `+$10 = 0x20`, calls `0x014628`, and triggers SFX `0x80022F` via `0x00E7FC`.
+  * `0x0116D2..0x0116E4`: `SpiritOrbScaleTable` (`[3, 5, 7, 8, 9, 9, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11]`).
+  * `0x0116E4..0x01171C`: `AI_SpiritOrb_BuildDiamondVertexBuffer` — writes 4 `(tile, dx, dy)` vertices `(d0, d1, d1)`, `(d0, d1, -d1)`, `(d0, -d1, d1)`, `(d0, -d1, -d1)` with `d0 = (timer % 3) + 11` into `$FF19A9` (12 bytes), sets `$FF19A8 = 3`, `+$06(a6) = 0x16`, and `+$62(a6) = $FF19A8`.
+- **Assumptions:** `0x014628` (called at frame 27+ in State 1) is the spirit post-snap activation routine and remains outside this slice.
+- **Test Status:** Verified via `tests/rom_spirit_orb_kinematics_test.py` (`4/4 PASS`).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M15.260: Event Script Bytecode VM, 31 Opcode Handlers, Master Spawn Table 0x04371E, Dialogue Engine 0x051514 / 0x00C326, and Village Elder NPC 0x003C Semantics)
 
 ## Milestone M15.260 Reverse Engineering Summary

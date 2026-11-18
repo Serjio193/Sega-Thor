@@ -1,3 +1,9 @@
+# M15.483 ROM Spirit Entity Orb Kinematics, Trail Table & Diamond Vertex Generator
+- `tools/extract_rom_spirit_orb_kinematics.py` — extractor for `0x0115C8..0x01171C` (Spirit orb State 2 friction kinematics, State 1 forward/reverse animation, 18-byte scale table, and 12-byte 4-point diamond vertex generator).
+- `tests/rom_spirit_orb_kinematics_test.py` — `4` unit tests verifying evidence structure, friction deceleration, scale table indexing, and diamond vertex generation.
+- `data/thor-evidence/rom_spirit_orb_kinematics_m15_483.json` — extracted M15.483 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_483_SPIRIT_ORB_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.482 ROM Entity AI Environmental Explosion Waves, Screen Shake & Arrow Proximity AABB Interceptor
 - `tools/extract_rom_entity_ai_explosion_arrow.py` — extractor for `0x0114AE..0x0115C8` (Dual-plane centered environmental explosion spawner, entity ground pound shockwave spawner, screen shake formula, bow arrow proximity AABB interceptor, and projectile trig velocity dispatcher).
 - `tests/rom_entity_ai_explosion_arrow_test.py` — `4` unit tests verifying evidence structure, screen shake timing, environmental explosion base math, and bow arrow proximity AABB hitbox tests.

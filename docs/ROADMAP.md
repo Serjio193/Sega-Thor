@@ -1,3 +1,6 @@
+# M15.483 ROM Spirit Entity Orb Kinematics, Trail Table & Diamond Vertex Generator (`0x0115C8`..`0x01171C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_spirit_orb_kinematics.py`, `tests/rom_spirit_orb_kinematics_test.py` (`4/4 PASS`), `data/thor-evidence/rom_spirit_orb_kinematics_m15_483.json`, and `docs/handoffs/STANDALONE_M15_483_SPIRIT_ORB_HANDOFF.md`.
+
 # M15.482 ROM Entity AI Environmental Explosion Waves, Screen Shake & Arrow Proximity AABB Interceptor (`0x0114AE`..`0x0115C8`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_ai_explosion_arrow.py`, `tests/rom_entity_ai_explosion_arrow_test.py` (`4/4 PASS`), `data/thor-evidence/rom_entity_ai_explosion_arrow_m15_482.json`, and `docs/handoffs/STANDALONE_M15_482_EXPLOSION_ARROW_HANDOFF.md`.
 
