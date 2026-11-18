@@ -1,3 +1,9 @@
+# M15.467 ROM Script Virtual Machine Opcodes $0E & $17: Fixed Position & Dual Cross-Linked Compound Entity Spawners
+- `tools/extract_rom_script_vm_compound_spawn.py` — extractor for `0x00FD8C..0x00FEDE` (Script opcodes $0E fixed position entity spawner and $17 dual-compound cross-linked multi-part entity spawner Types $72/$70).
+- `tests/rom_script_vm_compound_spawn_test.py` — `3` unit tests verifying opcode $0E fixed position entity instantiation and opcode $17 dual-compound entity mutual cross-linking, shared HP, and dual AI activation.
+- `data/thor-evidence/rom_script_vm_compound_spawn_m15_467.json` — extracted M15.467 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_467_SCRIPT_COMPOUND_SPAWN_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.466 ROM Script Virtual Machine Opcodes $01, $06, $07, $08, $0A, $0B: Loop Engine, Frame Sleep & Dynamic Entity Spawner
 - `tools/extract_rom_script_vm_opcodes_loops_spawn.py` — extractor for `0x00FC6C..0x00FD8C` (Script opcodes $06 loop decrement branch, $07 loop counter setter, $08 frame sleep, $0A entity event, $0B scenario threshold, and $01 dynamic entity spawner with position table at $FD86).
 - `tests/rom_script_vm_opcodes_loops_spawn_test.py` — `4` unit tests verifying loop decrement and branch, frame sleep, entity event messaging, and script entity instantiation.
