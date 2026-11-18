@@ -1,3 +1,6 @@
+# M15.482 ROM Entity AI Environmental Explosion Waves, Screen Shake & Arrow Proximity AABB Interceptor (`0x0114AE`..`0x0115C8`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_ai_explosion_arrow.py`, `tests/rom_entity_ai_explosion_arrow_test.py` (`4/4 PASS`), `data/thor-evidence/rom_entity_ai_explosion_arrow_m15_482.json`, and `docs/handoffs/STANDALONE_M15_482_EXPLOSION_ARROW_HANDOFF.md`.
+
 # M15.481 ROM Entity AI Mass Confusion, Palette Transfer, Ali Range Tracker & Impact Knockback Dispatcher (`0x011276`..`0x0114AE`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_ai_knockback.py`, `tests/rom_entity_ai_knockback_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_ai_knockback_m15_481.json`, and `docs/handoffs/STANDALONE_M15_481_KNOCKBACK_HANDOFF.md`.
 

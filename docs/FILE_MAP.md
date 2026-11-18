@@ -1,3 +1,9 @@
+# M15.482 ROM Entity AI Environmental Explosion Waves, Screen Shake & Arrow Proximity AABB Interceptor
+- `tools/extract_rom_entity_ai_explosion_arrow.py` — extractor for `0x0114AE..0x0115C8` (Dual-plane centered environmental explosion spawner, entity ground pound shockwave spawner, screen shake formula, bow arrow proximity AABB interceptor, and projectile trig velocity dispatcher).
+- `tests/rom_entity_ai_explosion_arrow_test.py` — `4` unit tests verifying evidence structure, screen shake timing, environmental explosion base math, and bow arrow proximity AABB hitbox tests.
+- `data/thor-evidence/rom_entity_ai_explosion_arrow_m15_482.json` — extracted M15.482 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_482_EXPLOSION_ARROW_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.481 ROM Entity AI Mass Confusion, Palette Transfer, Ali Range Tracker & Impact Knockback Dispatcher
 - `tools/extract_rom_entity_ai_knockback.py` — extractor for `0x011276..0x0114AE` (Pool 2 mass enemy confusion broadcaster, entity type slot search, slot probe carry inverter, CRAM palette line DMA mirrors, Player Ali distance/dominant facing calculator, and target impact knockback dispatcher).
 - `tests/rom_entity_ai_knockback_test.py` — `5` unit tests verifying evidence structure, fear/confusion filtering, type search, Ali range/facing calculations, and normal/boosted knockback responses.
