@@ -1,3 +1,6 @@
+# M15.492 ROM Efreet 7-Particle Flame Breath Ring Engine, Enemy Ignite Handler & Composite Vertex Exporter (`0x012C4E`..`0x012F1E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_efreet_flame_breath.py`, `tests/rom_efreet_flame_breath_test.py` (`5/5 PASS`), `data/thor-evidence/rom_efreet_flame_breath_m15_492.json`, and `docs/handoffs/STANDALONE_M15_492_EFREET_FLAME_BREATH_HANDOFF.md`.
+
 # M15.491 ROM Efreet Idle/Wander/Follow AI, Vulnerability Scanner, Dismissal & Hover Bobbing Subsystem (`0x012988`..`0x012C4E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_efreet_follow_dismissal.py`, `tests/rom_efreet_follow_dismissal_test.py` (`5/5 PASS`), `data/thor-evidence/rom_efreet_follow_dismissal_m15_491.json`, and `docs/handoffs/STANDALONE_M15_491_EFREET_FOLLOW_DISMISSAL_HANDOFF.md`.
 

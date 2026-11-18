@@ -1,3 +1,14 @@
+# Reverse Engineering Notes — Milestone M15.492 (`0x012C4E`..`0x012F1E`): Efreet 7-Particle Flame Breath Ring Engine, Enemy Ignite Handler & Composite Vertex Exporter
+- **Original ROM Addresses:** `0x012C4E..0x012F1E` (720 bytes: 662 code bytes / 181 M68K instructions across 4 segments + 58 inline data bytes across 3 tables).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_efreet_flame_breath.py` and `data/thor-evidence/rom_efreet_flame_breath_m15_492.json`:
+  * `0x012C4E..0x012CDC` + `0x012C92..0x012C96`: `AI_Efreet_InitFlameBreathParticlesAndAngle` & `EfreetFlameSweepStartAngleTable` (`[0x20, 0xE0, 0xA0, 0x60]`).
+  * `0x012CDC..0x012DAE` + `0x012D80..0x012DAE`: `AI_Efreet_UpdateFlameBreathParticles` & `EfreetFlameAnimTable` (11 entries `0x0063..0x006B` + `0xFFFF`), `-$4000` curl, `0x00B922` (`d0=$F0`, `[-8..8, -8..8, 4..20]`).
+  * `0x012DAE..0x012DFA`: `AI_Efreet_IgniteEnemyOnFlameHit` (`#$00700345`, `0x00E2D4(0x300,0x300)`, `+$56=$20000`, `+$86=$A004+(($FF0DB7+1)>>2)`).
+  * `0x012DFA..0x012EA8` + `0x012EA0..0x012EA8`: `AI_Efreet_SpawnFlameParticle` (`+5` sweep step, speed `0x700` via `$05D706` + `$20000` VY bias) & `EfreetFlameSpawnOffsetTable` `[(0,-40),(32,-12),(0,12),(-32,-12)]`.
+  * `0x012EA8..0x012F1E`: `AI_Efreet_ExportFlameVertexBuffer` (`$FF19A8`/`$FF19A9`, `+$06=$1A`, `+$5A=$07A8`).
+- **Assumptions:** Shared callees `0x00B922`, `0x00E2D4`, `0x00E7FC`, trig LUT `$05D706`, and Shade companion routines (`0x012F1E+`) remain external to this slice.
+- **Test Status:** Verified via `tests/rom_efreet_flame_breath_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.491 (`0x012988`..`0x012C4E`): Efreet Idle/Wander/Follow AI, Vulnerability Scanner, Dismissal & Hover Bobbing Subsystem
 - **Original ROM Addresses:** `0x012988..0x012C4E` (710 bytes: 200 M68K instructions across 702 bytes `0x012988..0x012C46` + 8-byte embedded 4-word bobbing table `0x012C46..0x012C4E`).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_efreet_follow_dismissal.py` and `data/thor-evidence/rom_efreet_follow_dismissal_m15_491.json`:

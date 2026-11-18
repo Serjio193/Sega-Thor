@@ -1,3 +1,9 @@
+# M15.492 ROM Efreet 7-Particle Flame Breath Ring Engine, Enemy Ignite Handler & Composite Vertex Exporter
+- `tools/extract_rom_efreet_flame_breath.py` — extractor for `0x012C4E..0x012F1E` (particle init/sweep `0x012C4E`, update/anim/AABB `0x012CDC`, ignite handler `0x012DAE`, spawner `0x012DFA`, vertex exporter `0x012EA8`, and 3 inline data tables).
+- `tests/rom_efreet_flame_breath_test.py` — `5` unit tests verifying evidence/tables, init & sweep angles, particle lifecycle & ignite damage `$A004+tier`, spawner `$05D706`/`+5` sweep, and `$FF19A8` vertex export.
+- `data/thor-evidence/rom_efreet_flame_breath_m15_492.json` — extracted M15.492 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_492_EFREET_FLAME_BREATH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.491 ROM Efreet Idle/Wander/Follow AI, Vulnerability Scanner, Dismissal & Hover Bobbing Subsystem
 - `tools/extract_rom_efreet_follow_dismissal.py` — extractor for `0x012988..0x012C4E` (`AI_Efreet_IdleWanderFollowAndVulnScan`, `AI_Efreet_DismissalAndHoverBobbing`, embedded bobbing table `0x012C46..0x012C4E`, and external `$0586E8` 3-facing hitbox table).
 - `tests/rom_efreet_follow_dismissal_test.py` — `5` unit tests verifying evidence/tables, 4-dir `$0586E8` vuln scanner, Chebyshev wander/oscillation, diagonal `($28,$20)` follow + `+$AC` debounce, and dismissal/hysteresis/bobbing math.
