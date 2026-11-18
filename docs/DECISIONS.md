@@ -1,3 +1,39 @@
+# ADR-20261118-M16-176-FONT-GLYPH-PACKER — ROM Dynamic 1-Bit Font Glyph Expansion, 4-Neighbor Outline Filter & 4bpp Tile Packer (0x00C222..0x00C2EC)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.427 extracted ROM routines `0x00C222..0x00C2EC` (202 bytes) governing real-time font glyph expansion, 4-neighbor cardinal outline filtering, and Sega Genesis 4bpp tile packing used by the dialogue / text string streamer (`0x03B572`):
+   - Ingress entry point `0x00C222` (`render_font_glyph_to_vram_buffer`):
+     * Input: `d0` (glyph index). Resolves 28-byte ROM record at `0x0016C1CA + d0 * 28` (`mulu.w #$1C, d0`).
+   - 1-Bit to byte expansion onto padded canvas (`$FF3028`):
+     * Canvas dimensions: 18 bytes pitch x 18 rows (324 bytes = `0x144` bytes).
+     * Rows 0 and 1: cleared to zeroes via `0x00C2C8` helper (double 18-byte zero writes = 36 bytes).
+     * Rows 2..15: 14 scanlines expanded with leading `0x00` (col 0), 16 pixels expanded via `lsl.w #1; subx.b d0, d0` (1 -> `0xFF`, 0 -> `0x00`), and trailing `0x00` (col 17).
+     * Rows 16 and 17: cleared to zeroes via second `0x00C2C8` call (36 bytes).
+   - 4-Neighbor cardinal outline filter (`0x00C248..0x00C276`):
+     * Scans 288 bytes starting at row 1, col 0 (`$FF303A`) through row 16, col 17.
+     * Skips foreground pixels (`0xFF` where sign bit 7 is set).
+     * For background pixels (`0x00`), samples 4 cardinal neighbors (`curr - 18` top, `curr + 18` bottom, `curr - 1` left, `curr + 1` right).
+     * If any neighbor has bit 7 set (`(top | bot | left | right) & 0x80 != 0`):
+       Writes outline color `0x0E` into current pixel.
+     * In-place modification is mathematically safe because `0x0E & 0x80 == 0`, preventing false positive cascading outlines.
+   - 4bpp Sega Genesis tile packing (`0x00C276..0x00C2A4`):
+     * Packs four 8x8 quadrants in column-major order to `$FF2FA8` (4 tiles * 32 bytes = 128 bytes):
+       - Tile 0 (Top-Left): row 1..8, col 1..8 (`$FF303B`) -> `$FF2FA8`
+       - Tile 1 (Bottom-Left): row 9..16, col 1..8 (`$FF30CB`) -> `$FF2FC8`
+       - Tile 2 (Top-Right): row 1..8, col 9..16 (`$FF3043`) -> `$FF2FE8`
+       - Tile 3 (Bottom-Right): row 9..16, col 9..16 (`$FF30D3`) -> `$FF3008`
+     * Packing loop `0x00C2A6`: 8 rows per tile, 4 bytes per row. Reads pixel pair `(p0, p1)`, masks with `0x0F` and shifts: `((p0 << 4) & 0xF0) | (p1 & 0x0F)`.
+     * Foreground (`0xFF`) maps to color `0x0F`, outline (`0x0E`) to `0x0E`, background (`0x00`) to `0x00`.
+   - Raw 64KB RAM window integration helpers at `$FF3028` (canvas) and `$FF2FA8` (tiles out).
+
+**Decisions:**
+1. **Dedicated `font_glyph_packer` Module:**
+   - Added `src/game/font/font_glyph_packer.hpp/.cpp` and `include/game/font/font_glyph_packer.hpp` modeling `expand_glyph_scanlines_to_canvas`, `apply_cardinal_outline_filter`, `pack_canvas_to_4bpp_tiles`, `render_glyph_scanlines`, `render_glyph_from_rom`, and raw memory window integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (157/157 M16 tests).
+
 # ADR-20261118-M16-175-PLAYER-RECT-COLLISION — ROM Tile Rect vs Player Ali AABB Containment & Overlap Collision Testers (0x00C17A..0x00C222)
 **Status:** Accepted
 **Date:** 2026-11-18
