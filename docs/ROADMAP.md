@@ -1,3 +1,6 @@
+# M15.468 ROM Script Virtual Machine Opcodes $15, $16, $18, $19: Persistent Gater, Spawner & Ballistic Projectile Engine (`0x00FEDE`..`0x010034`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_script_vm_persistent_projectiles.py`, `tests/rom_script_vm_persistent_projectiles_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_persistent_projectiles_m15_468.json`, and `docs/handoffs/STANDALONE_M15_468_SCRIPT_PERSISTENT_PROJECTILES_HANDOFF.md`.
+
 # M15.467 ROM Script Virtual Machine Opcodes $0E & $17: Fixed Position & Dual Cross-Linked Compound Entity Spawners (`0x00FD8C`..`0x00FEDE`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_script_vm_compound_spawn.py`, `tests/rom_script_vm_compound_spawn_test.py` (`3/3 PASS`), `data/thor-evidence/rom_script_vm_compound_spawn_m15_467.json`, and `docs/handoffs/STANDALONE_M15_467_SCRIPT_COMPOUND_SPAWN_HANDOFF.md`.
 

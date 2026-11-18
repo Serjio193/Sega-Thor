@@ -1,3 +1,9 @@
+# M15.468 ROM Script Virtual Machine Opcodes $15, $16, $18, $19: Persistent Gater, Spawner & Ballistic Projectile Engine
+- `tools/extract_rom_script_vm_persistent_projectiles.py` — extractor for `0x00FEDE..0x010034` (Script opcodes $15 persistent gater, $16 persistent entity spawner, $18 dynamic particle spawner, and $19 ballistic projectile 3D velocity spawner).
+- `tests/rom_script_vm_persistent_projectiles_test.py` — `4` unit tests verifying opcode $15 bit test skip/fallthrough, opcode $16 18-byte record unpacking, opcode $18 particle instantiation, and opcode $19 3D velocity vector configuration.
+- `data/thor-evidence/rom_script_vm_persistent_projectiles_m15_468.json` — extracted M15.468 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_468_SCRIPT_PERSISTENT_PROJECTILES_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.467 ROM Script Virtual Machine Opcodes $0E & $17: Fixed Position & Dual Cross-Linked Compound Entity Spawners
 - `tools/extract_rom_script_vm_compound_spawn.py` — extractor for `0x00FD8C..0x00FEDE` (Script opcodes $0E fixed position entity spawner and $17 dual-compound cross-linked multi-part entity spawner Types $72/$70).
 - `tests/rom_script_vm_compound_spawn_test.py` — `3` unit tests verifying opcode $0E fixed position entity instantiation and opcode $17 dual-compound entity mutual cross-linking, shared HP, and dual AI activation.
