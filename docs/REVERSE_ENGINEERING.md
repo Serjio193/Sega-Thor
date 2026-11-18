@@ -1,3 +1,13 @@
+# Reverse Engineering Notes — Milestone M15.487 (`0x011D8A`..`0x0120D4`): Dytto Spirit Magic Bubble Projectile, Flame/Enemy Stun AABB Scanner & Water Tornado Vortex Subsystem
+- **Original ROM Addresses:** `0x011D8A..0x0120D4` (842 bytes, 203 M68K instructions).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_dytto_bubble_tornado.py` and `data/thor-evidence/rom_dytto_bubble_tornado_m15_487.json`:
+  * `0x011D8A..0x011DB6`: `AI_Dytto_TryStartMagicBubble` — consumes 5 SP via `0x011B28`, reserves Pool 1 slot via `0x00DA62` (`+$A4`), latches `$FF19A4 -> +$16`, enters State `$0E` (`+$2A = 6`).
+  * `0x011DB6..0x011ED2`: `AI_Dytto_State0E_CastAndLaunchMagicBubble` — lowers `+$10` by 2 until frame `+$30 == $18`, converts `$002E` slot into Type `$0018` State `$10` (`8x8x16` hitbox, `0x1800` offset with `+0x20000` Down X nudge, `(0x0400, 0x03C0)` velocity via `0x00E2D4`, SFX `0x800354`), exits Dytto to State `0` on `+$37` bit 1.
+  * `0x011ED2..0x011FA6`: `AI_Dytto_State10_16_MagicBubbleFlightAndImpact` — wall contact pops to State `$16`, `0x00B922` (`d0=$F0`, box `[-9..9, -9..9, -1..17]`) triggers Flame `$004C`/`$0098` (`+$66=$FF`) or stuns vulnerable enemies (`+$9D=($FF0DB6<<3)+80`, `+$9C=($FF0DB6<<2)+20`) + SFX `0x8004D4`, `0x00E5AE` culls at margin `0x18`, State `$16` clears `+$0` on `+$37` bit 1.
+  * `0x011FA6..0x0120D4`: `AI_Dytto_WaterTornadoLifecycle` — Command 3 enters State `$08` (`+$10 -= $28`, SFX `0x80034E`, orbit `((5-$FF19FE)&3)<<6`, radius `0x20000`), transitions to active vortex State `$0A` (`($FF0DB6<<3)+120` frames, `0x00BCA4` attack scan, 8-step extra drain `+$8E`, SFX `0x700340`), then winds down in State `$0C` (`-$5000` radius decay, `+$3D`/`+$10` alternation) back to State `0`.
+- **Assumptions:** Orbit integrator `0x0123E2`, attack scanner `0x00BCA4`, and terrain probes `0x009D00`/`0x009AD6` reside outside this slice.
+- **Test Status:** Verified via `tests/rom_dytto_bubble_tornado_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.486 (`0x011BA0`..`0x011D8A`): Dytto Spirit 16-State Dispatcher, Healing Cast Sub-Entity Spawner & Jewel-Rank HP Recovery Subsystem
 - **Original ROM Addresses:** `0x011BA0..0x011D8A` (490 bytes: 127 M68K instructions + 32-byte 16-entry relative jump table at `0x011BAC..0x011BCC`).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_dytto_healing_drop.py` and `data/thor-evidence/rom_dytto_healing_drop_m15_486.json`:

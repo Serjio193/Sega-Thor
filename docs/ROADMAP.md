@@ -1,3 +1,6 @@
+# M15.487 ROM Dytto Spirit Magic Bubble Projectile, Flame/Enemy Stun AABB Scanner & Water Tornado Vortex Subsystem (`0x011D8A`..`0x0120D4`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dytto_bubble_tornado.py`, `tests/rom_dytto_bubble_tornado_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dytto_bubble_tornado_m15_487.json`, and `docs/handoffs/STANDALONE_M15_487_DYTTO_BUBBLE_TORNADO_HANDOFF.md`.
+
 # M15.486 ROM Dytto Spirit 16-State Dispatcher, Healing Cast Sub-Entity Spawner & Jewel-Rank HP Recovery Subsystem (`0x011BA0`..`0x011D8A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dytto_healing_drop.py`, `tests/rom_dytto_healing_drop_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dytto_healing_drop_m15_486.json`, and `docs/handoffs/STANDALONE_M15_486_DYTTO_HEALING_DROP_HANDOFF.md`.
 
