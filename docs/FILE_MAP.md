@@ -1,3 +1,9 @@
+# M15.454 ROM Entity Type $36 Boss Attachment, Hierarchical Parent-Child Transform & 3D Combat Physics Subsystem
+- `tools/extract_rom_boss_attachment_engine.py` — extractor for `0x00EA76..0x00ED04` (compound boss appendage attachments, relative 3D coordinate pinning, 3D AABB combat query, launch physics with #$20000 impulse, gravity, and boss HUD tracking).
+- `tests/rom_boss_attachment_engine_test.py` — `5` unit tests verifying ROM constants, hierarchical transform pinning, combat overlap and boss HUD tracking, projectile trajectory and culling, and latch timer despawn.
+- `data/thor-evidence/rom_boss_attachment_engine_m15_454.json` — extracted M15.454 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_454_BOSS_ATTACHMENT_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.453 ROM Dynamic Effect Type $34 Spawner, Audio Rate Limiter & PRNG Shake-Jitter Engine
 - `tools/extract_rom_effect_spawner_jitter.py` — extractor for `0x00E90E..0x00EA76` (Pool 2 slot allocation, normal/priority effect initialization, 7-frame audio SFX rate-limiter, cutscene invisibility gate, and PRNG [-16..+15] shake jitter).
 - `tests/rom_effect_spawner_jitter_test.py` — `4` unit tests verifying ROM constants, effect initialization with priority flag, cutscene slot 0 gate, and PRNG position shake jitter simulation.

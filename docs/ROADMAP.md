@@ -1,3 +1,6 @@
+# M15.454 ROM Entity Type $36 Boss Attachment, Hierarchical Parent-Child Transform & 3D Combat Physics Subsystem (`0x00EA76`..`0x00ED04`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_boss_attachment_engine.py`, `tests/rom_boss_attachment_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_boss_attachment_engine_m15_454.json`, and `docs/handoffs/STANDALONE_M15_454_BOSS_ATTACHMENT_ENGINE_HANDOFF.md`.
+
 # M15.453 ROM Dynamic Effect Type $34 Spawner, Audio Rate Limiter & PRNG Shake-Jitter Engine (`0x00E90E`..`0x00EA76`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_effect_spawner_jitter.py`, `tests/rom_effect_spawner_jitter_test.py` (`4/4 PASS`), `data/thor-evidence/rom_effect_spawner_jitter_m15_453.json`, and `docs/handoffs/STANDALONE_M15_453_EFFECT_SPAWNER_JITTER_HANDOFF.md`.
 
