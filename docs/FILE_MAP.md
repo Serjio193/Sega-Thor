@@ -1,3 +1,9 @@
+# M15.475 ROM Entity AI Isometric Projected Melee Hitbox & Reverse-Facing Collision Detection Engine
+- `tools/extract_rom_entity_ai_isometric_hitbox.py` — extractor for `0x010916..0x010A74` (4 specialized entrypoints for normal/reverse facing, isometric y+z projection, 24px elevation gate, and 4-way facing hitbox tests via jump table 0x010956).
+- `tests/rom_entity_ai_isometric_hitbox_test.py` — `4` unit tests verifying isometric depth contribution, reverse facing inversion, elevation gate bypass/filtering, and 4-way directional attack box hits.
+- `data/thor-evidence/rom_entity_ai_isometric_hitbox_m15_475.json` — extracted M15.475 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_475_ISOMETRIC_HITBOX_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.474 ROM Entity AI Ali Facing Tracker, Elevation Gate & 4-Way Directional Melee Attack Hitbox Collision Engine
 - `tools/extract_rom_entity_ai_combat_facing.py` — extractor for `0x01074A..0x010916` (Direction angle table, Ali facing tracker, 24px elevation gate, and 4-way facing directional melee attack hitbox collision engine).
 - `tests/rom_entity_ai_combat_facing_test.py` — `3` unit tests verifying Ali facing calculation, elevation difference threshold, and 4-way directional attack box intersection tests.

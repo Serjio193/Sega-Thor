@@ -1,3 +1,6 @@
+# M15.475 ROM Entity AI Isometric Projected Melee Hitbox & Reverse-Facing Collision Detection Engine (`0x010916`..`0x010A74`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_ai_isometric_hitbox.py`, `tests/rom_entity_ai_isometric_hitbox_test.py` (`4/4 PASS`), `data/thor-evidence/rom_entity_ai_isometric_hitbox_m15_475.json`, and `docs/handoffs/STANDALONE_M15_475_ISOMETRIC_HITBOX_HANDOFF.md`.
+
 # M15.474 ROM Entity AI Ali Facing Tracker, Elevation Gate & 4-Way Directional Melee Attack Hitbox Collision Engine (`0x01074A`..`0x010916`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_ai_combat_facing.py`, `tests/rom_entity_ai_combat_facing_test.py` (`3/3 PASS`), `data/thor-evidence/rom_entity_ai_combat_facing_m15_474.json`, and `docs/handoffs/STANDALONE_M15_474_COMBAT_FACING_HANDOFF.md`.
 
