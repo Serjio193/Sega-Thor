@@ -1,3 +1,6 @@
+# M15.473 ROM Entity AI Trigonometric Tracking, Smooth Angle Turn-Rate Limiter & 2D Sin/Cos Velocity Projection Engine (`0x010594`..`0x01074A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_trig_tracking.py`, `tests/rom_entity_trig_tracking_test.py` (`4/4 PASS`), `data/thor-evidence/rom_entity_trig_tracking_m15_473.json`, and `docs/handoffs/STANDALONE_M15_473_TRIG_TRACKING_HANDOFF.md`.
+
 # M15.472 ROM Script Virtual Machine Spatial Positioning, Nearest Offscreen Target & Edge Spawner Subsystem (`0x0103B0`..`0x010594`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_script_vm_spatial_spawn.py`, `tests/rom_script_vm_spatial_spawn_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_spatial_spawn_m15_472.json`, and `docs/handoffs/STANDALONE_M15_472_SPATIAL_SPAWN_HANDOFF.md`.
 

@@ -1,3 +1,9 @@
+# M15.473 ROM Entity AI Trigonometric Tracking, Smooth Angle Turn-Rate Limiter & 2D Sin/Cos Velocity Projection Engine
+- `tools/extract_rom_entity_trig_tracking.py` — extractor for `0x010594..0x01074A` (Target angle tracking with turn-rate limiter, octant arctangent table helper at ROM $5D906, 4-way facing quantizer, and 2D sin/cos velocity projection at ROM $5D706).
+- `tests/rom_entity_trig_tracking_test.py` — `4` unit tests verifying quadrant arctangent calculation, cardinal facing intervals, smooth turn-rate limiting, and 180-degree boundary transitions.
+- `data/thor-evidence/rom_entity_trig_tracking_m15_473.json` — extracted M15.473 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_473_TRIG_TRACKING_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.472 ROM Script Virtual Machine Spatial Positioning, Nearest Offscreen Target & Edge Spawner Subsystem
 - `tools/extract_rom_script_vm_spatial_spawn.py` — extractor for `0x0103B0..0x010594` (Script entity spatial positioning, fixed coordinate copier, nearest offscreen target selector, and 4-way random edge placement jump table at 0x01049E).
 - `tests/rom_script_vm_spatial_spawn_test.py` — `4` unit tests verifying fixed coordinate copy, nearest offscreen point selection, on-screen point rejection, and 4-way edge placement calculations.
