@@ -162,6 +162,7 @@ add_library(oasis_core
     src/game/render/town_combat_sat.cpp
     src/game/render/scroll_integrator.cpp
     src/game/render/vdp_scroll_builder.cpp
+    src/game/render/bg_tile_dma.cpp
     src/game/camera/camera_controller.cpp
     src/game/camera/camera_follow.cpp
     src/game/world/byte_grid.cpp

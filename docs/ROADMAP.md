@@ -1,3 +1,13 @@
+# M16.187 ROM Background Tile Pattern Decompressor & 4KB VRAM DMA Streamer (`0x00D3B2..0x00D406`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/render/bg_tile_dma.hpp/.cpp` and `include/game/render/bg_tile_dma.hpp` in cleanroom namespace `thor::render`:
+  - `resolve_bg_tile_pattern_address` (`0x05CE96`): bounds-checked big-endian pointer lookup (`index << 2`).
+  - `decompress_bg_tile_pattern`: invokes `oasis::game::decompress_graphics` (`0x003820`) safely with bounds/error checks.
+  - `queue_bg_tile_pattern_dma` & `decompress_and_dma_bg_tiles` (`0x00D3B2`): stages 4KB tile blocks into `$FF2FA8`, appends `(0x007F97D4, vram_dest, 0x0800)` DMA descriptor, sets V-Int sync bit 1 on `$FF164E`, and invokes optional V-Int callback.
+  - `decompress_and_dma_bg_tiles_from_ram`: 64KB RAM window helper writing to `ram[0x2FA8..0x3FA7]` and queuing 8-byte BE descriptor at `$FF1892`.
+- Qualified `oasis_m16_187_bg_tile_dma` and the 168-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.186 ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger (`0x00D2B4..0x00D3B2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

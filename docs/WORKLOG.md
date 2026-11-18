@@ -1,3 +1,16 @@
+# Worklog — 2026-11-18 (M16.187: ROM Background Tile Pattern Decompressor & 4KB VRAM DMA Streamer)
+- **Concrete Task**: Implement `src/game/render/bg_tile_dma.hpp/.cpp` and `include/game/render/bg_tile_dma.hpp` in cleanroom namespace `thor::render` covering `0x00D3B2..0x00D406` (`resolve_bg_tile_pattern_address` via `0x05CE96`, `decompress_bg_tile_pattern` via `0x003820`, `queue_bg_tile_pattern_dma`, `decompress_and_dma_bg_tiles`, and 64KB RAM window helper `decompress_and_dma_bg_tiles_from_ram` writing to `$FF2FA8` and queuing `(0x007F97D4, vram_dest, 0x0800)` at `$FF1892` with V-Int sync bit 1 on `$FF164E`); add `tests/m16_187_bg_tile_dma_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/render/bg_tile_dma.hpp` (84 lines) / `src/game/render/bg_tile_dma.cpp` (146 lines).
+  * Added `include/game/render/bg_tile_dma.hpp` (3 lines).
+  * Added `tests/m16_187_bg_tile_dma_test.cpp` (358 lines, registered as `oasis_m16_187_bg_tile_dma` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_187_bg_tile_dma` + M16 + `project_file_line_limit` suite passed (`168/168`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_187_bg_tile_dma` + M16 + `project_file_line_limit` suite passed (`168/168`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines.
+  * Remaining unknowns: Ready for M16.188 scene script header unpacker & 16KB VRAM DMA upload engine (`0x00D406..0x00D542`).
+
 # Worklog — 2026-11-18 (M16.186: ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger)
 - **Concrete Task**: Implement `src/game/render/vdp_scroll_builder.hpp/.cpp` and `include/game/render/vdp_scroll_builder.hpp` in cleanroom namespace `thor::render` covering `0x00D344` (`vdp_update_vscroll_table` for FullScreen `$FF1348/$FF134A` and 20-entry 2-cell `$FFFF5C`), `0x00D2B4` (`vdp_update_hscroll_table` invoking VScroll first then FullScreen `$FF1344/$FF1346`, 29-entry 16px strip, or 232-entry scanline `$FFFB5C`), `0x00D398` (`vdp_commit_scroll_dma_flags` `$FF16F0 & 0x18 -> $FF164E`), and 64KB RAM window helpers; add `tests/m16_186_vdp_scroll_builder_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

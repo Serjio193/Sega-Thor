@@ -1,3 +1,20 @@
+# ADR-20261118-M16-187-BG-TILE-DMA — ROM Background Tile Pattern Decompressor & 4KB VRAM DMA Streamer (0x00D3B2..0x00D406)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.438 extracted ROM routine `0x00D3B2..0x00D406` (`decompress_and_dma_bg_tiles`, 84 bytes) governing background tile pattern table resolution, decompression into `$FF2FA8`, and 4KB VRAM DMA queuing:
+   - Resolves 32-bit big-endian ROM stream address at `0x05CE96 + (pattern_index << 2)`.
+   - Decompresses the stream via `0x003820` (`oasis::game::decompress_graphics`) into 4KB staging RAM `$FF2FA8`.
+   - Enqueues an 8-byte DMA descriptor at `($FF1892)` with source bus word address `0x007F97D4` (`$FF2FA8 >> 1`), target VRAM destination `vram_dest`, and transfer length `0x0800` words (4096 bytes / 128 tiles), advancing `$FF1892` by 8.
+   - Asserts V-Int DMA sync bit 1 (`0x02`) on `$FF164E` and waits for V-Int completion (optional callback/clear flag in cleanroom C++20).
+
+**Decisions:**
+1. **`bg_tile_dma` Cleanroom Module:**
+   - Implemented `src/game/render/bg_tile_dma.hpp/.cpp` and `include/game/render/bg_tile_dma.hpp` in namespace `thor::render` (aliased into `oasis::game::render`), reusing `oasis::game::decompress_graphics`.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Verified with synthetic Format A/B streams and optional real-ROM checks (skipped cleanly when commercial ROM is absent on CI) across MinGW GCC Release and MSVC Debug (`oasis_m16_187_bg_tile_dma` + 168-test M16 + file-limit regression suite).
+
 # ADR-20261118-M16-186-VDP-SCROLL-BUILDER — ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger (0x00D2B4..0x00D3B2)
 **Status:** Accepted
 **Date:** 2026-11-18
