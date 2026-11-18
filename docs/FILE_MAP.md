@@ -1,3 +1,9 @@
+# M15.448 ROM Core PRNG Subsystem, 8-Way Directional Velocity Projector & Cardinal Angle Resolver
+- `tools/extract_rom_prng_vector_engine.py` — extractor for `0x00E25C..0x00E398` (entity lifecycle timer countdown, 16-bit LFSR PRNG step, word/byte integer range scaling, 8-way directional projection with 0.75x isometric diagonals, 4-way cardinal angle resolution, and water surface terrain probe).
+- `tests/rom_prng_vector_engine_test.py` — `5` unit tests verifying ROM constants, entity timer countdown, LFSR PRNG Galois shifts and range scaling, 8-way projection diagonals, and 4-way cardinal angle quadrant resolution.
+- `data/thor-evidence/rom_prng_vector_engine_m15_448.json` — extracted M15.448 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_448_PRNG_VECTOR_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.447 ROM Spark Effect Dispatcher, Projectile Gravity Fall, Lifetime Blink & Despawn Subsystem
 - `tools/extract_rom_projectile_physics.py` — extractor for `0x00E0BA..0x00E25C` (spark effect sweep, projectile entity sweep, gravity integration, landing parent unlatch, lifetime blink, and despawn).
 - `tests/rom_projectile_physics_test.py` — `5` unit tests verifying ROM constants, spark effect slot checks, projectile state jump table, gravity landing clamps, and lifetime blinking intervals.

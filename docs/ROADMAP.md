@@ -1,3 +1,6 @@
+# M15.448 ROM Core PRNG Subsystem, 8-Way Directional Velocity Projector & Cardinal Angle Resolver (`0x00E25C`..`0x00E398`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_prng_vector_engine.py`, `tests/rom_prng_vector_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_prng_vector_engine_m15_448.json`, and `docs/handoffs/STANDALONE_M15_448_PRNG_VECTOR_ENGINE_HANDOFF.md`.
+
 # M15.447 ROM Spark Effect Dispatcher, Projectile Gravity Fall, Lifetime Blink & Despawn Subsystem (`0x00E0BA`..`0x00E25C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_projectile_physics.py`, `tests/rom_projectile_physics_test.py` (`5/5 PASS`), `data/thor-evidence/rom_projectile_physics_m15_447.json`, and `docs/handoffs/STANDALONE_M15_447_PROJECTILE_PHYSICS_HANDOFF.md`.
 
