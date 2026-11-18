@@ -1,3 +1,6 @@
+# M15.464 ROM Script Virtual Machine Opcodes $02..$04: Parameter Initializers & Relational Wait-Condition Engine (`0x00F920`..`0x00FAAC`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_script_vm_opcodes_02_04.py`, `tests/rom_script_vm_opcodes_02_04_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_opcodes_02_04_m15_464.json`, and `docs/handoffs/STANDALONE_M15_464_SCRIPT_OPCODES_02_04_HANDOFF.md`.
+
 # M15.463 ROM Cutscene & Event Script Virtual Machine Core, 98-Opcode Dispatcher & Camera Pan Engine (`0x00F788`..`0x00F920`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_script_vm_core.py`, `tests/rom_script_vm_core_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_core_m15_463.json`, and `docs/handoffs/STANDALONE_M15_463_SCRIPT_VM_CORE_HANDOFF.md`.
 

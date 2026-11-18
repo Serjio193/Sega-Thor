@@ -1,3 +1,9 @@
+# M15.464 ROM Script Virtual Machine Opcodes $02..$04: Parameter Initializers & Relational Wait-Condition Engine
+- `tools/extract_rom_script_vm_opcodes_02_04.py` — extractor for `0x00F920..0x00FAAC` (Script opcodes $02 parameter buffer, $03 coordinate pair table, and $04 wait-until relational expression evaluator with operator table at $F9EC).
+- `tests/rom_script_vm_opcodes_02_04_test.py` — `4` unit tests verifying opcode $02 word buffer copy and truncation, opcode $03 coordinate pair padding, opcode $04 persistent bit tests and relational comparisons.
+- `data/thor-evidence/rom_script_vm_opcodes_02_04_m15_464.json` — extracted M15.464 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_464_SCRIPT_OPCODES_02_04_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.463 ROM Cutscene & Event Script Virtual Machine Core, 98-Opcode Dispatcher & Camera Pan Engine
 - `tools/extract_rom_script_vm_core.py` — extractor for `0x00F788..0x00F920` (Cutscene script bytecode virtual machine tick loop, 98-entry opcode jump table at $F7D0, 4-way camera pan engine, and Opcode 0 frame yield).
 - `tests/rom_script_vm_core_test.py` — `4` unit tests verifying pause and delay flags, camera pan directional movements and completion locks, and bytecode interpretation frame yielding.
