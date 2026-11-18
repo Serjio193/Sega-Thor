@@ -1,3 +1,16 @@
+# Worklog — 2026-11-18 (M16.192: ROM Tilemap Rectangle Fill & Block Copy Subsystem)
+- **Concrete Task**: Implement `src/game/render/tilemap_rect_ops.hpp/.cpp` and `include/game/render/tilemap_rect_ops.hpp` in cleanroom namespace `thor::render` covering `0x00DB1A..0x00DC26` (`parse_tilemap_rect_copy_args`, `tilemap_fill_rect_byte`, `tilemap_copy_rect_byte`, `tilemap_copy_rect_word`, `tilemap_copy_rect_word_only_and_sync` `0x00DB68`, `tilemap_copy_rect_word_and_sync` `0x00DB64` with `DirtyRectSyncCallback` for `0x00DC26`, and 64KB RAM helpers); add `tests/m16_192_tilemap_rect_ops_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/render/tilemap_rect_ops.hpp` (204 lines) / `src/game/render/tilemap_rect_ops.cpp` (345 lines).
+  * Added `include/game/render/tilemap_rect_ops.hpp` (3 lines).
+  * Added `tests/m16_192_tilemap_rect_ops_test.cpp` (378 lines, registered as `oasis_m16_192_tilemap_rect_ops` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_192_tilemap_rect_ops` + M16 + `project_file_line_limit` suite passed (`173/173`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_192_tilemap_rect_ops` + M16 + `project_file_line_limit` suite passed (`173/173`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Ready for M16.193 dynamic partial tilemap plane VRAM dirty block blitter (`0x00DC26..0x00DDA2`).
+
 # Worklog — 2026-11-18 (M16.191: ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers)
 - **Concrete Task**: Implement `src/game/world/entity_pool_alloc.hpp/.cpp` and `include/game/world/entity_pool_alloc.hpp` in cleanroom namespace `thor::world` covering `0x00D9A4..0x00DB1A` (`decompress_palette_block` via `0x0037D2`, read-only slot scanners `0x00D9BE`/`0x00D9F0`/`0x00DA1A`/`0x00DA2A` with `$FF1850`/`$FF184F` reset, `alloc_spawn_npc_entity_slot_18`/`_17` with `0x002E`/`0x008D06`/`0x003C`, sound command dispatchers `0x00DAC2..0x00DB18`, and 64KB RAM helpers); add `tests/m16_191_entity_pool_alloc_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

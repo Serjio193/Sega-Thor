@@ -1,3 +1,12 @@
+# M16.192 ROM Tilemap Rectangle Fill & Block Copy Subsystem (`0x00DB1A..0x00DC26`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/render/tilemap_rect_ops.hpp/.cpp` and `include/game/render/tilemap_rect_ops.hpp` in cleanroom namespace `thor::render`:
+  - `tilemap_fill_rect_byte` (+ `_from_ram`) (`0x00DB1A`): inclusive aux-map rectangle fill selecting `$FF1766`/`$FF1770` via `$FF16F0` bit 7.
+  - `tilemap_copy_rect_byte` (+ `_from_ram`) (`0x00DBCA`): inclusive aux-map block copy selecting `$FF1766`/`$FF1770` via `a3 == $FF1716` in forward order.
+  - `tilemap_copy_rect_word_only_and_sync` (`0x00DB68`) & `tilemap_copy_rect_word_and_sync` (`0x00DB64`) (+ `_from_ram`): word tilemap copy with `DirtyRectSyncCallback` hook for `0x00DC26`.
+- Qualified `oasis_m16_192_tilemap_rect_ops` and the 173-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.191 ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers (`0x00D9A4..0x00DB1A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

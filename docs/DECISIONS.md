@@ -1,3 +1,19 @@
+# ADR-20261118-M16-192-TILEMAP-RECT-OPS — ROM Tilemap Rectangle Fill & Block Copy Subsystem (0x00DB1A..0x00DC26)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.443 extracted ROM routines `0x00DB1A..0x00DC26` (268 bytes, 82 M68K instructions):
+   - `0x00DB1A..0x00DB64` (`tilemap_fill_rect_byte`): selects aux map `$FF1766` (Plane A) vs `$FF1770` (Plane B) via `$FF16F0` bit 7 and fills inclusive rect `(x1..x2, y1..y2)` (`(x2 - x1 + 1) x (y2 - y1 + 1)` via `dbra`) using `(y1 << word_stride_shift) + x1` and `+$04` row byte stride.
+   - `0x00DB64..0x00DBCA` (`tilemap_copy_rect_word_and_sync` & `0x00DB68` `tilemap_copy_rect_word_only_and_sync`): reads BE16 source rect `(x1, y1, x2, y2)` and dest point `(dst_x, dst_y)`, optionally invokes `0x00DBCA` first, copies inclusive `(d3+1) x (d4+1)` 16-bit tile words inside `+$16(a3)` (`(y << byte_stride_shift) + 2 * x`, stride `width_tiles * 2`), and invokes `0x00DC26` (`vdp_sync_dirty_plane_rect`) via decoupled `DirtyRectSyncCallback` (`TilemapRectSyncRequest`).
+   - `0x00DBCA..0x00DC26` (`tilemap_copy_rect_byte`): selects aux map `$FF1766` vs `$FF1770` via `a3 == $FF1716` and copies inclusive rect `(x1..x2, y1..y2)` to `dst` in forward `(a0)+, (a1)+` order.
+
+**Decisions:**
+1. **`tilemap_rect_ops` Cleanroom Module:**
+   - Implemented `src/game/render/tilemap_rect_ops.hpp/.cpp` and `include/game/render/tilemap_rect_ops.hpp` in namespace `thor::render` (aliased into `oasis::game::render`), decoupling `0x00DC26` via `DirtyRectSyncCallback` with full bounds checks and 64KB RAM window helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_192_tilemap_rect_ops` + 173-test M16 + file-limit regression suite).
+
 # ADR-20261118-M16-191-ENTITY-POOL-ALLOC — ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers (0x00D9A4..0x00DB1A)
 **Status:** Accepted
 **Date:** 2026-11-18

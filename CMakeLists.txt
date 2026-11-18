@@ -166,6 +166,7 @@ add_library(oasis_core
     src/game/render/scene_header_dma.cpp
     src/game/render/dual_plane_loader.cpp
     src/game/render/visible_plane_streamer.cpp
+    src/game/render/tilemap_rect_ops.cpp
     src/game/camera/camera_controller.cpp
     src/game/camera/camera_follow.cpp
     src/game/world/byte_grid.cpp
