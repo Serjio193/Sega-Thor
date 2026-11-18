@@ -1,3 +1,6 @@
+# M15.465 ROM Script Virtual Machine Opcodes $05 & $12: Unconditional Jump & Conditional Branch Engine (`0x00FAAC`..`0x00FC6C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_script_vm_opcodes_05_12.py`, `tests/rom_script_vm_opcodes_05_12_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_opcodes_05_12_m15_465.json`, and `docs/handoffs/STANDALONE_M15_465_SCRIPT_OPCODES_05_12_HANDOFF.md`.
+
 # M15.464 ROM Script Virtual Machine Opcodes $02..$04: Parameter Initializers & Relational Wait-Condition Engine (`0x00F920`..`0x00FAAC`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_script_vm_opcodes_02_04.py`, `tests/rom_script_vm_opcodes_02_04_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_opcodes_02_04_m15_464.json`, and `docs/handoffs/STANDALONE_M15_464_SCRIPT_OPCODES_02_04_HANDOFF.md`.
 

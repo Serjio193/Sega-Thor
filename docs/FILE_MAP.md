@@ -1,3 +1,9 @@
+# M15.465 ROM Script Virtual Machine Opcodes $05 & $12: Unconditional Jump & Conditional Branch Engine
+- `tools/extract_rom_script_vm_opcodes_05_12.py` — extractor for `0x00FAAC..0x00FC6C` (Script opcodes $05 unconditional jump and $12 12-mode conditional branch engine with mode table at $FAC2 and operator table at $FB64).
+- `tests/rom_script_vm_opcodes_05_12_test.py` — `4` unit tests verifying opcode $05 forward/backward jumps, opcode $12 quest var, persistent bitmask, and spirit companion conditional branch evaluations.
+- `data/thor-evidence/rom_script_vm_opcodes_05_12_m15_465.json` — extracted M15.465 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_465_SCRIPT_OPCODES_05_12_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.464 ROM Script Virtual Machine Opcodes $02..$04: Parameter Initializers & Relational Wait-Condition Engine
 - `tools/extract_rom_script_vm_opcodes_02_04.py` — extractor for `0x00F920..0x00FAAC` (Script opcodes $02 parameter buffer, $03 coordinate pair table, and $04 wait-until relational expression evaluator with operator table at $F9EC).
 - `tests/rom_script_vm_opcodes_02_04_test.py` — `4` unit tests verifying opcode $02 word buffer copy and truncation, opcode $03 coordinate pair padding, opcode $04 persistent bit tests and relational comparisons.

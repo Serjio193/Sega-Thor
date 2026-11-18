@@ -1,0 +1,509 @@
+{
+  "milestone": "M15.465",
+  "title": "ROM Script Virtual Machine Opcodes $05 & $12: Unconditional Jump & Conditional Branch Engine",
+  "range": {
+    "start": "0x00FAAC",
+    "end": "0x00FC6C",
+    "size_bytes": 448
+  },
+  "mode_table": {
+    "base_address": "0x00FAC2",
+    "count": 12,
+    "entries": [
+      {
+        "mode_id": 0,
+        "name": "QuestVar",
+        "table_addr": "0x00FAC2",
+        "rel_offset": 24,
+        "target_addr": "0x00FADA"
+      },
+      {
+        "mode_id": 1,
+        "name": "Bank1Bits",
+        "table_addr": "0x00FAC4",
+        "rel_offset": 232,
+        "target_addr": "0x00FBAC"
+      },
+      {
+        "mode_id": 2,
+        "name": "Bank2Bits",
+        "table_addr": "0x00FAC6",
+        "rel_offset": 278,
+        "target_addr": "0x00FBDC"
+      },
+      {
+        "mode_id": 3,
+        "name": "Bank3Bits",
+        "table_addr": "0x00FAC8",
+        "rel_offset": 308,
+        "target_addr": "0x00FBFC"
+      },
+      {
+        "mode_id": 4,
+        "name": "ItemPossession",
+        "table_addr": "0x00FACA",
+        "rel_offset": 338,
+        "target_addr": "0x00FC1C"
+      },
+      {
+        "mode_id": 5,
+        "name": "Sub10254",
+        "table_addr": "0x00FACC",
+        "rel_offset": 28,
+        "target_addr": "0x00FAE8"
+      },
+      {
+        "mode_id": 6,
+        "name": "Sub10268",
+        "table_addr": "0x00FACE",
+        "rel_offset": 40,
+        "target_addr": "0x00FAF6"
+      },
+      {
+        "mode_id": 7,
+        "name": "SpiritStatus",
+        "table_addr": "0x00FAD0",
+        "rel_offset": 370,
+        "target_addr": "0x00FC42"
+      },
+      {
+        "mode_id": 8,
+        "name": "AliX",
+        "table_addr": "0x00FAD2",
+        "rel_offset": 50,
+        "target_addr": "0x00FB04"
+      },
+      {
+        "mode_id": 9,
+        "name": "AliY",
+        "table_addr": "0x00FAD4",
+        "rel_offset": 64,
+        "target_addr": "0x00FB14"
+      },
+      {
+        "mode_id": 10,
+        "name": "SpiritX",
+        "table_addr": "0x00FAD6",
+        "rel_offset": 78,
+        "target_addr": "0x00FB24"
+      },
+      {
+        "mode_id": 11,
+        "name": "SpiritY",
+        "table_addr": "0x00FAD8",
+        "rel_offset": 104,
+        "target_addr": "0x00FB40"
+      }
+    ]
+  },
+  "operator_table": {
+    "base_address": "0x00FB64",
+    "count": 6,
+    "entries": [
+      {
+        "operator_id": 0,
+        "name": "Equal",
+        "table_addr": "0x00FB64",
+        "rel_offset": 12,
+        "target_addr": "0x00FB70"
+      },
+      {
+        "operator_id": 1,
+        "name": "NotEqual",
+        "table_addr": "0x00FB66",
+        "rel_offset": 18,
+        "target_addr": "0x00FB78"
+      },
+      {
+        "operator_id": 2,
+        "name": "Greater",
+        "table_addr": "0x00FB68",
+        "rel_offset": 24,
+        "target_addr": "0x00FB80"
+      },
+      {
+        "operator_id": 3,
+        "name": "GreaterEqual",
+        "table_addr": "0x00FB6A",
+        "rel_offset": 30,
+        "target_addr": "0x00FB88"
+      },
+      {
+        "operator_id": 4,
+        "name": "LessEqual",
+        "table_addr": "0x00FB6C",
+        "rel_offset": 36,
+        "target_addr": "0x00FB90"
+      },
+      {
+        "operator_id": 5,
+        "name": "Less",
+        "table_addr": "0x00FB6E",
+        "rel_offset": 42,
+        "target_addr": "0x00FB98"
+      }
+    ]
+  },
+  "opcodes": [
+    {
+      "opcode": "0x05",
+      "name": "ScriptOp_UnconditionalBranch",
+      "start": "0x00FAAC",
+      "end": "0x00FAB2",
+      "size_bytes": 6,
+      "description": "Adds 16-bit word displacement at +2(a0) directly to script PC a0 (adda.w $2(a0), a0; rts)."
+    },
+    {
+      "opcode": "0x12",
+      "name": "ScriptOp_ConditionalBranch",
+      "start": "0x00FAB2",
+      "end": "0x00FC6C",
+      "size_bytes": 442,
+      "description": "Reads mode selector +2(a0), operator +3(a0), compare value / bit index +4(a0), and branch displacement +6(a0). Dispatches through 12-entry mode table at $FAC2. Evaluates relational comparison (table at $FB64) or bit tests. If condition is true, branches by +6(a0) (adda.w $6(a0), a0; rts). If false, advances past instruction (lea.l $8(a0), a0; rts).",
+      "constants": {
+        "taken_target_offset": "0x00FBA0",
+        "not_taken_target_offset": "0x00FBA6",
+        "instruction_size_bytes": 8
+      }
+    }
+  ],
+  "instruction_count": 48,
+  "instructions": [
+    {
+      "address": "0x00FAAC",
+      "mnemonic": "adda.w",
+      "op_str": "$2(a0), a0",
+      "bytes": "d0e80002",
+      "size": 4
+    },
+    {
+      "address": "0x00FAB0",
+      "mnemonic": "rts",
+      "op_str": "",
+      "bytes": "4e75",
+      "size": 2
+    },
+    {
+      "address": "0x00FAB2",
+      "mnemonic": "clr.w",
+      "op_str": "d0",
+      "bytes": "4240",
+      "size": 2
+    },
+    {
+      "address": "0x00FAB4",
+      "mnemonic": "move.b",
+      "op_str": "$2(a0), d0",
+      "bytes": "10280002",
+      "size": 4
+    },
+    {
+      "address": "0x00FAB8",
+      "mnemonic": "add.w",
+      "op_str": "d0, d0",
+      "bytes": "d040",
+      "size": 2
+    },
+    {
+      "address": "0x00FABA",
+      "mnemonic": "lea.l",
+      "op_str": "$fac2(pc, d0.w), a1",
+      "bytes": "43fb0006",
+      "size": 4
+    },
+    {
+      "address": "0x00FABE",
+      "mnemonic": "adda.w",
+      "op_str": "(a1), a1",
+      "bytes": "d2d1",
+      "size": 2
+    },
+    {
+      "address": "0x00FAC0",
+      "mnemonic": "jmp",
+      "op_str": "(a1)",
+      "bytes": "4ed1",
+      "size": 2
+    },
+    {
+      "address": "0x00FAC2",
+      "mnemonic": "ori.b",
+      "op_str": "#$e8, (a0)+",
+      "bytes": "001800e8",
+      "size": 4
+    },
+    {
+      "address": "0x00FAC6",
+      "mnemonic": "btst.l",
+      "op_str": "d0, (a6)",
+      "bytes": "0116",
+      "size": 2
+    },
+    {
+      "address": "0x00FAC8",
+      "mnemonic": "btst.l",
+      "op_str": "d0, ([a4], $1c)",
+      "bytes": "01340152001c",
+      "size": 6
+    },
+    {
+      "address": "0x00FACE",
+      "mnemonic": "ori.b",
+      "op_str": "#$72, $32(a0)",
+      "bytes": "002801720032",
+      "size": 6
+    },
+    {
+      "address": "0x00FAD4",
+      "mnemonic": "ori.w",
+      "op_str": "#$4e, d0",
+      "bytes": "0040004e",
+      "size": 4
+    },
+    {
+      "address": "0x00FAD8",
+      "mnemonic": "ori.w",
+      "op_str": "#$6100, $710(a0)",
+      "bytes": "006861000710",
+      "size": 6
+    },
+    {
+      "address": "0x00FADE",
+      "mnemonic": "move.b",
+      "op_str": "$3(a0), d1",
+      "bytes": "12280003",
+      "size": 4
+    },
+    {
+      "address": "0x00FAE2",
+      "mnemonic": "move.w",
+      "op_str": "$4(a0), d2",
+      "bytes": "34280004",
+      "size": 4
+    },
+    {
+      "address": "0x00FAE6",
+      "mnemonic": "bra.b",
+      "op_str": "$fb5a",
+      "bytes": "6072",
+      "size": 2
+    },
+    {
+      "address": "0x00FAE8",
+      "mnemonic": "bsr.w",
+      "op_str": "$10254",
+      "bytes": "6100076a",
+      "size": 4
+    },
+    {
+      "address": "0x00FAEC",
+      "mnemonic": "move.b",
+      "op_str": "$3(a0), d1",
+      "bytes": "12280003",
+      "size": 4
+    },
+    {
+      "address": "0x00FAF0",
+      "mnemonic": "move.w",
+      "op_str": "$4(a0), d2",
+      "bytes": "34280004",
+      "size": 4
+    },
+    {
+      "address": "0x00FAF4",
+      "mnemonic": "bra.b",
+      "op_str": "$fb5a",
+      "bytes": "6064",
+      "size": 2
+    },
+    {
+      "address": "0x00FAF6",
+      "mnemonic": "bsr.w",
+      "op_str": "$10268",
+      "bytes": "61000770",
+      "size": 4
+    },
+    {
+      "address": "0x00FAFA",
+      "mnemonic": "move.b",
+      "op_str": "$3(a0), d1",
+      "bytes": "12280003",
+      "size": 4
+    },
+    {
+      "address": "0x00FAFE",
+      "mnemonic": "move.w",
+      "op_str": "$4(a0), d2",
+      "bytes": "34280004",
+      "size": 4
+    },
+    {
+      "address": "0x00FB02",
+      "mnemonic": "bra.b",
+      "op_str": "$fb5a",
+      "bytes": "6056",
+      "size": 2
+    },
+    {
+      "address": "0x00FB04",
+      "mnemonic": "move.w",
+      "op_str": "$ff19f0.l, d0",
+      "bytes": "303900ff19f0",
+      "size": 6
+    },
+    {
+      "address": "0x00FB0A",
+      "mnemonic": "move.b",
+      "op_str": "$3(a0), d1",
+      "bytes": "12280003",
+      "size": 4
+    },
+    {
+      "address": "0x00FB0E",
+      "mnemonic": "move.w",
+      "op_str": "$4(a0), d2",
+      "bytes": "34280004",
+      "size": 4
+    },
+    {
+      "address": "0x00FB12",
+      "mnemonic": "bra.b",
+      "op_str": "$fb5a",
+      "bytes": "6046",
+      "size": 2
+    },
+    {
+      "address": "0x00FB14",
+      "mnemonic": "move.w",
+      "op_str": "$ff19f4.l, d0",
+      "bytes": "303900ff19f4",
+      "size": 6
+    },
+    {
+      "address": "0x00FB1A",
+      "mnemonic": "move.b",
+      "op_str": "$3(a0), d1",
+      "bytes": "12280003",
+      "size": 4
+    },
+    {
+      "address": "0x00FB1E",
+      "mnemonic": "move.w",
+      "op_str": "$4(a0), d2",
+      "bytes": "34280004",
+      "size": 4
+    },
+    {
+      "address": "0x00FB22",
+      "mnemonic": "bra.b",
+      "op_str": "$fb5a",
+      "bytes": "6036",
+      "size": 2
+    },
+    {
+      "address": "0x00FB24",
+      "mnemonic": "cmpi.w",
+      "op_str": "#$1a, $ff1aa4.l",
+      "bytes": "0c79001a00ff1aa4",
+      "size": 8
+    },
+    {
+      "address": "0x00FB2C",
+      "mnemonic": "bne.w",
+      "op_str": "$fba6",
+      "bytes": "66000078",
+      "size": 4
+    },
+    {
+      "address": "0x00FB30",
+      "mnemonic": "move.w",
+      "op_str": "$ff1aac.l, d0",
+      "bytes": "303900ff1aac",
+      "size": 6
+    },
+    {
+      "address": "0x00FB36",
+      "mnemonic": "move.b",
+      "op_str": "$3(a0), d1",
+      "bytes": "12280003",
+      "size": 4
+    },
+    {
+      "address": "0x00FB3A",
+      "mnemonic": "move.w",
+      "op_str": "$4(a0), d2",
+      "bytes": "34280004",
+      "size": 4
+    },
+    {
+      "address": "0x00FB3E",
+      "mnemonic": "bra.b",
+      "op_str": "$fb5a",
+      "bytes": "601a",
+      "size": 2
+    },
+    {
+      "address": "0x00FB40",
+      "mnemonic": "cmpi.w",
+      "op_str": "#$1a, $ff1aa4.l",
+      "bytes": "0c79001a00ff1aa4",
+      "size": 8
+    },
+    {
+      "address": "0x00FB48",
+      "mnemonic": "bne.w",
+      "op_str": "$fba6",
+      "bytes": "6600005c",
+      "size": 4
+    },
+    {
+      "address": "0x00FB4C",
+      "mnemonic": "move.w",
+      "op_str": "$ff1ab0.l, d0",
+      "bytes": "303900ff1ab0",
+      "size": 6
+    },
+    {
+      "address": "0x00FB52",
+      "mnemonic": "move.b",
+      "op_str": "$3(a0), d1",
+      "bytes": "12280003",
+      "size": 4
+    },
+    {
+      "address": "0x00FB56",
+      "mnemonic": "move.w",
+      "op_str": "$4(a0), d2",
+      "bytes": "34280004",
+      "size": 4
+    },
+    {
+      "address": "0x00FB5A",
+      "mnemonic": "ext.w",
+      "op_str": "d1",
+      "bytes": "4881",
+      "size": 2
+    },
+    {
+      "address": "0x00FB5C",
+      "mnemonic": "lea.l",
+      "op_str": "$fb64(pc, d1.w), a1",
+      "bytes": "43fb1006",
+      "size": 4
+    },
+    {
+      "address": "0x00FB60",
+      "mnemonic": "adda.w",
+      "op_str": "(a1), a1",
+      "bytes": "d2d1",
+      "size": 2
+    },
+    {
+      "address": "0x00FB62",
+      "mnemonic": "jmp",
+      "op_str": "(a1)",
+      "bytes": "4ed1",
+      "size": 2
+    }
+  ]
+}
