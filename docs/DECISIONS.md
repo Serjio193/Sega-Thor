@@ -1,3 +1,20 @@
+# ADR-20261118-M16-190-VISIBLE-PLANE-STREAMER — ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer (0x00D7C0..0x00D9A4)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.441 extracted ROM routines `0x00D7C0..0x00D9A4` (484 bytes, 162 M68K instructions) implementing visible/full tilemap plane VRAM upload (`0x00D7C0`) and blank tile plane clearing (`0x00D950`/`0x00D95E`/`0x00D962`):
+   - Direct disassembly verified `dbra` +1 loop iterations: `0x0028001C` streams **41 cols x 29 rows** (`1,189` tiles) rather than 40x28, `0x003F001F` streams **64 cols x 32 rows** (`2,048` tiles), and `0x00D97C` (`d1=0x28`, `d2=0x1C`) clears **41 cols x 29 rows** with blank tile `0x0780`.
+   - Unconditionally clears `+$0E`, `+$10`, `+$0C`, `+$08`, `+$0A`, `+$1C`, `+$1E` BEFORE branching to `0x00D95E` when `+$27(a3)` bit 0 is clear.
+   - `select_visible_stream_dimensions` (`0x00D826..0x00D846`) selects `64x32` when bit 1 is already set OR when `height_tiles == 32 && width_tiles <= 64` (latching bit 1 via `bset.b #1, $27(a3)`).
+   - Toroidally wraps signed `cam_x >> 3` / `cam_y >> 3` into `[0, width_tiles)` / `[0, height_tiles)` (`+$08`/`+$0A`), wraps source coords at `width_tiles`/`height_tiles`, wraps VDP nametable ring addresses at 64 cols (`-0x80`) and 32 rows (`-0x1000`), and emits corresponding VDP control write commands.
+
+**Decisions:**
+1. **`visible_plane_streamer` Cleanroom Module:**
+   - Implemented `src/game/render/visible_plane_streamer.hpp/.cpp` and `include/game/render/visible_plane_streamer.hpp` in namespace `thor::render` (aliased into `oasis::game::render`), exposing structured VDP streaming, `compute_vram_write_cmd`, `wrap_tile_origin`, `select_visible_stream_dimensions`, `vdp_fill_plane_blank`, and bounded 64KB RAM window helper `vdp_upload_visible_tilemap_plane_from_ram` (`$FF1716`/`$FF173E`).
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_190_visible_plane_streamer` + 171-test M16 + file-limit regression suite).
+
 # ADR-20261118-M16-189-DUAL-PLANE-LOADER — ROM Dual Tilemap Plane Header Unpacker, VRAM Layout Configurator & Full Plane Initializer (0x00D542..0x00D7C0)
 **Status:** Accepted
 **Date:** 2026-11-18

@@ -1,3 +1,16 @@
+# Worklog — 2026-11-18 (M16.190: ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer)
+- **Concrete Task**: Implement `src/game/render/visible_plane_streamer.hpp/.cpp` and `include/game/render/visible_plane_streamer.hpp` in cleanroom namespace `thor::render` covering `0x00D7C0..0x00D9A4` (`compute_vram_write_cmd`, `wrap_tile_origin`, `select_visible_stream_dimensions` with `41x29` vs `64x32` `dbra` bounds and `height==32 && width<=64` bit-1 latch, `vdp_fill_plane_blank` `41x29` `0x0780`, `vdp_upload_visible_tilemap_plane` toroidal + VDP ring wrap streaming, and 64KB RAM helper `vdp_upload_visible_tilemap_plane_from_ram`); add `tests/m16_190_visible_plane_streamer_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/render/visible_plane_streamer.hpp` (184 lines) / `src/game/render/visible_plane_streamer.cpp` (311 lines).
+  * Added `include/game/render/visible_plane_streamer.hpp` (3 lines).
+  * Added `tests/m16_190_visible_plane_streamer_test.cpp` (357 lines, registered as `oasis_m16_190_visible_plane_streamer` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_190_visible_plane_streamer` + M16 + `project_file_line_limit` suite passed (`171/171`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_190_visible_plane_streamer` + M16 + `project_file_line_limit` suite passed (`171/171`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Ready for M16.191 projectile/effect entity pool allocators & sound driver dispatchers (`0x00D9A4..0x00DB1A`).
+
 # Worklog — 2026-11-18 (M16.189: ROM Dual Tilemap Plane Header Unpacker, VRAM Plane Layout Configurator & Full Plane Initializer)
 - **Concrete Task**: Implement `src/game/render/dual_plane_loader.hpp/.cpp` and `include/game/render/dual_plane_loader.hpp` in cleanroom namespace `thor::render` covering `0x00D542..0x00D7C0` (`compute_log2_byte_stride` `0x00D7B0`, `unpack_dual_plane_header` in 8x8 tile units with bit-7 aux maps, `compute_camera_scroll_limits`, `init_dual_plane_layout` with two-pass `0x003820` decompression, scroll clears, VDP Reg 7/12, 64-word CRAM palettes, `PlaneVramStreamCallback` for `0x00D7C0`, and 64KB RAM helper `init_dual_plane_layout_from_ram`); add `tests/m16_189_dual_plane_loader_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

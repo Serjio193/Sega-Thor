@@ -1,3 +1,13 @@
+# M16.190 ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer (`0x00D7C0..0x00D9A4`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/render/visible_plane_streamer.hpp/.cpp` and `include/game/render/visible_plane_streamer.hpp` in cleanroom namespace `thor::render`:
+  - `compute_vram_write_cmd` & `wrap_tile_origin` (`0x00D7E8`/`0x00D892`): VDP write command encoding and signed `cam >> 3` toroidal wrap.
+  - `select_visible_stream_dimensions` (`0x00D820`): chooses `64x32` (latching `+$27` bit 1 on `height == 32 && width <= 64`) or `41x29` (`0x28+1 x 0x1C+1`).
+  - `vdp_fill_plane_blank` (`0x00D950`/`0x00D95E`/`0x00D962`): fills `41x29` tiles with `0x0780`.
+  - `vdp_upload_visible_tilemap_plane` (+ `_from_ram`) (`0x00D7C0..0x00D94E`): clears scroll/step fields, streams toroidal tile rows into VDP nametable ring with col-64/row-32 wrap commands.
+- Qualified `oasis_m16_190_visible_plane_streamer` and the 171-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.189 ROM Dual Tilemap Plane Header Unpacker, VRAM Plane Layout Configurator & Full Plane Initializer (`0x00D542..0x00D7C0`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
