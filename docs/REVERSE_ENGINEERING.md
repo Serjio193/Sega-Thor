@@ -1,3 +1,12 @@
+# Reverse Engineering Notes — Milestone M15.485 (`0x011A4C`..`0x011BA0`): Spirit Companion Button A Command Recognizer, SP Cost Consumer & Master 45-Frame SP Drain Controller
+- **Original ROM Addresses:** `0x011A4C..0x011BA0` (340 bytes, 79 M68K instructions).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_spirit_command_sp_drain.py` and `data/thor-evidence/rom_spirit_command_sp_drain_m15_485.json`:
+  * `0x011A4C..0x011B28`: `Spirit_PollButtonACommandInput` — suppresses on `$FF1982`/`$FF1983`/`$FF19A7 != 0` (`$FF19A0 = 0xFF`), samples `$FF165E & 0x40`, latches `$FF165E -> $FF19A3` and `$FF19FE -> $FF19A4` on rising edge, detects single tap (`1`) after 6-frame countdown `$FF19A1`, double tap (`2`) on re-press within countdown, or hold release (`3`) when `$FF199E >= 0x14` (20 frames), writing `$FF19A2`.
+  * `0x011B28..0x011B4E`: `Spirit_TryConsumePlayerSP` — subtracts `d0.w` from `+$8E(a5)`; commits and clears Carry if signed remaining `>= 1`, leaves unchanged and sets Carry if `< 1`, preserving CCR across `movem.l (a7)+, d1`.
+  * `0x011B4E..0x011BA0`: `AI_Dytto_MasterTickAndSpDrain` — loads `a5 = $FF19E8`, branches directly to `0x011BA0` when `+$A2(a6) != 0`, invokes `0x011A4C` and `0x00E36E`, ticks 45-frame (`0x2D`) timer `+$8E(a6)` to deduct 1 SP (branching to `0x012314` if SP is 0 before or after decrement), and toggles bit 1 (`0x02`) of `+$36(a6)` when `+$8E(a5) <= 1` (clearing when `> 1`).
+- **Assumptions:** Downstream state dispatcher `0x011BA0`, dismissal `0x012314`, and entity helper `0x00E36E` remain outside this slice.
+- **Test Status:** Verified via `tests/rom_spirit_command_sp_drain_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.484 (`0x01171C`..`0x011A4C`): Spirit Orb State 0 Scan, Catalyst Transmutation, Trail Particle Emitter & Tilemap Sampler
 - **Original ROM Addresses:** `0x01171C..0x011A4C` (816 bytes: 234 instructions across `0x01171C..0x011A3A` + 18-byte `SpiritOrbTrailTileTable` at `0x011A3A..0x011A4C`).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_spirit_orb_state_machine.py` and `data/thor-evidence/rom_spirit_orb_state_machine_m15_484.json`:

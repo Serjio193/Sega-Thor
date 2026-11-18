@@ -1,3 +1,6 @@
+# M15.485 ROM Spirit Companion Button A Tap/Double-Tap/Hold Command Recognizer, SP Cost Consumer & Master 45-Frame SP Drain Controller (`0x011A4C`..`0x011BA0`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_spirit_command_sp_drain.py`, `tests/rom_spirit_command_sp_drain_test.py` (`5/5 PASS`), `data/thor-evidence/rom_spirit_command_sp_drain_m15_485.json`, and `docs/handoffs/STANDALONE_M15_485_SPIRIT_COMMAND_SP_DRAIN_HANDOFF.md`.
+
 # M15.484 ROM Spirit Orb State 0 Scan, Catalyst Transmutation, Trail Particle Emitter & Tilemap Sampler (`0x01171C`..`0x011A4C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_spirit_orb_state_machine.py`, `tests/rom_spirit_orb_state_machine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_spirit_orb_state_machine_m15_484.json`, and `docs/handoffs/STANDALONE_M15_484_SPIRIT_ORB_STATE_MACHINE_HANDOFF.md`.
 

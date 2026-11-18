@@ -1,3 +1,9 @@
+# M15.485 ROM Spirit Companion Button A Tap/Double-Tap/Hold Command Recognizer, SP Cost Consumer & Master 45-Frame SP Drain Controller
+- `tools/extract_rom_spirit_command_sp_drain.py` — extractor for `0x011A4C..0x011BA0` (Button A command decoder `0x011A4C`, shared SP guard `0x011B28`, and Dytto master tick / 45-frame SP drain `0x011B4E`).
+- `tests/rom_spirit_command_sp_drain_test.py` — `5` unit tests verifying evidence structure, lock-flag suppression, single/double-tap/20-frame-hold recognition, SP guard `>= 1`, and 45-frame SP drain & blink bit toggling.
+- `data/thor-evidence/rom_spirit_command_sp_drain_m15_485.json` — extracted M15.485 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_485_SPIRIT_COMMAND_SP_DRAIN_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.484 ROM Spirit Orb State 0 Scan, Catalyst Transmutation, Trail Particle Emitter & Tilemap Sampler
 - `tools/extract_rom_spirit_orb_state_machine.py` — extractor for `0x01171C..0x011A4C` (Spirit orb State 0 medium/AABB scan, State 1/2 unlock-gated transition, item catalyst transmutation, 6-slot trail integration, tilemap nibble sampler, and 18-byte trail tile table).
 - `tests/rom_spirit_orb_state_machine_test.py` — `5` unit tests verifying evidence structure, State 0 medium/AABB/entity transition, item catalyst matching/transmutation, 6-slot trail allocation & nibble sampler, and trail particle vertex rotation/termination.
