@@ -1,3 +1,11 @@
+# M16.193 ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer (`0x00DC26..0x00DDA2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/render/dirty_plane_blitter.hpp/.cpp` and `include/game/render/dirty_plane_blitter.hpp` in cleanroom namespace `thor::render`:
+  - `plan_dirty_plane_rect` (`0x00DC26..0x00DC98`, `0x00DD14..0x00DD26`): bit-1 unclipped dispatch, `42x30` inclusive `dbra` clipping, `+$24` top-skip shift, and `+$0C` 64x32 VDP ring origin math.
+  - `vdp_sync_dirty_plane_rect` (+ `_from_tilemap` / `_from_ram` / `TilemapRectSyncRequest` overloads) (`0x00DC9A..0x00DDA2`): toroidal 64x32 VDP nametable streaming with col-64 command re-issue and row-32 wrap.
+- Qualified `oasis_m16_193_dirty_plane_blitter` and the 174-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.192 ROM Tilemap Rectangle Fill & Block Copy Subsystem (`0x00DB1A..0x00DC26`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

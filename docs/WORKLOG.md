@@ -1,3 +1,16 @@
+# Worklog — 2026-11-18 (M16.193: ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer)
+- **Concrete Task**: Implement `src/game/render/dirty_plane_blitter.hpp/.cpp` and `include/game/render/dirty_plane_blitter.hpp` in cleanroom namespace `thor::render` covering `0x00DC26..0x00DDA2` (`compute_dirty_vram_write_cmd`, `plan_dirty_plane_rect` with 42x30 inclusive clipping, bit-1 unclipped branch, `+$24` top skip, `+$0C` VDP ring offset, `vdp_sync_dirty_plane_rect` + `TilemapRectSyncRequest`/`_from_tilemap`/`_from_ram` overloads); add `tests/m16_193_dirty_plane_blitter_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/render/dirty_plane_blitter.hpp` (137 lines) / `src/game/render/dirty_plane_blitter.cpp` (319 lines).
+  * Added `include/game/render/dirty_plane_blitter.hpp` (3 lines).
+  * Added `tests/m16_193_dirty_plane_blitter_test.cpp` (383 lines, registered as `oasis_m16_193_dirty_plane_blitter` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_193_dirty_plane_blitter` + M16 + `project_file_line_limit` suite passed (`174/174`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_193_dirty_plane_blitter` + M16 + `project_file_line_limit` suite passed (`174/174`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Ready for M16.194 3D AABB entity force vector fields & conveyor/current subsystem (`0x00DDA2..0x00DEEC`).
+
 # Worklog — 2026-11-18 (M16.192: ROM Tilemap Rectangle Fill & Block Copy Subsystem)
 - **Concrete Task**: Implement `src/game/render/tilemap_rect_ops.hpp/.cpp` and `include/game/render/tilemap_rect_ops.hpp` in cleanroom namespace `thor::render` covering `0x00DB1A..0x00DC26` (`parse_tilemap_rect_copy_args`, `tilemap_fill_rect_byte`, `tilemap_copy_rect_byte`, `tilemap_copy_rect_word`, `tilemap_copy_rect_word_only_and_sync` `0x00DB68`, `tilemap_copy_rect_word_and_sync` `0x00DB64` with `DirtyRectSyncCallback` for `0x00DC26`, and 64KB RAM helpers); add `tests/m16_192_tilemap_rect_ops_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

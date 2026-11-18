@@ -1,3 +1,18 @@
+# ADR-20261118-M16-193-DIRTY-PLANE-BLITTER — ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer (0x00DC26..0x00DDA2)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.444 extracted ROM routine `0x00DC26..0x00DDA2` (`vdp_sync_dirty_plane_rect`, 380 bytes, 127 M68K instructions):
+   - Direct disassembly verified key behaviors: tests ONLY `+$27(a3)` bit 1 (`0x00DC2C` unclipped mode, ignoring bit 0); clipped mode (`0x00DC30..0x00DD12`) clips inclusive `dbra` bounds (`width_minus_1`, `height_minus_1`) against `0..41` (`42` cols max) and `0..29` (`30` rows max) relative to `+$08`/`+$0A`, skips negative top rows via `+$24(a3)` (`byte_stride_shift`), combines `+$0C(a3)` (`(vdp_row << 7) | (vdp_col << 1)`) with clipped rel coords into 64x32 VDP ring indices (`& 0x3F` / `& 0x1F`), advances rows by `2 * +$20(a3)`, and wraps VDP cols at 64 (re-issuing VDP write cmd even after final col-63 tile) and rows at 32 (no extra cmd).
+   - Unclipped mode (`0x00DD14..0x00DDA2`) computes `(target_x - start_col) & 0x3F` and `(target_y - start_row) & 0x1F` directly and runs the identical toroidal streamer.
+
+**Decisions:**
+1. **`dirty_plane_blitter` Cleanroom Module:**
+   - Implemented `src/game/render/dirty_plane_blitter.hpp/.cpp` and `include/game/render/dirty_plane_blitter.hpp` in namespace `thor::render` (aliased into `oasis::game::render`), reusing `TilemapRectSyncRequest` and `VisiblePlaneState` cleanly with 64KB RAM window overloads (`$FF1716`/`$FF173E`).
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_193_dirty_plane_blitter` + 174-test M16 + file-limit regression suite).
+
 # ADR-20261118-M16-192-TILEMAP-RECT-OPS — ROM Tilemap Rectangle Fill & Block Copy Subsystem (0x00DB1A..0x00DC26)
 **Status:** Accepted
 **Date:** 2026-11-18
