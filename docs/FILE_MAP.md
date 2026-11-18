@@ -1,3 +1,9 @@
+# M15.484 ROM Spirit Orb State 0 Scan, Catalyst Transmutation, Trail Particle Emitter & Tilemap Sampler
+- `tools/extract_rom_spirit_orb_state_machine.py` — extractor for `0x01171C..0x011A4C` (Spirit orb State 0 medium/AABB scan, State 1/2 unlock-gated transition, item catalyst transmutation, 6-slot trail integration, tilemap nibble sampler, and 18-byte trail tile table).
+- `tests/rom_spirit_orb_state_machine_test.py` — `5` unit tests verifying evidence structure, State 0 medium/AABB/entity transition, item catalyst matching/transmutation, 6-slot trail allocation & nibble sampler, and trail particle vertex rotation/termination.
+- `data/thor-evidence/rom_spirit_orb_state_machine_m15_484.json` — extracted M15.484 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_484_SPIRIT_ORB_STATE_MACHINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.483 ROM Spirit Entity Orb Kinematics, Trail Table & Diamond Vertex Generator
 - `tools/extract_rom_spirit_orb_kinematics.py` — extractor for `0x0115C8..0x01171C` (Spirit orb State 2 friction kinematics, State 1 forward/reverse animation, 18-byte scale table, and 12-byte 4-point diamond vertex generator).
 - `tests/rom_spirit_orb_kinematics_test.py` — `4` unit tests verifying evidence structure, friction deceleration, scale table indexing, and diamond vertex generation.

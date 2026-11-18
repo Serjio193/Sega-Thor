@@ -1,3 +1,15 @@
+# Reverse Engineering Notes — Milestone M15.484 (`0x01171C`..`0x011A4C`): Spirit Orb State 0 Scan, Catalyst Transmutation, Trail Particle Emitter & Tilemap Sampler
+- **Original ROM Addresses:** `0x01171C..0x011A4C` (816 bytes: 234 instructions across `0x01171C..0x011A3A` + 18-byte `SpiritOrbTrailTileTable` at `0x011A3A..0x011A4C`).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_spirit_orb_state_machine.py` and `data/thor-evidence/rom_spirit_orb_state_machine_m15_484.json`:
+  * `0x01171C..0x011810`: `AI_SpiritOrb_State0_ElementalMediumAndCatalystScan` — handles `$FF1990` forced summon, Z-elevation decay `-$18000` clamped `>= 0`, airborne `+$40|+$41` bit 6/3 despawn, self/medium probes (`+$39(a6)` bit 1, `$FF17C2 <= 3` with `+$6F` bit 5, `$FF17C3 <= 3` with `+$6F` bit 6), and entity AABB scan `0x00B922` (`d0.b=$FC`, box `[-12..12, -10..10, 0..24]`) for Torch `$0064`, Crystal `$00B4`, and affinity bits.
+  * `0x011810..0x011866`: `AI_SpiritOrb_TransitionToState1Or2` — gates summon State 1 vs rebound State 2 against `$FF0D7A` unlock bit and `$FF16F1` bit 0 inhibit, clears velocities, adds `12` to `+$10.w`, and plays SFX `0x8004D2`.
+  * `0x011866..0x011938`: `AI_SpiritOrb_ScanItemCatalysts` — AABB scan `0x00B9EC` (`[-4..4, -4..4]`) on Type `$0008` items, matching direct catalysts `$12..$15` and transmuting `$1A->$21`, `$1B->$05` (`+$52=$14`), `$1C->$11`, `$1D->$2A`, `$27->$26` (`+$22=$1E`, `bclr #1, +$36(a0)`).
+  * `0x011938..0x0119CE`: `AI_SpiritOrb_IntegrateAndUpdateTrail` — calls `0x00E36E`, integrates velocities, viewport-culls via `0x00E5AE` (margin `0x10`), allocates 6 trail slots `+$A6..+$AB` every 3 frames with alternating bit 7 sign `+$AD`, and emits vertex list `$FF19A8/$FF19A9`.
+  * `0x0119CE..0x0119EC`: `Tilemap_SampleLowNibbleAttribute` — computes `((y >> 3) << +$08(a0)) + (x >> 3)` and returns `(a1, d4.w) & 0x0F`.
+  * `0x0119EC..0x011A4C`: `AI_SpiritOrb_EmitTrailParticleVertex` + `SpiritOrbTrailTileTable` (`[16, 8, 16, 9, 16, 10, 16, 11, 12, 13, 12, 11, 14, 15, 14, 17, 18, 19]`) — emits 4-way facing-rotated `(tile_id, dx, dy)` trail vertices with `-12` Y offset, terminating at age `>= 18` via `0xFF` wrap to `0x00`.
+- **Assumptions:** External helpers `0x00B922`, `0x00B9EC`, `0x00E36E`, `0x00E5AE`, and `0x00E7FC` remain outside this slice; `(x, y)` in `Tilemap_SampleLowNibbleAttribute` follow signed word arithmetic shifts.
+- **Test Status:** Verified via `tests/rom_spirit_orb_state_machine_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.483 (`0x0115C8`..`0x01171C`): Spirit Entity Orb Kinematics, Scale Table & Diamond Vertex Generator
 - **Original ROM Addresses:** `0x0115C8..0x01171C` (340 bytes, 100 instructions + 18-byte embedded scale table at `0x0116D2..0x0116E4`).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_spirit_orb_kinematics.py` and `data/thor-evidence/rom_spirit_orb_kinematics_m15_483.json`:
