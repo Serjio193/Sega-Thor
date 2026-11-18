@@ -1,3 +1,6 @@
+# M15.474 ROM Entity AI Ali Facing Tracker, Elevation Gate & 4-Way Directional Melee Attack Hitbox Collision Engine (`0x01074A`..`0x010916`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_ai_combat_facing.py`, `tests/rom_entity_ai_combat_facing_test.py` (`3/3 PASS`), `data/thor-evidence/rom_entity_ai_combat_facing_m15_474.json`, and `docs/handoffs/STANDALONE_M15_474_COMBAT_FACING_HANDOFF.md`.
+
 # M15.473 ROM Entity AI Trigonometric Tracking, Smooth Angle Turn-Rate Limiter & 2D Sin/Cos Velocity Projection Engine (`0x010594`..`0x01074A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_trig_tracking.py`, `tests/rom_entity_trig_tracking_test.py` (`4/4 PASS`), `data/thor-evidence/rom_entity_trig_tracking_m15_473.json`, and `docs/handoffs/STANDALONE_M15_473_TRIG_TRACKING_HANDOFF.md`.
 

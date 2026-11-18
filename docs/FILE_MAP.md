@@ -1,3 +1,9 @@
+# M15.474 ROM Entity AI Ali Facing Tracker, Elevation Gate & 4-Way Directional Melee Attack Hitbox Collision Engine
+- `tools/extract_rom_entity_ai_combat_facing.py` — extractor for `0x01074A..0x010916` (Direction angle table, Ali facing tracker, 24px elevation gate, and 4-way facing directional melee attack hitbox collision engine).
+- `tests/rom_entity_ai_combat_facing_test.py` — `3` unit tests verifying Ali facing calculation, elevation difference threshold, and 4-way directional attack box intersection tests.
+- `data/thor-evidence/rom_entity_ai_combat_facing_m15_474.json` — extracted M15.474 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_474_COMBAT_FACING_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.473 ROM Entity AI Trigonometric Tracking, Smooth Angle Turn-Rate Limiter & 2D Sin/Cos Velocity Projection Engine
 - `tools/extract_rom_entity_trig_tracking.py` — extractor for `0x010594..0x01074A` (Target angle tracking with turn-rate limiter, octant arctangent table helper at ROM $5D906, 4-way facing quantizer, and 2D sin/cos velocity projection at ROM $5D706).
 - `tests/rom_entity_trig_tracking_test.py` — `4` unit tests verifying quadrant arctangent calculation, cardinal facing intervals, smooth turn-rate limiting, and 180-degree boundary transitions.
