@@ -1,3 +1,11 @@
+# Reverse Engineering Notes — Milestone M15.491 (`0x012988`..`0x012C4E`): Efreet Idle/Wander/Follow AI, Vulnerability Scanner, Dismissal & Hover Bobbing Subsystem
+- **Original ROM Addresses:** `0x012988..0x012C4E` (710 bytes: 200 M68K instructions across 702 bytes `0x012988..0x012C46` + 8-byte embedded 4-word bobbing table `0x012C46..0x012C4E`).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_efreet_follow_dismissal.py` and `data/thor-evidence/rom_efreet_follow_dismissal_m15_491.json`:
+  * `0x012988..0x012BA8`: `AI_Efreet_IdleWanderFollowAndVulnScan` — `$FF19A7`/`$FF19A2` dispatch, `0x00BAB8` 4-dir scan (`$0586E8`), ROM-verified Chebyshev `max(|dx|,|dy|)` distance (`<= $40` / `$41..$80` / `> $80`), 30-frame wander velocity oscillation `+/-$2000`, and State `$02` `($28,$20)` follow with 4-frame facing debounce `+$AC`.
+  * `0x012BA8..0x012C4E`: `AI_Efreet_DismissalAndHoverBobbing` — `$FF19A7=$FF` State `$06` `#$A0039E` dismissal + `$FF1C1C` `+$00==$FFFE` cleanup, `ali_z+16` elevation tracker with `> 12` downward hysteresis (`0x012BFE`), and ROM-verified bobbing words `0x7000, 0x3000, 0x9000, 0xD000` (`0x012C46..0x012C4E`) doubled into 32-bit `+$10(a6)`.
+- **Assumptions:** Shared callees `0x00BAB8`, `0x00E268`, `0x00E2D4`, `0x00E398`, `0x00E45E`, `0x00E7FC`, and hitbox table `$0586E8` remain external to this slice.
+- **Test Status:** Verified via `tests/rom_efreet_follow_dismissal_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.490 (`0x012680`..`0x012988`): Efreet Dash Charge Attack, Flame Breath State Controller & Radial Fireball Supernova Spawner
 - **Original ROM Addresses:** `0x012680..0x012988` (776 bytes, 206 M68K instructions, zero embedded tables).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_efreet_combat_fireball.py` and `data/thor-evidence/rom_efreet_combat_fireball_m15_490.json`:

@@ -1,3 +1,6 @@
+# M15.491 ROM Efreet Idle/Wander/Follow AI, Vulnerability Scanner, Dismissal & Hover Bobbing Subsystem (`0x012988`..`0x012C4E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_efreet_follow_dismissal.py`, `tests/rom_efreet_follow_dismissal_test.py` (`5/5 PASS`), `data/thor-evidence/rom_efreet_follow_dismissal_m15_491.json`, and `docs/handoffs/STANDALONE_M15_491_EFREET_FOLLOW_DISMISSAL_HANDOFF.md`.
+
 # M15.490 ROM Efreet Dash Charge Attack, Flame Breath State Controller & Radial Fireball Supernova Spawner (`0x012680`..`0x012988`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_efreet_combat_fireball.py`, `tests/rom_efreet_combat_fireball_test.py` (`5/5 PASS`), `data/thor-evidence/rom_efreet_combat_fireball_m15_490.json`, and `docs/handoffs/STANDALONE_M15_490_EFREET_COMBAT_FIREBALL_HANDOFF.md`.
 
