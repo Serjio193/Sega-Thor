@@ -1,3 +1,9 @@
+# M15.481 ROM Entity AI Mass Confusion, Palette Transfer, Ali Range Tracker & Impact Knockback Dispatcher
+- `tools/extract_rom_entity_ai_knockback.py` — extractor for `0x011276..0x0114AE` (Pool 2 mass enemy confusion broadcaster, entity type slot search, slot probe carry inverter, CRAM palette line DMA mirrors, Player Ali distance/dominant facing calculator, and target impact knockback dispatcher).
+- `tests/rom_entity_ai_knockback_test.py` — `5` unit tests verifying evidence structure, fear/confusion filtering, type search, Ali range/facing calculations, and normal/boosted knockback responses.
+- `data/thor-evidence/rom_entity_ai_knockback_m15_481.json` — extracted M15.481 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_481_KNOCKBACK_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.480 ROM Entity AI Target Angle Projector, Hover Bobbing Elevation Tracker & Multi-Segment Kinematics Engine
 - `tools/extract_rom_entity_ai_kinematics.py` — extractor for `0x01108C..0x011276` (Signed target vector angle tracking, octant arctangent table helper at ROM $5D906, 2D sin/cos velocity projector, hover bobbing elevation tracking, surface contact trampolines, Pool 2 vacant slot counter, and multi-segment kinematics engine).
 - `tests/rom_entity_ai_kinematics_test.py` — `5` unit tests verifying evidence structure, target angle octants, hover elevation bobbing, Pool 2 vacant slot count, and multi-segment kinematic updates.

@@ -1,3 +1,6 @@
+# M15.481 ROM Entity AI Mass Confusion, Palette Transfer, Ali Range Tracker & Impact Knockback Dispatcher (`0x011276`..`0x0114AE`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_ai_knockback.py`, `tests/rom_entity_ai_knockback_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_ai_knockback_m15_481.json`, and `docs/handoffs/STANDALONE_M15_481_KNOCKBACK_HANDOFF.md`.
+
 # M15.480 ROM Entity AI Target Angle Projector, Hover Bobbing Elevation Tracker & Multi-Segment Kinematics Engine (`0x01108C`..`0x011276`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_ai_kinematics.py`, `tests/rom_entity_ai_kinematics_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_ai_kinematics_m15_480.json`, and `docs/handoffs/STANDALONE_M15_480_KINEMATICS_HANDOFF.md`.
 
