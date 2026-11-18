@@ -1,3 +1,9 @@
+# M15.453 ROM Dynamic Effect Type $34 Spawner, Audio Rate Limiter & PRNG Shake-Jitter Engine
+- `tools/extract_rom_effect_spawner_jitter.py` — extractor for `0x00E90E..0x00EA76` (Pool 2 slot allocation, normal/priority effect initialization, 7-frame audio SFX rate-limiter, cutscene invisibility gate, and PRNG [-16..+15] shake jitter).
+- `tests/rom_effect_spawner_jitter_test.py` — `4` unit tests verifying ROM constants, effect initialization with priority flag, cutscene slot 0 gate, and PRNG position shake jitter simulation.
+- `data/thor-evidence/rom_effect_spawner_jitter_m15_453.json` — extracted M15.453 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_453_EFFECT_SPAWNER_JITTER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.452 ROM Positional Spatial Audio Dispatcher, Distance Attenuation & Stereo Pan Subsystem
 - `tools/extract_rom_spatial_audio_pan.py` — extractor for `0x00E78E..0x00E90E` (positional sound effect dispatch, non-spatial sound ID bypass, 1.25x isometric distance calculation, Mode A/B distance attenuation, culling, and stereo panning).
 - `tests/rom_spatial_audio_pan_test.py` — `5` unit tests verifying ROM constants, non-spatial ID bypass (< 0x200), isometric distance scaling, Mode A attenuation/culling/panning, and Mode B attenuation/culling/panning.

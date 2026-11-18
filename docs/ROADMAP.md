@@ -1,3 +1,6 @@
+# M15.453 ROM Dynamic Effect Type $34 Spawner, Audio Rate Limiter & PRNG Shake-Jitter Engine (`0x00E90E`..`0x00EA76`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_effect_spawner_jitter.py`, `tests/rom_effect_spawner_jitter_test.py` (`4/4 PASS`), `data/thor-evidence/rom_effect_spawner_jitter_m15_453.json`, and `docs/handoffs/STANDALONE_M15_453_EFFECT_SPAWNER_JITTER_HANDOFF.md`.
+
 # M15.452 ROM Positional Spatial Audio Dispatcher, Distance Attenuation & Stereo Pan Subsystem (`0x00E78E`..`0x00E90E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_spatial_audio_pan.py`, `tests/rom_spatial_audio_pan_test.py` (`5/5 PASS`), `data/thor-evidence/rom_spatial_audio_pan_m15_452.json`, and `docs/handoffs/STANDALONE_M15_452_SPATIAL_AUDIO_PAN_HANDOFF.md`.
 
