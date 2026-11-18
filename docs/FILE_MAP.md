@@ -1,3 +1,9 @@
+# M15.472 ROM Script Virtual Machine Spatial Positioning, Nearest Offscreen Target & Edge Spawner Subsystem
+- `tools/extract_rom_script_vm_spatial_spawn.py` — extractor for `0x0103B0..0x010594` (Script entity spatial positioning, fixed coordinate copier, nearest offscreen target selector, and 4-way random edge placement jump table at 0x01049E).
+- `tests/rom_script_vm_spatial_spawn_test.py` — `4` unit tests verifying fixed coordinate copy, nearest offscreen point selection, on-screen point rejection, and 4-way edge placement calculations.
+- `data/thor-evidence/rom_script_vm_spatial_spawn_m15_472.json` — extracted M15.472 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_472_SPATIAL_SPAWN_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.471 ROM Script Virtual Machine Scene Entity Limit Checker, Parameter Buffer Indexer & ID Allocator Subsystem
 - `tools/extract_rom_script_vm_entity_limits.py` — extractor for `0x01027C..0x0103B0` (Script entity limit evaluators for Opcodes $01, $0E, and $17, parameter word buffer indexing, and Pool 2 duplicate ID scanner).
 - `tests/rom_script_vm_entity_limits_test.py` — `4` unit tests verifying single entity limit success/exhaustion, compound entity dual ID allocation, and Pool 2 active slot ID matching.
