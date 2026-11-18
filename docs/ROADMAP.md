@@ -1,3 +1,31 @@
+# M16.182 ROM Companion Spirit Warp Repositioning, Room Collision Table Loader & BGM Engine Synchronizer (`0x00CC12..0x00CD64`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `reposition_spirit_on_room_warp`, `reposition_spirit_on_room_warp_fixed`, `resolve_collision_table_pointer`, `load_room_collision_table`, `synchronize_bgm_track`, `count_active_group2_entities`, `reposition_spirit_raw`, `load_room_collision_table_raw`, `synchronize_bgm_track_raw`, `latch_all_entity_ground_surfaces_raw`, and `init_room_environment_and_sync_bgm_raw` in `src/game/world/spirit_warp_bgm.hpp/.cpp` and `include/game/world/spirit_warp_bgm.hpp`:
+  - Companion spirit warp repositioning (`$FF1AA4`, `0x00CC12..0x00CCA4`):
+    * Clears mode byte `+0x39(a1) = 0`.
+    * Room spirit forbid flag check: if `$FF16F1` bit 0 is set, unsummons spirit unconditionally (`+0x00 = 0`, `active = false`).
+    * Bow unsummoning: type `0x0016` unsummoned (`+0x00 = 0`).
+    * Dytto/Efreet state sync: type `0x001C` triggers state synchronization (`state_synced = true`).
+    * Shade projection: type `0x001E` triggers Shade projection helper with Player Ali 3D coords (X, Y, elevation).
+    * Reset state type: type `0x001A` sets position to `(ali_x, ali_y - 8)`, clears mode `+0x04 = 0`, facing `+0x2A = 0`, counters `+0x9E = 0`, `+0xA2 = 0`, and subpixel velocity `+0x06 = 0`.
+    * Generic types: sets position to `(ali_x, ali_y - 8)`.
+  - Room collision table pointer resolution & loader (`0x00CCA4..0x00CCD4`):
+    * Sets bit 5 on VDP busy flag `$FF164D |= 0x20`.
+    * Resolves 32-area table at ROM `0x04371E`: reads area base and computes `(area_base + scene_id * 2) + read_be16_signed(scene_entry)`.
+    * Stores resolved `collision_ptr` into RAM at `$FF17B2`.
+    * Clears collision tick counter `$FF17B6 = 0` and sets cadence timer `$FF17B7 = 10` (0x0A frames).
+  - Room environment initialization & BGM track synchronization (`0x00CCE6..0x00CD44`):
+    * Checks spirit forbid, clears HUD stale enemy tracking `$FF184F = 0`, clears SAT counters `$FF188A = 0` and buffer base `$FF13CC = 0`.
+    * Compares target track `$FF16F4` with current playing track `$FF16F2`:
+      - If `target == current`: sends command 3 (`kBgmCmdContinue`) to sound driver `$60004` to maintain uninterrupted playback.
+      - If `target != current`: updates `$FF16F2 = target`, sends track command `target` to sound driver `$60004`.
+  - Group 2 entity ground surface latch sweep (`0x00CD4A..0x00CD64`):
+    * Sweeps 21 slots at `$FF19E8` (stride 188 bytes / `0xBC`), counting and latching ground attributes for active entities (`type > 0`).
+  - Raw 64KB RAM window integration helpers at `$FF1AA4`, `$FF19E8`, `$FF16F1`, `$FF17B2`, `$FF17B6`, `$FF17B7`, `$FF164D`, `$FF164E`, `$FF184F`, `$FF188A`, `$FF13CC`, `$FF16F4`, `$FF16F2`.
+  - Cleanroom `thor::environment` and `thor::world` namespace aliases.
+- Qualified `oasis_m16_182_spirit_warp_bgm` and the 163-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.181 ROM Room Warp Controller, Camera Centering, Cutscene Locks & Player Ali Spawn Reset Engine (`0x00C9B2..0x00CC12`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

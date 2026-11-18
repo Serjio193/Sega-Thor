@@ -1,3 +1,39 @@
+# ADR-20261118-M16-182-SPIRIT-WARP-BGM — ROM Companion Spirit Warp Repositioning, Room Collision Table Loader & BGM Engine Synchronizer (0x00CC12..0x00CD64)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.433 extracted ROM routines `0x00CC12..0x00CD64` (338 bytes) governing companion spirit repositioning upon room warp, 32-area room collision table loading, room environment initialization, BGM track synchronization with sound driver `$60004`, and Group 2 entity ground surface latching:
+   - Companion spirit warp repositioning (`$FF1AA4`, `0x00CC12..0x00CCA4`):
+     * Clears mode byte `+0x39(a1) = 0`.
+     * Room forbid flag `$FF16F1` bit 0: unsummons spirit unconditionally (`+0x00 = 0`, `active = false`).
+     * Type `0x0016` (Bow): unsummoned (`+0x00 = 0`) since Bow cannot persist across rooms.
+     * Type `0x001C` (Dytto / Efreet): invokes companion state synchronization helper (`0x01378A`).
+     * Type `0x001E` (Shade): invokes Shade projection helper (`0x0147E0`) with Player Ali coordinates (X, Y, elevation).
+     * Type `0x001A`: sets position to `(ali_x, ali_y - 8)`, clears mode `+0x04 = 0`, facing `+0x2A = 0`, counters `+0x9E = 0`, `+0xA2 = 0`, subpixel velocity `+0x06 = 0`.
+     * Other types: sets position to `(ali_x, ali_y - 8)`.
+   - Room collision table pointer resolution & loader (`0x00CCA4..0x00CCD4`):
+     * Sets bit 5 on VDP busy flags `$FF164D |= 0x20`.
+     * Resolves 32-area table at ROM `0x04371E`: `area_base = collision_area_table[area_id]`.
+     * Resolves scene entry `area_base + scene_id * 2` and relative signed offset `read_be16_signed`.
+     * Stores resolved `collision_ptr` into RAM at `$FF17B2`.
+     * Clears collision tick counter `$FF17B6 = 0` and sets cadence timer `$FF17B7 = 10` (0x0A frames).
+   - Room environment initialization & BGM track synchronization (`0x00CCE6..0x00CD44`):
+     * Evaluates room spirit forbid flag, clears HUD stale enemy tracking `$FF184F = 0`, clears SAT counters `$FF188A = 0` and buffer `$FF13CC = 0`.
+     * Compares target track `$FF16F4` with current playing track `$FF16F2`:
+       - If `target == current`: sends command 3 (`kBgmCmdContinue`) to sound driver `$60004` to maintain uninterrupted playback.
+       - If `target != current`: updates `$FF16F2 = target`, sends track command `target` to sound driver `$60004`.
+   - Group 2 entity ground surface latch sweep (`0x00CD4A..0x00CD64`):
+     * Sweeps 21 slots at `$FF19E8` (stride 188 bytes / `0xBC`).
+     * For active slots (`type > 0`), latches ground elevation and surface attributes.
+   - Raw 64KB RAM window integration helpers at `$FF1AA4`, `$FF19E8`, `$FF16F1`, `$FF17B2`, `$FF17B6`, `$FF17B7`, `$FF164D`, `$FF164E`, `$FF184F`, `$FF188A`, `$FF13CC`, `$FF16F4`, `$FF16F2`.
+
+**Decisions:**
+1. **Dedicated `spirit_warp_bgm` Module:**
+   - Added `src/game/world/spirit_warp_bgm.hpp/.cpp` and `include/game/world/spirit_warp_bgm.hpp` modeling `reposition_spirit_on_room_warp`, `reposition_spirit_on_room_warp_fixed`, `resolve_collision_table_pointer`, `load_room_collision_table`, `synchronize_bgm_track`, `count_active_group2_entities`, and raw memory window helpers.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (163/163 M16 tests).
+
 # ADR-20261118-M16-181-ROOM-WARP-ENGINE — ROM Room Warp Controller, Camera Centering, Cutscene Locks & Player Ali Spawn Reset Engine (0x00C9B2..0x00CC12)
 **Status:** Accepted
 **Date:** 2026-11-18
