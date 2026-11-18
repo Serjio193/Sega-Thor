@@ -1,3 +1,28 @@
+# M16.183 ROM Room Entry Presentation Manager, Palette Crossfader & Footstep Audio Jingle (`0x00CD64..0x00CEEA`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `play_footsteps_jingle`, `copy_cram_palette_line1`, `interpolate_genesis_color`, `execute_room_presentation`, `execute_whiteout_flash_raw`, `execute_palette_crossfade_raw`, `copy_cram_palette_line1_raw`, and `execute_room_presentation_manager_raw` in `src/game/world/room_presentation_jingle.hpp/.cpp` and `include/game/world/room_presentation_jingle.hpp`:
+  - Presentation mode dispatch (`0x00CD64..0x00CE2E`):
+    * Polls and waits for DMA/fade busy flag `$FF164E` to clear.
+    * Evaluates `$FF17BF`:
+      - If `$FF17BF == 1` (Whiteout Flash `0x00CDEC`): clears `$FF17BF = 0`, fills 64 words of CRAM buffer `$FF134C` with `#$0EEE`, sets CRAM dirty bits 0 and 1 on `$FF164D`, and spin-waits for DMA finish (bit 1 cleared).
+      - If `$FF17BF > 1` (Smooth Crossfade `0x00CDA8`): clears `$FF17BF = 0`, copies `$FF134C` to scratch buffer `$FF18A6`, and executes 33-step RGB crossfade loop (steps 0..32) towards pure white target palette `$05D686` via `jsr $302E`.
+      - If `$FF17BF == 0` and `$FF17BE == 0` (Standard Fade-In `0x00CE22`): clears fade timer `$FF1896 = 0` and invokes standard fade-in `jsr $2D84`.
+      - If `$FF17BF == 0` and `$FF17BE != 0` (Instant Warp Footsteps `0x00CD7E`): sets fade timer `$FF1896 = 4`, commits palette `jsr $2DB6`, plays 4-step footstep audio jingle `bsr $CE72`, and waits for bit 4 of `$FF164D` to clear.
+  - Footstep audio jingle (`0x00CE72..0x00CECC`):
+    * Emits 4 alternating footstep sound commands: `$0090038E`, `$0090038F`, `$0090038E`, `$0090038F` with 14-frame pacing delays via sound driver `$60004` and frame delayer `$32E8`.
+  - Post-fade setup & finalization (`0x00CE2E..0x00CE72`):
+    * If room custom flag `$FF16F1` bit 1 is set: sets `$FF164F = 0xFF`.
+    * If `$FF17BB != 0` and `$FF17BC == 0`: sends warp exit chime command `$00800230` to sound driver `$60004`.
+    * If `$FF17BC != 0`: clears suppress flag `$FF17BC = 0`.
+    * Restores saved stack pointer from `$FF1930` (`movea.l $FF1930, a7`).
+    * Direct branch to core game loop `bra.w $8AA6`.
+  - CRAM palette line copy helper (`0x00CECC..0x00CEEA`):
+    * Copies 32 words from source palette pointer `$FF179E` to CRAM Line 1 buffer `$FF138C`.
+  - Raw 64KB RAM window integration helpers at `$FF164E`, `$FF17BF`, `$FF17BE`, `$FF164D`, `$FF16F1`, `$FF164F`, `$FF17BB`, `$FF17BC`, `$FF1930`, `$FF134C`, `$FF138C`, `$FF18A6`, `$FF179E`, `$FF1896`.
+  - Cleanroom `thor::environment` and `thor::world` namespace aliases.
+- Qualified `oasis_m16_183_room_presentation_jingle` and the 164-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.182 ROM Companion Spirit Warp Repositioning, Room Collision Table Loader & BGM Engine Synchronizer (`0x00CC12..0x00CD64`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

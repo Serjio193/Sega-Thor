@@ -68,6 +68,7 @@ add_library(oasis_core
     src/game/map/map_scene_dispatcher.cpp
     src/game/world/room_warp_engine.cpp
     src/game/world/spirit_warp_bgm.cpp
+    src/game/world/room_presentation_jingle.cpp
     src/game/save/sram_save_system.cpp
     src/game/items/item_effects.cpp
     src/game/items/item_attribute_tables.cpp
