@@ -1,3 +1,38 @@
+# ADR-20261118-M16-177-DIALOGUE-VM — ROM Dialogue Script Virtual Machine & Message Window Presentation Controller (0x00C2EC..0x00C566)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.428 extracted ROM routines `0x00C2EC..0x00C566` (634 bytes) governing the story script virtual machine, dialogue bytecode decoder, message window presentation controller, and interactive button wait loops called by over 40 story scripts across Beyond Oasis:
+   - String table resolution (`0x051514`):
+     * Contains 98 authentic dialogue string records (`0x00..0x61`) stored as 16-bit relative signed offsets.
+     * Target address calculation: `0x051514 + dialogue_id * 2 + offset`.
+     * Table bounds: bounded to `< 0x62` because index `0x62` points to internal developer placeholder text ("Kari Serifu").
+   - Bytecode instruction set:
+     * `byte >= 0x20`: Printable character glyph emitted to text line stream.
+     * `0x00`: **OP_TERMINATE** — sets dismissal flag `$FF1887 = 0xFF`, calls interactive button wait (`0x00C536`), clears dismissal flag, and closes window (`0x00C45C`).
+     * `0x01`: **OP_NEWLINE** — advances line index (`0x00C566`), resets cursor X to 0, waits 1 frame.
+     * `0x02`: **OP_PROMPT_NEWLINE** — waits for button press, then advances line.
+     * `0x03`: **OP_DELAY_FRAMES** — reads next byte `N`, delays execution for `N` frames.
+     * `0x05`: **OP_PROMPT_WAIT** — waits for button press while remaining on current line.
+     * `0x06`: **OP_CLEAR_PAGE** — resets line row offsets (`12, 24, 36, 48`), line index, and cursor X to 0.
+     * `0x07`: **OP_PROMPT_CLEAR_PAGE** — waits for button press, then clears page.
+   - Interactive button wait loop (`0x00C536`):
+     * Activates prompt wait icon: `$FF1886 = 0x01`.
+     * Tests joypad pressed state on `$FF165F` against mask `0x70`: Button A (`0x40`), Button B (`0x10`), Button C (`0x20`).
+     * Exits and clears prompt wait icon (`$FF1886 = 0x00`) upon button press.
+   - Window presentation controller:
+     * Ingress `0x00C326`: sets `$FF1870 = id`, initializes row offsets, entity slot `$FF186C`, clears text buffer `$FF3BA8` (1024 bytes).
+     * Ingress `0x00C45C`: deactivates entity `entity[0] = 0`, joypad debounce on held buttons `0x70`, restores registers `d0-d7/a0-a6`.
+     * Debug loop `0x00C2EC`: triggers automated dialogue sweep across strings `0x00..0x61` (skipping `0x1B, 0x1C, 0x1D`) if debug flag `$FF0D7A` bit 7 is set and joypad held is magic `0x10100500`.
+   - Raw 64KB RAM window integration helpers at `$FF1870`, `$FF1876..$FF187C`, `$FF187E`, `$FF1880`, `$FF1886`, `$FF1887`, `$FF165F`.
+
+**Decisions:**
+1. **Dedicated `dialogue_vm` Module:**
+   - Added `src/game/dialogue/dialogue_vm.hpp/.cpp` and `include/game/dialogue/dialogue_vm.hpp` modeling `resolve_dialogue_address`, `decode_dialogue_stream`, `step_dialogue_vm`, `init_dialogue_window`, `close_dialogue_window`, `check_dialogue_button_press`, debug trigger evaluation, and raw memory window integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (158/158 M16 tests).
+
 # ADR-20261118-M16-176-FONT-GLYPH-PACKER — ROM Dynamic 1-Bit Font Glyph Expansion, 4-Neighbor Outline Filter & 4bpp Tile Packer (0x00C222..0x00C2EC)
 **Status:** Accepted
 **Date:** 2026-11-18

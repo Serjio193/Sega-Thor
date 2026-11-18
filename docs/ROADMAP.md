@@ -1,3 +1,30 @@
+# M16.177 ROM Dialogue Script Virtual Machine & Message Window Presentation Controller (`0x00C2EC..0x00C566`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `resolve_dialogue_address`, `decode_dialogue_stream`, `step_dialogue_vm`, `init_dialogue_window`, `close_dialogue_window`, `check_dialogue_button_press`, debug trigger evaluation, and raw 64KB RAM window integration helpers in `src/game/dialogue/dialogue_vm.hpp/.cpp` and `include/game/dialogue/dialogue_vm.hpp`:
+  - String table resolution (`0x051514`):
+    * 98 authentic dialogue string records (`0x00..0x61`) accessed via 16-bit relative signed offsets: `0x051514 + dialogue_id * 2 + offset`.
+    * Table boundary checking preventing execution of developer placeholder text ("Kari Serifu") at index `0x62`.
+  - Bytecode instruction set:
+    * `byte >= 0x20`: Printable character glyphs emitted to text line stream.
+    * `0x00`: **OP_TERMINATE** — sets dismissal flag `$FF1887 = 0xFF`, calls interactive button wait (`0x00C536`), clears dismissal flag, and closes window (`0x00C45C`).
+    * `0x01`: **OP_NEWLINE** — advances line index (`0x00C566`), resets cursor X to 0, waits 1 frame.
+    * `0x02`: **OP_PROMPT_NEWLINE** — waits for button press, then advances line.
+    * `0x03`: **OP_DELAY_FRAMES** — reads next byte `N`, delays execution for `N` frames.
+    * `0x05`: **OP_PROMPT_WAIT** — waits for button press while remaining on current line.
+    * `0x06`: **OP_CLEAR_PAGE** — resets line row offsets (`12, 24, 36, 48`), line index, and cursor X to 0.
+    * `0x07`: **OP_PROMPT_CLEAR_PAGE** — waits for button press, then clears page.
+  - Interactive button wait loop (`0x00C536`):
+    * Activates prompt wait icon: `$FF1886 = 0x01`.
+    * Tests joypad pressed state on `$FF165F` against mask `0x70`: Button A (`0x40`), Button B (`0x10`), Button C (`0x20`).
+    * Exits and clears prompt wait icon (`$FF1886 = 0x00`) upon button press.
+  - Window presentation controller:
+    * `init_dialogue_window`: sets `$FF1870 = id`, initializes row offsets, entity slot `$FF186C`, window state.
+    * `close_dialogue_window`: deactivates entity `entity[0] = 0`, joypad debounce on held buttons `0x70`, marks terminated.
+    * Debug mode trigger: evaluates `$FF0D7A` bit 7 and magic held joypad `0x10100500`, skipping debug IDs `0x1B, 0x1C, 0x1D`.
+  - Raw 64KB RAM window integration helpers at `$FF1870`, `$FF1876..$FF187C`, `$FF187E`, `$FF1880`, `$FF1886`, `$FF1887`, `$FF165F`.
+- Qualified `oasis_m16_177_dialogue_vm` and the 158-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.176 ROM Dynamic 1-Bit Font Glyph Expansion, 4-Neighbor Outline Filter & 4bpp Tile Packer (`0x00C222..0x00C2EC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

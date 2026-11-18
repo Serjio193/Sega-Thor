@@ -62,6 +62,7 @@ add_library(oasis_core
     src/game/hud/decimal_formatter.cpp
     src/game/collision/player_rect_collision.cpp
     src/game/font/font_glyph_packer.cpp
+    src/game/dialogue/dialogue_vm.cpp
     src/game/save/sram_save_system.cpp
     src/game/items/item_effects.cpp
     src/game/items/item_attribute_tables.cpp
