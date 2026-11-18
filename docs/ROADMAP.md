@@ -1,3 +1,6 @@
+# M15.456 ROM Boss Entity Type $3A Combat State Engine (Part 2), Velocity Damping & Floor Bounce Recoil (`0x00EE94`..`0x00F054`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_boss_charge_engine.py`, `tests/rom_boss_charge_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_boss_charge_engine_m15_456.json`, and `docs/handoffs/STANDALONE_M15_456_BOSS_CHARGE_ENGINE_HANDOFF.md`.
+
 # M15.455 ROM Boss Entity Type $3A Spawner, Ground Stomp & Combat State Engine (Part 1) (`0x00ED04`..`0x00EE94`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_boss_stomp_engine.py`, `tests/rom_boss_stomp_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_boss_stomp_engine_m15_455.json`, and `docs/handoffs/STANDALONE_M15_455_BOSS_STOMP_ENGINE_HANDOFF.md`.
 

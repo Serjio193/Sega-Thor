@@ -1,3 +1,9 @@
+# M15.456 ROM Boss Entity Type $3A Combat State Engine (Part 2), Velocity Damping & Floor Bounce Recoil
+- `tools/extract_rom_boss_charge_engine.py` — extractor for `0x00EE94..0x00F054` (Boss Type $3A state completion checks, 0.75x velocity damping, 3D trajectory gravity, 50% floor bounce recoil, rest velocity threshold, and spawner notification).
+- `tests/rom_boss_charge_engine_test.py` — `5` unit tests verifying ROM constants, velocity damping shift-add formula, trajectory floor bounce recoil and friction, rest velocity cutoff (< 0x4000), and spawner notification.
+- `data/thor-evidence/rom_boss_charge_engine_m15_456.json` — extracted M15.456 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_456_BOSS_CHARGE_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.455 ROM Boss Entity Type $3A Spawner, Ground Stomp & Combat State Engine (Part 1)
 - `tools/extract_rom_boss_stomp_engine.py` — extractor for `0x00ED04..0x00EE94` (Boss Type $3A spawner, boss flag activation, ground stomp State 3, ground quake State 4, screen shake, and roar SFX).
 - `tests/rom_boss_stomp_engine_test.py` — `5` unit tests verifying ROM constants, boss spawn initialization and elevation offset, phase transitions, damage elevation bumps, and ground quake frame trigger.
