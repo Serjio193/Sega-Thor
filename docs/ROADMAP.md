@@ -1,3 +1,6 @@
+# M15.488 ROM Dytto Spirit Idle Follow, Auto-Rescue Heal Trigger, Circular Orbit & Dismissal Physics Subsystem (`0x0120D4`..`0x0123E2`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dytto_follow_dismissal.py`, `tests/rom_dytto_follow_dismissal_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dytto_follow_dismissal_m15_488.json`, and `docs/handoffs/STANDALONE_M15_488_DYTTO_FOLLOW_DISMISSAL_HANDOFF.md`.
+
 # M15.487 ROM Dytto Spirit Magic Bubble Projectile, Flame/Enemy Stun AABB Scanner & Water Tornado Vortex Subsystem (`0x011D8A`..`0x0120D4`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dytto_bubble_tornado.py`, `tests/rom_dytto_bubble_tornado_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dytto_bubble_tornado_m15_487.json`, and `docs/handoffs/STANDALONE_M15_487_DYTTO_BUBBLE_TORNADO_HANDOFF.md`.
 

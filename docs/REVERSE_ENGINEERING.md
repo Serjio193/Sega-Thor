@@ -1,3 +1,13 @@
+# Reverse Engineering Notes — Milestone M15.488 (`0x0120D4`..`0x0123E2`): Dytto Spirit Idle Follow, Auto-Rescue Heal Trigger, Circular Orbit & Dismissal Physics Subsystem
+- **Original ROM Addresses:** `0x0120D4..0x0123E2` (782 bytes, 219 M68K instructions).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_dytto_follow_dismissal.py` and `data/thor-evidence/rom_dytto_follow_dismissal_m15_488.json`:
+  * `0x0120D4..0x0121AA`: `AI_Dytto_ApproachStatesAndBuzzer` — States `$02`/`$06`/`$1A` settle/approach homing via `0x0123B4` & `0x01215E`, State `$04` transitions to `$06` at `0x00E398` `d5 <= $20` (`+$2A=$16`), and `0x01219A` plays `0x00A00253` buzzer.
+  * `0x0121AA..0x012314`: `AI_Dytto_State00_IdleCommandAndFollowLoop` — guards `$FF19A7`, routes `$FF19A2`, triggers auto-rescue (`+$AA=0`, `$FF0DB6 >= 3`, `+$8A < +$88 >> 3`, `0x011B28` 20 SP -> `0x011BE0`), and executes `$05D706` isometric orbit (`+$A1=40`, `+$A0=120`, `+/-6` step) or 18px behind-Ali follow (`0x00E45E`).
+  * `0x012314..0x0123AE`: `AI_Dytto_DismissalAndState1C_1E` — plays `0x00A0039E`, State `$1C` (`+$30 >= $14` gravity `-0xC000`), lands State `$1E` (`0x00141374`, `$07A8`), despawns `+$00=0` on `+$37` bit 1.
+  * `0x0123AE..0x0123E2`: `AI_Dytto_TrackTargetElevation` — `+8` (`0x0123AE`) / `+48` (`0x0123B4`) `+/-1` elevation clamping toward `+$14(a5) + d4`.
+- **Assumptions:** Shared helpers `0x00E398`, `0x00E45E`, `0x00E268`, `0x008EF8`, `0x00E7FC`, and trig table `$05D706` remain external to this slice.
+- **Test Status:** Verified via `tests/rom_dytto_follow_dismissal_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.487 (`0x011D8A`..`0x0120D4`): Dytto Spirit Magic Bubble Projectile, Flame/Enemy Stun AABB Scanner & Water Tornado Vortex Subsystem
 - **Original ROM Addresses:** `0x011D8A..0x0120D4` (842 bytes, 203 M68K instructions).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_dytto_bubble_tornado.py` and `data/thor-evidence/rom_dytto_bubble_tornado_m15_487.json`:

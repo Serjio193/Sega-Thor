@@ -1,3 +1,9 @@
+# M15.488 ROM Dytto Spirit Idle Follow, Auto-Rescue Heal Trigger, Circular Orbit & Dismissal Physics Subsystem
+- `tools/extract_rom_dytto_follow_dismissal.py` — extractor for `0x0120D4..0x0123E2` (approach states `$02/$04/$06/$1A` & buzzer `0x0120D4`, State `$00` command dispatch/auto-rescue/orbit/follow `0x0121AA`, dismissal States `$1C/$1E` `0x012314`, and elevation trackers `0x0123AE`/`0x0123B4`).
+- `tests/rom_dytto_follow_dismissal_test.py` — `5` unit tests verifying approach transitions & buzzer, command dispatch & auto-rescue heal, 18px follow & `$05D706` orbit math, dismissal fall/despawn, and elevation tracking.
+- `data/thor-evidence/rom_dytto_follow_dismissal_m15_488.json` — extracted M15.488 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_488_DYTTO_FOLLOW_DISMISSAL_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.487 ROM Dytto Spirit Magic Bubble Projectile, Flame/Enemy Stun AABB Scanner & Water Tornado Vortex Subsystem
 - `tools/extract_rom_dytto_bubble_tornado.py` — extractor for `0x011D8A..0x0120D4` (Magic Bubble cast/launch `0x011D8A`/`0x011DB6`, bubble flight/AABB stun/Flame trigger `0x011ED2`/`0x011F98`, and Water Tornado lifecycle `0x011FA6`).
 - `tests/rom_dytto_bubble_tornado_test.py` — `5` unit tests verifying bubble SP/slot reservation and launch, flight/wall/cull/pop, Flame/enemy stun immunity and level scaling, and Water Tornado startup/vortex/wind-down.
