@@ -1,3 +1,6 @@
+# M15.458 ROM Entity Pool 2 Knockback Stun Broadcast & Global Type Scanner (`0x00F1B2`..`0x00F258`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_stun_lookup.py`, `tests/rom_entity_stun_lookup_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_stun_lookup_m15_458.json`, and `docs/handoffs/STANDALONE_M15_458_ENTITY_STUN_LOOKUP_HANDOFF.md`.
+
 # M15.457 ROM 3D Vector Mathematics Engine: Euclidean Distance (2D/3D), Direction Normalization & Sphere Clamp (`0x00F054`..`0x00F1B2`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_vector_math_3d.py`, `tests/rom_vector_math_3d_test.py` (`6/6 PASS`), `data/thor-evidence/rom_vector_math_3d_m15_457.json`, and `docs/handoffs/STANDALONE_M15_457_VECTOR_MATH_3D_HANDOFF.md`.
 

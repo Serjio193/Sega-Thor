@@ -1,3 +1,9 @@
+# M15.458 ROM Entity Pool 2 Knockback Stun Broadcast & Global Type Scanner
+- `tools/extract_rom_entity_stun_lookup.py` — extractor for `0x00F1B2..0x00F258` (Pool 2 knockback stun wave broadcast across 17 slots, facing flip, damage 0xCFFF, script event 0x0004382E, and global entity type search across 21 slots).
+- `tests/rom_entity_stun_lookup_test.py` — `5` unit tests verifying ROM constants, occupied caller abort, knockback broadcast effects and immunity checks, and global type search hits/misses.
+- `data/thor-evidence/rom_entity_stun_lookup_m15_458.json` — extracted M15.458 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_458_ENTITY_STUN_LOOKUP_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.457 ROM 3D Vector Mathematics Engine: Euclidean Distance (2D/3D), Direction Normalization & Sphere Clamp
 - `tools/extract_rom_vector_math_3d.py` — extractor for `0x00F054..0x00F1B2` (Boss 3A rock projectile launch selector, velocity table 0x00F0C2, 2D/3D integer Euclidean distance, 3D velocity normalization, and 3D sphere ray-interception clamp).
 - `tests/rom_vector_math_3d_test.py` — `6` unit tests verifying ROM constants, velocity table values, 2D distance, 3D distance, 3D velocity normalization, and 3D sphere clamp with Carry flag.
