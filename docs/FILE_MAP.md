@@ -1,3 +1,9 @@
+# M15.462 ROM Drop Item Slot Allocation Eviction Probe, Ground Shadow Spawner & Ali Kill Counter Engine
+- `tools/extract_rom_drop_probe_shadow.py` — extractor for `0x00F64C..0x00F788` (8-slot drop item allocation probe at $FF2ABC, 2-pass distance/protection eviction, ground shadow particle entity spawner Type $6A, and Ali kill counter credit at $FF1A7C).
+- `tests/rom_drop_probe_shadow_test.py` — `4` unit tests verifying ROM constants, 2-pass eviction probe and fallback panic trap, ground shadow spawner state cloning, and Ali kill credit with saturating clamp.
+- `data/thor-evidence/rom_drop_probe_shadow_m15_462.json` — extracted M15.462 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_462_DROP_PROBE_SHADOW_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.461 ROM Enemy Defeat Loot Drop & Chest Item Spawner Subsystem
 - `tools/extract_rom_item_drop_engine.py` — extractor for `0x00F476..0x00F64C` (Enemy defeat loot drop evaluator, 2-tier PRNG drop tables, fixed chest loot spawner, 6-byte record table at $43830, and persistent collection bitmask checks across 3 RAM banks).
 - `tests/rom_item_drop_engine_test.py` — `4` unit tests verifying ROM constants, enemy drop table PRNG evaluations, chest collection bitmask tests, and item launch velocity.

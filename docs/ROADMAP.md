@@ -1,3 +1,6 @@
+# M15.462 ROM Drop Item Slot Allocation Eviction Probe, Ground Shadow Spawner & Ali Kill Counter Engine (`0x00F64C`..`0x00F788`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_drop_probe_shadow.py`, `tests/rom_drop_probe_shadow_test.py` (`4/4 PASS`), `data/thor-evidence/rom_drop_probe_shadow_m15_462.json`, and `docs/handoffs/STANDALONE_M15_462_DROP_PROBE_SHADOW_HANDOFF.md`.
+
 # M15.461 ROM Enemy Defeat Loot Drop & Chest Item Spawner Subsystem (`0x00F476`..`0x00F64C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_item_drop_engine.py`, `tests/rom_item_drop_engine_test.py` (`4/4 PASS`), `data/thor-evidence/rom_item_drop_engine_m15_461.json`, and `docs/handoffs/STANDALONE_M15_461_ITEM_DROP_ENGINE_HANDOFF.md`.
 
