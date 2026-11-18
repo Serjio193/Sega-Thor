@@ -1,3 +1,9 @@
+# M15.480 ROM Entity AI Target Angle Projector, Hover Bobbing Elevation Tracker & Multi-Segment Kinematics Engine
+- `tools/extract_rom_entity_ai_kinematics.py` — extractor for `0x01108C..0x011276` (Signed target vector angle tracking, octant arctangent table helper at ROM $5D906, 2D sin/cos velocity projector, hover bobbing elevation tracking, surface contact trampolines, Pool 2 vacant slot counter, and multi-segment kinematics engine).
+- `tests/rom_entity_ai_kinematics_test.py` — `5` unit tests verifying evidence structure, target angle octants, hover elevation bobbing, Pool 2 vacant slot count, and multi-segment kinematic updates.
+- `data/thor-evidence/rom_entity_ai_kinematics_m15_480.json` — extracted M15.480 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_480_KINEMATICS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.479 ROM Entity AI Viewport Culling, Parent Targeting, Cutscene Locks & 3D Ballistic Gravity Arc Physics Subsystem
 - `tools/extract_rom_entity_ai_culling_gravity.py` — extractor for `0x010EEA..0x01108C` (Plane A/B camera viewport culling with symmetric margin `d7`, parent entity facing calculation, cutscene and engine lock flag evaluation, and 3D fixed-point ballistic gravity arc physics).
 - `tests/rom_entity_ai_culling_gravity_test.py` — `5` unit tests verifying evidence structure, viewport culling bounds, facing towards parent, cutscene lock evaluation, and ballistic gravity stepping.

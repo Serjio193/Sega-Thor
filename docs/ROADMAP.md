@@ -1,3 +1,6 @@
+# M15.480 ROM Entity AI Target Angle Projector, Hover Bobbing Elevation Tracker & Multi-Segment Kinematics Engine (`0x01108C`..`0x011276`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_ai_kinematics.py`, `tests/rom_entity_ai_kinematics_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_ai_kinematics_m15_480.json`, and `docs/handoffs/STANDALONE_M15_480_KINEMATICS_HANDOFF.md`.
+
 # M15.479 ROM Entity AI Viewport Culling, Parent Targeting, Cutscene Locks & 3D Ballistic Gravity Arc Physics Subsystem (`0x010EEA`..`0x01108C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_ai_culling_gravity.py`, `tests/rom_entity_ai_culling_gravity_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_ai_culling_gravity_m15_479.json`, and `docs/handoffs/STANDALONE_M15_479_CULLING_GRAVITY_HANDOFF.md`.
 
