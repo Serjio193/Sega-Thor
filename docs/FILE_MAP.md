@@ -1,3 +1,9 @@
+# M15.451 ROM Newton-Raphson Integer Square Root & 256-Step Circular Arctan Engine
+- `tools/extract_rom_math_sqrt_atan.py` — extractor for `0x00E6BA..0x00E78E` (integer square root via Newton-Raphson division refinement, relative 256-step angle resolution to target or Ali, and 9-entry tangent table `0x05D906`).
+- `tests/rom_math_sqrt_atan_test.py` — `4` unit tests verifying ROM constants, integer square root convergence, first-octant tangent table search, and four-quadrant circular angle resolution.
+- `data/thor-evidence/rom_math_sqrt_atan_m15_451.json` — extracted M15.451 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_451_MATH_SQRT_ATAN_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.450 ROM Entity Trajectory Gravity Integration, Viewport AABB Culling & 188-Byte Slot Cloner
 - `tools/extract_rom_entity_trajectory_culling.py` — extractor for `0x00E502..0x00E6BA` (gravity acceleration integration, floor impact detection, landing shockwave triggering, screen and shadow viewport AABB visibility tests, 188-byte entity cloner, and hitstun invulnerability cooldown tick).
 - `tests/rom_entity_trajectory_culling_test.py` — `5` unit tests verifying ROM constants, trajectory gravity fall and floor impact, screen viewport culling with margin expansion and elevation offset, shadow viewport culling, and 188-byte copy / cooldown tick logic.
