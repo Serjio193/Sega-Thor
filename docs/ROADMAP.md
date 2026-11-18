@@ -1,3 +1,6 @@
+# M15.469 ROM Script Virtual Machine Opcodes $09, $0C, $0D, $1A..$1D: Media, Audio, Palette & Screen Shake Subsystem (`0x010034`..`0x010140`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_script_vm_media_audio.py`, `tests/rom_script_vm_media_audio_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_media_audio_m15_469.json`, and `docs/handoffs/STANDALONE_M15_469_SCRIPT_MEDIA_AUDIO_HANDOFF.md`.
+
 # M15.468 ROM Script Virtual Machine Opcodes $15, $16, $18, $19: Persistent Gater, Spawner & Ballistic Projectile Engine (`0x00FEDE`..`0x010034`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_script_vm_persistent_projectiles.py`, `tests/rom_script_vm_persistent_projectiles_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_persistent_projectiles_m15_468.json`, and `docs/handoffs/STANDALONE_M15_468_SCRIPT_PERSISTENT_PROJECTILES_HANDOFF.md`.
 

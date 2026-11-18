@@ -1,0 +1,619 @@
+{
+  "milestone": "M15.469",
+  "title": "ROM Script Virtual Machine Opcodes $09, $0C, $0D, $1A..$1D: Media, Audio, Palette & Screen Shake Subsystem",
+  "range": {
+    "start": "0x010034",
+    "end": "0x010140",
+    "size_bytes": 268
+  },
+  "opcodes": [
+    {
+      "opcode": "0x09",
+      "name": "ScriptOp_SpawnItemDrop",
+      "start": "0x010034",
+      "end": "0x010086",
+      "size_bytes": 82,
+      "description": "Allocates Pool 2 item slot via $D9BE (yields frame on full). Instantiates Type 8 item entity via $8D06. Sets category +$32 = d1 >> 8 and ID +$52 = d1 & $FF, coordinates (x, y), sprite setup $9AD6, launch bit +$39 bit 0, and PRNG lifetime 0..63 frames +$02 via $E268.",
+      "constants": {
+        "item_entity_type": 8
+      }
+    },
+    {
+      "opcode": "0x0C",
+      "name": "ScriptOp_LoadPaletteBuffer",
+      "start": "0x010086",
+      "end": "0x0100AA",
+      "size_bytes": 36,
+      "description": "Reads palette index d0 = (a0)+, saves to $FF16F8. Copies 32 bytes from ROM table $5D046 + d0 * 32 into RAM palette buffer $FF136C.",
+      "constants": {
+        "rom_palette_table": "0x05D046",
+        "ram_palette_buffer": "0xFF136C"
+      }
+    },
+    {
+      "opcode": "0x0D",
+      "name": "ScriptOp_LoadAndApplyPaletteCram",
+      "start": "0x0100AA",
+      "end": "0x0100D6",
+      "size_bytes": 44,
+      "description": "Reads palette index d0 = (a0)+, copies 32 bytes from $5D046 + d0 * 32 into $FF136C, and sets CRAM transfer request bit 0 of $FF164D.",
+      "constants": {
+        "cram_request_flag": "0xFF164D"
+      }
+    },
+    {
+      "opcode": "0x1A",
+      "name": "ScriptOp_PlaySfx",
+      "start": "0x0100D6",
+      "end": "0x0100E4",
+      "size_bytes": 14,
+      "description": "Reads sound parameters d1, d2, d0 from script stream and jumps to SFX dispatcher $00E78E."
+    },
+    {
+      "opcode": "0x1B",
+      "name": "ScriptOp_PlayBgmMusic",
+      "start": "0x0100E4",
+      "end": "0x0100EE",
+      "size_bytes": 10,
+      "description": "Reads 32-bit music command d0 from script stream and jumps to Z80 music port $060004."
+    },
+    {
+      "opcode": "0x1C",
+      "name": "ScriptOp_TriggerScreenShake",
+      "start": "0x0100EE",
+      "end": "0x0100F8",
+      "size_bytes": 10,
+      "description": "Sets screen shake / quake duration counter $FF17C4 = (a0)+."
+    },
+    {
+      "opcode": "0x1D",
+      "name": "ScriptOp_DispatchChannelEffect",
+      "start": "0x0100F8",
+      "end": "0x010140",
+      "size_bytes": 72,
+      "description": "Reads channel selector d0 = (a0)+, chooses channel buffer $FF1716 vs $FF173E, and invokes plane effect handler $00DB64, $00DB68, or $00DBCA. Advances script PC by 12 bytes."
+    }
+  ],
+  "instruction_count": 77,
+  "instructions": [
+    {
+      "address": "0x010034",
+      "mnemonic": "bsr.w",
+      "op_str": "$d9be",
+      "bytes": "6100d988",
+      "size": 4
+    },
+    {
+      "address": "0x010038",
+      "mnemonic": "bcs.w",
+      "op_str": "$f91c",
+      "bytes": "6500f8e2",
+      "size": 4
+    },
+    {
+      "address": "0x01003C",
+      "mnemonic": "addq.l",
+      "op_str": "#$1, a0",
+      "bytes": "5288",
+      "size": 2
+    },
+    {
+      "address": "0x01003E",
+      "mnemonic": "move.b",
+      "op_str": "(a0)+, d7",
+      "bytes": "1e18",
+      "size": 2
+    },
+    {
+      "address": "0x010040",
+      "mnemonic": "move.w",
+      "op_str": "#$8, $0(a6)",
+      "bytes": "3d7c00080000",
+      "size": 6
+    },
+    {
+      "address": "0x010046",
+      "mnemonic": "jsr",
+      "op_str": "$8d06.l",
+      "bytes": "4eb900008d06",
+      "size": 6
+    },
+    {
+      "address": "0x01004C",
+      "mnemonic": "move.w",
+      "op_str": "d0, $18(a6)",
+      "bytes": "3d400018",
+      "size": 4
+    },
+    {
+      "address": "0x010050",
+      "mnemonic": "move.w",
+      "op_str": "(a0)+, d1",
+      "bytes": "3218",
+      "size": 2
+    },
+    {
+      "address": "0x010052",
+      "mnemonic": "move.w",
+      "op_str": "d1, d2",
+      "bytes": "3401",
+      "size": 2
+    },
+    {
+      "address": "0x010054",
+      "mnemonic": "lsr.w",
+      "op_str": "#$8, d1",
+      "bytes": "e049",
+      "size": 2
+    },
+    {
+      "address": "0x010056",
+      "mnemonic": "andi.w",
+      "op_str": "#$ff, d2",
+      "bytes": "024200ff",
+      "size": 4
+    },
+    {
+      "address": "0x01005A",
+      "mnemonic": "move.w",
+      "op_str": "d1, $32(a6)",
+      "bytes": "3d410032",
+      "size": 4
+    },
+    {
+      "address": "0x01005E",
+      "mnemonic": "move.b",
+      "op_str": "d2, $52(a6)",
+      "bytes": "1d420052",
+      "size": 4
+    },
+    {
+      "address": "0x010062",
+      "mnemonic": "move.w",
+      "op_str": "(a0)+, $8(a6)",
+      "bytes": "3d580008",
+      "size": 4
+    },
+    {
+      "address": "0x010066",
+      "mnemonic": "move.w",
+      "op_str": "(a0)+, $c(a6)",
+      "bytes": "3d58000c",
+      "size": 4
+    },
+    {
+      "address": "0x01006A",
+      "mnemonic": "bsr.w",
+      "op_str": "$9ad6",
+      "bytes": "61009a6a",
+      "size": 4
+    },
+    {
+      "address": "0x01006E",
+      "mnemonic": "move.w",
+      "op_str": "d4, $14(a6)",
+      "bytes": "3d440014",
+      "size": 4
+    },
+    {
+      "address": "0x010072",
+      "mnemonic": "bset.b",
+      "op_str": "#$0, $39(a6)",
+      "bytes": "08ee00000039",
+      "size": 6
+    },
+    {
+      "address": "0x010078",
+      "mnemonic": "bsr.w",
+      "op_str": "$e268",
+      "bytes": "6100e1ee",
+      "size": 4
+    },
+    {
+      "address": "0x01007C",
+      "mnemonic": "andi.w",
+      "op_str": "#$3f, d0",
+      "bytes": "0240003f",
+      "size": 4
+    },
+    {
+      "address": "0x010080",
+      "mnemonic": "move.w",
+      "op_str": "d0, $2(a6)",
+      "bytes": "3d400002",
+      "size": 4
+    },
+    {
+      "address": "0x010084",
+      "mnemonic": "rts",
+      "op_str": "",
+      "bytes": "4e75",
+      "size": 2
+    },
+    {
+      "address": "0x010086",
+      "mnemonic": "addq.l",
+      "op_str": "#$2, a0",
+      "bytes": "5488",
+      "size": 2
+    },
+    {
+      "address": "0x010088",
+      "mnemonic": "move.w",
+      "op_str": "(a0)+, d0",
+      "bytes": "3018",
+      "size": 2
+    },
+    {
+      "address": "0x01008A",
+      "mnemonic": "move.w",
+      "op_str": "d0, $ff16f8.l",
+      "bytes": "33c000ff16f8",
+      "size": 6
+    },
+    {
+      "address": "0x010090",
+      "mnemonic": "lea.l",
+      "op_str": "$5d046.l, a1",
+      "bytes": "43f90005d046",
+      "size": 6
+    },
+    {
+      "address": "0x010096",
+      "mnemonic": "lea.l",
+      "op_str": "$ff136c.l, a2",
+      "bytes": "45f900ff136c",
+      "size": 6
+    },
+    {
+      "address": "0x01009C",
+      "mnemonic": "lsl.w",
+      "op_str": "#$5, d0",
+      "bytes": "eb48",
+      "size": 2
+    },
+    {
+      "address": "0x01009E",
+      "mnemonic": "adda.w",
+      "op_str": "d0, a1",
+      "bytes": "d2c0",
+      "size": 2
+    },
+    {
+      "address": "0x0100A0",
+      "mnemonic": "moveq",
+      "op_str": "#$7, d1",
+      "bytes": "7207",
+      "size": 2
+    },
+    {
+      "address": "0x0100A2",
+      "mnemonic": "move.l",
+      "op_str": "(a1)+, (a2)+",
+      "bytes": "24d9",
+      "size": 2
+    },
+    {
+      "address": "0x0100A4",
+      "mnemonic": "dbra",
+      "op_str": "d1, $100a2",
+      "bytes": "51c9fffc",
+      "size": 4
+    },
+    {
+      "address": "0x0100A8",
+      "mnemonic": "rts",
+      "op_str": "",
+      "bytes": "4e75",
+      "size": 2
+    },
+    {
+      "address": "0x0100AA",
+      "mnemonic": "addq.l",
+      "op_str": "#$2, a0",
+      "bytes": "5488",
+      "size": 2
+    },
+    {
+      "address": "0x0100AC",
+      "mnemonic": "move.w",
+      "op_str": "(a0)+, d0",
+      "bytes": "3018",
+      "size": 2
+    },
+    {
+      "address": "0x0100AE",
+      "mnemonic": "move.w",
+      "op_str": "d0, $ff16f8.l",
+      "bytes": "33c000ff16f8",
+      "size": 6
+    },
+    {
+      "address": "0x0100B4",
+      "mnemonic": "lea.l",
+      "op_str": "$5d046.l, a1",
+      "bytes": "43f90005d046",
+      "size": 6
+    },
+    {
+      "address": "0x0100BA",
+      "mnemonic": "lea.l",
+      "op_str": "$ff136c.l, a2",
+      "bytes": "45f900ff136c",
+      "size": 6
+    },
+    {
+      "address": "0x0100C0",
+      "mnemonic": "lsl.w",
+      "op_str": "#$5, d0",
+      "bytes": "eb48",
+      "size": 2
+    },
+    {
+      "address": "0x0100C2",
+      "mnemonic": "adda.w",
+      "op_str": "d0, a1",
+      "bytes": "d2c0",
+      "size": 2
+    },
+    {
+      "address": "0x0100C4",
+      "mnemonic": "moveq",
+      "op_str": "#$7, d1",
+      "bytes": "7207",
+      "size": 2
+    },
+    {
+      "address": "0x0100C6",
+      "mnemonic": "move.l",
+      "op_str": "(a1)+, (a2)+",
+      "bytes": "24d9",
+      "size": 2
+    },
+    {
+      "address": "0x0100C8",
+      "mnemonic": "dbra",
+      "op_str": "d1, $100c6",
+      "bytes": "51c9fffc",
+      "size": 4
+    },
+    {
+      "address": "0x0100CC",
+      "mnemonic": "bset.b",
+      "op_str": "#$0, $ff164d.l",
+      "bytes": "08f9000000ff164d",
+      "size": 8
+    },
+    {
+      "address": "0x0100D4",
+      "mnemonic": "rts",
+      "op_str": "",
+      "bytes": "4e75",
+      "size": 2
+    },
+    {
+      "address": "0x0100D6",
+      "mnemonic": "addq.l",
+      "op_str": "#$2, a0",
+      "bytes": "5488",
+      "size": 2
+    },
+    {
+      "address": "0x0100D8",
+      "mnemonic": "move.w",
+      "op_str": "(a0)+, d1",
+      "bytes": "3218",
+      "size": 2
+    },
+    {
+      "address": "0x0100DA",
+      "mnemonic": "move.w",
+      "op_str": "(a0)+, d2",
+      "bytes": "3418",
+      "size": 2
+    },
+    {
+      "address": "0x0100DC",
+      "mnemonic": "move.l",
+      "op_str": "(a0)+, d0",
+      "bytes": "2018",
+      "size": 2
+    },
+    {
+      "address": "0x0100DE",
+      "mnemonic": "jmp",
+      "op_str": "$e78e.l",
+      "bytes": "4ef90000e78e",
+      "size": 6
+    },
+    {
+      "address": "0x0100E4",
+      "mnemonic": "addq.l",
+      "op_str": "#$2, a0",
+      "bytes": "5488",
+      "size": 2
+    },
+    {
+      "address": "0x0100E6",
+      "mnemonic": "move.l",
+      "op_str": "(a0)+, d0",
+      "bytes": "2018",
+      "size": 2
+    },
+    {
+      "address": "0x0100E8",
+      "mnemonic": "jmp",
+      "op_str": "$60004.l",
+      "bytes": "4ef900060004",
+      "size": 6
+    },
+    {
+      "address": "0x0100EE",
+      "mnemonic": "addq.l",
+      "op_str": "#$2, a0",
+      "bytes": "5488",
+      "size": 2
+    },
+    {
+      "address": "0x0100F0",
+      "mnemonic": "move.w",
+      "op_str": "(a0)+, $ff17c4.l",
+      "bytes": "33d800ff17c4",
+      "size": 6
+    },
+    {
+      "address": "0x0100F6",
+      "mnemonic": "rts",
+      "op_str": "",
+      "bytes": "4e75",
+      "size": 2
+    },
+    {
+      "address": "0x0100F8",
+      "mnemonic": "addq.l",
+      "op_str": "#$1, a0",
+      "bytes": "5288",
+      "size": 2
+    },
+    {
+      "address": "0x0100FA",
+      "mnemonic": "move.b",
+      "op_str": "(a0)+, d0",
+      "bytes": "1018",
+      "size": 2
+    },
+    {
+      "address": "0x0100FC",
+      "mnemonic": "movem.l",
+      "op_str": "a0, -(a7)",
+      "bytes": "48e70080",
+      "size": 4
+    },
+    {
+      "address": "0x010100",
+      "mnemonic": "lea.l",
+      "op_str": "$ff1716.l, a3",
+      "bytes": "47f900ff1716",
+      "size": 6
+    },
+    {
+      "address": "0x010106",
+      "mnemonic": "cmpi.b",
+      "op_str": "#$3, d0",
+      "bytes": "0c000003",
+      "size": 4
+    },
+    {
+      "address": "0x01010A",
+      "mnemonic": "bcs.b",
+      "op_str": "$10114",
+      "bytes": "6508",
+      "size": 2
+    },
+    {
+      "address": "0x01010C",
+      "mnemonic": "lea.l",
+      "op_str": "$ff173e.l, a3",
+      "bytes": "47f900ff173e",
+      "size": 6
+    },
+    {
+      "address": "0x010112",
+      "mnemonic": "subq.b",
+      "op_str": "#$3, d0",
+      "bytes": "5700",
+      "size": 2
+    },
+    {
+      "address": "0x010114",
+      "mnemonic": "lea.l",
+      "op_str": "$8(a0), a1",
+      "bytes": "43e80008",
+      "size": 4
+    },
+    {
+      "address": "0x010118",
+      "mnemonic": "subq.b",
+      "op_str": "#$1, d0",
+      "bytes": "5300",
+      "size": 2
+    },
+    {
+      "address": "0x01011A",
+      "mnemonic": "beq.b",
+      "op_str": "$10128",
+      "bytes": "670c",
+      "size": 2
+    },
+    {
+      "address": "0x01011C",
+      "mnemonic": "subq.b",
+      "op_str": "#$1, d0",
+      "bytes": "5300",
+      "size": 2
+    },
+    {
+      "address": "0x01011E",
+      "mnemonic": "beq.b",
+      "op_str": "$10130",
+      "bytes": "6710",
+      "size": 2
+    },
+    {
+      "address": "0x010120",
+      "mnemonic": "jsr",
+      "op_str": "$db64.l",
+      "bytes": "4eb90000db64",
+      "size": 6
+    },
+    {
+      "address": "0x010126",
+      "mnemonic": "bra.b",
+      "op_str": "$10136",
+      "bytes": "600e",
+      "size": 2
+    },
+    {
+      "address": "0x010128",
+      "mnemonic": "jsr",
+      "op_str": "$db68.l",
+      "bytes": "4eb90000db68",
+      "size": 6
+    },
+    {
+      "address": "0x01012E",
+      "mnemonic": "bra.b",
+      "op_str": "$10136",
+      "bytes": "6006",
+      "size": 2
+    },
+    {
+      "address": "0x010130",
+      "mnemonic": "jsr",
+      "op_str": "$dbca.l",
+      "bytes": "4eb90000dbca",
+      "size": 6
+    },
+    {
+      "address": "0x010136",
+      "mnemonic": "movem.l",
+      "op_str": "(a7)+, a0",
+      "bytes": "4cdf0100",
+      "size": 4
+    },
+    {
+      "address": "0x01013A",
+      "mnemonic": "lea.l",
+      "op_str": "$c(a0), a0",
+      "bytes": "41e8000c",
+      "size": 4
+    },
+    {
+      "address": "0x01013E",
+      "mnemonic": "rts",
+      "op_str": "",
+      "bytes": "4e75",
+      "size": 2
+    }
+  ]
+}

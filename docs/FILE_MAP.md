@@ -1,3 +1,9 @@
+# M15.469 ROM Script Virtual Machine Opcodes $09, $0C, $0D, $1A..$1D: Media, Audio, Palette & Screen Shake Subsystem
+- `tools/extract_rom_script_vm_media_audio.py` — extractor for `0x010034..0x010140` (Script opcodes $09 item drop spawner, $0C load palette, $0D load & apply palette CRAM, $1A play SFX, $1B play BGM, $1C screen shake, and $1D channel effects).
+- `tests/rom_script_vm_media_audio_test.py` — `4` unit tests verifying opcode $09 item drop parameters, opcodes $0C/$0D palette loading and CRAM flag assertion, opcodes $1A/$1B audio dispatch, and opcodes $1C/$1D screen shake and channel effects.
+- `data/thor-evidence/rom_script_vm_media_audio_m15_469.json` — extracted M15.469 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_469_SCRIPT_MEDIA_AUDIO_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.468 ROM Script Virtual Machine Opcodes $15, $16, $18, $19: Persistent Gater, Spawner & Ballistic Projectile Engine
 - `tools/extract_rom_script_vm_persistent_projectiles.py` — extractor for `0x00FEDE..0x010034` (Script opcodes $15 persistent gater, $16 persistent entity spawner, $18 dynamic particle spawner, and $19 ballistic projectile 3D velocity spawner).
 - `tests/rom_script_vm_persistent_projectiles_test.py` — `4` unit tests verifying opcode $15 bit test skip/fallthrough, opcode $16 18-byte record unpacking, opcode $18 particle instantiation, and opcode $19 3D velocity vector configuration.
