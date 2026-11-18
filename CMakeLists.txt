@@ -58,6 +58,7 @@ add_library(oasis_core
     src/game/combat/weapon_hitbox_streamer.cpp
     src/game/combat/attack_scanner_engine.cpp
     src/game/combat/combat_hit_response.cpp
+    src/game/combat/hit_spark_generator.cpp
     src/game/save/sram_save_system.cpp
     src/game/items/item_effects.cpp
     src/game/items/item_attribute_tables.cpp

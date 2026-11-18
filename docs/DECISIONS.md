@@ -1,3 +1,51 @@
+# ADR-20261118-M16-173-HIT-SPARK-GENERATOR — ROM Combat Hit Spark Particle Generator & 3D Overlap Centerpoint Calculator (0x00C012..0x00C0BE)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.424 extracted ROM routine `0x00C012..0x00C0BE` (172 bytes) governing combat hit spark particle allocation, 3D intersection volume midpoint projection, screen coordinate calculation, and lifetime management:
+   - Ingress entry point:
+     * `0x00C012`: called on unblocked combat hits (`0x00BEFE`) and shield clash blocks (`0x00BFF6`).
+   - 4-Slot Ring Buffer Allocation (`$FF19C8..$FF19E8`):
+     * 4 slots of 8 bytes each (`$FF19C8`, `$FF19D0`, `$FF19D8`, `$FF19E0`).
+     * Sequential test of `slot[0] == 0` (type field). First free slot claimed.
+     * If all 4 slots are non-zero: exits immediately with `rts` (drop particle on saturated buffer).
+   - Particle Slot Layout (8 bytes):
+     * `+0` (`uint16_t`): type code = `2` (active spark).
+     * `+2` (`int16_t`): particle X coordinate = `mid_x`.
+     * `+4` (`int16_t`): particle projected Y coordinate = `mid_y - mid_z` (Y elevation offset subtracted!).
+     * `+6` (`uint16_t`): lifetime counter = `5` frames.
+   - 3D Overlap Midpoint Projection:
+     * Z Midpoint:
+       `tz_min = target.elev_z + target.ground_h`
+       `tz_max = tz_min + target.height_z`
+       `z0 = max(hitbox.z_min, tz_min)`
+       `z1 = min(hitbox.z_max, tz_max)`
+       `mid_z = z0 + ((z1 - z0) >> 1)` (arithmetic shift right)
+     * X Midpoint:
+       `tx_min = target.world_x - target.rad_x`
+       `tx_max = target.world_x + target.rad_x`
+       `x0 = max(hitbox.x_min, tx_min)`
+       `x1 = min(hitbox.x_max, tx_max)`
+       `mid_x = x0 + ((x1 - x0) >> 1)` (arithmetic shift right)
+     * Y Midpoint:
+       `ty_base = target.world_y + target.ground_h`
+       `ty_min = ty_base - target.rad_y`
+       `ty_max = ty_base + target.rad_y`
+       `y0 = max(hitbox.y_min, ty_min)`
+       `y1 = min(hitbox.y_max, ty_max)`
+       `mid_y = y0 + ((y1 - y0) >> 1)` (arithmetic shift right)
+     * Projected Screen Position:
+       `spark_x = mid_x`
+       `spark_y = mid_y - mid_z`
+   - Raw 64KB RAM window integration helpers for full emulation fidelity.
+
+**Decisions:**
+1. **Dedicated `hit_spark_generator` Module:**
+   - Added `src/game/combat/hit_spark_generator.hpp/.cpp` and `include/game/combat/hit_spark_generator.hpp` modeling particle ring buffer allocation, 3D overlap midpoint projection, 2D screen coordinate projection, lifetime updates, `HitSparkManager`, and raw memory integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (153/153 M16 tests).
+
 # ADR-20261118-M16-172-COMBAT-HIT-RESPONSE — ROM Entity Combat Hit Response, Knockback & Trajectory Physics Calculator (0x00BE98..0x00C012)
 **Status:** Accepted
 **Date:** 2026-11-18
