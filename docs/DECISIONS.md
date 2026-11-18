@@ -1,3 +1,42 @@
+# ADR-20261118-M16-184-CAMERA-CONTROLLER — ROM Camera Deadzone Tracking, Boundary Clamp & Screen Shake Controller (0x00CEEA..0x00D146)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.435 extracted ROM routines `0x00CEEA..0x00D146` (604 bytes) governing Player Ali camera tracking, horizontal/vertical deadzone thresholds, smooth/fast catch-up panning, instant snap mode, scroll bias flag/target dispatch, elevation compensation with warp SFX bypass, direct follow mode ($FF16F1 bit 3), screen shake oscillation ($FF17C4), and tile map viewport clamping:
+   - Primary Entrypoints:
+     * `0x00CEEA`: `camera_tracker_update` (reads Player Ali coordinates, adjusts for elevation, evaluates deadzone panning, screen shake, and motion bias).
+     * `0x00CF06`: `camera_tracker_start_panning` (takes camera coordinates in d1, d2).
+     * `0x00D0C4`: `camera_fixed_axis_direct_follow` (invoked when room custom flag $FF16F1 bit 3 is set; locks camera directly onto player with fixed offsets `(player_x + offset_x - 160, effective_y + offset_y - 120)`).
+     * `0x00D118`: `clamp_camera_viewport_bounds` (clamps camera viewport within tile map dimensions `[0..(width - 40) * 8]` and `[0..(height - 28) * 8]`).
+   - Horizontal Deadzone & Panning (`0x00CF26..0x00CFE8`):
+     * Deadzone bounds: Left `[120]`, Right `[200]`.
+     * Scroll bias direction flag `$FF1859`: if `rel_x <= 80`, sets `$FF1859 = 0xFF` (facing left; if instant snap `$FF17BA != 0`, sets `$FF185A = 0x0138`); if `rel_x >= 240`, clears `$FF1859 = 0x00` (facing right; if instant snap, sets `$FF185A = 0x0020`).
+     * Left edge panning (`rel_x < 120`): speed `d0 = rel_x - 120`; if instant snap inactive: `-3 <= d0` keeps `d0`, `-32 <= d0 < -3` clamps to `-3`, `d0 < -32` fast catch-up `d0 + 30`. Clamp `cam_x = max(0, cam_x + speed)`.
+     * Right edge panning (`rel_x > 200`): speed `d0 = rel_x - 200`; if instant snap inactive: `d0 <= 3` keeps `d0`, `3 < d0 <= 32` clamps to `+3`, `d0 > 32` fast catch-up `d0 - 30`. Clamp `cam_x = min(cam_x + speed, max_camera_x)`.
+     * Post-movement bias direction update: if camera moved horizontally, updates `$FF1859` accordingly (left -> `0xFF`, right -> `0x00`).
+   - Vertical Deadzone & Panning (`0x00CFE8..0x00D068`):
+     * Effective Y: `player_y - player_elev_z` unless warp SFX active (`$FF17BB != 0`, skipping elevation subtraction).
+     * Deadzone bounds: Top `[104]`, Bottom `[128]`.
+     * Top edge panning (`rel_y < 104`): speed `d0 = rel_y - 104`; if instant snap inactive: `-3 <= d0` keeps `d0`, `-32 <= d0 < -3` clamps to `-3`, `d0 < -32` fast catch-up `max(-6, d0 + 30)`. Clamp `cam_y = max(0, cam_y + speed)`.
+     * Bottom edge panning (`rel_y > 128`): speed `d0 = rel_y - 128`; if instant snap inactive: `d0 <= 3` keeps `d0`, `3 < d0 <= 32` clamps to `+3`, `d0 > 32` fast catch-up `d0 - 30`. Clamp `cam_y = min(cam_y + speed, max_camera_y)`.
+   - Screen Shake Oscillation Engine (`0x00D068..0x00D098`):
+     * If `$FF17C4 > 0`: decrements timer by 1.
+     * If decremented timer is odd: `offset = +timer`.
+     * If decremented timer is even: `offset = -timer`.
+     * Adds offset to `cam_y` and clamps to `[0..max_camera_y]`.
+   - Viewport Tile Map Boundary Clamping (`0x00D118..0x00D146`):
+     * Max bounds in pixels: `(map_width_tiles - 40) << 3` and `(map_height_tiles - 28) << 3`.
+     * Clamps camera X and Y to `[0..max_bounds]`.
+   - Raw 64KB RAM window integration helpers at `$FF19F0`, `$FF19F4`, `$FF19F8`, `$FF17BB`, `$FF17BA`, `$FF16F1`, `$FF177A`, `$FF177C`, `$FF177E`, `$FF1780`, `$FF17C4`, `$FF1859`, `$FF185A`.
+
+**Decisions:**
+1. **Extended `camera_controller` Implementation:**
+   - Extended `src/game/camera/camera_controller.hpp/.cpp` and added `include/game/camera/camera_controller.hpp` with cleanroom namespace `thor::camera`.
+   - Implemented `CameraDeadzoneConfig`, `CameraState`, `update_camera_deadzone`, `clamp_camera_viewport`, and `update_camera_from_ram`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (164/164 M16 tests).
+
 # ADR-20261118-M16-183-ROOM-PRESENTATION-JINGLE — ROM Room Entry Presentation Manager, Palette Crossfader & Footstep Audio Jingle (0x00CD64..0x00CEEA)
 **Status:** Accepted
 **Date:** 2026-11-18

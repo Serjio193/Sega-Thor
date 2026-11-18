@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <span>
 
 namespace oasis::game::camera {
 
@@ -107,3 +108,56 @@ private:
 };
 
 } // namespace oasis::game::camera
+
+namespace thor::camera {
+
+inline constexpr std::uint32_t kCameraTrackerUpdateAddr = 0x00CEEAU;
+inline constexpr std::uint32_t kCameraDirectFollowAddr = 0x00D0C4U;
+inline constexpr std::uint32_t kClampCameraViewportAddr = 0x00D118U;
+
+struct CameraDeadzoneConfig {
+    int16_t left_deadzone{120};
+    int16_t right_deadzone{200};
+    int16_t top_deadzone{104};
+    int16_t bottom_deadzone{128};
+    int16_t left_bias_edge{80};
+    int16_t right_bias_edge{240};
+};
+
+struct CameraState {
+    int16_t x{0};
+    int16_t y{0};
+    int16_t max_x{0};
+    int16_t max_y{0};
+    int16_t offset_x{0};
+    int16_t offset_y{0};
+    uint8_t shake_timer{0};
+    uint8_t scroll_bias_dir{0};
+    uint16_t scroll_bias_target{0};
+};
+
+/// 0x00CEEA: Evaluates deadzone tracking, direct follow mode, screen shake, and scroll bias.
+void update_camera_deadzone(
+    CameraState& cam,
+    int16_t player_x,
+    int16_t player_y,
+    int16_t player_elev_z,
+    bool warp_active,
+    bool instant_snap,
+    bool direct_follow_mode) noexcept;
+
+/// 0x00D118: Clamps camera viewport within tile map dimensions [0..(width - 40) * 8] and [0..(height - 28) * 8].
+void clamp_camera_viewport(
+    CameraState& cam,
+    uint16_t map_width_tiles,
+    uint16_t map_height_tiles) noexcept;
+
+/// Executes camera update driven directly by 64KB RAM window:
+/// $FF19F0 (x), $FF19F4 (y), $FF19F8 (z), $FF17BB (warp sfx), $FF17BA (instant snap),
+/// $FF16F1 bit 3 (direct follow), $FF177A/$FF177C (max bounds), $FF177E/$FF1780 (offsets),
+/// $FF17C4 (shake timer), $FF1859 (bias dir), $FF185A (bias target).
+void update_camera_from_ram(
+    CameraState& cam,
+    std::span<uint8_t, 0x10000> ram) noexcept;
+
+} // namespace thor::camera

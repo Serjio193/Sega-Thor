@@ -1,3 +1,23 @@
+# M16.184 ROM Camera Deadzone Tracking, Boundary Clamp & Screen Shake Controller (`0x00CEEA..0x00D146`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Extended `src/game/camera/camera_controller.hpp/.cpp` and added `include/game/camera/camera_controller.hpp` with cleanroom namespace `thor::camera`:
+  - Player Ali camera deadzone tracking (`0x00CEEA`):
+    * Reads player coordinates, adjusts for elevation `player_y - player_elev_z` unless warp SFX active (`$FF17BB != 0`, which bypasses elevation subtraction).
+    * Evaluates direct follow mode (`0x00D0C4`) when room custom flag `$FF16F1` bit 3 is set, locking camera to player offsets `(player_x + offset_x - 160, effective_y + offset_y - 120)`.
+    * Horizontal deadzone `[120, 200]`: smooth speed clamping within `[-3..+3]` for offsets up to 32px, and accelerated catch-up `d0 +/- 30` beyond 32px; clamps within `[0..max_camera_x]`.
+    * Vertical deadzone `[104, 128]`: smooth speed clamping within `[-3..+3]` for offsets up to 32px, accelerated catch-up `d0 - 30` (bottom) and `max(-6, d0 + 30)` (top) beyond 32px; clamps within `[0..max_camera_y]`.
+    * Instant snap mode (`0x00CF0E` on `$FF17BA != 0`): clears flag to 0 and bypasses smooth clamping for single-frame instant catch-up.
+    * Scroll bias direction flag `$FF1859` and target `$FF185A`: dispatches bias changes on thresholds 80px (`0xFF`, target `0x0138`) and 240px (`0x00`, target `0x0020`), and latches direction on horizontal camera displacement.
+  - Screen shake oscillation engine (`0x00D068`):
+    * Decrements shake timer `$FF17C4` by 1.
+    * Adds alternating sign offsets (`+timer` for odd, `-timer` for even) to camera Y, clamped within `[0..max_camera_y]`.
+  - Viewport tile map boundary clamping (`0x00D118`):
+    * Computes maximum pixel bounds `(map_width_tiles - 40) << 3` and `(map_height_tiles - 28) << 3`.
+    * Clamps camera coordinates within `[0..max_bounds]`.
+  - Raw 64KB RAM window integration helper `update_camera_from_ram` connecting `$FF19F0`, `$FF19F4`, `$FF19F8`, `$FF17BB`, `$FF17BA`, `$FF16F1`, `$FF177A`, `$FF177C`, `$FF177E`, `$FF1780`, `$FF17C4`, `$FF1859`, `$FF185A`.
+- Qualified `oasis_m16_184_camera_controller` and the 164-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.183 ROM Room Entry Presentation Manager, Palette Crossfader & Footstep Audio Jingle (`0x00CD64..0x00CEEA`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
