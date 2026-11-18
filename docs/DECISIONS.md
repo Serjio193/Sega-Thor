@@ -1,3 +1,23 @@
+# ADR-20261118-M16-185-SCROLL-INTEGRATOR — ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer (0x00D146..0x00D2B4)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.436 extracted ROM routines `0x00D146..0x00D2B4` (366 bytes) governing camera/tilemap fixed-point and integer scroll delta integration, 512x256 VDP Plane A ring-buffer scroll accumulators, 8x8 tile strip dirty markers, +/-10000 coarse range guards, and toroidal coordinate modulo normalization:
+   - Primary Entrypoints:
+     * `0x00D146`: `accumulate_long_and_integrate` (tests `$27(a0)` bit 0, adds 32-bit 16.16 fixed-point deltas to `cam_x/cam_sub_x` and `cam_y/cam_sub_y`, branches to `0x00D188`).
+     * `0x00D168`: `accumulate_word_and_integrate` (tests `$27(a0)` bit 0, adds 16-bit pixel deltas to `cam_x` and `cam_y`, branches to `0x00D188`).
+     * `0x00D17E`: `check_enable_and_integrate` (gates `0x00D188` on `$27(a0)` bit 0).
+     * `0x00D188`: `integrate_scroll_deltas` (resets `delta_x/delta_y`, computes tile col/row step `(new >> 3) - (old >> 3)` unless bit 1 of `$27(a0)` suppresses tile strip shifts, updates VDP Plane A ring-buffer accumulators `vdp_hscroll = (vdp_hscroll - delta_x) & 0x1FF` and `vdp_vscroll = (vdp_vscroll + delta_y) & 0xFF`, sets dirty bits 0..3 on `$26(a0)`, and enforces `<= -10000` / `>= 10000` coarse wrap guards).
+     * `0x00D266`: `normalize_toroidal_coords` (wraps `cam_x` into `[0..map_width_px)` and `cam_y` into `[0..map_height_px)`).
+   - Raw 64KB RAM window helpers targeting Plane A (`$FF1716`) and Plane B (`$FF173E`).
+
+**Decisions:**
+1. **`scroll_integrator` Cleanroom Module:**
+   - Implemented `src/game/render/scroll_integrator.hpp/.cpp` and `include/game/render/scroll_integrator.hpp` in namespace `thor::render` (aliased into `oasis::game::render`).
+2. **Dual Toolchain Parity:**
+   - Validated across MinGW GCC Release and MSVC Debug with `oasis_m16_185_scroll_integrator` and the full M16 + file-limit regression suite.
+
 # ADR-20261118-M16-184-CAMERA-CONTROLLER — ROM Camera Deadzone Tracking, Boundary Clamp & Screen Shake Controller (0x00CEEA..0x00D146)
 **Status:** Accepted
 **Date:** 2026-11-18

@@ -1,3 +1,15 @@
+# M16.185 ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer (`0x00D146..0x00D2B4`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/render/scroll_integrator.hpp/.cpp` and `include/game/render/scroll_integrator.hpp` in cleanroom namespace `thor::render`:
+  - `accumulate_long_and_integrate` (`0x00D146`): 16.16 fixed-point camera accumulation gated by `$27(a0)` bit 0.
+  - `accumulate_word_and_integrate` (`0x00D168`): 16-bit integer camera delta accumulation gated by `$27(a0)` bit 0.
+  - `check_enable_and_integrate` (`0x00D17E`): enable-gated scroll integration.
+  - `integrate_scroll_deltas` (`0x00D188`): computes `delta_x/delta_y`, tile strip shifts `tile_col_step/tile_row_step`, 512x256 ring-buffer `vdp_hscroll` (`& 0x1FF`) and `vdp_vscroll` (`& 0xFF`), dirty flags (`0x01..0x08`), and +/-10000 range guards.
+  - `normalize_toroidal_coords` (`0x00D266`): toroidal coordinate modulo normalization into `[0..size_px)`.
+  - Raw 64KB RAM window helpers (`load_state_from_ram`, `store_state_to_ram`, `accumulate_long_from_ram`, `accumulate_word_from_ram`, `integrate_scroll_deltas_from_ram`, `normalize_toroidal_from_ram`).
+- Qualified `oasis_m16_185_scroll_integrator` and the M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.184 ROM Camera Deadzone Tracking, Boundary Clamp & Screen Shake Controller (`0x00CEEA..0x00D146`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

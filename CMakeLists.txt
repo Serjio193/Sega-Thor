@@ -160,6 +160,7 @@ add_library(oasis_core
     src/game/render/dynamic_fx_renderer_p2.cpp
     src/game/render/vdp_dma_queue.cpp
     src/game/render/town_combat_sat.cpp
+    src/game/render/scroll_integrator.cpp
     src/game/camera/camera_controller.cpp
     src/game/camera/camera_follow.cpp
     src/game/world/byte_grid.cpp
