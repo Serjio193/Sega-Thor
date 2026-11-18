@@ -1,3 +1,6 @@
+# M15.490 ROM Efreet Dash Charge Attack, Flame Breath State Controller & Radial Fireball Supernova Spawner (`0x012680`..`0x012988`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_efreet_combat_fireball.py`, `tests/rom_efreet_combat_fireball_test.py` (`5/5 PASS`), `data/thor-evidence/rom_efreet_combat_fireball_m15_490.json`, and `docs/handoffs/STANDALONE_M15_490_EFREET_COMBAT_FIREBALL_HANDOFF.md`.
+
 # M15.489 ROM Dytto Water Tornado Steering/Bounce & Efreet Spirit Master 14-State Dispatcher / Command Starters (`0x0123E2`..`0x012680`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_efreet_dispatch_tornado.py`, `tests/rom_efreet_dispatch_tornado_test.py` (`5/5 PASS`), `data/thor-evidence/rom_efreet_dispatch_tornado_m15_489.json`, and `docs/handoffs/STANDALONE_M15_489_EFREET_DISPATCH_TORNADO_HANDOFF.md`.
 

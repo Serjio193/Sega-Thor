@@ -1,3 +1,13 @@
+# Reverse Engineering Notes — Milestone M15.490 (`0x012680`..`0x012988`): Efreet Dash Charge Attack, Flame Breath State Controller & Radial Fireball Supernova Spawner
+- **Original ROM Addresses:** `0x012680..0x012988` (776 bytes, 206 M68K instructions, zero embedded tables).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_efreet_combat_fireball.py` and `data/thor-evidence/rom_efreet_combat_fireball_m15_490.json`:
+  * `0x012680..0x0127A4`: `AI_Efreet_DashChargeStates` — States `$04/$08/$12/$14`, idle reset `0x01269A`, `(0x100,0x100)`/`(0xC0,0xC0)` dash acceleration/deceleration clamped to `[-0x80000..+0x80000]`, jewel-rank `(($FF0DB7+1)>>2)` into `+$90`, and 10-frame dash into `+$9E=$0E` cooldown.
+  * `0x0127A4..0x012802`: `AI_Efreet_FlameBreathStates` — State `$0A` -> `$0E` (70 frames `$46`), emitting `0x012DFA` + `#$80034F` every 4 frames while `+$02 >= $14`, calling `0x012CDC`/`0x012EA8`, freeing `+$A6` slot at 0.
+  * `0x012802..0x012914`: `AI_Efreet_FireballSupernovaStates` — `$FF17C4 = ($FF1971&1)+3`, `#$B00224`/`#$700383`, radial `$05D706` fireballs at `-$20` step (`0x1000` scale, `0x00DA1A`, `0x00E66E`), State `$1A` recovery.
+  * `0x012914..0x012988`: `AI_Efreet_FireballFlightMeleeAndBuzzer` — ROM-verified State `$16` (`0x00E338` + `0x00BCA4(2)` + despawn on `+$37` bit 1), State `$10` melee scan (`0x012950`), and `#$00A00253` buzzer (`0x012978`) branching to `0x0129B0`.
+- **Assumptions:** Callees `0x00BCA4`, `0x00DA1A`, `0x00E2D4`, `0x00E338`, `0x00E66E`, `0x00E7FC`, `0x012CDC`, `0x012DFA`, and `0x012EA8` remain external to this slice.
+- **Test Status:** Verified via `tests/rom_efreet_combat_fireball_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.489 (`0x0123E2`..`0x012680`): Dytto Water Tornado Steering/Bounce & Efreet Spirit Master 14-State Dispatcher / Command Starters
 - **Original ROM Addresses:** `0x0123E2..0x012680` (670 bytes: 188 M68K instructions + 28-byte 14-entry relative jump table at `0x0125AE..0x0125CA`).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_efreet_dispatch_tornado.py` and `data/thor-evidence/rom_efreet_dispatch_tornado_m15_489.json`:
