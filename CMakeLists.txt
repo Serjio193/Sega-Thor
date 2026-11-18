@@ -185,6 +185,7 @@ add_library(oasis_core
     src/game/world/tilemap_streamer.cpp
     src/game/world/town_scene_loader.cpp
     src/game/world/world_graph.cpp
+    src/game/world/entity_pool_alloc.cpp
     src/game/scene_transition_helpers.cpp
     src/game/event/event_vm.cpp
     src/game/events/event_vm.cpp

@@ -1,3 +1,16 @@
+# Worklog — 2026-11-18 (M16.191: ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers)
+- **Concrete Task**: Implement `src/game/world/entity_pool_alloc.hpp/.cpp` and `include/game/world/entity_pool_alloc.hpp` in cleanroom namespace `thor::world` covering `0x00D9A4..0x00DB1A` (`decompress_palette_block` via `0x0037D2`, read-only slot scanners `0x00D9BE`/`0x00D9F0`/`0x00DA1A`/`0x00DA2A` with `$FF1850`/`$FF184F` reset, `alloc_spawn_npc_entity_slot_18`/`_17` with `0x002E`/`0x008D06`/`0x003C`, sound command dispatchers `0x00DAC2..0x00DB18`, and 64KB RAM helpers); add `tests/m16_191_entity_pool_alloc_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/entity_pool_alloc.hpp` (253 lines) / `src/game/world/entity_pool_alloc.cpp` (417 lines).
+  * Added `include/game/world/entity_pool_alloc.hpp` (3 lines).
+  * Added `tests/m16_191_entity_pool_alloc_test.cpp` (370 lines, registered as `oasis_m16_191_entity_pool_alloc` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_191_entity_pool_alloc` + M16 + `project_file_line_limit` suite passed (`172/172`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_191_entity_pool_alloc` + M16 + `project_file_line_limit` suite passed (`172/172`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Ready for M16.192 tilemap rectangle fill & block copy subsystem (`0x00DB1A..0x00DC26`).
+
 # Worklog — 2026-11-18 (M16.190: ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer)
 - **Concrete Task**: Implement `src/game/render/visible_plane_streamer.hpp/.cpp` and `include/game/render/visible_plane_streamer.hpp` in cleanroom namespace `thor::render` covering `0x00D7C0..0x00D9A4` (`compute_vram_write_cmd`, `wrap_tile_origin`, `select_visible_stream_dimensions` with `41x29` vs `64x32` `dbra` bounds and `height==32 && width<=64` bit-1 latch, `vdp_fill_plane_blank` `41x29` `0x0780`, `vdp_upload_visible_tilemap_plane` toroidal + VDP ring wrap streaming, and 64KB RAM helper `vdp_upload_visible_tilemap_plane_from_ram`); add `tests/m16_190_visible_plane_streamer_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

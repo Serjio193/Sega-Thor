@@ -1,3 +1,20 @@
+# ADR-20261118-M16-191-ENTITY-POOL-ALLOC — ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers (0x00D9A4..0x00DB1A)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.442 extracted ROM routines `0x00D9A4..0x00DB1A` (374 bytes, 96 instructions) plus callees `0x0037D2` and `0x008D06`:
+   - `decompress_palette_block` (`0x00D9A4` -> `0x0037D2`): decompresses compressed data into `$FF2FA8`, computes dynamic `length_words = output_size >> 1`, enqueues `(0x007F97D4, vram_dest, length_words)` at `($FF1892)`, and sets `$FF164E` bit 1.
+   - Read-only slot scanners: `alloc_projectile_entity_slot` (`0x00D9BE`, 8 slots at `$FF2ABC` stride `0x5A`, `vram_tile = 0x0694 + 9 * idx`), `alloc_spark_effect_slot` (`0x00D9F0`, 6 slots at `$FF2D8C` stride `0x5A`), and `find_free_general_entity_slot_18` / `_17` (`0x00DA1A`/`0x00DA2A`, 18/17 slots at `$FF1C1C`/`$FF1CD8` stride `0xBC`, clearing `$FF184F` when `$FF1850 == slot`).
+   - `alloc_spawn_npc_entity_slot_18` / `_17` (`0x00DA62`/`0x00DA72`): finds first free 188B slot, clears `$FF184F` when `$FF1850 == slot`, writes type `0x002E`, invokes `0x008D06` (`oasis::game::player::construct_entity`), sets `+0x02 = 0x003C`, and returns `slot_addr - $FF19E8`.
+   - Sound command dispatchers (`0x00DAC2..0x00DB18`): play track (`$FF16F2 = cmd`, `0x060004`), resume track if `$FF16F2 >= 0`, pause (`$FF16F2 = -1`, cmd `7`), and stop (`$FF16F2 = -1`, cmd `0`).
+
+**Decisions:**
+1. **`entity_pool_alloc` Cleanroom Module:**
+   - Implemented `src/game/world/entity_pool_alloc.hpp/.cpp` and `include/game/world/entity_pool_alloc.hpp` in namespace `thor::world` (aliased into `oasis::game::world`), reusing `decompress_graphics` and `construct_entity` alongside full 64KB RAM window helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_191_entity_pool_alloc` + 172-test M16 + file-limit regression suite).
+
 # ADR-20261118-M16-190-VISIBLE-PLANE-STREAMER — ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer (0x00D7C0..0x00D9A4)
 **Status:** Accepted
 **Date:** 2026-11-18

@@ -1,3 +1,13 @@
+# M16.191 ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers (`0x00D9A4..0x00DB1A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/world/entity_pool_alloc.hpp/.cpp` and `include/game/world/entity_pool_alloc.hpp` in cleanroom namespace `thor::world`:
+  - `decompress_palette_block` (+ `_from_ram`) (`0x00D9A4` -> `0x0037D2`): decompresses into `$FF2FA8` and queues dynamic `output_bytes >> 1` DMA at `$FF1892` with V-Int bit 1 sync.
+  - `alloc_projectile_entity_slot` (`0x00D9BE`), `alloc_spark_effect_slot` (`0x00D9F0`), `find_free_general_entity_slot_18`/`_17` (`0x00DA1A`/`0x00DA2A`): read-only pool scanners + `$FF1850`/`$FF184F` HUD timer reset.
+  - `alloc_spawn_npc_entity_slot_18`/`_17` (`0x00DA62`/`0x00DA72`): `0x002E` spawn + `0x008D06` constructor + `0x003C` timer + `$FF19E8`-relative offset.
+  - `sound_play_music_track`, `sound_resume_music_track`, `sound_pause_music_track`, `sound_stop_music_track` (`0x00DAC2..0x00DB18`).
+- Qualified `oasis_m16_191_entity_pool_alloc` and the 172-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.190 ROM Visible Tilemap Plane VRAM Streamer & Full-Screen Blank Tile Plane Clearer (`0x00D7C0..0x00D9A4`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
