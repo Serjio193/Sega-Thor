@@ -1,3 +1,9 @@
+# M15.452 ROM Positional Spatial Audio Dispatcher, Distance Attenuation & Stereo Pan Subsystem
+- `tools/extract_rom_spatial_audio_pan.py` — extractor for `0x00E78E..0x00E90E` (positional sound effect dispatch, non-spatial sound ID bypass, 1.25x isometric distance calculation, Mode A/B distance attenuation, culling, and stereo panning).
+- `tests/rom_spatial_audio_pan_test.py` — `5` unit tests verifying ROM constants, non-spatial ID bypass (< 0x200), isometric distance scaling, Mode A attenuation/culling/panning, and Mode B attenuation/culling/panning.
+- `data/thor-evidence/rom_spatial_audio_pan_m15_452.json` — extracted M15.452 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_452_SPATIAL_AUDIO_PAN_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.451 ROM Newton-Raphson Integer Square Root & 256-Step Circular Arctan Engine
 - `tools/extract_rom_math_sqrt_atan.py` — extractor for `0x00E6BA..0x00E78E` (integer square root via Newton-Raphson division refinement, relative 256-step angle resolution to target or Ali, and 9-entry tangent table `0x05D906`).
 - `tests/rom_math_sqrt_atan_test.py` — `4` unit tests verifying ROM constants, integer square root convergence, first-octant tangent table search, and four-quadrant circular angle resolution.

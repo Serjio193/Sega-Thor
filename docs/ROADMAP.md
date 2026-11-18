@@ -1,3 +1,6 @@
+# M15.452 ROM Positional Spatial Audio Dispatcher, Distance Attenuation & Stereo Pan Subsystem (`0x00E78E`..`0x00E90E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_spatial_audio_pan.py`, `tests/rom_spatial_audio_pan_test.py` (`5/5 PASS`), `data/thor-evidence/rom_spatial_audio_pan_m15_452.json`, and `docs/handoffs/STANDALONE_M15_452_SPATIAL_AUDIO_PAN_HANDOFF.md`.
+
 # M15.451 ROM Newton-Raphson Integer Square Root & 256-Step Circular Arctan Engine (`0x00E6BA`..`0x00E78E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_math_sqrt_atan.py`, `tests/rom_math_sqrt_atan_test.py` (`4/4 PASS`), `data/thor-evidence/rom_math_sqrt_atan_m15_451.json`, and `docs/handoffs/STANDALONE_M15_451_MATH_SQRT_ATAN_HANDOFF.md`.
 
