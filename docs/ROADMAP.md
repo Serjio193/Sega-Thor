@@ -1,3 +1,6 @@
+# M15.455 ROM Boss Entity Type $3A Spawner, Ground Stomp & Combat State Engine (Part 1) (`0x00ED04`..`0x00EE94`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_boss_stomp_engine.py`, `tests/rom_boss_stomp_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_boss_stomp_engine_m15_455.json`, and `docs/handoffs/STANDALONE_M15_455_BOSS_STOMP_ENGINE_HANDOFF.md`.
+
 # M15.454 ROM Entity Type $36 Boss Attachment, Hierarchical Parent-Child Transform & 3D Combat Physics Subsystem (`0x00EA76`..`0x00ED04`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_boss_attachment_engine.py`, `tests/rom_boss_attachment_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_boss_attachment_engine_m15_454.json`, and `docs/handoffs/STANDALONE_M15_454_BOSS_ATTACHMENT_ENGINE_HANDOFF.md`.
 

@@ -1,3 +1,9 @@
+# M15.455 ROM Boss Entity Type $3A Spawner, Ground Stomp & Combat State Engine (Part 1)
+- `tools/extract_rom_boss_stomp_engine.py` — extractor for `0x00ED04..0x00EE94` (Boss Type $3A spawner, boss flag activation, ground stomp State 3, ground quake State 4, screen shake, and roar SFX).
+- `tests/rom_boss_stomp_engine_test.py` — `5` unit tests verifying ROM constants, boss spawn initialization and elevation offset, phase transitions, damage elevation bumps, and ground quake frame trigger.
+- `data/thor-evidence/rom_boss_stomp_engine_m15_455.json` — extracted M15.455 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_455_BOSS_STOMP_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.454 ROM Entity Type $36 Boss Attachment, Hierarchical Parent-Child Transform & 3D Combat Physics Subsystem
 - `tools/extract_rom_boss_attachment_engine.py` — extractor for `0x00EA76..0x00ED04` (compound boss appendage attachments, relative 3D coordinate pinning, 3D AABB combat query, launch physics with #$20000 impulse, gravity, and boss HUD tracking).
 - `tests/rom_boss_attachment_engine_test.py` — `5` unit tests verifying ROM constants, hierarchical transform pinning, combat overlap and boss HUD tracking, projectile trajectory and culling, and latch timer despawn.
