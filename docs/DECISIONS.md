@@ -1,3 +1,19 @@
+# ADR-20261118-M16-189-DUAL-PLANE-LOADER — ROM Dual Tilemap Plane Header Unpacker, VRAM Layout Configurator & Full Plane Initializer (0x00D542..0x00D7C0)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.440 extracted ROM routines `0x00D542..0x00D7C0` (`init_dual_plane_layout` `0x00D542..0x00D7AE` and `compute_log2_byte_stride` `0x00D7B0..0x00D7BE`, 638 bytes, 158 M68K instructions):
+   - Direct disassembly confirmed that `header[0/2] & 0x7F` and `int8_t(header[1/3])` shifted `<< 5` store **8x8 tile dimensions** (not pixels) into `+$20`/`+$22` and aux `+$04`/`+$06`, while `compute_log2_byte_stride` computes `log2(width_tiles * 2)` into `+$24` (`word_stride_shift = byte_stride_shift - 1` at aux `+$08`).
+   - Bit 7 of `header[0/2]` enables a 1-byte/tile auxiliary map (`primary_bytes >> 1`), `d6` high/low bytes via `ror.w #8, d6` set Plane A/B `+$27`, `$FF179E/$FF17A2` track scene extra palette + dynamic buffer base, and `$FF16F1` bit 2 triggers pass-2 overlay decompression (`$FF17A6`, `$FF17AA`, `$FF17AE`).
+   - Clears scroll tables (`$FF1344`, `$FF1348`, `$FFFB5C`, `$FFFF5C`, VRAM `0xDC00`, VSRAM), updates VDP Reg 7 (`$FF0BF8`) & Reg 12 (`$8C89` / `$8C81`), loads 64 CRAM words (`$FF16F6`, `0x000476`, `0x05D046`, `$FF179E` via `0x00CECC`), invokes Plane A/B streaming (`0x00D7C0`), computes `(width_tiles - 40) << 3` / `(height_tiles - 28) << 3` camera limits (`$FF177A`, `$FF177C`) from Plane A or B (`$FF16F0` bit 7), and sets `$FF17C1..$FF17C3` (`0x00, 0xFF, 0xFF`).
+
+**Decisions:**
+1. **`dual_plane_loader` Cleanroom Module:**
+   - Implemented `src/game/render/dual_plane_loader.hpp/.cpp` and `include/game/render/dual_plane_loader.hpp` in namespace `thor::render` (aliased into `oasis::game::render`), exposing structured APIs and bounded 64KB RAM window helper `init_dual_plane_layout_from_ram`.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified with synthetic single/two-pass tests, RAM guard checks, and optional Town/Sanctuary real-ROM checks across MinGW Release and MSVC Debug (`oasis_m16_189_dual_plane_loader` + 170-test M16 + file-limit regression suite).
+
 # ADR-20261118-M16-188-SCENE-HEADER-DMA — ROM Scene Script Header Unpacker, Dual-Plane Camera Initializer & 16KB VRAM DMA Upload Engine (0x00D406..0x00D542)
 **Status:** Accepted
 **Date:** 2026-11-18

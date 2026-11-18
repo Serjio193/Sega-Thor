@@ -1,3 +1,16 @@
+# Worklog — 2026-11-18 (M16.189: ROM Dual Tilemap Plane Header Unpacker, VRAM Plane Layout Configurator & Full Plane Initializer)
+- **Concrete Task**: Implement `src/game/render/dual_plane_loader.hpp/.cpp` and `include/game/render/dual_plane_loader.hpp` in cleanroom namespace `thor::render` covering `0x00D542..0x00D7C0` (`compute_log2_byte_stride` `0x00D7B0`, `unpack_dual_plane_header` in 8x8 tile units with bit-7 aux maps, `compute_camera_scroll_limits`, `init_dual_plane_layout` with two-pass `0x003820` decompression, scroll clears, VDP Reg 7/12, 64-word CRAM palettes, `PlaneVramStreamCallback` for `0x00D7C0`, and 64KB RAM helper `init_dual_plane_layout_from_ram`); add `tests/m16_189_dual_plane_loader_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/render/dual_plane_loader.hpp` (261 lines) / `src/game/render/dual_plane_loader.cpp` (393 lines).
+  * Added `include/game/render/dual_plane_loader.hpp` (3 lines).
+  * Added `tests/m16_189_dual_plane_loader_test.cpp` (493 lines, registered as `oasis_m16_189_dual_plane_loader` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_189_dual_plane_loader` + M16 + `project_file_line_limit` suite passed (`170/170`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_189_dual_plane_loader` + M16 + `project_file_line_limit` suite passed (`170/170`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Ready for M16.190 visible tilemap plane VRAM streamer & blank clearer (`0x00D7C0..0x00D9A4`).
+
 # Worklog — 2026-11-18 (M16.188: ROM Scene Script Header Unpacker, Dual-Plane Camera Initializer & 16KB VRAM DMA Upload Engine)
 - **Concrete Task**: Implement `src/game/render/scene_header_dma.hpp/.cpp` and `include/game/render/scene_header_dma.hpp` in cleanroom namespace `thor::render` covering `0x00D406..0x00D542` (`parse_scene_header`, `unpack_elevation_bands` with `0xF000` terminal sentinel, `clear_camera_structs` for `$FF1716`/`$FF173E`, `align_packed_camera_coord`/`init_aligned_camera_coords` with `0xFFF8FFF8` negative clamp, `decompress_4_bg_patterns` skipping `0` into `$FF3FA8`, `queue_16kb_vram_dma` `(0x007F9FD4, 0x0000, 0x2000)` at `$FF1892` with V-Int sync bit 1 on `$FF164E`, `load_scene_header_and_init_vram`, and 64KB RAM window helpers); add `tests/m16_188_scene_header_dma_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

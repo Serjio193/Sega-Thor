@@ -1,3 +1,12 @@
+# M16.189 ROM Dual Tilemap Plane Header Unpacker, VRAM Plane Layout Configurator & Full Plane Initializer (`0x00D542..0x00D7C0`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/render/dual_plane_loader.hpp/.cpp` and `include/game/render/dual_plane_loader.hpp` in cleanroom namespace `thor::render`:
+  - `compute_log2_byte_stride` (`0x00D7B0`): computes `log2(width_tiles * 2)` byte stride shifts for Plane A/B contexts.
+  - `unpack_dual_plane_header` (`0x00D554..0x00D62A`): decodes tile counts (`blocks << 5`), auxiliary collision/elevation map spans, VRAM bases `0xC000`/`0xE000`, `d6` control flags, and palette/dynamic pointers (`$FF179E`, `$FF17A2`).
+  - `init_dual_plane_layout` & `init_dual_plane_layout_from_ram` (`0x00D542..0x00D7AE`): single/two-pass `0x003820` decompression, scroll table/VRAM `0xDC00`/VSRAM clearing, VDP Reg 7/12 setup, 64-word CRAM load (`$FF16F6`, `0x000476`, `0x05D046`, `$FF179E`), camera limits (`$FF177A`, `$FF177C`), and init flags (`$FF17C1..$FF17C3`).
+- Qualified `oasis_m16_189_dual_plane_loader` and the 170-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.188 ROM Scene Script Header Unpacker, Dual-Plane Camera Initializer & 16KB VRAM DMA Upload Engine (`0x00D406..0x00D542`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
