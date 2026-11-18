@@ -1,3 +1,9 @@
+# M15.477 ROM Entity AI Player Bow Arrow Attack Parry & Shield Interception Engine
+- `tools/extract_rom_entity_ai_arrow_parry.py` — extractor for `0x010BF0..0x010CFE` (Bow Arrow Type $3A pre-filter, elevation match, and 4-way shield reach interception via jump table 0x010C18).
+- `tests/rom_entity_ai_arrow_parry_test.py` — `4` unit tests verifying arrow parry success, type and elevation filters, rear attack rejection, and 4-way shield reach calculations.
+- `data/thor-evidence/rom_entity_ai_arrow_parry_m15_477.json` — extracted M15.477 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_477_ARROW_PARRY_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.476 ROM Entity AI Player Elemental Blade Attack Parry & Shield Interception Engine
 - `tools/extract_rom_entity_ai_blade_parry.py` — extractor for `0x010A74..0x010BF0` (Elemental Blade Type $34 pre-filter, head-on facing comparison, 3D vertical elevation overlap, and 4-way shield reach interception via jump table 0x010ADA).
 - `tests/rom_entity_ai_blade_parry_test.py` — `5` unit tests verifying head-on parry success, type/state filters, rear attack rejection, vertical overlap limits, and 4-way shield reach calculations.
