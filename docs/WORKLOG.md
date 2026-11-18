@@ -1,3 +1,16 @@
+# Worklog — 2026-11-18 (M16.188: ROM Scene Script Header Unpacker, Dual-Plane Camera Initializer & 16KB VRAM DMA Upload Engine)
+- **Concrete Task**: Implement `src/game/render/scene_header_dma.hpp/.cpp` and `include/game/render/scene_header_dma.hpp` in cleanroom namespace `thor::render` covering `0x00D406..0x00D542` (`parse_scene_header`, `unpack_elevation_bands` with `0xF000` terminal sentinel, `clear_camera_structs` for `$FF1716`/`$FF173E`, `align_packed_camera_coord`/`init_aligned_camera_coords` with `0xFFF8FFF8` negative clamp, `decompress_4_bg_patterns` skipping `0` into `$FF3FA8`, `queue_16kb_vram_dma` `(0x007F9FD4, 0x0000, 0x2000)` at `$FF1892` with V-Int sync bit 1 on `$FF164E`, `load_scene_header_and_init_vram`, and 64KB RAM window helpers); add `tests/m16_188_scene_header_dma_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/render/scene_header_dma.hpp` (200 lines) / `src/game/render/scene_header_dma.cpp` (343 lines).
+  * Added `include/game/render/scene_header_dma.hpp` (3 lines).
+  * Added `tests/m16_188_scene_header_dma_test.cpp` (431 lines, registered as `oasis_m16_188_scene_header_dma` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_188_scene_header_dma` + M16 + `project_file_line_limit` suite passed (`169/169`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_188_scene_header_dma` + M16 + `project_file_line_limit` suite passed (`169/169`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Ready for M16.189 dual-plane tilemap loader, palette uploader & initial plane state builder (`0x00D542..0x00D7C0`).
+
 # Worklog — 2026-11-18 (M16.187: ROM Background Tile Pattern Decompressor & 4KB VRAM DMA Streamer)
 - **Concrete Task**: Implement `src/game/render/bg_tile_dma.hpp/.cpp` and `include/game/render/bg_tile_dma.hpp` in cleanroom namespace `thor::render` covering `0x00D3B2..0x00D406` (`resolve_bg_tile_pattern_address` via `0x05CE96`, `decompress_bg_tile_pattern` via `0x003820`, `queue_bg_tile_pattern_dma`, `decompress_and_dma_bg_tiles`, and 64KB RAM window helper `decompress_and_dma_bg_tiles_from_ram` writing to `$FF2FA8` and queuing `(0x007F97D4, vram_dest, 0x0800)` at `$FF1892` with V-Int sync bit 1 on `$FF164E`); add `tests/m16_187_bg_tile_dma_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

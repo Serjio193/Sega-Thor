@@ -163,6 +163,7 @@ add_library(oasis_core
     src/game/render/scroll_integrator.cpp
     src/game/render/vdp_scroll_builder.cpp
     src/game/render/bg_tile_dma.cpp
+    src/game/render/scene_header_dma.cpp
     src/game/camera/camera_controller.cpp
     src/game/camera/camera_follow.cpp
     src/game/world/byte_grid.cpp

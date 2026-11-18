@@ -1,3 +1,21 @@
+# ADR-20261118-M16-188-SCENE-HEADER-DMA — ROM Scene Script Header Unpacker, Dual-Plane Camera Initializer & 16KB VRAM DMA Upload Engine (0x00D406..0x00D542)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.439 extracted ROM routine `0x00D406..0x00D542` (`load_scene_header_and_init_vram`, 316 bytes) governing scene script header unpacking, elevation band LUT construction, dual-plane camera reset/alignment, 4-slot BG tile decompression, and 16KB master VRAM DMA queuing:
+   - Parses header fields at `+0x04`..`+0x19` into `$FF16F4`, `$FF16F6`, `$FF16F8`, `$FF16F0`, `$FF16FA`, and registers `d6`/`d7`.
+   - Unpacks 4 signed slice bytes (`ext.w; asl.w #3`) into `$FF16FE` and emits 8 cumulative/midpoint height bands into `$FF1706` ending with sentinel `0xF000` (`-4096`) at index 7 (`0x00D44A`).
+   - Zeroes 20 words (40 bytes) each at `$FF1716` (Plane A) and `$FF173E` (Plane B) (`0x00D46C`), masks packed `(X << 16 | Y)` inputs by `0xFFF8FFF8`, and clamps negative words to `0` (`0x00D484`).
+   - Decompresses 4 x 4KB BG pattern slots into `$FF3FA8..$FF7FA7` via `0x05CE96` and `0x003820` (`decompress_bg_tile_pattern`), skipping `pattern_index == 0` while keeping the `0x1000` slot stride (`0x00D4C8`).
+   - Enqueues 8-byte DMA descriptor `(0x007F9FD4, 0x0000, 0x2000)` at `($FF1892)`, advances `$FF1892` by 8, and sets V-Int sync bit 1 on `$FF164E` (`0x00D50E`).
+
+**Decisions:**
+1. **`scene_header_dma` Cleanroom Module:**
+   - Implemented `src/game/render/scene_header_dma.hpp/.cpp` and `include/game/render/scene_header_dma.hpp` in namespace `thor::render` (aliased into `oasis::game::render`), reusing `bg_tile_dma.hpp` and `scroll_integrator.hpp`.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Verified with synthetic Format A streams, negative-clamp/OOB guards, and optional local-ROM checks across MinGW Release and MSVC Debug (`oasis_m16_188_scene_header_dma` + 169-test M16 + file-limit regression suite).
+
 # ADR-20261118-M16-187-BG-TILE-DMA — ROM Background Tile Pattern Decompressor & 4KB VRAM DMA Streamer (0x00D3B2..0x00D406)
 **Status:** Accepted
 **Date:** 2026-11-18

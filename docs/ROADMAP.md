@@ -1,3 +1,13 @@
+# M16.188 ROM Scene Script Header Unpacker, Dual-Plane Camera Initializer & 16KB VRAM DMA Upload Engine (`0x00D406..0x00D542`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/render/scene_header_dma.hpp/.cpp` and `include/game/render/scene_header_dma.hpp` in cleanroom namespace `thor::render`:
+  - `parse_scene_header` & `unpack_elevation_bands` (`0x00D406`/`0x00D44A`): unpacks header fields (`$FF16F0..$FF16FA`) and builds signed elevation thresholds (`$FF16FE`) + cumulative/midpoint height bands (`$FF1706`) with sentinel `0xF000`.
+  - `clear_camera_structs` & `init_aligned_camera_coords` (`0x00D46C`/`0x00D484`): clears 40-byte Plane A/B structs (`$FF1716`/`$FF173E`), masks coords by `0xFFF8FFF8`, and clamps negatives to `0`.
+  - `decompress_4_bg_patterns` (`0x00D4C8`): decompresses 4 BG slots at `0x1000` stride into `$FF3FA8` via `0x05CE96`/`0x003820`, skipping index `0`.
+  - `queue_16kb_vram_dma` & `load_scene_header_and_init_vram` (+ `_from_ram`) (`0x00D50E`): queues `(0x007F9FD4, 0x0000, 0x2000)` at `$FF1892` with V-Int bit 1 sync on `$FF164E`.
+- Qualified `oasis_m16_188_scene_header_dma` and the 169-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.187 ROM Background Tile Pattern Decompressor & 4KB VRAM DMA Streamer (`0x00D3B2..0x00D406`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
