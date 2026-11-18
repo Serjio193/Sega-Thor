@@ -1,3 +1,6 @@
+# M15.486 ROM Dytto Spirit 16-State Dispatcher, Healing Cast Sub-Entity Spawner & Jewel-Rank HP Recovery Subsystem (`0x011BA0`..`0x011D8A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dytto_healing_drop.py`, `tests/rom_dytto_healing_drop_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dytto_healing_drop_m15_486.json`, and `docs/handoffs/STANDALONE_M15_486_DYTTO_HEALING_DROP_HANDOFF.md`.
+
 # M15.485 ROM Spirit Companion Button A Tap/Double-Tap/Hold Command Recognizer, SP Cost Consumer & Master 45-Frame SP Drain Controller (`0x011A4C`..`0x011BA0`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_spirit_command_sp_drain.py`, `tests/rom_spirit_command_sp_drain_test.py` (`5/5 PASS`), `data/thor-evidence/rom_spirit_command_sp_drain_m15_485.json`, and `docs/handoffs/STANDALONE_M15_485_SPIRIT_COMMAND_SP_DRAIN_HANDOFF.md`.
 

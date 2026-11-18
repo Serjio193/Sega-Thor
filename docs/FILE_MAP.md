@@ -1,3 +1,9 @@
+# M15.486 ROM Dytto Spirit 16-State Dispatcher, Healing Cast Sub-Entity Spawner & Jewel-Rank HP Recovery Subsystem
+- `tools/extract_rom_dytto_healing_drop.py` — extractor for `0x011BA0..0x011D8A` (Dytto 16-entry jump table `0x011BAC`, healing cast `0x011BCC`, sub-entity spawner `0x011BF2`, homing orb & jewel-rank HP restoration `0x011C7A`, sparkle despawn `0x011D7C`).
+- `tests/rom_dytto_healing_drop_test.py` — `5` unit tests verifying jump-table targets, SP cost/cast spawn, homing & sparkle jitter, jewel-rank heal tiers, and sparkle despawn.
+- `data/thor-evidence/rom_dytto_healing_drop_m15_486.json` — extracted M15.486 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_486_DYTTO_HEALING_DROP_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.485 ROM Spirit Companion Button A Tap/Double-Tap/Hold Command Recognizer, SP Cost Consumer & Master 45-Frame SP Drain Controller
 - `tools/extract_rom_spirit_command_sp_drain.py` — extractor for `0x011A4C..0x011BA0` (Button A command decoder `0x011A4C`, shared SP guard `0x011B28`, and Dytto master tick / 45-frame SP drain `0x011B4E`).
 - `tests/rom_spirit_command_sp_drain_test.py` — `5` unit tests verifying evidence structure, lock-flag suppression, single/double-tap/20-frame-hold recognition, SP guard `>= 1`, and 45-frame SP drain & blink bit toggling.

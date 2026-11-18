@@ -1,3 +1,14 @@
+# Reverse Engineering Notes — Milestone M15.486 (`0x011BA0`..`0x011D8A`): Dytto Spirit 16-State Dispatcher, Healing Cast Sub-Entity Spawner & Jewel-Rank HP Recovery Subsystem
+- **Original ROM Addresses:** `0x011BA0..0x011D8A` (490 bytes: 127 M68K instructions + 32-byte 16-entry relative jump table at `0x011BAC..0x011BCC`).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_dytto_healing_drop.py` and `data/thor-evidence/rom_dytto_healing_drop_m15_486.json`:
+  * `0x011BA0..0x011BCC`: `AI_Dytto_StateDispatcher` — self-relative `int16` jump table across states `$00..$1E` (`0x0121AA`, `0x0120D4`, `0x012150`, `0x012104`, `0x011FF6`, `0x01202A`, `0x012086`, `0x011DB6`, `0x011ED2`, `0x011C7A`, `0x011D7C`, `0x011F98`, `0x011BF2`, `0x01212E`, `0x012342`, `0x012394`).
+  * `0x011BCC..0x011BF2`: `AI_Dytto_TryStartHealingCast` — consumes 20 SP via `0x011B28` (buzzer `0x01219A`), plays `0x800258`, enters State `$18`, `+$2A = $0E`.
+  * `0x011BF2..0x011C7A`: `AI_Dytto_State18_HealingCastAndSpawnOrb` — spawns Type `$18` sub-entity in Pool 1 (`0x00DA1A`) at frame `+$30 == $28` in State `$12`, `+$10 += $20`.
+  * `0x011C7A..0x011D7C`: `AI_Dytto_State12_HealingOrbHomingAndHpRestore` — `[-3..+3]` Z-step toward `ali_z + $20`, `0x00E45E` homing toward `(ali_x, ali_y + 6)`, sparkle trail State `$14` on even `$FF1971`, and arrival heal via `tier = (($FF0DB6 + 1) & 0xFF) >> 2` (`1/8, 1/4, 1/2, 3/4, 1` of `+$88(a5)`), clamped unless `$FF1987 != 0`, SFX `0xD00355`.
+  * `0x011D7C..0x011D8A`: `AI_Dytto_State14_HealingSparkleDespawn` — despawns on `+$37` bit 1.
+- **Assumptions:** Callees `0x00DA1A`, `0x008D06`, `0x00E45E`, `0x00E66E`, `0x00E268`, and `0x00E7FC` remain external to this slice.
+- **Test Status:** Verified via `tests/rom_dytto_healing_drop_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.485 (`0x011A4C`..`0x011BA0`): Spirit Companion Button A Command Recognizer, SP Cost Consumer & Master 45-Frame SP Drain Controller
 - **Original ROM Addresses:** `0x011A4C..0x011BA0` (340 bytes, 79 M68K instructions).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_spirit_command_sp_drain.py` and `data/thor-evidence/rom_spirit_command_sp_drain_m15_485.json`:
