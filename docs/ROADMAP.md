@@ -1,3 +1,35 @@
+# M16.178 ROM Dialogue Window 4-Line Circular Scroll Engine, VDP Direct Clearer & Glyph DMA Streamer (`0x00C566..0x00C756`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `advance_line_and_scroll`, `clear_vdp_line`, `make_glyph_dma_entry`, `make_blank_dma_entry`, `queue_glyph_dma`, `queue_blank_dma`, and raw 64KB RAM window integration helpers in `src/game/dialogue/dialogue_scroll_dma.hpp/.cpp` and `include/game/dialogue/dialogue_scroll_dma.hpp`:
+  - Line advance & circular scrolling (`0x00C566..0x00C668`):
+    * Resets cursor X: `$FF187E = 0`.
+    * Increments line counter: `++$FF1880`. If `line_counter <= 3`, returns immediately without scrolling.
+    * When `line_counter > 3`: enters 6-step scroll loop. Decrements all 4 row offsets (`$FF1876..$FF187C`) by 2 per frame.
+    * Line recycling when offset reaches 0:
+      - Line 0 reaches 0: resets offset to 48 (`0x30`), queues 512-word blank DMA to `plane_top_base` (`$FF1872`).
+      - Line 1 reaches 0: resets offset to 48 (`0x30`), queues 512-word blank DMA to `plane_top_base + 0x400`.
+      - Line 2 reaches 0: resets offset to 48 (`0x30`), queues 512-word blank DMA to `plane_bottom_base` (`$FF1874`).
+      - Line 3 reaches 0: resets offset to 48 (`0x30`), queues 512-word blank DMA to `plane_bottom_base + 0x400`.
+    * Active rolling line clear: determines line rolling off top (`row_offset < 12`), calculates clear offset `10 - row_offset`, and invokes VDP direct clearer (`0x00C66A`).
+  - Direct VDP line clearer (`0x00C66A..0x00C6BA`):
+    * If `line_offset < 8`, writes 4 rows of 32 words (64 bytes each, total 256 bytes) to VDP plane at `vram_base + (line_offset << 2)` with clear pattern `0x0000`.
+  - Glyph DMA entry generator (`0x00C6BE..0x00C732`):
+    * Source address: `0x00FF2FA8 + (char_code - 0x20) * 32`. Source word address: `source_byte >> 1`.
+    * Destination VRAM address based on `line_counter & 3`:
+      - Line 0: `plane_top_base + (cursor_x << 5)`
+      - Line 1: `plane_top_base + 0x400 + (cursor_x << 5)`
+      - Line 2: `plane_bottom_base + (cursor_x << 5)`
+      - Line 3: `plane_bottom_base + 0x400 + (cursor_x << 5)`
+    * Appends 8-byte DMA command `[src_word, dest_vram, 0x0010]` (16 words = 32 bytes) to queue at `$FF1892`.
+    * Sets VDP sync flag: `$FF164E |= 0x02`.
+    * Increments cursor X: `++$FF187E`.
+  - Blank line DMA queueing (`0x00C734..0x00C756`):
+    * Appends 8-byte DMA command `[0x007F9DD4, dest_vram, 0x0200]` (512 words = 1024 bytes) from blank ROM buffer into target VRAM plane.
+    * Sets VDP sync flag: `$FF164E |= 0x02`.
+  - Raw 64KB RAM window integration helpers at `$FF1872..$FF1874`, `$FF1876..$FF187C`, `$FF187E`, `$FF1880`, `$FF1892`, `$FF164E`.
+- Qualified `oasis_m16_178_dialogue_scroll_dma` and the 159-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.177 ROM Dialogue Script Virtual Machine & Message Window Presentation Controller (`0x00C2EC..0x00C566`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
