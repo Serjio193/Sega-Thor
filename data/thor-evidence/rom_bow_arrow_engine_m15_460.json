@@ -1,0 +1,473 @@
+{
+  "milestone": "M15.460",
+  "title": "ROM Player Ali Bow Arrow Projectile Spawner, Ground/Water Offsets & Parabolic Launch Physics",
+  "rom_range": {
+    "start": "0x00F396",
+    "end": "0x00F476",
+    "size_bytes": 224
+  },
+  "constants": {
+    "projectile_slot_ram": "0x00FF1B60",
+    "projectile_type": "0x003A",
+    "damage_stat": "0x8005",
+    "elevation_threshold": 16,
+    "high_elevation_arc": {
+      "speed_horizontal": "0x0300",
+      "launch_z_velocity": "0x00020000"
+    },
+    "low_elevation_arc": {
+      "speed_horizontal": "0x0400",
+      "launch_z_velocity": "0x00028000"
+    }
+  },
+  "ground_launch_offsets": [
+    {
+      "facing": 0,
+      "facing_name": "Up",
+      "raw_word": "0x06C8",
+      "offset_dx": 6,
+      "offset_dy": -56
+    },
+    {
+      "facing": 1,
+      "facing_name": "Right",
+      "raw_word": "0x20DE",
+      "offset_dx": 32,
+      "offset_dy": -34
+    },
+    {
+      "facing": 2,
+      "facing_name": "Down",
+      "raw_word": "0xF6F8",
+      "offset_dx": -10,
+      "offset_dy": -8
+    },
+    {
+      "facing": 3,
+      "facing_name": "Left",
+      "raw_word": "0xE0DE",
+      "offset_dx": -32,
+      "offset_dy": -34
+    }
+  ],
+  "water_launch_offsets": [
+    {
+      "facing": 0,
+      "facing_name": "Up",
+      "raw_word": "0x0EEE",
+      "offset_dx": 14,
+      "offset_dy": -18
+    },
+    {
+      "facing": 1,
+      "facing_name": "Right",
+      "raw_word": "0x1204",
+      "offset_dx": 18,
+      "offset_dy": 4
+    },
+    {
+      "facing": 2,
+      "facing_name": "Down",
+      "raw_word": "0xFA14",
+      "offset_dx": -6,
+      "offset_dy": 20
+    },
+    {
+      "facing": 3,
+      "facing_name": "Left",
+      "raw_word": "0xEE04",
+      "offset_dx": -18,
+      "offset_dy": 4
+    }
+  ],
+  "subroutines": {
+    "BowArrow_GroundEntry": {
+      "meta": {
+        "name": "BowArrow_GroundEntry",
+        "start": 62358,
+        "end": 62368,
+        "size": 10,
+        "description": "Durability check 0x008530, ground offset table pointer, branch to shared initializer"
+      },
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "address": "0x00F396",
+          "mnemonic": "bsr.w",
+          "op_str": "$8530",
+          "bytes": "61009198"
+        },
+        {
+          "address": "0x00F39A",
+          "mnemonic": "lea.l",
+          "op_str": "$f3a0(pc), a2",
+          "bytes": "45fa0004"
+        },
+        {
+          "address": "0x00F39E",
+          "mnemonic": "bra.b",
+          "op_str": "$f3ba",
+          "bytes": "601a"
+        }
+      ]
+    },
+    "BowArrow_GroundOffsetsTable": {
+      "meta": {
+        "name": "BowArrow_GroundOffsetsTable",
+        "start": 62368,
+        "end": 62376,
+        "size": 8,
+        "description": "4-entry (dx, dy) arrow launch offset table for ground standing bow shot"
+      },
+      "instruction_count": 0,
+      "instructions": []
+    },
+    "BowArrow_WaterEntry": {
+      "meta": {
+        "name": "BowArrow_WaterEntry",
+        "start": 62376,
+        "end": 62386,
+        "size": 10,
+        "description": "Durability check 0x008530, water offset table pointer, branch to shared initializer"
+      },
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "address": "0x00F3A8",
+          "mnemonic": "bsr.w",
+          "op_str": "$8530",
+          "bytes": "61009186"
+        },
+        {
+          "address": "0x00F3AC",
+          "mnemonic": "lea.l",
+          "op_str": "$f3b2(pc), a2",
+          "bytes": "45fa0004"
+        },
+        {
+          "address": "0x00F3B0",
+          "mnemonic": "bra.b",
+          "op_str": "$f3ba",
+          "bytes": "6008"
+        }
+      ]
+    },
+    "BowArrow_WaterOffsetsTable": {
+      "meta": {
+        "name": "BowArrow_WaterOffsetsTable",
+        "start": 62386,
+        "end": 62394,
+        "size": 8,
+        "description": "4-entry (dx, dy) arrow launch offset table for water swimming bow shot"
+      },
+      "instruction_count": 0,
+      "instructions": []
+    },
+    "BowArrow_SharedInitializer": {
+      "meta": {
+        "name": "BowArrow_SharedInitializer",
+        "start": 62394,
+        "end": 62582,
+        "size": 188,
+        "description": "Allocates slot $FF1B60, type #$3A, copies Ali sprite priority, calculates facing subpixel anchors, evaluates elevation threshold for high/low launch arcs, projects 8-way directional velocity via 0x00E2D4"
+      },
+      "instruction_count": 49,
+      "instructions": [
+        {
+          "address": "0x00F3BA",
+          "mnemonic": "movea.l",
+          "op_str": "a6, a4",
+          "bytes": "284e"
+        },
+        {
+          "address": "0x00F3BC",
+          "mnemonic": "lea.l",
+          "op_str": "$ff1b60.l, a6",
+          "bytes": "4df900ff1b60"
+        },
+        {
+          "address": "0x00F3C2",
+          "mnemonic": "move.w",
+          "op_str": "#$3a, $0(a6)",
+          "bytes": "3d7c003a0000"
+        },
+        {
+          "address": "0x00F3C8",
+          "mnemonic": "bsr.w",
+          "op_str": "$8d06",
+          "bytes": "6100993c"
+        },
+        {
+          "address": "0x00F3CC",
+          "mnemonic": "move.w",
+          "op_str": "$5a(a4), $18(a6)",
+          "bytes": "3d6c005a0018"
+        },
+        {
+          "address": "0x00F3D2",
+          "mnemonic": "clr.w",
+          "op_str": "$16(a6)",
+          "bytes": "426e0016"
+        },
+        {
+          "address": "0x00F3D6",
+          "mnemonic": "move.w",
+          "op_str": "d0, $a6(a6)",
+          "bytes": "3d4000a6"
+        },
+        {
+          "address": "0x00F3DA",
+          "mnemonic": "move.w",
+          "op_str": "d2, $2(a6)",
+          "bytes": "3d420002"
+        },
+        {
+          "address": "0x00F3DE",
+          "mnemonic": "move.w",
+          "op_str": "$16(a4), d3",
+          "bytes": "362c0016"
+        },
+        {
+          "address": "0x00F3E2",
+          "mnemonic": "add.w",
+          "op_str": "d3, d3",
+          "bytes": "d643"
+        },
+        {
+          "address": "0x00F3E4",
+          "mnemonic": "move.w",
+          "op_str": "(a2, d3.w), d0",
+          "bytes": "30323000"
+        },
+        {
+          "address": "0x00F3E8",
+          "mnemonic": "move.b",
+          "op_str": "d0, d2",
+          "bytes": "1400"
+        },
+        {
+          "address": "0x00F3EA",
+          "mnemonic": "asr.w",
+          "op_str": "#$8, d0",
+          "bytes": "e040"
+        },
+        {
+          "address": "0x00F3EC",
+          "mnemonic": "ext.w",
+          "op_str": "d2",
+          "bytes": "4882"
+        },
+        {
+          "address": "0x00F3EE",
+          "mnemonic": "add.w",
+          "op_str": "d1, d2",
+          "bytes": "d441"
+        },
+        {
+          "address": "0x00F3F0",
+          "mnemonic": "swap",
+          "op_str": "d0",
+          "bytes": "4840"
+        },
+        {
+          "address": "0x00F3F2",
+          "mnemonic": "swap",
+          "op_str": "d2",
+          "bytes": "4842"
+        },
+        {
+          "address": "0x00F3F4",
+          "mnemonic": "clr.w",
+          "op_str": "d0",
+          "bytes": "4240"
+        },
+        {
+          "address": "0x00F3F6",
+          "mnemonic": "clr.w",
+          "op_str": "d2",
+          "bytes": "4242"
+        },
+        {
+          "address": "0x00F3F8",
+          "mnemonic": "btst.b",
+          "op_str": "#$0, $ff17b8.l",
+          "bytes": "0839000000ff17b8"
+        },
+        {
+          "address": "0x00F400",
+          "mnemonic": "beq.b",
+          "op_str": "$f406",
+          "bytes": "6704"
+        },
+        {
+          "address": "0x00F402",
+          "mnemonic": "add.l",
+          "op_str": "d0, d0",
+          "bytes": "d080"
+        },
+        {
+          "address": "0x00F404",
+          "mnemonic": "add.l",
+          "op_str": "d2, d2",
+          "bytes": "d482"
+        },
+        {
+          "address": "0x00F406",
+          "mnemonic": "move.l",
+          "op_str": "d0, $72(a6)",
+          "bytes": "2d400072"
+        },
+        {
+          "address": "0x00F40A",
+          "mnemonic": "move.l",
+          "op_str": "d2, $76(a6)",
+          "bytes": "2d420076"
+        },
+        {
+          "address": "0x00F40E",
+          "mnemonic": "swap",
+          "op_str": "d1",
+          "bytes": "4841"
+        },
+        {
+          "address": "0x00F410",
+          "mnemonic": "clr.w",
+          "op_str": "d1",
+          "bytes": "4241"
+        },
+        {
+          "address": "0x00F412",
+          "mnemonic": "move.l",
+          "op_str": "d1, $10(a6)",
+          "bytes": "2d410010"
+        },
+        {
+          "address": "0x00F416",
+          "mnemonic": "move.l",
+          "op_str": "$8(a4), $8(a6)",
+          "bytes": "2d6c00080008"
+        },
+        {
+          "address": "0x00F41C",
+          "mnemonic": "move.l",
+          "op_str": "$c(a4), $c(a6)",
+          "bytes": "2d6c000c000c"
+        },
+        {
+          "address": "0x00F422",
+          "mnemonic": "bsr.w",
+          "op_str": "$9d00",
+          "bytes": "6100a8dc"
+        },
+        {
+          "address": "0x00F426",
+          "mnemonic": "move.w",
+          "op_str": "#$8005, $a8(a6)",
+          "bytes": "3d7c800500a8"
+        },
+        {
+          "address": "0x00F42C",
+          "mnemonic": "clr.w",
+          "op_str": "$2a(a6)",
+          "bytes": "426e002a"
+        },
+        {
+          "address": "0x00F430",
+          "mnemonic": "clr.w",
+          "op_str": "$4(a6)",
+          "bytes": "426e0004"
+        },
+        {
+          "address": "0x00F434",
+          "mnemonic": "move.w",
+          "op_str": "#$300, d1",
+          "bytes": "323c0300"
+        },
+        {
+          "address": "0x00F438",
+          "mnemonic": "move.w",
+          "op_str": "#$300, d2",
+          "bytes": "343c0300"
+        },
+        {
+          "address": "0x00F43C",
+          "mnemonic": "move.l",
+          "op_str": "#$20000, $56(a6)",
+          "bytes": "2d7c000200000056"
+        },
+        {
+          "address": "0x00F444",
+          "mnemonic": "cmpi.w",
+          "op_str": "#$10, $10(a6)",
+          "bytes": "0c6e00100010"
+        },
+        {
+          "address": "0x00F44A",
+          "mnemonic": "bcc.b",
+          "op_str": "$f45c",
+          "bytes": "6410"
+        },
+        {
+          "address": "0x00F44C",
+          "mnemonic": "move.w",
+          "op_str": "#$400, d1",
+          "bytes": "323c0400"
+        },
+        {
+          "address": "0x00F450",
+          "mnemonic": "move.w",
+          "op_str": "#$400, d2",
+          "bytes": "343c0400"
+        },
+        {
+          "address": "0x00F454",
+          "mnemonic": "move.l",
+          "op_str": "#$28000, $56(a6)",
+          "bytes": "2d7c000280000056"
+        },
+        {
+          "address": "0x00F45C",
+          "mnemonic": "move.w",
+          "op_str": "$16(a4), d3",
+          "bytes": "362c0016"
+        },
+        {
+          "address": "0x00F460",
+          "mnemonic": "jsr",
+          "op_str": "$e2d4.l",
+          "bytes": "4eb90000e2d4"
+        },
+        {
+          "address": "0x00F466",
+          "mnemonic": "move.l",
+          "op_str": "d1, $4e(a6)",
+          "bytes": "2d41004e"
+        },
+        {
+          "address": "0x00F46A",
+          "mnemonic": "move.l",
+          "op_str": "d2, $52(a6)",
+          "bytes": "2d420052"
+        },
+        {
+          "address": "0x00F46E",
+          "mnemonic": "move.l",
+          "op_str": "a4, $aa(a6)",
+          "bytes": "2d4c00aa"
+        },
+        {
+          "address": "0x00F472",
+          "mnemonic": "movea.l",
+          "op_str": "a4, a6",
+          "bytes": "2c4c"
+        },
+        {
+          "address": "0x00F474",
+          "mnemonic": "rts",
+          "op_str": "",
+          "bytes": "4e75"
+        }
+      ]
+    }
+  }
+}

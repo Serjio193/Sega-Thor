@@ -1,3 +1,9 @@
+# M15.460 ROM Player Ali Bow Arrow Projectile Spawner, Ground/Water Offsets & Parabolic Launch Physics
+- `tools/extract_rom_bow_arrow_engine.py` — extractor for `0x00F396..0x00F476` (Ground/Water bow arrow spawners, launch offset tables 0x00F3A0 and 0x00F3B2, shared arrow projectile initializer at $FF1B60, 16px elevation threshold for high/low parabolic launch arcs, and 8-way velocity projection).
+- `tests/rom_bow_arrow_engine_test.py` — `5` unit tests verifying ROM constants, ground/water launch offset tables, elevation-dependent parabolic trajectory selection, and anchor calculation.
+- `data/thor-evidence/rom_bow_arrow_engine_m15_460.json` — extracted M15.460 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_460_BOW_ARROW_ENGINE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.459 ROM Elemental Sword Wave Projectile Spawner, Parameter Evaluator & Trajectory Engine
 - `tools/extract_rom_elemental_blade.py` — extractor for `0x00F258..0x00F396` (Ground/Water elemental blade spawners, sword-tip offset tables 0x00F262 and 0x00F274, shared projectile initializer at $FF1B60, Fire/Omega/Hyper parameter decoding, 8-way velocity projection, and anchor scaling).
 - `tests/rom_elemental_blade_test.py` — `5` unit tests verifying ROM constants, ground/water facing offset tables, sword type bitmask decoding, anchor offset scaling, and projectile defaults.

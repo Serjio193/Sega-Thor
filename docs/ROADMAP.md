@@ -1,3 +1,6 @@
+# M15.460 ROM Player Ali Bow Arrow Projectile Spawner, Ground/Water Offsets & Parabolic Launch Physics (`0x00F396`..`0x00F476`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_bow_arrow_engine.py`, `tests/rom_bow_arrow_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_arrow_engine_m15_460.json`, and `docs/handoffs/STANDALONE_M15_460_BOW_ARROW_ENGINE_HANDOFF.md`.
+
 # M15.459 ROM Elemental Sword Wave Projectile Spawner, Parameter Evaluator & Trajectory Engine (`0x00F258`..`0x00F396`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_elemental_blade.py`, `tests/rom_elemental_blade_test.py` (`5/5 PASS`), `data/thor-evidence/rom_elemental_blade_m15_459.json`, and `docs/handoffs/STANDALONE_M15_459_ELEMENTAL_BLADE_HANDOFF.md`.
 
