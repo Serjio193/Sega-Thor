@@ -1,3 +1,9 @@
+# M15.470 ROM Script Virtual Machine Opcodes $0F..$11, $13, $14 & State Query Subroutines: Persistent Modifiers, GOSUB & Ali Vital Metrics
+- `tools/extract_rom_script_vm_control_state.py` — extractor for `0x010140..0x01027C` (Script opcodes $0F/$10/$11 persistent bit modifiers for Banks 1, 2, 3, $13 GOSUB, $14 RETURN, living enemy counter, active entity counter, entity type finder, and Ali HP/SP percentage calculations).
+- `tests/rom_script_vm_control_state_test.py` — `4` unit tests verifying opcodes $0F/$10/$11 bit modifications, opcodes $13/$14 subroutine jump/return, entity counters and search, and Ali HP/SP percentage math.
+- `data/thor-evidence/rom_script_vm_control_state_m15_470.json` — extracted M15.470 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_470_SCRIPT_CONTROL_STATE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.469 ROM Script Virtual Machine Opcodes $09, $0C, $0D, $1A..$1D: Media, Audio, Palette & Screen Shake Subsystem
 - `tools/extract_rom_script_vm_media_audio.py` — extractor for `0x010034..0x010140` (Script opcodes $09 item drop spawner, $0C load palette, $0D load & apply palette CRAM, $1A play SFX, $1B play BGM, $1C screen shake, and $1D channel effects).
 - `tests/rom_script_vm_media_audio_test.py` — `4` unit tests verifying opcode $09 item drop parameters, opcodes $0C/$0D palette loading and CRAM flag assertion, opcodes $1A/$1B audio dispatch, and opcodes $1C/$1D screen shake and channel effects.

@@ -1,3 +1,6 @@
+# M15.470 ROM Script Virtual Machine Opcodes $0F..$11, $13, $14 & State Query Subroutines: Persistent Modifiers, GOSUB & Ali Vital Metrics (`0x010140`..`0x01027C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_script_vm_control_state.py`, `tests/rom_script_vm_control_state_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_control_state_m15_470.json`, and `docs/handoffs/STANDALONE_M15_470_SCRIPT_CONTROL_STATE_HANDOFF.md`.
+
 # M15.469 ROM Script Virtual Machine Opcodes $09, $0C, $0D, $1A..$1D: Media, Audio, Palette & Screen Shake Subsystem (`0x010034`..`0x010140`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_script_vm_media_audio.py`, `tests/rom_script_vm_media_audio_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_media_audio_m15_469.json`, and `docs/handoffs/STANDALONE_M15_469_SCRIPT_MEDIA_AUDIO_HANDOFF.md`.
 
