@@ -55,6 +55,7 @@ add_library(oasis_core
     src/game/combat/combat_hit_dispatch.cpp
     src/game/combat/combat_hit_apply.cpp
     src/game/combat/combat_overlap_engine.cpp
+    src/game/combat/weapon_hitbox_streamer.cpp
     src/game/save/sram_save_system.cpp
     src/game/items/item_effects.cpp
     src/game/items/item_attribute_tables.cpp

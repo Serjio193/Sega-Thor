@@ -1,3 +1,29 @@
+# ADR-20261118-M16-170-WEAPON-HITBOX-STREAMER — ROM Weapon Attack Frame 3D Hitbox Streamer & Dual-Pool Scanner Engine (0x00BAAC..0x00BC8E)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.421 extracted ROM routines `0x00BAAC..0x00BC8E` governing 12-byte weapon attack frame hitbox streaming, left-facing mirroring, 3D world coordinate projection, and dual-pool collision scanning:
+   - `0x00BAAC..0x00BBA6`: Primary Attack Hitbox Streamer:
+     * Dual entrypoints:
+       - `0x00BAAC`: player slot at `$FF19E8` (`moveq #0, d7`, 1 slot).
+       - `0x00BAB8`: enemy pool at `$FF1CD8` (`moveq #$10, d7`, 17 slots).
+     * 12-byte stream record decoding `[z_min, z_max, x_min, y_min, x_max, y_max]` indexed by `facing * 12`.
+     * Facing 3 (Left) mirroring: maps to offset 12 (Right) with `neg(x_min), neg(x_max), exg`.
+     * 3D world space coordinate projection: adds `elev_z + ground_h` to Z, `world_x` to X, `world_y + ground_h` to Y.
+     * Target eligibility: `type > 0`, `target != self`, invulnerable bit 3 of `+0x38 == 0`, status protect bit 0 of `+0x3A == 0`.
+     * 3D AABB overlap check across Z, X, and Y spans.
+     * Signalling: sets Carry flag (`ori.b #1, ccr`) and returns target pointer `a0` on hit; clears Carry (`andi.b #$fe, ccr`) on miss.
+   - `0x00BBA8..0x00BC8E`: Secondary Attack Streamer:
+     * Evaluates enemy pool at `$FF1CD8` (17 slots) with identical 3D hitbox streaming and mirroring, but omits the status protect check (`btst.b #0, $3a(a0)`), allowing piercing/unblockable attacks to hit protected entities.
+   - Raw 64KB RAM window integration helpers for full emulation fidelity.
+
+**Decisions:**
+1. **Dedicated `weapon_hitbox_streamer` Module:**
+   - Added `src/game/combat/weapon_hitbox_streamer.hpp/.cpp` and `include/game/combat/weapon_hitbox_streamer.hpp` modeling stream decoding, mirroring, world projection, dual-pool iterators, protection bypass, and raw memory integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (150/150 M16 tests).
+
 # ADR-20261118-M16-169-COMBAT-OVERLAP-ENGINE — ROM Entity 3D AABB Combat Overlap & Multi-Pool Collision Iterator Engine (0x00B79A..0x00BAAC)
 **Status:** Accepted
 **Date:** 2026-11-18

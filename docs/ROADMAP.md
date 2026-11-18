@@ -1,3 +1,33 @@
+# M16.170 ROM Weapon Attack Frame 3D Hitbox Streamer & Dual-Pool Scanner Engine (`0x00BAAC..0x00BC8E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `unpack_hitbox_record`, `resolve_directional_hitbox`, `project_to_world`, `is_target_eligible`, `test_aabb_overlap`, `scan_weapon_hitbox_pool`, `scan_player_weapon_hitbox`, `scan_enemy_weapon_hitbox`, `scan_enemy_weapon_hitbox_unprotected`, and raw 64KB RAM window integration helpers in `src/game/combat/weapon_hitbox_streamer.hpp/.cpp` and `include/game/combat/weapon_hitbox_streamer.hpp`:
+  - 12-byte weapon hitbox stream decoding:
+    - 6 big-endian signed 16-bit words `[z_min, z_max, x_min, y_min, x_max, y_max]`.
+    - Directional resolution from facing direction `+0x16(a6)`:
+      * Facing 0 (Down): offset `0 * 12 = 0`.
+      * Facing 1 (Right): offset `1 * 12 = 12`, `mirrored = false`.
+      * Facing 2 (Up): offset `2 * 12 = 24`.
+      * Facing 3 (Left): offset `1 * 12 = 12`, `mirrored = true` (`x_min_mirrored = -x_max`, `x_max_mirrored = -x_min`).
+  - 3D world space coordinate projection:
+    - Z: `elev_z + ground_h`
+    - X: `world_x`
+    - Y: `world_y + ground_h`
+  - Dual-pool scanning and entrypoints:
+    - `0x00BAAC`: scans player slot at `$FF19E8` (`slot_count = 1`, `d7 = 0`).
+    - `0x00BAB8`: scans 17 enemy slots starting at `$FF1CD8` (`slot_count = 17`, `d7 = 16`).
+    - `0x00BBA8`: secondary entrypoint scanning 17 enemy slots with protection ignored (`flags_3a & 0x01` bypass).
+    - `scan_all_group2_weapon_hitbox_raw`: helper scanning all 21 Group 2 slots from `$FF19E8`.
+  - Target eligibility filtering:
+    - Skip inactive (`type <= 0`).
+    - Skip self (`target == self`).
+    - Skip invulnerable (`flags_38 & 0x08 != 0`).
+    - Skip protected (`flags_3a & 0x01 != 0`), unless unblockable/unprotected scanner `0x00BBA8`.
+  - Return conventions:
+    - Sets Carry flag (`carry = true`) and returns target entity pointer on hit; clears Carry flag (`carry = false`) on miss.
+  - Raw 64KB RAM window integration helpers for full simulation.
+- Qualified `oasis_m16_170_weapon_hitbox_streamer` and the 150-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.169 ROM Entity 3D AABB Combat Overlap & Multi-Pool Collision Iterator Engine (`0x00B79A..0x00BAAC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
