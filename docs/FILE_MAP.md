@@ -1,3 +1,9 @@
+# M15.457 ROM 3D Vector Mathematics Engine: Euclidean Distance (2D/3D), Direction Normalization & Sphere Clamp
+- `tools/extract_rom_vector_math_3d.py` — extractor for `0x00F054..0x00F1B2` (Boss 3A rock projectile launch selector, velocity table 0x00F0C2, 2D/3D integer Euclidean distance, 3D velocity normalization, and 3D sphere ray-interception clamp).
+- `tests/rom_vector_math_3d_test.py` — `6` unit tests verifying ROM constants, velocity table values, 2D distance, 3D distance, 3D velocity normalization, and 3D sphere clamp with Carry flag.
+- `data/thor-evidence/rom_vector_math_3d_m15_457.json` — extracted M15.457 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_457_VECTOR_MATH_3D_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.456 ROM Boss Entity Type $3A Combat State Engine (Part 2), Velocity Damping & Floor Bounce Recoil
 - `tools/extract_rom_boss_charge_engine.py` — extractor for `0x00EE94..0x00F054` (Boss Type $3A state completion checks, 0.75x velocity damping, 3D trajectory gravity, 50% floor bounce recoil, rest velocity threshold, and spawner notification).
 - `tests/rom_boss_charge_engine_test.py` — `5` unit tests verifying ROM constants, velocity damping shift-add formula, trajectory floor bounce recoil and friction, rest velocity cutoff (< 0x4000), and spawner notification.

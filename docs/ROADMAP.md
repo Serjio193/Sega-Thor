@@ -1,3 +1,6 @@
+# M15.457 ROM 3D Vector Mathematics Engine: Euclidean Distance (2D/3D), Direction Normalization & Sphere Clamp (`0x00F054`..`0x00F1B2`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_vector_math_3d.py`, `tests/rom_vector_math_3d_test.py` (`6/6 PASS`), `data/thor-evidence/rom_vector_math_3d_m15_457.json`, and `docs/handoffs/STANDALONE_M15_457_VECTOR_MATH_3D_HANDOFF.md`.
+
 # M15.456 ROM Boss Entity Type $3A Combat State Engine (Part 2), Velocity Damping & Floor Bounce Recoil (`0x00EE94`..`0x00F054`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_boss_charge_engine.py`, `tests/rom_boss_charge_engine_test.py` (`5/5 PASS`), `data/thor-evidence/rom_boss_charge_engine_m15_456.json`, and `docs/handoffs/STANDALONE_M15_456_BOSS_CHARGE_ENGINE_HANDOFF.md`.
 
