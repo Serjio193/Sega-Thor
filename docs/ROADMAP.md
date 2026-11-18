@@ -1,3 +1,6 @@
+# M15.459 ROM Elemental Sword Wave Projectile Spawner, Parameter Evaluator & Trajectory Engine (`0x00F258`..`0x00F396`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_elemental_blade.py`, `tests/rom_elemental_blade_test.py` (`5/5 PASS`), `data/thor-evidence/rom_elemental_blade_m15_459.json`, and `docs/handoffs/STANDALONE_M15_459_ELEMENTAL_BLADE_HANDOFF.md`.
+
 # M15.458 ROM Entity Pool 2 Knockback Stun Broadcast & Global Type Scanner (`0x00F1B2`..`0x00F258`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_stun_lookup.py`, `tests/rom_entity_stun_lookup_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_stun_lookup_m15_458.json`, and `docs/handoffs/STANDALONE_M15_458_ENTITY_STUN_LOOKUP_HANDOFF.md`.
 

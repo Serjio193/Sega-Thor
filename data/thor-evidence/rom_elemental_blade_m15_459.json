@@ -1,0 +1,609 @@
+{
+  "milestone": "M15.459",
+  "title": "ROM Elemental Sword Wave Projectile Spawner, Parameter Evaluator & Trajectory Engine",
+  "rom_range": {
+    "start": "0x00F258",
+    "end": "0x00F396",
+    "size_bytes": 318
+  },
+  "constants": {
+    "projectile_slot_ram": "0x00FF1B60",
+    "projectile_type": "0x0034",
+    "sprite_priority": "0x055E",
+    "hitbox_radii": {
+      "rx": 6,
+      "ry": 6,
+      "rz": 6,
+      "height": 8
+    },
+    "elevation_float_velocity": "0x0000C000",
+    "lifetime_frames": 240,
+    "sword_types": {
+      "fire_sword": {
+        "bit_mask": "0x80000000",
+        "damage": "0x2004",
+        "anim_id": 4,
+        "speed_cardinal": "0x0C00",
+        "speed_diagonal": "0x0BC0"
+      },
+      "omega_sword": {
+        "bit_mask": "0x40000000",
+        "damage": "0x8005",
+        "piercing_flag": "0xFF",
+        "speed_cardinal": "0x1000",
+        "speed_diagonal": "0x0F00"
+      },
+      "hyper_sword": {
+        "bit_mask": "0x20000000",
+        "damage": "0x0000",
+        "anim_id": 4,
+        "speed_cardinal": "0x0E00",
+        "speed_diagonal": "0x0D00"
+      }
+    }
+  },
+  "ground_facing_offsets": [
+    {
+      "facing": 0,
+      "facing_name": "Up",
+      "raw_word": "0x01D8",
+      "offset_dx": 1,
+      "offset_dy": -40
+    },
+    {
+      "facing": 1,
+      "facing_name": "Right",
+      "raw_word": "0x10E6",
+      "offset_dx": 16,
+      "offset_dy": -26
+    },
+    {
+      "facing": 2,
+      "facing_name": "Down",
+      "raw_word": "0xFD00",
+      "offset_dx": -3,
+      "offset_dy": 0
+    },
+    {
+      "facing": 3,
+      "facing_name": "Left",
+      "raw_word": "0xF0E6",
+      "offset_dx": -16,
+      "offset_dy": -26
+    }
+  ],
+  "water_facing_offsets": [
+    {
+      "facing": 0,
+      "facing_name": "Up",
+      "raw_word": "0x03E0",
+      "offset_dx": 3,
+      "offset_dy": -32
+    },
+    {
+      "facing": 1,
+      "facing_name": "Right",
+      "raw_word": "0x14EF",
+      "offset_dx": 20,
+      "offset_dy": -17
+    },
+    {
+      "facing": 2,
+      "facing_name": "Down",
+      "raw_word": "0xFD04",
+      "offset_dx": -3,
+      "offset_dy": 4
+    },
+    {
+      "facing": 3,
+      "facing_name": "Left",
+      "raw_word": "0xECEF",
+      "offset_dx": -20,
+      "offset_dy": -17
+    }
+  ],
+  "subroutines": {
+    "ElementalBlade_GroundEntry": {
+      "meta": {
+        "name": "ElementalBlade_GroundEntry",
+        "start": 62040,
+        "end": 62050,
+        "size": 10,
+        "description": "Durability tick 0x008530, ground offset table pointer, jump to shared initializer"
+      },
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "address": "0x00F258",
+          "mnemonic": "bsr.w",
+          "op_str": "$8530",
+          "bytes": "610092d6"
+        },
+        {
+          "address": "0x00F25C",
+          "mnemonic": "lea.l",
+          "op_str": "$f262(pc), a2",
+          "bytes": "45fa0004"
+        },
+        {
+          "address": "0x00F260",
+          "mnemonic": "bra.b",
+          "op_str": "$f27c",
+          "bytes": "601a"
+        }
+      ]
+    },
+    "ElementalBlade_GroundFacingOffsetsTable": {
+      "meta": {
+        "name": "ElementalBlade_GroundFacingOffsetsTable",
+        "start": 62050,
+        "end": 62058,
+        "size": 8,
+        "description": "4-entry (dx, dy) sword-tip offset table for ground 360 spin"
+      },
+      "instruction_count": 0,
+      "instructions": []
+    },
+    "ElementalBlade_WaterEntry": {
+      "meta": {
+        "name": "ElementalBlade_WaterEntry",
+        "start": 62058,
+        "end": 62068,
+        "size": 10,
+        "description": "Durability tick 0x008530, water offset table pointer, jump to shared initializer"
+      },
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "address": "0x00F26A",
+          "mnemonic": "bsr.w",
+          "op_str": "$8530",
+          "bytes": "610092c4"
+        },
+        {
+          "address": "0x00F26E",
+          "mnemonic": "lea.l",
+          "op_str": "$f274(pc), a2",
+          "bytes": "45fa0004"
+        },
+        {
+          "address": "0x00F272",
+          "mnemonic": "bra.b",
+          "op_str": "$f27c",
+          "bytes": "6008"
+        }
+      ]
+    },
+    "ElementalBlade_WaterFacingOffsetsTable": {
+      "meta": {
+        "name": "ElementalBlade_WaterFacingOffsetsTable",
+        "start": 62068,
+        "end": 62076,
+        "size": 8,
+        "description": "4-entry (dx, dy) sword-tip offset table for water 360 spin"
+      },
+      "instruction_count": 0,
+      "instructions": []
+    },
+    "ElementalBlade_SharedInitializer": {
+      "meta": {
+        "name": "ElementalBlade_SharedInitializer",
+        "start": 62076,
+        "end": 62358,
+        "size": 282,
+        "description": "Allocates slot $FF1B60, type #$34, decodes sword type bits (Fire/Omega/Hyper), 8-way velocity projection 0x00E2D4, anchor calculation, 240-frame lifetime"
+      },
+      "instruction_count": 68,
+      "instructions": [
+        {
+          "address": "0x00F27C",
+          "mnemonic": "movea.l",
+          "op_str": "a6, a4",
+          "bytes": "284e"
+        },
+        {
+          "address": "0x00F27E",
+          "mnemonic": "movea.l",
+          "op_str": "d0, a3",
+          "bytes": "2640"
+        },
+        {
+          "address": "0x00F280",
+          "mnemonic": "lea.l",
+          "op_str": "$ff1b60.l, a6",
+          "bytes": "4df900ff1b60"
+        },
+        {
+          "address": "0x00F286",
+          "mnemonic": "move.w",
+          "op_str": "#$34, $0(a6)",
+          "bytes": "3d7c00340000"
+        },
+        {
+          "address": "0x00F28C",
+          "mnemonic": "bsr.w",
+          "op_str": "$8d06",
+          "bytes": "61009a78"
+        },
+        {
+          "address": "0x00F290",
+          "mnemonic": "move.w",
+          "op_str": "#$55e, $18(a6)",
+          "bytes": "3d7c055e0018"
+        },
+        {
+          "address": "0x00F296",
+          "mnemonic": "move.w",
+          "op_str": "#$6, $46(a6)",
+          "bytes": "3d7c00060046"
+        },
+        {
+          "address": "0x00F29C",
+          "mnemonic": "move.b",
+          "op_str": "#$6, $48(a6)",
+          "bytes": "1d7c00060048"
+        },
+        {
+          "address": "0x00F2A2",
+          "mnemonic": "move.b",
+          "op_str": "#$6, $49(a6)",
+          "bytes": "1d7c00060049"
+        },
+        {
+          "address": "0x00F2A8",
+          "mnemonic": "move.w",
+          "op_str": "#$8, $4a(a6)",
+          "bytes": "3d7c0008004a"
+        },
+        {
+          "address": "0x00F2AE",
+          "mnemonic": "move.w",
+          "op_str": "$16(a4), $16(a6)",
+          "bytes": "3d6c00160016"
+        },
+        {
+          "address": "0x00F2B4",
+          "mnemonic": "move.l",
+          "op_str": "a3, d0",
+          "bytes": "200b"
+        },
+        {
+          "address": "0x00F2B6",
+          "mnemonic": "move.l",
+          "op_str": "$8(a4), $8(a6)",
+          "bytes": "2d6c00080008"
+        },
+        {
+          "address": "0x00F2BC",
+          "mnemonic": "move.l",
+          "op_str": "$c(a4), $c(a6)",
+          "bytes": "2d6c000c000c"
+        },
+        {
+          "address": "0x00F2C2",
+          "mnemonic": "move.w",
+          "op_str": "d0, $10(a6)",
+          "bytes": "3d400010"
+        },
+        {
+          "address": "0x00F2C6",
+          "mnemonic": "bsr.w",
+          "op_str": "$9d00",
+          "bytes": "6100aa38"
+        },
+        {
+          "address": "0x00F2CA",
+          "mnemonic": "move.w",
+          "op_str": "#$3, $a8(a6)",
+          "bytes": "3d7c000300a8"
+        },
+        {
+          "address": "0x00F2D0",
+          "mnemonic": "move.w",
+          "op_str": "#$2, $2a(a6)",
+          "bytes": "3d7c0002002a"
+        },
+        {
+          "address": "0x00F2D6",
+          "mnemonic": "btst.b",
+          "op_str": "#$1f, d0",
+          "bytes": "0800001f"
+        },
+        {
+          "address": "0x00F2DA",
+          "mnemonic": "beq.b",
+          "op_str": "$f2ee",
+          "bytes": "6712"
+        },
+        {
+          "address": "0x00F2DC",
+          "mnemonic": "move.w",
+          "op_str": "#$2004, $a8(a6)",
+          "bytes": "3d7c200400a8"
+        },
+        {
+          "address": "0x00F2E2",
+          "mnemonic": "move.w",
+          "op_str": "#$4, $2a(a6)",
+          "bytes": "3d7c0004002a"
+        },
+        {
+          "address": "0x00F2E8",
+          "mnemonic": "bset.b",
+          "op_str": "#$1, $3c(a6)",
+          "bytes": "08ee0001003c"
+        },
+        {
+          "address": "0x00F2EE",
+          "mnemonic": "btst.b",
+          "op_str": "#$1e, d0",
+          "bytes": "0800001e"
+        },
+        {
+          "address": "0x00F2F2",
+          "mnemonic": "beq.b",
+          "op_str": "$f308",
+          "bytes": "6714"
+        },
+        {
+          "address": "0x00F2F4",
+          "mnemonic": "st.b",
+          "op_str": "$a7(a6)",
+          "bytes": "50ee00a7"
+        },
+        {
+          "address": "0x00F2F8",
+          "mnemonic": "move.w",
+          "op_str": "#$8005, $a8(a6)",
+          "bytes": "3d7c800500a8"
+        },
+        {
+          "address": "0x00F2FE",
+          "mnemonic": "move.w",
+          "op_str": "#$1000, d1",
+          "bytes": "323c1000"
+        },
+        {
+          "address": "0x00F302",
+          "mnemonic": "move.w",
+          "op_str": "#$f00, d2",
+          "bytes": "343c0f00"
+        },
+        {
+          "address": "0x00F306",
+          "mnemonic": "bra.b",
+          "op_str": "$f330",
+          "bytes": "6028"
+        },
+        {
+          "address": "0x00F308",
+          "mnemonic": "btst.b",
+          "op_str": "#$1d, d0",
+          "bytes": "0800001d"
+        },
+        {
+          "address": "0x00F30C",
+          "mnemonic": "beq.b",
+          "op_str": "$f328",
+          "bytes": "671a"
+        },
+        {
+          "address": "0x00F30E",
+          "mnemonic": "clr.w",
+          "op_str": "$a8(a6)",
+          "bytes": "426e00a8"
+        },
+        {
+          "address": "0x00F312",
+          "mnemonic": "move.w",
+          "op_str": "#$4, $2a(a6)",
+          "bytes": "3d7c0004002a"
+        },
+        {
+          "address": "0x00F318",
+          "mnemonic": "bset.b",
+          "op_str": "#$1, $3c(a6)",
+          "bytes": "08ee0001003c"
+        },
+        {
+          "address": "0x00F31E",
+          "mnemonic": "move.w",
+          "op_str": "#$e00, d1",
+          "bytes": "323c0e00"
+        },
+        {
+          "address": "0x00F322",
+          "mnemonic": "move.w",
+          "op_str": "#$d00, d2",
+          "bytes": "343c0d00"
+        },
+        {
+          "address": "0x00F326",
+          "mnemonic": "bra.b",
+          "op_str": "$f330",
+          "bytes": "6008"
+        },
+        {
+          "address": "0x00F328",
+          "mnemonic": "move.w",
+          "op_str": "#$c00, d1",
+          "bytes": "323c0c00"
+        },
+        {
+          "address": "0x00F32C",
+          "mnemonic": "move.w",
+          "op_str": "#$bc0, d2",
+          "bytes": "343c0bc0"
+        },
+        {
+          "address": "0x00F330",
+          "mnemonic": "move.w",
+          "op_str": "$16(a6), d3",
+          "bytes": "362e0016"
+        },
+        {
+          "address": "0x00F334",
+          "mnemonic": "jsr",
+          "op_str": "$e2d4.l",
+          "bytes": "4eb90000e2d4"
+        },
+        {
+          "address": "0x00F33A",
+          "mnemonic": "move.l",
+          "op_str": "d1, $4e(a6)",
+          "bytes": "2d41004e"
+        },
+        {
+          "address": "0x00F33E",
+          "mnemonic": "move.l",
+          "op_str": "d2, $52(a6)",
+          "bytes": "2d420052"
+        },
+        {
+          "address": "0x00F342",
+          "mnemonic": "move.b",
+          "op_str": "#$0, $3d(a6)",
+          "bytes": "1d7c0000003d"
+        },
+        {
+          "address": "0x00F348",
+          "mnemonic": "move.b",
+          "op_str": "#$6, $38(a6)",
+          "bytes": "1d7c00060038"
+        },
+        {
+          "address": "0x00F34E",
+          "mnemonic": "move.w",
+          "op_str": "$16(a6), d3",
+          "bytes": "362e0016"
+        },
+        {
+          "address": "0x00F352",
+          "mnemonic": "add.w",
+          "op_str": "d3, d3",
+          "bytes": "d643"
+        },
+        {
+          "address": "0x00F354",
+          "mnemonic": "move.w",
+          "op_str": "(a2, d3.w), d1",
+          "bytes": "32323000"
+        },
+        {
+          "address": "0x00F358",
+          "mnemonic": "move.b",
+          "op_str": "d1, d2",
+          "bytes": "1401"
+        },
+        {
+          "address": "0x00F35A",
+          "mnemonic": "asr.w",
+          "op_str": "#$8, d1",
+          "bytes": "e041"
+        },
+        {
+          "address": "0x00F35C",
+          "mnemonic": "ext.w",
+          "op_str": "d2",
+          "bytes": "4882"
+        },
+        {
+          "address": "0x00F35E",
+          "mnemonic": "add.w",
+          "op_str": "$10(a6), d2",
+          "bytes": "d46e0010"
+        },
+        {
+          "address": "0x00F362",
+          "mnemonic": "swap",
+          "op_str": "d1",
+          "bytes": "4841"
+        },
+        {
+          "address": "0x00F364",
+          "mnemonic": "swap",
+          "op_str": "d2",
+          "bytes": "4842"
+        },
+        {
+          "address": "0x00F366",
+          "mnemonic": "clr.w",
+          "op_str": "d1",
+          "bytes": "4241"
+        },
+        {
+          "address": "0x00F368",
+          "mnemonic": "clr.w",
+          "op_str": "d2",
+          "bytes": "4242"
+        },
+        {
+          "address": "0x00F36A",
+          "mnemonic": "btst.b",
+          "op_str": "#$0, $ff17b8.l",
+          "bytes": "0839000000ff17b8"
+        },
+        {
+          "address": "0x00F372",
+          "mnemonic": "beq.b",
+          "op_str": "$f378",
+          "bytes": "6704"
+        },
+        {
+          "address": "0x00F374",
+          "mnemonic": "add.l",
+          "op_str": "d1, d1",
+          "bytes": "d281"
+        },
+        {
+          "address": "0x00F376",
+          "mnemonic": "add.l",
+          "op_str": "d2, d2",
+          "bytes": "d482"
+        },
+        {
+          "address": "0x00F378",
+          "mnemonic": "move.l",
+          "op_str": "d1, $72(a6)",
+          "bytes": "2d410072"
+        },
+        {
+          "address": "0x00F37C",
+          "mnemonic": "move.l",
+          "op_str": "d2, $76(a6)",
+          "bytes": "2d420076"
+        },
+        {
+          "address": "0x00F380",
+          "mnemonic": "move.l",
+          "op_str": "#$c000, $56(a6)",
+          "bytes": "2d7c0000c0000056"
+        },
+        {
+          "address": "0x00F388",
+          "mnemonic": "move.b",
+          "op_str": "#$f0, $a6(a6)",
+          "bytes": "1d7c00f000a6"
+        },
+        {
+          "address": "0x00F38E",
+          "mnemonic": "move.l",
+          "op_str": "a4, $aa(a6)",
+          "bytes": "2d4c00aa"
+        },
+        {
+          "address": "0x00F392",
+          "mnemonic": "movea.l",
+          "op_str": "a4, a6",
+          "bytes": "2c4c"
+        },
+        {
+          "address": "0x00F394",
+          "mnemonic": "rts",
+          "op_str": "",
+          "bytes": "4e75"
+        }
+      ]
+    }
+  }
+}
