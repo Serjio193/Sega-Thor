@@ -1,3 +1,6 @@
+# M15.466 ROM Script Virtual Machine Opcodes $01, $06, $07, $08, $0A, $0B: Loop Engine, Frame Sleep & Dynamic Entity Spawner (`0x00FC6C`..`0x00FD8C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_script_vm_opcodes_loops_spawn.py`, `tests/rom_script_vm_opcodes_loops_spawn_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_opcodes_loops_spawn_m15_466.json`, and `docs/handoffs/STANDALONE_M15_466_SCRIPT_LOOPS_SPAWN_HANDOFF.md`.
+
 # M15.465 ROM Script Virtual Machine Opcodes $05 & $12: Unconditional Jump & Conditional Branch Engine (`0x00FAAC`..`0x00FC6C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_script_vm_opcodes_05_12.py`, `tests/rom_script_vm_opcodes_05_12_test.py` (`4/4 PASS`), `data/thor-evidence/rom_script_vm_opcodes_05_12_m15_465.json`, and `docs/handoffs/STANDALONE_M15_465_SCRIPT_OPCODES_05_12_HANDOFF.md`.
 

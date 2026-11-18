@@ -1,3 +1,9 @@
+# M15.466 ROM Script Virtual Machine Opcodes $01, $06, $07, $08, $0A, $0B: Loop Engine, Frame Sleep & Dynamic Entity Spawner
+- `tools/extract_rom_script_vm_opcodes_loops_spawn.py` — extractor for `0x00FC6C..0x00FD8C` (Script opcodes $06 loop decrement branch, $07 loop counter setter, $08 frame sleep, $0A entity event, $0B scenario threshold, and $01 dynamic entity spawner with position table at $FD86).
+- `tests/rom_script_vm_opcodes_loops_spawn_test.py` — `4` unit tests verifying loop decrement and branch, frame sleep, entity event messaging, and script entity instantiation.
+- `data/thor-evidence/rom_script_vm_opcodes_loops_spawn_m15_466.json` — extracted M15.466 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_466_SCRIPT_LOOPS_SPAWN_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.465 ROM Script Virtual Machine Opcodes $05 & $12: Unconditional Jump & Conditional Branch Engine
 - `tools/extract_rom_script_vm_opcodes_05_12.py` — extractor for `0x00FAAC..0x00FC6C` (Script opcodes $05 unconditional jump and $12 12-mode conditional branch engine with mode table at $FAC2 and operator table at $FB64).
 - `tests/rom_script_vm_opcodes_05_12_test.py` — `4` unit tests verifying opcode $05 forward/backward jumps, opcode $12 quest var, persistent bitmask, and spirit companion conditional branch evaluations.
