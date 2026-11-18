@@ -1,3 +1,24 @@
+# M16.179 ROM Dialogue Entity Sprite Compositor, Prompt Arrow Indicator & Frame Sync Engine (`0x00C756..0x00C88C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `calculate_prompt_arrow_y`, `emit_sat_piece`, `emit_line_sprites`, `composite_dialogue_sprites`, `step_frame_sync_and_render`, `composite_dialogue_sprites_raw`, and `step_frame_sync_raw` in `src/game/dialogue/dialogue_task_compositor.hpp/.cpp` and `include/game/dialogue/dialogue_task_compositor.hpp`:
+  - Dialogue entity task callback (`0x00C756`):
+    * Reads SAT offset `$FF188C` and hardware sprite link count `$FF188A`.
+    * Prompt arrow active gating on `$FF1886.b != 0` and timer bit 4 `$FF1657 & 0x10 != 0`.
+    * Dynamic arrow vertical positioning based on line counter: fixed X = 284, base Y = 332, decremented by 12 per line for lines < 3 (line >= 3: 332, line 2: 320, line 1: 308, line 0: 296).
+    * Arrow tile selection: continue mode `0x86DC`, dismiss mode `0x96DC` (bit 12 set).
+  - 4-Line window text grid generator (`0x00C7C0..0x00C836`):
+    * Top plane base tile `((plane_top_base >> 5) | 0x8000)` for lines 0 and 1.
+    * Bottom plane base tile `((plane_bottom_base >> 5) | 0x8000)` for lines 2 and 3.
+    * 8 sprite pieces per row (`0x00C81C`): 4x4 tiles size code `0x0C00`, X starting at 160 stepping +32px, Y = `row_offset + 272`, tile stepping +4 per piece.
+    * Sega Genesis 80-sprite hardware limit enforcement (`0x00C838`): suppresses emission when link >= 80.
+  - Frame synchronization & render pacing (`0x00C84E`):
+    * Render in progress flag `$FF185D` lifecycle.
+    * Frame sync cadence initialization to 2 when 0, palette cycling tick, render pass, V-Int bit 0 wait, and post-render dispatching.
+  - Raw 64KB RAM window integration helpers at `$FF13CC`, `$FF188C`, `$FF188A`, `$FF1886`, `$FF1887`, `$FF1657`, `$FF1880`, `$FF1872`, `$FF1874`, `$FF1876..$FF187C`, `$FF185D`, `$FF1654`, `$FF164E`.
+  - Cleanroom `thor::dialogue` namespace aliases.
+- Qualified `oasis_m16_179_dialogue_task_compositor` and the 160-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.178 ROM Dialogue Window 4-Line Circular Scroll Engine, VDP Direct Clearer & Glyph DMA Streamer (`0x00C566..0x00C756`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

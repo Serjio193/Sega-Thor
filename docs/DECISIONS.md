@@ -1,3 +1,37 @@
+# ADR-20261118-M16-179-DIALOGUE-TASK-COMPOSITOR — ROM Dialogue Entity Sprite Compositor, Prompt Arrow Indicator & Frame Sync Engine (0x00C756..0x00C88C)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.430 extracted ROM routines `0x00C756..0x00C88C` (310 bytes) governing dialogue entity sprite composition, interactive prompt arrow indication, 4x8 window text grid generation, and frame synchronization:
+   - Dialogue entity task callback (`0x00C756`):
+     * Invoked from entity task loop via `+0x22(a6) = $00C756`.
+     * Reads SAT base `$FF13CC + $FF188C.w` and hardware sprite link count `$FF188A.w`.
+     * Evaluates prompt arrow active condition: `$FF1886.b != 0` AND animation timer bit 4 `$FF1657 & 0x10 != 0`.
+     * Dynamic arrow positioning: fixed X = 284 (`0x011C`), base Y = 332 (`0x014C`). Decrements by 12 per line for lines < 3 (line >= 3: 332, line 2: 320, line 1: 308, line 0: 296).
+     * Arrow tile selection: base continue tile `0x86DC`; dismiss mode (`$FF1887.b != 0`) sets bit 12 to `0x96DC`.
+   - 4-Line window text grid generator (`0x00C7C0..0x00C836`):
+     * Lines 0 and 1: base tile = `((plane_top_base >> 5) | 0x8000)`.
+     * Lines 2 and 3: base tile = `((plane_bottom_base >> 5) | 0x8000)`.
+     * Emits 8 sprite pieces per row (`0x00C81C`):
+       - Size code: `0x0C00` (4x4 tiles = 32x32 pixels).
+       - Horizontal position: X = 160 (`0x00A0`), stepping +32 pixels per piece across 8 iterations.
+       - Vertical position: Y = `row_offset + 272` (`0x0110`).
+       - Tile attribute: starts at base tile, stepping +4 tiles per piece.
+     * Enforces Sega Genesis VDP 80-sprite limit (`0x00C838`): skips emission when `link >= 80`.
+     * Updates SAT offset `$FF188C` (+8 bytes per emitted piece) and link counter `$FF188A`.
+   - Frame synchronization & render pacing (`0x00C84E`):
+     * Sets render in progress flag `$FF185D = 0xFF`.
+     * Pacing check: if `$FF1654 == 0`, sets cadence = 2, invokes palette cycling (`0x008E12`) and render pass (`0x00C876`).
+     * V-Int sync wait: checks `$FF164E` bit 0, runs post-render dispatcher (`0x00A172`), and clears `$FF185D`.
+   - Raw 64KB RAM window integration helpers at `$FF13CC`, `$FF188C`, `$FF188A`, `$FF1886`, `$FF1887`, `$FF1657`, `$FF1880`, `$FF1872`, `$FF1874`, `$FF1876..$FF187C`, `$FF185D`, `$FF1654`, `$FF164E`.
+
+**Decisions:**
+1. **Dedicated `dialogue_task_compositor` Module:**
+   - Added `src/game/dialogue/dialogue_task_compositor.hpp/.cpp` and `include/game/dialogue/dialogue_task_compositor.hpp` modeling `calculate_prompt_arrow_y`, `emit_sat_piece`, `emit_line_sprites`, `composite_dialogue_sprites`, `step_frame_sync_and_render`, `composite_dialogue_sprites_raw`, and `step_frame_sync_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (160/160 M16 tests).
+
 # ADR-20261118-M16-178-DIALOGUE-SCROLL-DMA — ROM Dialogue Window 4-Line Circular Scroll Engine, VDP Direct Clearer & Glyph DMA Streamer (0x00C566..0x00C756)
 **Status:** Accepted
 **Date:** 2026-11-18
