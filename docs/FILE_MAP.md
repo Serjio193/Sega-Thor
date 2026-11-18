@@ -1,3 +1,9 @@
+# M15.450 ROM Entity Trajectory Gravity Integration, Viewport AABB Culling & 188-Byte Slot Cloner
+- `tools/extract_rom_entity_trajectory_culling.py` — extractor for `0x00E502..0x00E6BA` (gravity acceleration integration, floor impact detection, landing shockwave triggering, screen and shadow viewport AABB visibility tests, 188-byte entity cloner, and hitstun invulnerability cooldown tick).
+- `tests/rom_entity_trajectory_culling_test.py` — `5` unit tests verifying ROM constants, trajectory gravity fall and floor impact, screen viewport culling with margin expansion and elevation offset, shadow viewport culling, and 188-byte copy / cooldown tick logic.
+- `data/thor-evidence/rom_entity_trajectory_culling_m15_450.json` — extracted M15.450 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_450_ENTITY_TRAJECTORY_CULLING_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.449 ROM Player Ali Targeting, Normalized Aim Vector & Environmental Velocity Engine
 - `tools/extract_rom_player_targeting.py` — extractor for `0x00E398..0x00E502` (Player Ali quadrant targeting, Manhattan distance calculation, motion table loading with minimum 16px distance clamp, `divs.w` fixed-point aim vector normalization, and projectile launch physics).
 - `tests/rom_player_targeting_test.py` — `5` unit tests verifying ROM constants, quadrant direction resolution, motion table loading and distance clamping, `divs.w` fixed-point aim normalization, and projectile launch suppression / speed parameters.

@@ -1,3 +1,6 @@
+# M15.450 ROM Entity Trajectory Gravity Integration, Viewport AABB Culling & 188-Byte Slot Cloner (`0x00E502`..`0x00E6BA`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_trajectory_culling.py`, `tests/rom_entity_trajectory_culling_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_trajectory_culling_m15_450.json`, and `docs/handoffs/STANDALONE_M15_450_ENTITY_TRAJECTORY_CULLING_HANDOFF.md`.
+
 # M15.449 ROM Player Ali Targeting, Normalized Aim Vector & Environmental Velocity Engine (`0x00E398`..`0x00E502`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_player_targeting.py`, `tests/rom_player_targeting_test.py` (`5/5 PASS`), `data/thor-evidence/rom_player_targeting_m15_449.json`, and `docs/handoffs/STANDALONE_M15_449_PLAYER_TARGETING_HANDOFF.md`.
 
