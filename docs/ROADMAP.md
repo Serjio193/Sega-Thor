@@ -1,3 +1,33 @@
+# M16.171 ROM Universal Attack Frame Scanner & 3D Hitbox Intersection Engine (`0x00BC8E..0x00BE98`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `calculate_ali_strength_bonus`, `pack_attack_damage`, `is_scanner_target_eligible`, `test_scanner_aabb_overlap`, `scan_attack_frame_pool`, `scan_all_entities`, `scan_group3_a`, `scan_group3_b`, `scan_single`, and raw 64KB RAM window integration helpers in `src/game/combat/attack_scanner_engine.hpp/.cpp` and `include/game/combat/attack_scanner_engine.hpp`:
+  - 4 ingress entry points:
+    * `scan_all_entities` (`0x00BC8E`): sets callback `0x00BEBA`, sweeps 21 Group 2 slots (`$FF19E8`).
+    * `scan_group3_a` (`0x00BCA4`): sets callback `0x00BE98`, sweeps 17 Group 3 slots (`$FF1CD8`).
+    * `scan_group3_b` (`0x00BCBA`): sets callback `0x00BE98`, sets `$FF198B = 2`, sweeps 17 Group 3 slots (`$FF1CD8`).
+    * `scan_single` (`0x00BCD8`): sets callback `0x00BEBA`, sweeps single slot 0 (`$FF19E8`, Player).
+  - Early phase suppression:
+    * Checks bit 3 of `+0x37(attacker)`; if non-zero, exits immediately without sweeping.
+  - 44-byte attack frame descriptor search:
+    * Scans 44-byte records matching animation frame id at `+0x32(attacker)`, terminated by negative word `0xFFFF`.
+  - Directional hitbox selection & horizontal mirroring:
+    * Facing 0 (Down), 1 (Right), 2 (Up), 3 (Left).
+    * Facing 3 flips X (`x_min = -x_max, x_max = -x_min`) and indexes direction 1.
+  - Ali strength rank bonus:
+    * When `attacker == $FF19E8`: evaluates stat `+0x96` against thresholds 10 (+1), 20 (+1), 30 (+1), 40 (+1), 50 (+1), 100 (+2), 200 (+4) for up to +11 bonus.
+  - Damage & stun packing into `a4`:
+    * Base damage + strength rank bonus + element flag + weapon bonus `+0x90`.
+    * Packed format: `((total_damage & 0xFFFF) << 16) | (stun_duration & 0xFF)`.
+  - 3D AABB overlap & target filtering:
+    * Target Z `[z_base, z_top]`, X `[x_min, x_max]`, Y `[y_min, y_max]`.
+    * Target filters: `slot_type > 0`, `target != attacker`, `flags_38 & 0x08 == 0`, `cooldown_82 == 0`.
+    * Invokes registered callback on intersection.
+  - Weapon durability reduction hook:
+    * Triggers hook `0x008530` when Ali registers a hit (`flags_37 & 0x08 != 0`) and attack type is 6 or 10.
+  - Raw 64KB RAM window integration helpers for full simulation.
+- Qualified `oasis_m16_171_attack_scanner_engine` and the 151-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.170 ROM Weapon Attack Frame 3D Hitbox Streamer & Dual-Pool Scanner Engine (`0x00BAAC..0x00BC8E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,29 @@
+# ADR-20261118-M16-171-ATTACK-SCANNER-ENGINE — ROM Universal Attack Frame Scanner & 3D Hitbox Intersection Engine (0x00BC8E..0x00BE98)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.422 extracted ROM routines `0x00BC8E..0x00BE98` governing universal attack frame scanning, directional 3D AABB computation, Ali strength rank bonus, damage packing, target filtering, and callback dispatch:
+   - 4 ingress entry points:
+     * `scan_all_entities` (`0x00BC8E`): sets callback `0x00BEBA`, sweeps 21 Group 2 slots (`$FF19E8`).
+     * `scan_group3_a` (`0x00BCA4`): sets callback `0x00BE98`, sweeps 17 Group 3 slots (`$FF1CD8`).
+     * `scan_group3_b` (`0x00BCBA`): sets callback `0x00BE98`, writes 2 into `$FF198B`, sweeps 17 Group 3 slots (`$FF1CD8`).
+     * `scan_single` (`0x00BCD8`): sets callback `0x00BEBA`, sweeps single slot 0 (`$FF19E8`, Player).
+   - Early phase suppression: bit 3 of `flags_37(attacker)` exits immediately if hit already registered.
+   - 44-byte animation frame search: traverses records matching frame id at `+0x32(attacker)`, terminated by `0xFFFF`.
+   - Directional hitbox selection and left-facing mirroring: facing 3 flips X (`x_min = -x_max, x_max = -x_min`) and indexes direction 1.
+   - Ali strength rank bonus: calculates stat `+0x96` thresholds [10, 20, 30, 40, 50, 100, 200] up to +11 bonus.
+   - Damage and stun packing: `((total_damage & 0xFFFF) << 16) | (stun_duration & 0xFF)` in `a4`.
+   - 3D AABB overlap check with target eligibility (`type > 0, target != attacker, flags_38 & 0x08 == 0, cooldown_82 == 0`).
+   - Weapon durability reduction hook `0x008530` for Ali attack types 6 and 10 upon registered hit.
+   - Raw 64KB RAM window integration helpers for full emulation fidelity.
+
+**Decisions:**
+1. **Dedicated `attack_scanner_engine` Module:**
+   - Added `src/game/combat/attack_scanner_engine.hpp/.cpp` and `include/game/combat/attack_scanner_engine.hpp` modeling frame scanning, mirroring, strength bonus, damage packing, AABB overlap, callback dispatch, durability hooks, and raw memory integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (151/151 M16 tests).
+
 # ADR-20261118-M16-170-WEAPON-HITBOX-STREAMER — ROM Weapon Attack Frame 3D Hitbox Streamer & Dual-Pool Scanner Engine (0x00BAAC..0x00BC8E)
 **Status:** Accepted
 **Date:** 2026-11-18
