@@ -1,3 +1,6 @@
+# M15.479 ROM Entity AI Viewport Culling, Parent Targeting, Cutscene Locks & 3D Ballistic Gravity Arc Physics Subsystem (`0x010EEA`..`0x01108C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_ai_culling_gravity.py`, `tests/rom_entity_ai_culling_gravity_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_ai_culling_gravity_m15_479.json`, and `docs/handoffs/STANDALONE_M15_479_CULLING_GRAVITY_HANDOFF.md`.
+
 # M15.478 ROM Entity AI Enemy Projectile Spawner Subsystem: Elemental Slash Waves, Fast Arrows & High-Arc Mortar Lob Trajectories (`0x010CFE`..`0x010EEA`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_ai_projectile_spawner.py`, `tests/rom_entity_ai_projectile_spawner_test.py` (`3/3 PASS`), `data/thor-evidence/rom_entity_ai_projectile_spawner_m15_478.json`, and `docs/handoffs/STANDALONE_M15_478_PROJECTILE_SPAWNER_HANDOFF.md`.
 

@@ -1,3 +1,9 @@
+# M15.479 ROM Entity AI Viewport Culling, Parent Targeting, Cutscene Locks & 3D Ballistic Gravity Arc Physics Subsystem
+- `tools/extract_rom_entity_ai_culling_gravity.py` — extractor for `0x010EEA..0x01108C` (Plane A/B camera viewport culling with symmetric margin `d7`, parent entity facing calculation, cutscene and engine lock flag evaluation, and 3D fixed-point ballistic gravity arc physics).
+- `tests/rom_entity_ai_culling_gravity_test.py` — `5` unit tests verifying evidence structure, viewport culling bounds, facing towards parent, cutscene lock evaluation, and ballistic gravity stepping.
+- `data/thor-evidence/rom_entity_ai_culling_gravity_m15_479.json` — extracted M15.479 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_479_CULLING_GRAVITY_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.478 ROM Entity AI Enemy Projectile Spawner Subsystem: Elemental Slash Waves, Fast Arrows & High-Arc Mortar Lob Trajectories
 - `tools/extract_rom_entity_ai_projectile_spawner.py` — extractor for `0x010CFE..0x010EEA` (Enemy Type $34 sword slash wave spawner, Type $3A fast arrow spawner, and Type $3A high-arc mortar lob spawner).
 - `tests/rom_entity_ai_projectile_spawner_test.py` — `3` unit tests verifying Type $34 slash wave instantiation, Type $3A fast arrow parameters, and Type $3A high-arc mortar lob velocities.
