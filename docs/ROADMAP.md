@@ -1,3 +1,6 @@
+# M15.478 ROM Entity AI Enemy Projectile Spawner Subsystem: Elemental Slash Waves, Fast Arrows & High-Arc Mortar Lob Trajectories (`0x010CFE`..`0x010EEA`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_ai_projectile_spawner.py`, `tests/rom_entity_ai_projectile_spawner_test.py` (`3/3 PASS`), `data/thor-evidence/rom_entity_ai_projectile_spawner_m15_478.json`, and `docs/handoffs/STANDALONE_M15_478_PROJECTILE_SPAWNER_HANDOFF.md`.
+
 # M15.477 ROM Entity AI Player Bow Arrow Attack Parry & Shield Interception Engine (`0x010BF0`..`0x010CFE`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_ai_arrow_parry.py`, `tests/rom_entity_ai_arrow_parry_test.py` (`4/4 PASS`), `data/thor-evidence/rom_entity_ai_arrow_parry_m15_477.json`, and `docs/handoffs/STANDALONE_M15_477_ARROW_PARRY_HANDOFF.md`.
 

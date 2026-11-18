@@ -1,3 +1,9 @@
+# M15.478 ROM Entity AI Enemy Projectile Spawner Subsystem: Elemental Slash Waves, Fast Arrows & High-Arc Mortar Lob Trajectories
+- `tools/extract_rom_entity_ai_projectile_spawner.py` — extractor for `0x010CFE..0x010EEA` (Enemy Type $34 sword slash wave spawner, Type $3A fast arrow spawner, and Type $3A high-arc mortar lob spawner).
+- `tests/rom_entity_ai_projectile_spawner_test.py` — `3` unit tests verifying Type $34 slash wave instantiation, Type $3A fast arrow parameters, and Type $3A high-arc mortar lob velocities.
+- `data/thor-evidence/rom_entity_ai_projectile_spawner_m15_478.json` — extracted M15.478 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_478_PROJECTILE_SPAWNER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.477 ROM Entity AI Player Bow Arrow Attack Parry & Shield Interception Engine
 - `tools/extract_rom_entity_ai_arrow_parry.py` — extractor for `0x010BF0..0x010CFE` (Bow Arrow Type $3A pre-filter, elevation match, and 4-way shield reach interception via jump table 0x010C18).
 - `tests/rom_entity_ai_arrow_parry_test.py` — `4` unit tests verifying arrow parry success, type and elevation filters, rear attack rejection, and 4-way shield reach calculations.
