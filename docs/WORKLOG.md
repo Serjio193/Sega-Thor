@@ -1,3 +1,16 @@
+# Worklog — 2026-11-18 (M16.186: ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger)
+- **Concrete Task**: Implement `src/game/render/vdp_scroll_builder.hpp/.cpp` and `include/game/render/vdp_scroll_builder.hpp` in cleanroom namespace `thor::render` covering `0x00D344` (`vdp_update_vscroll_table` for FullScreen `$FF1348/$FF134A` and 20-entry 2-cell `$FFFF5C`), `0x00D2B4` (`vdp_update_hscroll_table` invoking VScroll first then FullScreen `$FF1344/$FF1346`, 29-entry 16px strip, or 232-entry scanline `$FFFB5C`), `0x00D398` (`vdp_commit_scroll_dma_flags` `$FF16F0 & 0x18 -> $FF164E`), and 64KB RAM window helpers; add `tests/m16_186_vdp_scroll_builder_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/render/vdp_scroll_builder.hpp` (181 lines) / `src/game/render/vdp_scroll_builder.cpp` (283 lines).
+  * Added `include/game/render/vdp_scroll_builder.hpp` (3 lines).
+  * Added `tests/m16_186_vdp_scroll_builder_test.cpp` (365 lines, registered as `oasis_m16_186_vdp_scroll_builder` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_186_vdp_scroll_builder` + M16 + `project_file_line_limit` suite passed (`ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_186_vdp_scroll_builder` + M16 + `project_file_line_limit` suite passed (`ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines.
+  * Remaining unknowns: Ready for M16.187 background tile pattern decompressor & 4KB VRAM DMA streamer (`0x00D3B2..0x00D406`).
+
 # Worklog — 2026-11-18 (M16.185: ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer)
 - **Concrete Task**: Implement `src/game/render/scroll_integrator.hpp/.cpp` and `include/game/render/scroll_integrator.hpp` in cleanroom namespace `thor::render` covering `0x00D146` (`accumulate_long_and_integrate`), `0x00D168` (`accumulate_word_and_integrate`), `0x00D17E` (`check_enable_and_integrate`), `0x00D188` (`integrate_scroll_deltas` with 512px HScroll / 256px VScroll ring accumulators, tile strip dirty markers, bit 1 strip suppression, and +/-10000 coarse range guards), `0x00D266` (`normalize_toroidal_coords`), and 64KB RAM window helpers (`$FF1716`/`$FF173E`); add `tests/m16_185_scroll_integrator_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

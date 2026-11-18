@@ -1,5 +1,8 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/render/vdp_scroll_builder.hpp` / `src/game/render/vdp_scroll_builder.cpp` / `include/game/render/vdp_scroll_builder.hpp`: ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger (`0x00D2B4..0x00D3B2`, 254 bytes, covering `vdp_update_vscroll_table`, `vdp_update_hscroll_only`, `vdp_update_hscroll_table`, `vdp_commit_scroll_dma_flags`, `update_vdp_scroll_tables`, and 64KB RAM window helpers for `$FF1344..$FF134A`, `$FFFB5C`, `$FFFF5C`, `$FF16F0`, `$FF164E`) (M16.186).
+- `tests/m16_186_vdp_scroll_builder_test.cpp`: Automated M16.186 test qualifying constants, scroll mode bit codecs, FullScreen Plane A/B words, 29-entry 16px tile strip H-scroll, 232-entry scanline H-scroll, 20-entry 2-cell V-scroll, VScroll-first order & dirty flag clearing, `$FF16F0 -> $FF164E` commit, and 64KB RAM roundtrips chained with M16.185 (M16.186).
+
 - `src/game/render/scroll_integrator.hpp` / `src/game/render/scroll_integrator.cpp` / `include/game/render/scroll_integrator.hpp`: ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer (`0x00D146..0x00D2B4`, 366 bytes, covering `accumulate_long_and_integrate`, `accumulate_word_and_integrate`, `check_enable_and_integrate`, `integrate_scroll_deltas`, `normalize_toroidal_coords`, and 64KB RAM window helpers for `$FF1716`/`$FF173E`) (M16.185).
 - `tests/m16_185_scroll_integrator_test.cpp`: Automated M16.185 test qualifying constants, horizontal/vertical scroll deltas, 512x256 VDP ring accumulators, tile-strip shift suppression, +/-10000 coarse guards, fixed-point 16.16 accumulation, toroidal normalization, and 64KB RAM window roundtrips (M16.185).
 

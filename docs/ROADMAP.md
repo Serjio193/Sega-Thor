@@ -1,3 +1,13 @@
+# M16.186 ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger (`0x00D2B4..0x00D3B2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/render/vdp_scroll_builder.hpp/.cpp` and `include/game/render/vdp_scroll_builder.hpp` in cleanroom namespace `thor::render`:
+  - `vdp_update_vscroll_table` (`0x00D344`): dirty bit 3 check/clear, pending bit 4 assertion on `$FF16F0`, FullScreen `$FF1348`/`$FF134A` or 20-entry `TwoCellColumn16px` table at `$FFFF5C` (stride 4 bytes).
+  - `vdp_update_hscroll_table` (`0x00D2B4`): invokes `vdp_update_vscroll_table` first (`bsr.w $d344`), checks/clears dirty bit 2, asserts pending bit 3 on `$FF16F0`, and writes FullScreen `$FF1344`/`$FF1346`, 29-entry `TileStrip16px` (stride 32 bytes), or 232-entry `ScanlineParallax` (58x4, stride 4 bytes) at `$FFFB5C`.
+  - `vdp_commit_scroll_dma_flags` (`0x00D398`): moves pending bits 3 & 4 (`0x18`) from `$FF16F0` into `$FF164E` while preserving all other mode/sync bits.
+  - Raw 64KB RAM window helpers (`load_scroll_buffers_from_ram`, `store_scroll_buffers_to_ram`, `vdp_update_vscroll_from_ram`, `vdp_update_hscroll_from_ram`, `vdp_commit_scroll_dma_flags_from_ram`).
+- Qualified `oasis_m16_186_vdp_scroll_builder` and the M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.185 ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer (`0x00D146..0x00D2B4`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

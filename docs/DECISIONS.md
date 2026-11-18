@@ -1,3 +1,21 @@
+# ADR-20261118-M16-186-VDP-SCROLL-BUILDER — ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger (0x00D2B4..0x00D3B2)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.437 extracted ROM routines `0x00D2B4..0x00D3B2` (254 bytes) governing VDP Plane A/B horizontal and vertical scroll buffer emission and V-Int scroll DMA flag commit:
+   - Primary Entrypoints:
+     * `0x00D2B4`: `vdp_update_hscroll_table` (invokes `vdp_update_vscroll_table` via `bsr.w $d344` first, then checks & clears HScroll dirty bit 2 `0x04` on `$26(a0)`, asserts pending bit 3 `0x08` on `$FF16F0`, and writes `vdp_hscroll` `+$0E(a0)` in FullScreen `$FF1344/$FF1346`, TileStrip16px 29 entries at `$FFFB5C` stride 32 bytes, or ScanlineParallax 58x4 = 232 entries at `$FFFB5C` stride 4 bytes).
+     * `0x00D344`: `vdp_update_vscroll_table` (checks & clears VScroll dirty bit 3 `0x08` on `$26(a0)`, asserts pending bit 4 `0x10` on `$FF16F0`, and writes `vdp_vscroll` `+$10(a0)` in FullScreen `$FF1348/$FF134A` or TwoCellColumn16px 20 entries at `$FFFF5C` stride 4 bytes).
+     * `0x00D398`: `vdp_commit_scroll_dma_flags` (extracts pending bits 3 & 4 `0x18` from `$FF16F0`, clears them with `&= 0xE7`, and ORs them into V-Int sync register `$FF164E`).
+   - Raw 64KB RAM window helpers connecting `$FF1344..$FF134A`, `$FFFB5C`, `$FFFF5C`, `$FF16F0`, `$FF164E`, `$FF1716`, and `$FF173E`.
+
+**Decisions:**
+1. **`vdp_scroll_builder` Cleanroom Module:**
+   - Implemented `src/game/render/vdp_scroll_builder.hpp/.cpp` and `include/game/render/vdp_scroll_builder.hpp` in namespace `thor::render` (aliased into `oasis::game::render`), reusing `TilemapCameraState` from `scroll_integrator.hpp`.
+2. **Dual Toolchain Parity:**
+   - Validated across MinGW GCC Release and MSVC Debug with `oasis_m16_186_vdp_scroll_builder` and the full M16 + file-limit regression suite.
+
 # ADR-20261118-M16-185-SCROLL-INTEGRATOR — ROM Plane A 512x256 Ring-Buffer Scroll Integrator, Tile Strip Dirty Marker & Toroidal Modulo Normalizer (0x00D146..0x00D2B4)
 **Status:** Accepted
 **Date:** 2026-11-18
