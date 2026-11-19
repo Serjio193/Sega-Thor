@@ -1,3 +1,12 @@
+# Reverse Engineering Notes — Milestone M15.493 (`0x012F1E`..`0x01319E`): Shade Spirit Master Tick, 40-Frame SP Drain, Damage-to-SP Absorption, 10-State Jump Table, Shadow Grapple & Anchor Warp Starters
+- **Original ROM Addresses:** `0x012F1E..0x01319E` (640 bytes: 620 code bytes / 144 M68K instructions across `0x012F1E..0x013008` and `0x01301C..0x01319E` + 20-byte 10-entry relative jump table at `0x013008..0x01301C`).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_shade_dispatch_grapple.py` and `data/thor-evidence/rom_shade_dispatch_grapple_m15_493.json`:
+  * `0x012F1E..0x01301E`: `AI_Shade_MasterTickAndSpAbsorption` (`+$A4`/`+$A2` gates, `$FF1989`, `0x00E682`/`0x011A4C`, 40-frame SP drain -> `0x0136CC`, `+$86&$0FFF` SP absorption -> State `$04`/Anim `$0C`, 10-entry jump table `0x013008..0x01301C` including `State $12 -> 0x01301C` `rts`).
+  * `0x01301E..0x013134`: `AI_Shade_TryStartShadowGrapple` (Command 1: Ali State 0, `0x009C40` bit 7, 7 SP `0x011B28`, State `$06`, `0x00E2D4`, Pool 1 tether `0x00DA1A` `+$22=0x00013576`, SFX `#$80037B`).
+  * `0x013134..0x01319E`: `AI_Shade_TryStartShadowAnchorOrRescue` (Command 3: `$FF1986`, `+$38(a5)|=$4C`, `$FF1985=$FF`, State `$0C`, SFX `#$80037C`).
+- **Assumptions:** Shared callees `0x00E682`, `0x011A4C`, `0x011B28`, `0x009C40`, `0x00E2D4`, `0x00DA1A`, `0x008EF8`, `0x0136CC`, `0x013764`, and subsequent Shade states (`0x01319E+`) are traced in adjacent milestones.
+- **Test Status:** Verified via `tests/rom_shade_dispatch_grapple_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.492 (`0x012C4E`..`0x012F1E`): Efreet 7-Particle Flame Breath Ring Engine, Enemy Ignite Handler & Composite Vertex Exporter
 - **Original ROM Addresses:** `0x012C4E..0x012F1E` (720 bytes: 662 code bytes / 181 M68K instructions across 4 segments + 58 inline data bytes across 3 tables).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_efreet_flame_breath.py` and `data/thor-evidence/rom_efreet_flame_breath_m15_492.json`:

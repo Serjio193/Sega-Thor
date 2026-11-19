@@ -1,3 +1,6 @@
+# M15.493 ROM Shade Spirit Master Tick, 40-Frame SP Drain, Damage-to-SP Absorption, 10-State Jump Table, Shadow Grapple & Anchor Warp Starters (`0x012F1E`..`0x01319E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_shade_dispatch_grapple.py`, `tests/rom_shade_dispatch_grapple_test.py` (`5/5 PASS`), `data/thor-evidence/rom_shade_dispatch_grapple_m15_493.json`, and `docs/handoffs/STANDALONE_M15_493_SHADE_DISPATCH_GRAPPLE_HANDOFF.md`.
+
 # M15.492 ROM Efreet 7-Particle Flame Breath Ring Engine, Enemy Ignite Handler & Composite Vertex Exporter (`0x012C4E`..`0x012F1E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_efreet_flame_breath.py`, `tests/rom_efreet_flame_breath_test.py` (`5/5 PASS`), `data/thor-evidence/rom_efreet_flame_breath_m15_492.json`, and `docs/handoffs/STANDALONE_M15_492_EFREET_FLAME_BREATH_HANDOFF.md`.
 

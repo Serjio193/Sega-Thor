@@ -1,3 +1,9 @@
+# M15.493 ROM Shade Spirit Master Tick, 40-Frame SP Drain, Damage-to-SP Absorption, 10-State Jump Table, Shadow Grapple & Anchor Warp Starters
+- `tools/extract_rom_shade_dispatch_grapple.py` — extractor for `0x012F1E..0x01319E` (`AI_Shade_MasterTickAndSpAbsorption`, 10-entry jump table `0x013008..0x01301C`, `AI_Shade_TryStartShadowGrapple`, and `AI_Shade_TryStartShadowAnchorOrRescue`).
+- `tests/rom_shade_dispatch_grapple_test.py` — `5` unit tests verifying evidence/jump table structure, 40-frame SP drain & `SP <= 1` blink, `+$86` damage-to-SP absorption, Grapple tether spawn, and Dark Hole / Anchor Warp starter.
+- `data/thor-evidence/rom_shade_dispatch_grapple_m15_493.json` — extracted M15.493 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_493_SHADE_DISPATCH_GRAPPLE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.492 ROM Efreet 7-Particle Flame Breath Ring Engine, Enemy Ignite Handler & Composite Vertex Exporter
 - `tools/extract_rom_efreet_flame_breath.py` — extractor for `0x012C4E..0x012F1E` (particle init/sweep `0x012C4E`, update/anim/AABB `0x012CDC`, ignite handler `0x012DAE`, spawner `0x012DFA`, vertex exporter `0x012EA8`, and 3 inline data tables).
 - `tests/rom_efreet_flame_breath_test.py` — `5` unit tests verifying evidence/tables, init & sweep angles, particle lifecycle & ignite damage `$A004+tier`, spawner `$05D706`/`+5` sweep, and `$FF19A8` vertex export.
