@@ -1,3 +1,9 @@
+# M15.516 ROM Serpent Boss Phase 1 States `0x00..0x18` (Hover, Bounds-Clamped Glide, Dive Leap, Ground Slam Tremor & 4-Shot Fan Barrage)
+- `tools/extract_rom_serpent_boss_phase1_states.py` — extractor for `0x0164E2..0x016764` (States `$00..$18`, `[0x60..0x1A0]` X-clamp `0x01656A`, 4-byte fan angle table `0x016734..0x016738`).
+- `tests/rom_serpent_boss_phase1_states_test.py` — `8` unit tests verifying hover wait, death gravity fall, `[0x60..0x1A0]` glide clamping, windup/arm wait, 42-frame dive leap & slam, and 4-shot fan barrage.
+- `data/thor-evidence/rom_serpent_boss_phase1_states_m15_516.json` — extracted M15.516 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_516_SERPENT_BOSS_PHASE1_STATES_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.515 ROM Serpent Boss Phase 1 Intro Cutscene, Palette Crossfades, Active Master Tick, 5-Segment Hit-Flash & 13-Entry State Jump Table
 - `tools/extract_rom_serpent_boss_phase1_intro_damage.py` — extractor for `0x016294..0x0164E2` (`AI_SerpentBoss_Phase1IntroCutscene`, `AI_SerpentBoss_Phase1ActiveMasterTick`, 13-entry jump table `0x0164C8..0x0164E2`).
 - `tests/rom_serpent_boss_phase1_intro_damage_test.py` — `9` unit tests verifying all 13 jump table targets, 6-stage intro cutscene, `$AE` invuln, `$AF` 5-segment `$4200`/`$0200` flash, defense mitigation, and State `$16` death sequence.

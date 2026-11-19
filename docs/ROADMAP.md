@@ -1,3 +1,6 @@
+# M15.516 ROM Serpent Boss Phase 1 States `0x00..0x18` (Hover, Bounds-Clamped Glide, Dive Leap, Ground Slam Tremor & 4-Shot Fan Barrage) (`0x0164E2`..`0x016764`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_serpent_boss_phase1_states.py`, `tests/rom_serpent_boss_phase1_states_test.py` (`8/8 PASS`), `data/thor-evidence/rom_serpent_boss_phase1_states_m15_516.json`, and `docs/handoffs/STANDALONE_M15_516_SERPENT_BOSS_PHASE1_STATES_HANDOFF.md`.
+
 # M15.515 ROM Serpent Boss Phase 1 Intro Cutscene, Palette Crossfades, Active Master Tick, 5-Segment Hit-Flash & 13-Entry State Jump Table (`0x016294`..`0x0164E2`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_serpent_boss_phase1_intro_damage.py`, `tests/rom_serpent_boss_phase1_intro_damage_test.py` (`9/9 PASS`), `data/thor-evidence/rom_serpent_boss_phase1_intro_damage_m15_515.json`, and `docs/handoffs/STANDALONE_M15_515_SERPENT_BOSS_PHASE1_INTRO_DAMAGE_HANDOFF.md`.
 
