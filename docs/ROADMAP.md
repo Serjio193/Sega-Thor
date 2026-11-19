@@ -1,3 +1,6 @@
+# M15.502 ROM Companion Spirit VRAM Graphics Decompressor & DMA Uploader + 4-Spirit Summon Dispatcher (`0x014522`..`0x0147E0`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_spirit_summon_vram.py`, `tests/rom_spirit_summon_vram_test.py` (`9/9 PASS`), `data/thor-evidence/rom_spirit_summon_vram_m15_502.json`, and `docs/handoffs/STANDALONE_M15_502_SPIRIT_SUMMON_VRAM_HANDOFF.md`.
+
 # M15.501 ROM Bow Spirit (`0x1E`) 4-Node Vine Tether Physics, Round-Robin Target Scanner & Nearest Pool 2 Enemy Manhattan Finder (`0x014242`..`0x014522`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_bow_tether_target.py`, `tests/rom_bow_tether_target_test.py` (`6/6 PASS`), `data/thor-evidence/rom_bow_tether_target_m15_501.json`, and `docs/handoffs/STANDALONE_M15_501_BOW_TETHER_TARGET_HANDOFF.md`.
 

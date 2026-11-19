@@ -1,3 +1,9 @@
+# M15.502 ROM Companion Spirit VRAM Graphics Decompressor & DMA Uploader + 4-Spirit Summon Dispatcher
+- `tools/extract_rom_spirit_summon_vram.py` — extractor for `0x014522..0x0147E0` (`AI_Spirit_UploadVRAMGraphics`, `AI_Spirit_SummonDispatcher`, and per-spirit spawn initializers for Dytto `0x18`, Efreet `0x1A`, Shade `0x1C`, Bow `0x1E`).
+- `tests/rom_spirit_summon_vram_test.py` — `9` unit tests verifying VRAM table lookup, 8B DMA descriptor queue write, overlay register resets, `$FF19A6` 0..3 routing, and per-spirit spawn parameters.
+- `data/thor-evidence/rom_spirit_summon_vram_m15_502.json` — extracted M15.502 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_502_SPIRIT_SUMMON_VRAM_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.501 ROM Bow Spirit (`0x1E`) 4-Node Vine Tether Physics, Round-Robin Target Scanner & Nearest Pool 2 Enemy Manhattan Finder
 - `tools/extract_rom_bow_tether_target.py` — extractor for `0x014242..0x014522` (`AI_BowSpirit_VineTetherPhysics`, `AI_BowSpirit_RoundRobinTargetScanner`, `AI_BowSpirit_FindNearestPool2Enemy`).
 - `tests/rom_bow_tether_target_test.py` — `6` unit tests verifying evidence structure, timer decrement, `0x00F160` 3D constraint clamping, 2-pass vine tether physics, round-robin Pool 2 scanner wrapping, and nearest Manhattan finder.
