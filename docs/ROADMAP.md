@@ -1,3 +1,6 @@
+# M15.525 ROM Interactive/Destructible Enemy/Object & Core Persistent Flag Bitfield Helpers (`0x017E28`..`0x018072`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_world_destructible_flags.py`, `tests/rom_world_destructible_flags_test.py` (`6/6 PASS`), `data/thor-evidence/rom_world_destructible_flags_m15_525.json`, and `docs/handoffs/STANDALONE_M15_525_WORLD_DESTRUCTIBLE_FLAGS_HANDOFF.md`.
+
 # M15.524 ROM Interactive World Objects: Room Doors, Vortex Portals, Spirit Locks & Treasure Chests (`0x017A96`..`0x017E28`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_world_portals_chests.py`, `tests/rom_world_portals_chests_test.py` (`14/14 PASS`), `data/thor-evidence/rom_world_portals_chests_m15_524.json`, and `docs/handoffs/STANDALONE_M15_524_WORLD_PORTALS_CHESTS_HANDOFF.md`.
 
