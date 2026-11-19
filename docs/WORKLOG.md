@@ -1,3 +1,16 @@
+# Worklog — 2026-11-19 (M16.199: ROM Boss Charge Attack, Water-Stop Gate, Elevation-Adjusted Gravity Bounce & Directional Knockback Velocity Engine)
+- **Concrete Task**: Implement `src/game/enemy/boss_charge_engine.hpp/.cpp` and `include/game/enemy/boss_charge_engine.hpp` in cleanroom namespace `thor::enemy` (aliased into `oasis::game::enemy`) covering `0x00EE94..0x00F054` (448 bytes: `advance_boss_charge_phase` `0x00EE94..0x00EF7C` with water probe `0x00EFA2 -> 0x00E36E` & SFX `0x00E7E8`, `integrate_boss_gravity_bounce` `0x00EF7C..0x00F032` with `0.75*vz` -> `+$56` / `0.5*vz` -> `+$10`, unsigned `0x4000` bounce threshold, downward ground skip `0x00EFCE`, and `normalize_directional_knockback_velocity` `0x00F032..0x00F054`); add `tests/m16_199_boss_charge_engine_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/enemy/boss_charge_engine.hpp` (184 lines) / `src/game/enemy/boss_charge_engine.cpp` (441 lines).
+  * Added `include/game/enemy/boss_charge_engine.hpp` (3 lines).
+  * Added `tests/m16_199_boss_charge_engine_test.cpp` (364 lines, registered as `oasis_m16_199_boss_charge_engine` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_199_boss_charge_engine` + M16 + `project_file_line_limit` suite passed (`180/180`, `14.63 sec`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_199_boss_charge_engine` + M16 + `project_file_line_limit` suite passed (`180/180`, `27.60 sec`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: `M16.200..202` (`0x00F054..0x00F396`) next to close the uncovered `M15.456..460` slice.
+
 # Worklog — 2026-11-19 (M16.198: ROM Player Ali Targeting, Cardinal Motion Table Loader, Fixed-Point Aim Vector Normalization & Knockback Launch Physics)
 - **Concrete Task**: Implement `src/game/physics/player_targeting.hpp/.cpp` and `include/game/physics/player_targeting.hpp` in cleanroom namespace `thor::physics` covering `0x00E398..0x00E502` (362 bytes, 120 instructions: `target_player_ali_quadrant_angle` `0x00E398` with X-favoring ties, `target_player_ali_and_load_motion_table` `0x00E3E8` with Y-favoring ties & `max(dom_dist, 16)` timer clamp, `normalize_target_aim_vector_divs` `0x00E45E` with `divs.w` truncation toward zero & `d4` `half_span` return, `launch_directional_projectile_physics` `0x00E4D0` `(0x0300, 0x02E0)` + `0x00060000` Z launch gated by `d7 & 0xC000`, and 64KB RAM window helpers); add `tests/m16_198_player_targeting_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

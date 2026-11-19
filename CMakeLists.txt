@@ -100,6 +100,7 @@ add_library(oasis_core
     src/game/enemy/enemy_ai_0030_0048.cpp
     src/game/enemy/dungeon_enemy_dispatch.cpp
     src/game/enemy/heavy_enemy_dispatch.cpp
+    src/game/enemy/boss_charge_engine.cpp
     src/game/audio/sound_command_dispatch.cpp
     src/game/audio/sound_test_ost.cpp
     src/game/audio/sound_channels.cpp

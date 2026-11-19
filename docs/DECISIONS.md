@@ -1,3 +1,19 @@
+# ADR-20261119-M16-199-BOSS-CHARGE-ENGINE — ROM Boss Charge Attack, Water-Stop Gate, Elevation-Adjusted Gravity Bounce & Directional Knockback Velocity Engine (0x00EE94..0x00F054)
+**Status:** Accepted
+**Date:** 2026-11-19
+
+**Context:**
+1. Direct Capstone disassembly of `0x00EE94..0x00F054` (448 bytes) resolved exact callee targets and fixed-point behavior beyond early handoff prose:
+   - **Exact SFX & water callees:** `0x00EF1E` calls `0x00E7E8` (not `0x00E78E`), and `0x00EFA2` calls `0x00E36E` water-surface probe.
+   - **Split Z bounce scaling & unsigned threshold:** `0x00EF86..0x00EF98` stores `0.75 * vz` into `+$56` while adding `0.5 * vz` (`d0`) into `+$10`, and `0x00F018` checks unsigned `cmpi.l #$4000` bounce cutoff, with downward ground skip at `0x00EFCE..0x00EFD0`.
+   - **Phase timer transition (`0x00EF3C`):** Advances charge phase when `timer == 0` on entry or upon decrement `--timer == 0`.
+
+**Decisions:**
+1. **`boss_charge_engine` Cleanroom Module:**
+   - Implemented `src/game/enemy/boss_charge_engine.hpp/.cpp` and `include/game/enemy/boss_charge_engine.hpp` in namespace `thor::enemy` (aliased into `oasis::game::enemy`) preserving exact fixed-point bounce, water gating, timer decrement, knockback normalization, and 64KB RAM helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_199_boss_charge_engine` + 180-test M16 + file-limit regression suite).
+
 # ADR-20261119-M16-198-PLAYER-TARGETING — ROM Player Ali Targeting, Cardinal Motion Table Loader, Fixed-Point Aim Vector Normalization & Knockback Launch Physics (0x00E398..0x00E502)
 **Status:** Accepted
 **Date:** 2026-11-19

@@ -1,3 +1,9 @@
+# M16.199 ROM Boss Charge Attack, Water-Stop Gate, Elevation-Adjusted Gravity Bounce & Directional Knockback Velocity Engine (`0x00EE94..0x00F054`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/enemy/boss_charge_engine.hpp/.cpp` and `include/game/enemy/boss_charge_engine.hpp` in cleanroom namespace `thor::enemy` covering `0x00EE94..0x00F054` (water-gated charge, split `0.75*vz`/`0.5*vz` gravity bounce, directional knockback normalization, and 64KB RAM helpers).
+- Qualified `oasis_m16_199_boss_charge_engine` and the 180-test M16 + `project_file_line_limit` suite on both MinGW Release (`14.63s`) and MSVC Debug (`27.60s`).
+
 # M16.198 ROM Player Ali Targeting, Cardinal Motion Table Loader, Fixed-Point Aim Vector Normalization & Knockback Launch Physics (`0x00E398..0x00E502`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
