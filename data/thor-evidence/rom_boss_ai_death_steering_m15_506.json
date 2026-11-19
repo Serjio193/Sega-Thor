@@ -1,0 +1,268 @@
+{
+  "milestone": "M15.506",
+  "title": "ROM Boss AI State $1A Death Cutscene Sequence, Explosion Shake & Smooth Angle Steering Helper",
+  "range": {
+    "start": "0x014F60",
+    "end": "0x015136",
+    "size_bytes": 470
+  },
+  "cutscene_timeline": {
+    "frame_180": {
+      "threshold_hex": "0x00B4",
+      "actions": [
+        "sf.b $FF164F",
+        "move.w #6, $FF1896",
+        "jsr 0x002E78",
+        "bra.w 0x01503C (screen shake)"
+      ]
+    },
+    "frames_181_to_239": {
+      "threshold_hex": "< 0x00F0",
+      "actions": [
+        "blt.w 0x01503C (screen shake)"
+      ]
+    },
+    "frame_300": {
+      "threshold_hex": "0x012C",
+      "actions": [
+        "clear 17 Pool 2 entity slots starting at $FF1D94 (dbra #16)",
+        "stream Nemesis art $167C54 to VRAM $8F00 via 0x00D9A4",
+        "spawn entity Type 0x56 at $FF2D8C via 0x008D06",
+        "set tile $0478, coords (256, 152), z_vel $10000, z_acc $331DC"
+      ]
+    },
+    "frame_360": {
+      "threshold_hex": "0x0168",
+      "actions": [
+        "sf.b $FF1983 (clear camera lock)",
+        "move.w #4, $FF1896",
+        "jsr 0x002DB6",
+        "jsr 0x00DAC2 with d0=0x11F",
+        "bset.b #1, $FF1D0E (boss defeated event)",
+        "bset.b #2, $FF0DC3 (environmental flag)"
+      ]
+    },
+    "frame_420": {
+      "threshold_hex": "0x01A4",
+      "actions": [
+        "st.b $FF164F",
+        "clr.w $FF1CD8 (despawn boss entity slot)"
+      ]
+    }
+  },
+  "explosion_particle_shake": {
+    "spawn_fn": "0x00E90E",
+    "particle_type": 1,
+    "center_coords": {
+      "x": 256,
+      "y": 232
+    },
+    "y_offset": 224,
+    "shake_register": "0x00FF17C4",
+    "shake_formula": "($FF1971 & 1) + 2"
+  },
+  "smooth_angle_steering": {
+    "target_angle_fn": "0x00E6F0",
+    "max_turn_rate_step": 8,
+    "sin_cos_table": "0x0005D706",
+    "facing_thresholds_ali_x": {
+      "lt_160": {
+        "facing": 3,
+        "name": "left"
+      },
+      "160_to_351": {
+        "facing": 2,
+        "name": "center_down"
+      },
+      "ge_352": {
+        "facing": 1,
+        "name": "right"
+      }
+    }
+  },
+  "constants": {
+    "max_turn_step": 8,
+    "item_entity_type": "0x0056",
+    "item_tile_attr": "0x0478",
+    "item_initial_x": 256,
+    "item_initial_y": 152,
+    "item_z_vel": "0x00010000",
+    "item_z_acc": "0x000331DC",
+    "event_flag_param": "0x011F"
+  },
+  "ram_addresses": {
+    "screen_flag": "0x00FF164F",
+    "palette_effect_param": "0x00FF1896",
+    "pool2_slots_start": "0x00FF1D94",
+    "item_entity_slot": "0x00FF2D8C",
+    "camera_lock_flag": "0x00FF1983",
+    "boss_entity_slot": "0x00FF1CD8",
+    "plane_b_scroll": "0x00FF173E",
+    "plane_a_scroll": "0x00FF1716",
+    "screen_shake_disp": "0x00FF17C4",
+    "frame_counter_prng": "0x00FF1971",
+    "boss_defeated_flag": "0x00FF1D0E",
+    "environmental_flag": "0x00FF0DC3",
+    "ali_entity_ptr": "0x00FF19E8"
+  },
+  "external_targets": {
+    "palette_effect_2e78": "0x002E78",
+    "nemesis_stream_d9a4": "0x00D9A4",
+    "entity_init_8d06": "0x008D06",
+    "palette_restore_2db6": "0x002DB6",
+    "event_dispatch_dac2": "0x00DAC2",
+    "prng_e268": "0x00E268",
+    "particle_spawn_e90e": "0x00E90E",
+    "target_angle_e6f0": "0x00E6F0"
+  },
+  "routines": [
+    {
+      "name": "BossAI_State1A_DeathCutsceneSequence",
+      "start": "0x014F60",
+      "end": "0x01503C",
+      "size_bytes": 220,
+      "instruction_count": 46,
+      "description": "State $1A death cutscene sequencer: increments timer +$2; at frame $B4 (180) clears $FF164F, sets $FF1896=6, calls palette effect 0x002E78 and shake helper 0x01503C; during frames < $F0 (240) invokes shake 0x01503C; at frame $12C (300) clears 17 Pool 2 slots ($FF1D94..), streams Nemesis art $167C54 via 0x00D9A4 into $8F00, spawns item Type $56 at $FF2D8C (tile $478, coords (0x100, 0x98), z-vel $10000, z-acc $331DC); at frame $168 (360) clears $FF1983, sets $FF1896=4, calls 0x002DB6 and 0x00DAC2 with d0=$11F, sets $FF1D0E:1 and $FF0DC3:2; at frame $1A4 (420) sets $FF164F=$FF and despawns boss slot $FF1CD8."
+    },
+    {
+      "name": "BossAI_DeathExplosionShake",
+      "start": "0x01503C",
+      "end": "0x0150A0",
+      "size_bytes": 100,
+      "instruction_count": 26,
+      "description": "Spawns death explosion particle type 1 via 0x00E90E at (0x100 - plane_b_x + plane_a_x + prng>>1, 0x00E8 - plane_b_y + plane_a_y + prng>>1 + $E0). Updates screen shake at $FF17C4 to oscillate between 2 and 3 based on frame counter ($FF1971 & 1) + 2."
+    },
+    {
+      "name": "BossAI_SmoothAngleSteering",
+      "start": "0x0150A0",
+      "end": "0x015136",
+      "size_bytes": 150,
+      "instruction_count": 49,
+      "description": "Smooth angle turn-rate limiter and sin/cos velocity integrator: calls 0x00E6F0 for target angle, clamps angular turn step to <= 8 units into +$AE. Computes X/Y velocities via sin/cos table $5D706 with scaled speed +$B0>>7, storing into +$4E/+$52 and integrating +$72/+$76. Updates facing +$16 relative to Ali ($FF19E8) X: < $A0 -> 3 (left), < $160 -> 2 (down), >= $160 -> 1 (right)."
+    }
+  ],
+  "instruction_count": 121,
+  "instructions": [
+    {"address": "0x014F60", "mnemonic": "move.w", "op_str": "$2(a6), d0", "bytes": "302e0002", "size": 4},
+    {"address": "0x014F64", "mnemonic": "addq.w", "op_str": "#$1, d0", "bytes": "5240", "size": 2},
+    {"address": "0x014F66", "mnemonic": "move.w", "op_str": "d0, $2(a6)", "bytes": "3d400002", "size": 4},
+    {"address": "0x014F6A", "mnemonic": "cmpi.w", "op_str": "#$b4, d0", "bytes": "0c4000b4", "size": 4},
+    {"address": "0x014F6E", "mnemonic": "beq.b", "op_str": "$14f8e", "bytes": "671e", "size": 2},
+    {"address": "0x014F70", "mnemonic": "cmpi.w", "op_str": "#$f0, d0", "bytes": "0c4000f0", "size": 4},
+    {"address": "0x014F74", "mnemonic": "blt.w", "op_str": "$1503c", "bytes": "6d0000c6", "size": 4},
+    {"address": "0x014F78", "mnemonic": "cmpi.w", "op_str": "#$12c, d0", "bytes": "0c40012c", "size": 4},
+    {"address": "0x014F7C", "mnemonic": "beq.b", "op_str": "$14fa6", "bytes": "6728", "size": 2},
+    {"address": "0x014F7E", "mnemonic": "cmpi.w", "op_str": "#$168, d0", "bytes": "0c400168", "size": 4},
+    {"address": "0x014F82", "mnemonic": "beq.b", "op_str": "$14ffe", "bytes": "677a", "size": 2},
+    {"address": "0x014F84", "mnemonic": "cmpi.w", "op_str": "#$1a4, d0", "bytes": "0c4001a4", "size": 4},
+    {"address": "0x014F88", "mnemonic": "beq.w", "op_str": "$1502e", "bytes": "670000a4", "size": 4},
+    {"address": "0x014F8C", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014F8E", "mnemonic": "sf.b", "op_str": "$ff164f.l", "bytes": "51f900ff164f", "size": 6},
+    {"address": "0x014F94", "mnemonic": "move.w", "op_str": "#$6, $ff1896.l", "bytes": "33fc000600ff1896", "size": 8},
+    {"address": "0x014F9C", "mnemonic": "jsr", "op_str": "$2e78.l", "bytes": "4eb900002e78", "size": 6},
+    {"address": "0x014FA2", "mnemonic": "bra.w", "op_str": "$1503c", "bytes": "60000098", "size": 4},
+    {"address": "0x014FA6", "mnemonic": "lea.l", "op_str": "$ff1d94.l, a0", "bytes": "41f900ff1d94", "size": 6},
+    {"address": "0x014FAC", "mnemonic": "moveq", "op_str": "#$10, d0", "bytes": "7010", "size": 2},
+    {"address": "0x014FAE", "mnemonic": "clr.w", "op_str": "$0(a0)", "bytes": "42680000", "size": 4},
+    {"address": "0x014FB2", "mnemonic": "lea.l", "op_str": "$bc(a0), a0", "bytes": "41e800bc", "size": 4},
+    {"address": "0x014FB6", "mnemonic": "dbra", "op_str": "d0, $14fae", "bytes": "51c8fff6", "size": 4},
+    {"address": "0x014FBA", "mnemonic": "lea.l", "op_str": "$167c54.l, a6", "bytes": "4df900167c54", "size": 6},
+    {"address": "0x014FC0", "mnemonic": "move.w", "op_str": "#$8f00, d6", "bytes": "3c3c8f00", "size": 4},
+    {"address": "0x014FC4", "mnemonic": "bsr.w", "op_str": "$d9a4", "bytes": "610089de", "size": 4},
+    {"address": "0x014FC8", "mnemonic": "lea.l", "op_str": "$ff2d8c.l, a6", "bytes": "4df900ff2d8c", "size": 6},
+    {"address": "0x014FCE", "mnemonic": "move.w", "op_str": "#$56, $0(a6)", "bytes": "3d7c00560000", "size": 6},
+    {"address": "0x014FD4", "mnemonic": "jsr", "op_str": "$8d06.l", "bytes": "4eb900008d06", "size": 6},
+    {"address": "0x014FDA", "mnemonic": "move.w", "op_str": "#$478, $18(a6)", "bytes": "3d7c04780018", "size": 6},
+    {"address": "0x014FE0", "mnemonic": "move.w", "op_str": "#$100, $8(a6)", "bytes": "3d7c01000008", "size": 6},
+    {"address": "0x014FE6", "mnemonic": "move.w", "op_str": "#$98, $c(a6)", "bytes": "3d7c0098000c", "size": 6},
+    {"address": "0x014FEC", "mnemonic": "move.l", "op_str": "#$10000, $52(a6)", "bytes": "2d7c000100000052", "size": 8},
+    {"address": "0x014FF4", "mnemonic": "move.l", "op_str": "#$331dc, $56(a6)", "bytes": "2d7c000331dc0056", "size": 8},
+    {"address": "0x014FFC", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014FFE", "mnemonic": "sf.b", "op_str": "$ff1983.l", "bytes": "51f900ff1983", "size": 6},
+    {"address": "0x015004", "mnemonic": "move.w", "op_str": "#$4, $ff1896.l", "bytes": "33fc000400ff1896", "size": 8},
+    {"address": "0x01500C", "mnemonic": "jsr", "op_str": "$2db6.l", "bytes": "4eb900002db6", "size": 6},
+    {"address": "0x015012", "mnemonic": "move.w", "op_str": "#$11f, d0", "bytes": "303c011f", "size": 4},
+    {"address": "0x015016", "mnemonic": "jsr", "op_str": "$dac2.l", "bytes": "4eb90000dac2", "size": 6},
+    {"address": "0x01501C", "mnemonic": "bset.b", "op_str": "#$1, $ff1d0e.l", "bytes": "08f9000100ff1d0e", "size": 8},
+    {"address": "0x015024", "mnemonic": "bset.b", "op_str": "#$2, $ff0dc3.l", "bytes": "08f9000200ff0dc3", "size": 8},
+    {"address": "0x01502C", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x01502E", "mnemonic": "st.b", "op_str": "$ff164f.l", "bytes": "50f900ff164f", "size": 6},
+    {"address": "0x015034", "mnemonic": "clr.w", "op_str": "$ff1cd8.l", "bytes": "427900ff1cd8", "size": 6},
+    {"address": "0x01503A", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x01503C", "mnemonic": "move.w", "op_str": "#$100, d1", "bytes": "323c0100", "size": 4},
+    {"address": "0x015040", "mnemonic": "move.w", "op_str": "#$e8, d2", "bytes": "343c00e8", "size": 4},
+    {"address": "0x015044", "mnemonic": "lea.l", "op_str": "$ff173e.l, a0", "bytes": "41f900ff173e", "size": 6},
+    {"address": "0x01504A", "mnemonic": "sub.w", "op_str": "$0(a0), d1", "bytes": "92680000", "size": 4},
+    {"address": "0x01504E", "mnemonic": "sub.w", "op_str": "$4(a0), d2", "bytes": "94680004", "size": 4},
+    {"address": "0x015052", "mnemonic": "lea.l", "op_str": "$ff1716.l, a0", "bytes": "41f900ff1716", "size": 6},
+    {"address": "0x015058", "mnemonic": "add.w", "op_str": "$0(a0), d1", "bytes": "d2680000", "size": 4},
+    {"address": "0x01505C", "mnemonic": "add.w", "op_str": "$4(a0), d2", "bytes": "d4680004", "size": 4},
+    {"address": "0x015060", "mnemonic": "jsr", "op_str": "$e268.l", "bytes": "4eb90000e268", "size": 6},
+    {"address": "0x015066", "mnemonic": "ext.w", "op_str": "d0", "bytes": "4880", "size": 2},
+    {"address": "0x015068", "mnemonic": "asr.w", "op_str": "#$1, d0", "bytes": "e240", "size": 2},
+    {"address": "0x01506A", "mnemonic": "add.w", "op_str": "d0, d1", "bytes": "d240", "size": 2},
+    {"address": "0x01506C", "mnemonic": "jsr", "op_str": "$e268.l", "bytes": "4eb90000e268", "size": 6},
+    {"address": "0x015072", "mnemonic": "jsr", "op_str": "$e268.l", "bytes": "4eb90000e268", "size": 6},
+    {"address": "0x015078", "mnemonic": "ext.w", "op_str": "d0", "bytes": "4880", "size": 2},
+    {"address": "0x01507A", "mnemonic": "asr.w", "op_str": "#$1, d0", "bytes": "e240", "size": 2},
+    {"address": "0x01507C", "mnemonic": "add.w", "op_str": "d0, d2", "bytes": "d440", "size": 2},
+    {"address": "0x01507E", "mnemonic": "move.w", "op_str": "#$e0, d3", "bytes": "363c00e0", "size": 4},
+    {"address": "0x015082", "mnemonic": "add.w", "op_str": "d3, d2", "bytes": "d443", "size": 2},
+    {"address": "0x015084", "mnemonic": "moveq", "op_str": "#$1, d0", "bytes": "7001", "size": 2},
+    {"address": "0x015086", "mnemonic": "jsr", "op_str": "$e90e.l", "bytes": "4eb90000e90e", "size": 6},
+    {"address": "0x01508C", "mnemonic": "move.b", "op_str": "$ff1971.l, d0", "bytes": "103900ff1971", "size": 6},
+    {"address": "0x015092", "mnemonic": "andi.w", "op_str": "#$1, d0", "bytes": "02400001", "size": 4},
+    {"address": "0x015096", "mnemonic": "addq.w", "op_str": "#$2, d0", "bytes": "5440", "size": 2},
+    {"address": "0x015098", "mnemonic": "move.w", "op_str": "d0, $ff17c4.l", "bytes": "33c000ff17c4", "size": 6},
+    {"address": "0x01509E", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x0150A0", "mnemonic": "bsr.w", "op_str": "$e6f0", "bytes": "6100964e", "size": 4},
+    {"address": "0x0150A4", "mnemonic": "move.w", "op_str": "$ae(a6), d3", "bytes": "362e00ae", "size": 4},
+    {"address": "0x0150A8", "mnemonic": "move.b", "op_str": "d3, d4", "bytes": "1803", "size": 2},
+    {"address": "0x0150AA", "mnemonic": "sub.b", "op_str": "d0, d4", "bytes": "9800", "size": 2},
+    {"address": "0x0150AC", "mnemonic": "sub.b", "op_str": "d3, d0", "bytes": "9003", "size": 2},
+    {"address": "0x0150AE", "mnemonic": "moveq", "op_str": "#$8, d1", "bytes": "7208", "size": 2},
+    {"address": "0x0150B0", "mnemonic": "cmp.b", "op_str": "d0, d4", "bytes": "b800", "size": 2},
+    {"address": "0x0150B2", "mnemonic": "bcs.b", "op_str": "$150be", "bytes": "650a", "size": 2},
+    {"address": "0x0150B4", "mnemonic": "move.b", "op_str": "d0, d4", "bytes": "1800", "size": 2},
+    {"address": "0x0150B6", "mnemonic": "cmp.b", "op_str": "d1, d4", "bytes": "b801", "size": 2},
+    {"address": "0x0150B8", "mnemonic": "bls.b", "op_str": "$150c6", "bytes": "630c", "size": 2},
+    {"address": "0x0150BA", "mnemonic": "move.b", "op_str": "d1, d4", "bytes": "1801", "size": 2},
+    {"address": "0x0150BC", "mnemonic": "bra.b", "op_str": "$150c6", "bytes": "6008", "size": 2},
+    {"address": "0x0150BE", "mnemonic": "cmp.b", "op_str": "d1, d4", "bytes": "b801", "size": 2},
+    {"address": "0x0150C0", "mnemonic": "bls.b", "op_str": "$150c4", "bytes": "6302", "size": 2},
+    {"address": "0x0150C2", "mnemonic": "move.b", "op_str": "d1, d4", "bytes": "1801", "size": 2},
+    {"address": "0x0150C4", "mnemonic": "neg.b", "op_str": "d4", "bytes": "4404", "size": 2},
+    {"address": "0x0150C6", "mnemonic": "add.b", "op_str": "d4, d3", "bytes": "d604", "size": 2},
+    {"address": "0x0150C8", "mnemonic": "andi.w", "op_str": "#$ff, d3", "bytes": "024300ff", "size": 4},
+    {"address": "0x0150CC", "mnemonic": "move.w", "op_str": "d3, $ae(a6)", "bytes": "3d4300ae", "size": 4},
+    {"address": "0x0150D0", "mnemonic": "move.l", "op_str": "$b0(a6), d6", "bytes": "2c2e00b0", "size": 4},
+    {"address": "0x0150D4", "mnemonic": "asr.l", "op_str": "#$7, d6", "bytes": "ee86", "size": 2},
+    {"address": "0x0150D6", "mnemonic": "move.w", "op_str": "d3, d7", "bytes": "3e03", "size": 2},
+    {"address": "0x0150D8", "mnemonic": "addi.b", "op_str": "#$40, d7", "bytes": "06070040", "size": 4},
+    {"address": "0x0150DC", "mnemonic": "add.w", "op_str": "d3, d3", "bytes": "d643", "size": 2},
+    {"address": "0x0150DE", "mnemonic": "add.w", "op_str": "d7, d7", "bytes": "de47", "size": 2},
+    {"address": "0x0150E0", "mnemonic": "lea.l", "op_str": "$5d706.l, a0", "bytes": "41f90005d706", "size": 6},
+    {"address": "0x0150E6", "mnemonic": "move.b", "op_str": "(a0, d3.w), d3", "bytes": "16303000", "size": 4},
+    {"address": "0x0150EA", "mnemonic": "move.b", "op_str": "(a0, d7.w), d7", "bytes": "1e307000", "size": 4},
+    {"address": "0x0150EE", "mnemonic": "ext.w", "op_str": "d3", "bytes": "4883", "size": 2},
+    {"address": "0x0150F0", "mnemonic": "ext.w", "op_str": "d7", "bytes": "4887", "size": 2},
+    {"address": "0x0150F2", "mnemonic": "muls.w", "op_str": "d6, d3", "bytes": "c7c6", "size": 2},
+    {"address": "0x0150F4", "mnemonic": "muls.w", "op_str": "d6, d7", "bytes": "cfc6", "size": 2},
+    {"address": "0x0150F6", "mnemonic": "neg.l", "op_str": "d3", "bytes": "4483", "size": 2},
+    {"address": "0x0150F8", "mnemonic": "move.l", "op_str": "d7, $4e(a6)", "bytes": "2d47004e", "size": 4},
+    {"address": "0x0150FC", "mnemonic": "move.l", "op_str": "d3, $52(a6)", "bytes": "2d430052", "size": 4},
+    {"address": "0x015100", "mnemonic": "add.l", "op_str": "d7, $72(a6)", "bytes": "dfae0072", "size": 4},
+    {"address": "0x015104", "mnemonic": "add.l", "op_str": "d3, $76(a6)", "bytes": "d7ae0076", "size": 4},
+    {"address": "0x015108", "mnemonic": "lea.l", "op_str": "$ff19e8.l, a0", "bytes": "41f900ff19e8", "size": 6},
+    {"address": "0x01510E", "mnemonic": "cmpi.w", "op_str": "#$a0, $8(a0)", "bytes": "0c6800a00008", "size": 6},
+    {"address": "0x015114", "mnemonic": "blt.b", "op_str": "$15126", "bytes": "6d10", "size": 2},
+    {"address": "0x015116", "mnemonic": "cmpi.w", "op_str": "#$160, $8(a0)", "bytes": "0c6801600008", "size": 6},
+    {"address": "0x01511C", "mnemonic": "bge.b", "op_str": "$1512e", "bytes": "6c10", "size": 2},
+    {"address": "0x01511E", "mnemonic": "move.w", "op_str": "#$2, $16(a6)", "bytes": "3d7c00020016", "size": 6},
+    {"address": "0x015124", "mnemonic": "bra.b", "op_str": "$15134", "bytes": "600e", "size": 2},
+    {"address": "0x015126", "mnemonic": "move.w", "op_str": "#$3, $16(a6)", "bytes": "3d7c00030016", "size": 6},
+    {"address": "0x01512C", "mnemonic": "bra.b", "op_str": "$15134", "bytes": "6006", "size": 2},
+    {"address": "0x01512E", "mnemonic": "move.w", "op_str": "#$1, $16(a6)", "bytes": "3d7c00010016", "size": 6},
+    {"address": "0x015134", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2}
+  ]
+}

@@ -1,3 +1,6 @@
+# M15.506 ROM Boss AI State `$1A` Death Cutscene Sequence, Explosion Shake & Smooth Angle Steering Helper (`0x014F60`..`0x015136`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_boss_ai_death_steering.py`, `tests/rom_boss_ai_death_steering_test.py` (`9/9 PASS`), `data/thor-evidence/rom_boss_ai_death_steering_m15_506.json`, and `docs/handoffs/STANDALONE_M15_506_BOSS_AI_DEATH_STEERING_HANDOFF.md`.
+
 # M15.505 ROM Boss AI Projectile States `$0C`/`$14`/`$12`, Hit Callbacks & State `$0E` Hit-Reaction Deceleration (`0x014D1A`..`0x014F60`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_boss_ai_projectiles_flinch.py`, `tests/rom_boss_ai_projectiles_flinch_test.py` (`6/6 PASS`), `data/thor-evidence/rom_boss_ai_projectiles_flinch_m15_505.json`, and `docs/handoffs/STANDALONE_M15_505_BOSS_AI_PROJECTILES_FLINCH_HANDOFF.md`.
 

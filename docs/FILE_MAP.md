@@ -1,3 +1,9 @@
+# M15.506 ROM Boss AI State `$1A` Death Cutscene Sequence, Explosion Shake & Smooth Angle Steering Helper
+- `tools/extract_rom_boss_ai_death_steering.py` — extractor for `0x014F60..0x015136` (`AI_Boss_State1A_DeathCutscene`, `AI_Boss_DeathExplosionAndShake`, `AI_Boss_SmoothAngleSteerAndFaceAli`).
+- `tests/rom_boss_ai_death_steering_test.py` — `9` unit tests verifying the 5-stage death cutscene timeline (`180/240/300/360/420`), explosion shake math, `<=8` turn-rate limiter, and Ali X facing thresholds.
+- `data/thor-evidence/rom_boss_ai_death_steering_m15_506.json` — extracted M15.506 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_506_BOSS_AI_DEATH_STEERING_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.505 ROM Boss AI Projectile States `$0C`/`$14`/`$12`, Hit Callbacks & State `$0E` Hit-Reaction Deceleration
 - `tools/extract_rom_boss_ai_projectiles_flinch.py` — extractor for `0x014D1A..0x014F60` (`AI_Boss_State0C_FeatherSporeProjectile`, `AI_Boss_HitCallback_FeatherSpore`, `AI_Boss_State14_ProjectileFadeout`, `AI_Boss_State12_FireballProjectile`, `AI_Boss_HitCallback_Fireball`, `AI_Boss_State0E_HitReactionDecel`).
 - `tests/rom_boss_ai_projectiles_flinch_test.py` — `6` unit tests verifying Feather/Spore size scaling, `$200C`/`$A00C` and `$2008`/`$A008` hit callbacks, Fireball cancel/floor clamp, and State `$0E` 4th-hit counter-attack switch.
