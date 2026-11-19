@@ -1,3 +1,12 @@
+# Reverse Engineering Notes — Milestone M15.498 (`0x013B36`..`0x013CB4`): Bow Spirit (`0x1E`) Combat States `$08`, `$04` Gravity Leap/Chomp & `$06`
+- **Original ROM Addresses:** `0x013B36..0x013CB4` (382 bytes, 95 M68K instructions, zero embedded data tables).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_bow_combat_states.py` and `data/thor-evidence/rom_bow_combat_states_m15_498.json`:
+  * `0x013B36..0x013BF2`: `AI_Bow_State08_ChompAttackAndTrail` (`$05887C`/`0x00BBA8` -> `+$2A=$24`, `(($FF0DB9+1)>>2)`, `$FF1940=0x013BDE`/`0x00BCAE(2)`/`0x00BE98`, `0x014200` `d7=12/9`).
+  * `0x013BF2..0x013C7C`: `AI_Bow_State04_GravityLeapAndSeek` (`-$C000` Z gravity floor clamp, `0x013FFC`, `0x00E3A4` vs `$FF1C1C`, `d5<=6`/`d5>+$AC`/`timer==0 -> 0x013C52`).
+  * `0x013C7C..0x013CB4`: `AI_Bow_State06_PopupAndRestorePos` (`+$37:1 -> State $02 +$2A=$14`, `+$AE/+$B2` restore, `0x009D00`, `#$80037E`).
+- **Assumptions:** Shared callees `0x009D00`, `0x00BBA8`, `0x00BCAE`, `0x00BE98`, `0x00E3A4`, `0x00E7FC`, and Bow chain helpers `0x013FFC`/`0x014200` are documented in adjacent slices.
+- **Test Status:** Verified via `tests/rom_bow_combat_states_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.497 (`0x01387C`..`0x013B36`): Bow Spirit (`0x1E`) Master Tick, 9-Entry Jump Table, Command Starters & States `$0E`/`$0A`/`$0C`
 - **Original ROM Addresses:** `0x01387C..0x013B36` (698 bytes: 680 code bytes / 156 M68K instructions across `0x01387C..0x0138E6` and `0x0138F8..0x013B36` + 18-byte 9-entry relative jump table `0x0138E6..0x0138F8`).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_bow_dispatch_commands.py` and `data/thor-evidence/rom_bow_dispatch_commands_m15_497.json`:

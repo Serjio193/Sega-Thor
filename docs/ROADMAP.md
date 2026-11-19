@@ -1,3 +1,6 @@
+# M15.498 ROM Bow Spirit (`0x1E`) Combat States `$08`, `$04` Gravity Leap/Chomp & `$06` (`0x013B36`..`0x013CB4`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_bow_combat_states.py`, `tests/rom_bow_combat_states_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_combat_states_m15_498.json`, and `docs/handoffs/STANDALONE_M15_498_BOW_COMBAT_STATES_HANDOFF.md`.
+
 # M15.497 ROM Bow Spirit (`0x1E`) Master Tick, 9-Entry Jump Table, Command Starters & States `$0E`/`$0A`/`$0C` (`0x01387C`..`0x013B36`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_bow_dispatch_commands.py`, `tests/rom_bow_dispatch_commands_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_dispatch_commands_m15_497.json`, and `docs/handoffs/STANDALONE_M15_497_BOW_DISPATCH_COMMANDS_HANDOFF.md`.
 

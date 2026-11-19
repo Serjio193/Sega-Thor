@@ -1,3 +1,9 @@
+# M15.498 ROM Bow Spirit (`0x1E`) Combat States `$08`, `$04` Gravity Leap/Chomp & `$06`
+- `tools/extract_rom_bow_combat_states.py` — extractor for `0x013B36..0x013CB4` (`AI_Bow_State08_ChompAttackAndTrail`, `AI_Bow_State04_GravityLeapAndSeek`, `AI_Bow_State06_PopupAndRestorePos`).
+- `tests/rom_bow_combat_states_test.py` — `5` unit tests verifying chomp proximity/callback/exit, gravity leap Z floor clamp, 3 exit predicates to State `$06`, and State `$06` backup restore.
+- `data/thor-evidence/rom_bow_combat_states_m15_498.json` — extracted M15.498 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_498_BOW_COMBAT_STATES_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.497 ROM Bow Spirit (`0x1E`) Master Tick, 9-Entry Jump Table, Command Starters & States `$0E`/`$0A`/`$0C`
 - `tools/extract_rom_bow_dispatch_commands.py` — extractor for `0x01387C..0x013B36` (`AI_Bow_MasterTickAndStateDispatcher`, 9-entry jump table `0x0138E6..0x0138F8`, Commands 1/2/3, reject reset `0x013A3A`, and Bloom States `$0A`/`$0C`).
 - `tests/rom_bow_dispatch_commands_test.py` — `5` unit tests verifying jump table/instructions, 30-frame SP drain & damage clear, Command 1/2/3 gates, reject reset, and Bloom windup/active states.
