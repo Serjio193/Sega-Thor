@@ -1,3 +1,6 @@
+# M15.518 ROM Interactive World Objects: Moving Bridge/Dust Streamer, Falling Stalactite Trap, Floor Pressure Switch & Hit-Toggle Crystal Switch (`0x016A64`..`0x016CBE`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_world_traps_switches.py`, `tests/rom_world_traps_switches_test.py` (`8/8 PASS`), `data/thor-evidence/rom_world_traps_switches_m15_518.json`, and `docs/handoffs/STANDALONE_M15_518_WORLD_TRAPS_SWITCHES_HANDOFF.md`.
+
 # M15.517 ROM Serpent Boss Phase 1 Body Contact AABB, Homing Orb Spawner, PRNG Action Selector & 4-Limb Animation Broadcaster (`0x016764`..`0x016A64`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_serpent_boss_phase1_actions.py`, `tests/rom_serpent_boss_phase1_actions_test.py` (`8/8 PASS`), `data/thor-evidence/rom_serpent_boss_phase1_actions_m15_517.json`, and `docs/handoffs/STANDALONE_M15_517_SERPENT_BOSS_PHASE1_ACTIONS_HANDOFF.md`.
 

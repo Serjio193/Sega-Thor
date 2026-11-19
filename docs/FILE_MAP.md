@@ -1,3 +1,9 @@
+# M15.518 ROM Interactive World Objects: Moving Bridge/Dust Streamer, Falling Stalactite Trap, Floor Pressure Switch & Hit-Toggle Crystal Switch
+- `tools/extract_rom_world_traps_switches.py`: ROM extractor for `0x016A64..0x016CBE` (602 bytes, 174 instructions).
+- `tests/rom_world_traps_switches_test.py`: Deterministic regression tests (`8/8 PASS`).
+- `data/thor-evidence/rom_world_traps_switches_m15_518.json`: Disassembly & metadata evidence JSON.
+- `docs/handoffs/STANDALONE_M15_518_WORLD_TRAPS_SWITCHES_HANDOFF.md`: Standalone C++20 handoff specification.
+
 # M15.517 ROM Serpent Boss Phase 1 Body Contact AABB, Homing Orb Spawner, PRNG Action Selector & 4-Limb Animation Broadcaster
 - `tools/extract_rom_serpent_boss_phase1_actions.py` — extractor for `0x016764..0x016A64` (`AI_SerpentBoss_Phase1BodyContactAABB`, `AI_SerpentBoss_Phase1HomingOrbSpawner`, `AI_SerpentBoss_Phase1ActionSelector`, `AI_SerpentBoss_4LimbAnimBroadcaster`).
 - `tests/rom_serpent_boss_phase1_actions_test.py` — `8` unit tests verifying body contact AABB/knockback, homing orb spawner, `$FF1987` lock, glide anims, `0..99` PRNG rolls, arm grab velocity aiming, and 4-limb anim broadcaster.
