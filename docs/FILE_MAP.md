@@ -1,3 +1,9 @@
+# M15.513 ROM Composite Serpent/Multi-Segment Boss States `0x00..0x16` (Grab, Slam, Spit, Death Gravity Fall & 4-Segment Despawn Stagger)
+- `tools/extract_rom_serpent_boss_states.py` — extractor for `0x015E0E..0x0160E2` (States `$00/$08/$02/$04/$06/$0A/$0C/$0E/$14/$16/$10` covering anchor sync, Ali grab probe, directional slam/spit, and 4-segment death stagger).
+- `tests/rom_serpent_boss_states_test.py` — `9` unit tests verifying anchor sync, ascend/descend, Ali grab proximity/lock, rightward & leftward slam/spit sequences, and State `$10` 4-segment stagger.
+- `data/thor-evidence/rom_serpent_boss_states_m15_513.json` — extracted M15.513 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_513_SERPENT_BOSS_STATES_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.514 ROM Composite Serpent Boss State `$12` Homing Orb Projectile, Ali Grab Pinning, Homing Hit Callback & Smooth Turn-Rate Steering
 - `tools/extract_rom_serpent_boss_homing_orb.py` — extractor for `0x0160E2..0x016294` (`AI_SerpentBoss_HomingOrb_Tick`, `AI_SerpentBoss_SubStepAnchorIntegrator`, `AI_SerpentBoss_AliGrabPinning`, `AI_SerpentBoss_HomingOrb_HitCallback`, `AI_SerpentBoss_SmoothHomingTurnRateSteering`).
 - `tests/rom_serpent_boss_homing_orb_test.py` — `9` unit tests verifying anchor sub-step, Ali `-8px` grab pinning, grounded/airborne/guarded homing hit callbacks, `<=8` turn-rate limits, 4-way facing quantization, and ROM `$5D706` sin/cos stepping.

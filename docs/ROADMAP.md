@@ -1,3 +1,6 @@
+# M15.513 ROM Composite Serpent/Multi-Segment Boss States `0x00..0x16` (Grab, Slam, Spit, Death Gravity Fall & 4-Segment Despawn Stagger) (`0x015E0E`..`0x0160E2`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_serpent_boss_states.py`, `tests/rom_serpent_boss_states_test.py` (`9/9 PASS`), `data/thor-evidence/rom_serpent_boss_states_m15_513.json`, and `docs/handoffs/STANDALONE_M15_513_SERPENT_BOSS_STATES_HANDOFF.md`.
+
 # M15.514 ROM Composite Serpent Boss State `$12` Homing Orb Projectile, Ali Grab Pinning, Homing Hit Callback & Smooth Turn-Rate Steering (`0x0160E2`..`0x016294`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_serpent_boss_homing_orb.py`, `tests/rom_serpent_boss_homing_orb_test.py` (`9/9 PASS`), `data/thor-evidence/rom_serpent_boss_homing_orb_m15_514.json`, and `docs/handoffs/STANDALONE_M15_514_SERPENT_BOSS_HOMING_ORB_HANDOFF.md`.
 
