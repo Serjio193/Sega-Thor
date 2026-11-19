@@ -1,3 +1,9 @@
+# M15.501 ROM Bow Spirit (`0x1E`) 4-Node Vine Tether Physics, Round-Robin Target Scanner & Nearest Pool 2 Enemy Manhattan Finder
+- `tools/extract_rom_bow_tether_target.py` — extractor for `0x014242..0x014522` (`AI_BowSpirit_VineTetherPhysics`, `AI_BowSpirit_RoundRobinTargetScanner`, `AI_BowSpirit_FindNearestPool2Enemy`).
+- `tests/rom_bow_tether_target_test.py` — `6` unit tests verifying evidence structure, timer decrement, `0x00F160` 3D constraint clamping, 2-pass vine tether physics, round-robin Pool 2 scanner wrapping, and nearest Manhattan finder.
+- `data/thor-evidence/rom_bow_tether_target_m15_501.json` — extracted M15.501 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_501_BOW_TETHER_TARGET_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.500 ROM Bow Spirit (`0x1E`) Dismissal, States `$10`/`$02`, 4-Node Vine Chain Interpolator, SAT Sub-Entity Renderer & Leash Velocity Clamper
 - `tools/extract_rom_bow_dismiss_vine_sat.py` — extractor for `0x013F22..0x014242` (`AI_Bow_Dismissal`, `AI_Bow_State10_DescendDespawn`, `AI_Bow_State02_ReturnAndSettle`, `AI_Bow_InterpolateVineChainNodes`, `AI_Bow_RenderVineSubEntitySAT`, `AI_Bow_StepAndClampVelocityByLeash`).
 - `tests/rom_bow_dismiss_vine_sat_test.py` — `5` unit tests verifying disassembly/evidence, dismissal & States `$10`/`$02`, 4-node 12.4 chain interpolation, 6-sprite clipped SAT projection, and leash delta clamping.

@@ -1,3 +1,6 @@
+# M15.501 ROM Bow Spirit (`0x1E`) 4-Node Vine Tether Physics, Round-Robin Target Scanner & Nearest Pool 2 Enemy Manhattan Finder (`0x014242`..`0x014522`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_bow_tether_target.py`, `tests/rom_bow_tether_target_test.py` (`6/6 PASS`), `data/thor-evidence/rom_bow_tether_target_m15_501.json`, and `docs/handoffs/STANDALONE_M15_501_BOW_TETHER_TARGET_HANDOFF.md`.
+
 # M15.500 ROM Bow Spirit (`0x1E`) Dismissal, States `$10`/`$02`, 4-Node Vine Chain Interpolator, SAT Sub-Entity Renderer & Leash Velocity Clamper (`0x013F22`..`0x014242`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_bow_dismiss_vine_sat.py`, `tests/rom_bow_dismiss_vine_sat_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_dismiss_vine_sat_m15_500.json`, and `docs/handoffs/STANDALONE_M15_500_BOW_DISMISS_VINE_SAT_HANDOFF.md`.
 
