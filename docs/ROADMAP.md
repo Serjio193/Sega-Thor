@@ -1,3 +1,6 @@
+# M15.507 ROM Boss AI Feather/Spore & 3-Way Fireball Spread Projectile Spawners (`0x015136`..`0x015316`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_boss_ai_projectile_spawners.py`, `tests/rom_boss_ai_projectile_spawners_test.py` (`5/5 PASS`), `data/thor-evidence/rom_boss_ai_projectile_spawners_m15_507.json`, and `docs/handoffs/STANDALONE_M15_507_BOSS_AI_PROJECTILE_SPAWNERS_HANDOFF.md`.
+
 # M15.506 ROM Boss AI State `$1A` Death Cutscene Sequence, Explosion Shake & Smooth Angle Steering Helper (`0x014F60`..`0x015136`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_boss_ai_death_steering.py`, `tests/rom_boss_ai_death_steering_test.py` (`9/9 PASS`), `data/thor-evidence/rom_boss_ai_death_steering_m15_506.json`, and `docs/handoffs/STANDALONE_M15_506_BOSS_AI_DEATH_STEERING_HANDOFF.md`.
 

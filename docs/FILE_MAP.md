@@ -1,3 +1,9 @@
+# M15.507 ROM Boss AI Feather/Spore & 3-Way Fireball Spread Projectile Spawners
+- `tools/extract_rom_boss_ai_projectile_spawners.py` — extractor for `0x015136..0x015316` (`AI_Boss_SpawnFeatherSporeProjectile`, `AI_Boss_Spawn3WayFireballSpread`, and embedded 24-byte tables `0x0151FC` / `0x0152FE`).
+- `tests/rom_boss_ai_projectile_spawners_test.py` — `5` unit tests verifying unpacked tables, Feather/Spore parameters across all 3 facings, 3-Way Fireball `$5D706` trig velocities across `d6=0/+$1C/-$1C`, and Pool 2 allocation failure handling.
+- `data/thor-evidence/rom_boss_ai_projectile_spawners_m15_507.json` — extracted M15.507 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_507_BOSS_AI_PROJECTILE_SPAWNERS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.506 ROM Boss AI State `$1A` Death Cutscene Sequence, Explosion Shake & Smooth Angle Steering Helper
 - `tools/extract_rom_boss_ai_death_steering.py` — extractor for `0x014F60..0x015136` (`AI_Boss_State1A_DeathCutscene`, `AI_Boss_DeathExplosionAndShake`, `AI_Boss_SmoothAngleSteerAndFaceAli`).
 - `tests/rom_boss_ai_death_steering_test.py` — `9` unit tests verifying the 5-stage death cutscene timeline (`180/240/300/360/420`), explosion shake math, `<=8` turn-rate limiter, and Ali X facing thresholds.
