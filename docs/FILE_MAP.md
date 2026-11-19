@@ -1,3 +1,15 @@
+# Synthetic M68000 to C++20 differential test
+
+- `tests/thor_ir_synthetic_test.py` builds a source-owned M68000 image, checks the decoded control-flow graph, emits C++20 into a temporary directory and compares both execution modes against Genesis Plus GX observations.
+- `tests/thor_ir_synthetic_driver.cpp` executes the generated code and reports the final registers, CCR, PC and ordered byte writes.
+- `data/thor-fixtures/thor_ir_synthetic_reference.json` stores the independent CPU observations and the SHA-256 values of the input image and reference core.
+
+# M15.522 ROM World Rolling/Sliding Crusher & Ceiling Crusher Traps
+- `tools/extract_rom_world_rolling_crusher_traps.py`: ROM extractor for `0x0173D6..0x01778C` (950 bytes, 242 instructions).
+- `tests/rom_world_rolling_crusher_traps_test.py`: Deterministic regression tests (`6/6 PASS`).
+- `data/thor-evidence/rom_world_rolling_crusher_traps_m15_522.json`: Disassembly & metadata evidence JSON.
+- `docs/handoffs/STANDALONE_M15_522_WORLD_ROLLING_CRUSHER_TRAPS_HANDOFF.md`: Standalone C++20 handoff specification.
+
 # M15.523 ROM Interactive World Objects: Patrolling/Pacing Trap, Persistent Gate & Hidden Bridge, and Bomb-Destructible Barrier
 - `tools/extract_rom_world_patrol_gate_bomb.py`: ROM extractor for `0x01778C..0x017A96` (778 bytes, 204 instructions).
 - `tests/rom_world_patrol_gate_bomb_test.py`: Deterministic regression tests (`14/14 PASS`).

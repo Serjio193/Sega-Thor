@@ -1,3 +1,6 @@
+# M15.522 ROM World Rolling/Sliding Crusher & Ceiling Crusher Traps (`0x0173D6`..`0x01778C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_world_rolling_crusher_traps.py`, `tests/rom_world_rolling_crusher_traps_test.py` (`6/6 PASS`), `data/thor-evidence/rom_world_rolling_crusher_traps_m15_522.json`, and `docs/handoffs/STANDALONE_M15_522_WORLD_ROLLING_CRUSHER_TRAPS_HANDOFF.md`.
+
 # M15.523 ROM Interactive World Objects: Patrolling/Pacing Trap, Persistent Gate & Hidden Bridge, and Bomb-Destructible Barrier (`0x01778C`..`0x017A96`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_world_patrol_gate_bomb.py`, `tests/rom_world_patrol_gate_bomb_test.py` (`14/14 PASS`), `data/thor-evidence/rom_world_patrol_gate_bomb_m15_523.json`, and `docs/handoffs/STANDALONE_M15_523_WORLD_PATROL_GATE_BOMB_HANDOFF.md`.
 
