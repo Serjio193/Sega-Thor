@@ -1,3 +1,13 @@
+# Reverse Engineering Notes — Milestone M15.495 (`0x01341A`..`0x01366A`): Shade Spirit Grapple Retraction, Entity/Item Reel-In Sync, Dynamic Tether Stretch & Tip Probe Offset Table
+- **Original ROM Addresses:** `0x01341A..0x01366A` (592 bytes: 568 code bytes / 159 M68K instructions across `0x01341A..0x013652` + 24-byte embedded `ShadeGrappleTipOffsetTable` at `0x013652..0x01366A`).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_shade_retract_tether.py` and `data/thor-evidence/rom_shade_retract_tether_m15_495.json`:
+  * `0x01341A..0x0134DE`: `AI_Shade_State0A_GrappleRetractAndComplete` (`0x00E398 <= $10`, `0x00E2D4 (0x60,0x60)`, `$FF2954` pool boundary, `0x009D00`, `$FF1982`/`+$38:3`/`$FF17B8:2` unlock, tether `$FFFF` free -> `0x01378A`).
+  * `0x0134DE..0x013576`: `AI_Shade_GrappleTetherAnchorAndDragHelpers` (`0x0134DE` bit-0 H/V lock, `0x01352A` Ali sync, `0x013550` item drag `+$32 >= $15`).
+  * `0x013576..0x013608`: `AI_Shade_UpdateTetherStretchEntity` (`$1C` guard, `+$36:1` blink hide, Chebyshev `> 20` `+$32 = $60 + min((d-20)>>3,11)*3`, `0x00B022`).
+  * `0x013608..0x01366A`: `AI_Shade_ProbeItemsAtGrappleTip` (`0x00B9EC` `[+/-4]` probe + 24B `ShadeGrappleTipOffsetTable` at `0x013652..0x01366A`).
+- **Assumptions:** Shared callees `0x009D00`, `0x00B022`, `0x00B9EC`, `0x00E2D4`, `0x00E398`, and idle/follow `0x01366A..0x01387C` are covered in adjacent milestones.
+- **Test Status:** Verified via `tests/rom_shade_retract_tether_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.494 (`0x01319E`..`0x01341A`): Shade Spirit Buzzer, Dark Hole Fall-Rescue Drain & Teleport Recovery, and Shadow Grapple Extension & Hit Latch
 - **Original ROM Addresses:** `0x01319E..0x01341A` (636 bytes, 147 M68K instructions, zero embedded data tables).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_shade_rescue_grapple_hit.py` and `data/thor-evidence/rom_shade_rescue_grapple_hit_m15_494.json`:

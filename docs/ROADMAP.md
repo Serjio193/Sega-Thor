@@ -1,3 +1,6 @@
+# M15.495 ROM Shade Spirit Grapple Retraction, Entity/Item Reel-In Sync, Dynamic Tether Stretch & Tip Probe Offset Table (`0x01341A`..`0x01366A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_shade_retract_tether.py`, `tests/rom_shade_retract_tether_test.py` (`5/5 PASS`), `data/thor-evidence/rom_shade_retract_tether_m15_495.json`, and `docs/handoffs/STANDALONE_M15_495_SHADE_RETRACT_TETHER_HANDOFF.md`.
+
 # M15.494 ROM Shade Spirit Buzzer, Dark Hole Fall-Rescue Drain & Teleport Recovery, and Shadow Grapple Extension & Hit Latch (`0x01319E`..`0x01341A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_shade_rescue_grapple_hit.py`, `tests/rom_shade_rescue_grapple_hit_test.py` (`5/5 PASS`), `data/thor-evidence/rom_shade_rescue_grapple_hit_m15_494.json`, and `docs/handoffs/STANDALONE_M15_494_SHADE_RESCUE_GRAPPLE_HIT_HANDOFF.md`.
 

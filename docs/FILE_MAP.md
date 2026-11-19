@@ -1,3 +1,9 @@
+# M15.495 ROM Shade Spirit Grapple Retraction, Entity/Item Reel-In Sync, Dynamic Tether Stretch & Tip Probe Offset Table
+- `tools/extract_rom_shade_retract_tether.py` — extractor for `0x01341A..0x01366A` (`AI_Shade_State0A_GrappleRetractAndComplete`, `AI_Shade_GrappleTetherAnchorAndDragHelpers`, `AI_Shade_UpdateTetherStretchEntity`, `AI_Shade_ProbeItemsAtGrappleTip`, and `ShadeGrappleTipOffsetTable`).
+- `tests/rom_shade_retract_tether_test.py` — `5` unit tests verifying tip table tiers, empty/entity/item retract modes, anchor lock/sync, tether stretch/blink/despawn, and tip item probing.
+- `data/thor-evidence/rom_shade_retract_tether_m15_495.json` — extracted M15.495 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_495_SHADE_RETRACT_TETHER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.494 ROM Shade Spirit Buzzer, Dark Hole Fall-Rescue Drain & Teleport Recovery, and Shadow Grapple Extension & Hit Latch
 - `tools/extract_rom_shade_rescue_grapple_hit.py` — extractor for `0x01319E..0x01341A` (`AI_Shade_InsufficientSpBuzzer`, `AI_Shade_State0C_DarkHoleRescueAndDrain`, `AI_Shade_State0E_FinishDarkHoleRecovery`, `AI_Shade_State06_08_GrappleExtendAndHitLatch`).
 - `tests/rom_shade_rescue_grapple_hit_test.py` — `5` unit tests verifying evidence integrity, buzzer, Dark Hole rescue drain/teleport, recovery cleanup, grapple item/wall/retract flow, and `+$86 |= 0x8000` airborne enemy hit.
