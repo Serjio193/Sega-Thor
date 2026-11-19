@@ -1,3 +1,6 @@
+# M15.509 ROM Multi-Part Boss/Golem (`0x9A`) Vacuum Pull, Boulder Barrage Spawner, Body Knockback & Camera-Relative SFX Helpers (`0x0154E8`..`0x015758`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_golem_boss_vacuum_barrage.py`, `tests/rom_golem_boss_vacuum_barrage_test.py` (`6/6 PASS`), `data/thor-evidence/rom_golem_boss_vacuum_barrage_m15_509.json`, and `docs/handoffs/STANDALONE_M15_509_GOLEM_BOSS_VACUUM_BARRAGE_HANDOFF.md`.
+
 # M15.508 ROM Multi-Part Boss/Golem (`0x9A`) Master Tick, 4-State Dispatcher, 5x8 PRNG Pattern Sequencer & Tentacle/Child Initializer (`0x015316`..`0x0154E8`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_golem_boss_pattern_tentacles.py`, `tests/rom_golem_boss_pattern_tentacles_test.py` (`10/10 PASS`), `data/thor-evidence/rom_golem_boss_pattern_tentacles_m15_508.json`, and `docs/handoffs/STANDALONE_M15_508_GOLEM_BOSS_PATTERN_TENTACLES_HANDOFF.md`.
 

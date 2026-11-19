@@ -1,3 +1,9 @@
+# M15.509 ROM Multi-Part Boss/Golem (`0x9A`) Vacuum Pull, Boulder Barrage Spawner, Body Knockback & Camera-Relative SFX Helpers
+- `tools/extract_rom_golem_boss_vacuum_barrage.py` — extractor for `0x0154E8..0x015758` (State `$04` vacuum pull, State `$02` boulder barrage, body contact knockback, falling spore spawner, camera-relative SFX helper, sub-mode 4 check).
+- `tests/rom_golem_boss_vacuum_barrage_test.py` — `6` unit tests verifying vacuum pull scaling, boulder barrage PRNG/aimed cadence, body knockback/push, spore offsets, camera SFX offset, and sub-mode 4 check.
+- `data/thor-evidence/rom_golem_boss_vacuum_barrage_m15_509.json` — extracted M15.509 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_509_GOLEM_BOSS_VACUUM_BARRAGE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.508 ROM Multi-Part Boss/Golem (`0x9A`) Master Tick, 4-State Dispatcher, 5x8 PRNG Pattern Sequencer & Tentacle/Child Initializer
 - `tools/extract_rom_golem_boss_pattern_tentacles.py` — extractor for `0x015316..0x0154E8` (sub-mode router `+$A2`, 4-state jump table `0x015360`, 5x8 PRNG pattern sequencer `0x0153B8`, `$FF1E50` + 7-node tentacle initializer, State `0x06` retract/reset).
 - `tests/rom_golem_boss_pattern_tentacles_test.py` — `10` unit tests verifying state/action jump tables, 5x8 pattern table, body contact AABB, PRNG wrap, tentacle arm activation, and State `0x06` reset.
