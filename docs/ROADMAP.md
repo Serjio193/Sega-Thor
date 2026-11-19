@@ -1,3 +1,6 @@
+# M15.508 ROM Multi-Part Boss/Golem (`0x9A`) Master Tick, 4-State Dispatcher, 5x8 PRNG Pattern Sequencer & Tentacle/Child Initializer (`0x015316`..`0x0154E8`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_golem_boss_pattern_tentacles.py`, `tests/rom_golem_boss_pattern_tentacles_test.py` (`10/10 PASS`), `data/thor-evidence/rom_golem_boss_pattern_tentacles_m15_508.json`, and `docs/handoffs/STANDALONE_M15_508_GOLEM_BOSS_PATTERN_TENTACLES_HANDOFF.md`.
+
 # M15.507 ROM Boss AI Feather/Spore & 3-Way Fireball Spread Projectile Spawners (`0x015136`..`0x015316`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_boss_ai_projectile_spawners.py`, `tests/rom_boss_ai_projectile_spawners_test.py` (`5/5 PASS`), `data/thor-evidence/rom_boss_ai_projectile_spawners_m15_507.json`, and `docs/handoffs/STANDALONE_M15_507_BOSS_AI_PROJECTILE_SPAWNERS_HANDOFF.md`.
 

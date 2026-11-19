@@ -1,3 +1,9 @@
+# M15.508 ROM Multi-Part Boss/Golem (`0x9A`) Master Tick, 4-State Dispatcher, 5x8 PRNG Pattern Sequencer & Tentacle/Child Initializer
+- `tools/extract_rom_golem_boss_pattern_tentacles.py` — extractor for `0x015316..0x0154E8` (sub-mode router `+$A2`, 4-state jump table `0x015360`, 5x8 PRNG pattern sequencer `0x0153B8`, `$FF1E50` + 7-node tentacle initializer, State `0x06` retract/reset).
+- `tests/rom_golem_boss_pattern_tentacles_test.py` — `10` unit tests verifying state/action jump tables, 5x8 pattern table, body contact AABB, PRNG wrap, tentacle arm activation, and State `0x06` reset.
+- `data/thor-evidence/rom_golem_boss_pattern_tentacles_m15_508.json` — extracted M15.508 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_508_GOLEM_BOSS_PATTERN_TENTACLES_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.507 ROM Boss AI Feather/Spore & 3-Way Fireball Spread Projectile Spawners
 - `tools/extract_rom_boss_ai_projectile_spawners.py` — extractor for `0x015136..0x015316` (`AI_Boss_SpawnFeatherSporeProjectile`, `AI_Boss_Spawn3WayFireballSpread`, and embedded 24-byte tables `0x0151FC` / `0x0152FE`).
 - `tests/rom_boss_ai_projectile_spawners_test.py` — `5` unit tests verifying unpacked tables, Feather/Spore parameters across all 3 facings, 3-Way Fireball `$5D706` trig velocities across `d6=0/+$1C/-$1C`, and Pool 2 allocation failure handling.
