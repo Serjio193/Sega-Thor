@@ -1,3 +1,21 @@
+# ADR-20261119-M16-197-PRNG-VECTOR-ENGINE — ROM 16-Bit LFSR PRNG, 8-Way Fixed-Point Vector Engine, 4-Way Cardinal Resolver & Water Surface Probe (0x00E25C..0x00E398)
+**Status:** Accepted
+**Date:** 2026-11-19
+
+**Context:**
+1. Direct Capstone disassembly of `0x00E25C..0x00E398` (and helpers `0x009C40..0x009CFE`) revealed 5 critical corrections over early M15 handoff prose:
+   - `0x00E25C`: Clears full 16-bit word `+$00.w` (`clr.w $0(a6)`), not a byte.
+   - `0x00E268..0x00E2D4`: `$FF1928` holds a **16-bit** PRNG state stepped via 4 rounds of left-shift LFSR (`rol.w #2; eor.w; lsr.w #1; addx.w d0, d0`), NOT a 32-bit right-shift PRNG; limit `0` returns `0` without stepping PRNG.
+   - `0x00E2D4..0x00E338`: Converts unsigned 16-bit 8.8 magnitudes (`<< 8`) into 32-bit signed 16.16 velocities with `0..3` = cardinals (`0=N, 1=E, 2=S, 3=W`) and `4..7` = diagonals (`4=NE, 5=SE, 6=SW, 7=NW`) scaled by `(v >> 1) + ((v >> 1) >> 1)`.
+   - `0x00E338..0x00E36E`: Compares unsigned 32-bit `|dx| > |dy|` and returns `0..3` cardinal direction (`0=N, 1=E, 2=S, 3=W`).
+   - `0x00E36E..0x00E398` + `0x009C40`/`0x009C7C`: Reads `+$08(a6)`/`+$0C(a6)`, tests `(attr & 0x90) == 0x80` (bit 4 clear), and suppresses water immersion `+$36` bit 3 when standing on an overlapping type-`0x0056` raft in `$FF2D8C`.
+
+**Decisions:**
+1. **`prng_vector_engine` Cleanroom Module:**
+   - Implemented `src/game/physics/prng_vector_engine.hpp/.cpp` and `include/game/physics/prng_vector_engine.hpp` in namespace `thor::physics` (aliased into `oasis::game::physics`) matching exact ROM semantics plus 64KB Work RAM helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_197_prng_vector_engine` + 178-test M16 + file-limit regression suite; zero external ROM dependency).
+
 # ADR-20261119-M16-196-PROJECTILE-SPARK-LIFECYCLE — ROM Spark Effect Dispatcher, Projectile Gravity Fall, Lifetime Blink & Despawn Subsystem (0x00E0BA..0x00E25C)
 **Status:** Accepted
 **Date:** 2026-11-19

@@ -1,3 +1,10 @@
+# M16.197 ROM 16-Bit LFSR PRNG, 8-Way Fixed-Point Vector Engine, 4-Way Cardinal Resolver & Water Surface Probe (`0x00E25C..0x00E398`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/physics/prng_vector_engine.hpp/.cpp` and `include/game/physics/prng_vector_engine.hpp` in cleanroom namespace `thor::physics`:
+  - `step_entity_lifecycle_timer` (`0x00E25C`), `Prng16State` (`0x00E268..0x00E2D4` 16-bit left-shift LFSR at `$FF1928`), `project_velocity_8way` (`0x00E2D4..0x00E338` 8.8->16.16 cardinals `0..3` & 0.75x diagonals `4..7`), `resolve_cardinal_direction_4way` (`0x00E338..0x00E36E`), and `probe_entity_water_surface` / `_with_aux` (`0x00E36E..0x00E398`, `0x009C40`, `0x009C7C` raft `0x0056`).
+- Qualified `oasis_m16_197_prng_vector_engine` and the 178-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.196 ROM Spark Effect Dispatcher, Projectile Gravity Fall, Lifetime Blink & Despawn Subsystem (`0x00E0BA..0x00E25C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
