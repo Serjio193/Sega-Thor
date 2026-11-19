@@ -1,3 +1,9 @@
+# M15.505 ROM Boss AI Projectile States `$0C`/`$14`/`$12`, Hit Callbacks & State `$0E` Hit-Reaction Deceleration
+- `tools/extract_rom_boss_ai_projectiles_flinch.py` — extractor for `0x014D1A..0x014F60` (`AI_Boss_State0C_FeatherSporeProjectile`, `AI_Boss_HitCallback_FeatherSpore`, `AI_Boss_State14_ProjectileFadeout`, `AI_Boss_State12_FireballProjectile`, `AI_Boss_HitCallback_Fireball`, `AI_Boss_State0E_HitReactionDecel`).
+- `tests/rom_boss_ai_projectiles_flinch_test.py` — `6` unit tests verifying Feather/Spore size scaling, `$200C`/`$A00C` and `$2008`/`$A008` hit callbacks, Fireball cancel/floor clamp, and State `$0E` 4th-hit counter-attack switch.
+- `data/thor-evidence/rom_boss_ai_projectiles_flinch_m15_505.json` — extracted M15.505 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_505_BOSS_AI_PROJECTILES_FLINCH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.504 ROM Boss AI Combat States `$10`/`$06`/`$08`/`$0A`/`$16`/`$18` & Orbit Target Helpers
 - `tools/extract_rom_boss_ai_combat_orbit.py` — extractor for `0x014A72..0x014D1A` (States `$10`, `$06`, `$08`, `$0A`, `$16`, `$18`, hit callback `0x014C04`, and High/Low Orbit target helpers).
 - `tests/rom_boss_ai_combat_orbit_test.py` — `10` unit tests verifying all 6 combat states, `$58CE6` hitbox chase, `$AF += $80` thrust flip, `$20000` knockback callback, and Chebyshev orbit speed tiers.

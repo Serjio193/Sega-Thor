@@ -1,3 +1,6 @@
+# M15.505 ROM Boss AI Projectile States `$0C`/`$14`/`$12`, Hit Callbacks & State `$0E` Hit-Reaction Deceleration (`0x014D1A`..`0x014F60`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_boss_ai_projectiles_flinch.py`, `tests/rom_boss_ai_projectiles_flinch_test.py` (`6/6 PASS`), `data/thor-evidence/rom_boss_ai_projectiles_flinch_m15_505.json`, and `docs/handoffs/STANDALONE_M15_505_BOSS_AI_PROJECTILES_FLINCH_HANDOFF.md`.
+
 # M15.504 ROM Boss AI Combat States `$10`/`$06`/`$08`/`$0A`/`$16`/`$18` & Orbit Target Helpers (`0x014A72`..`0x014D1A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_boss_ai_combat_orbit.py`, `tests/rom_boss_ai_combat_orbit_test.py` (`10/10 PASS`), `data/thor-evidence/rom_boss_ai_combat_orbit_m15_504.json`, and `docs/handoffs/STANDALONE_M15_504_BOSS_AI_COMBAT_ORBIT_HANDOFF.md`.
 
