@@ -1,3 +1,9 @@
+# M15.520 ROM Interactive World Objects: Timed Switch, Destructible Block, Periodic Pop-Up Hazard & Periodic Toggle/Vent Hazard
+- `tools/extract_rom_world_destructible_hazards.py`: ROM extractor for `0x016EBC..0x0171C4` (776 bytes, 203 instructions).
+- `tests/rom_world_destructible_hazards_test.py`: Deterministic regression tests (`6/6 PASS`).
+- `data/thor-evidence/rom_world_destructible_hazards_m15_520.json`: Disassembly & metadata evidence JSON.
+- `docs/handoffs/STANDALONE_M15_520_WORLD_DESTRUCTIBLE_HAZARDS_HANDOFF.md`: Standalone C++20 handoff specification.
+
 # M15.519 ROM World Interactive Objects: Spirit Crystal Orb Switch, Breakable Wall Block & Floor Spike/Saw Hazard
 - `tools/extract_rom_world_crystal_wall_spike.py`: ROM extractor for `0x016CBE..0x016EBC` (510 bytes, 132 instructions).
 - `tests/rom_world_crystal_wall_spike_test.py`: Deterministic regression tests (`19/19 PASS`).

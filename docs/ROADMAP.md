@@ -1,3 +1,6 @@
+# M15.520 ROM Interactive World Objects: Timed Switch, Destructible Block, Periodic Pop-Up Hazard & Periodic Toggle/Vent Hazard (`0x016EBC`..`0x0171C4`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_world_destructible_hazards.py`, `tests/rom_world_destructible_hazards_test.py` (`6/6 PASS`), `data/thor-evidence/rom_world_destructible_hazards_m15_520.json`, and `docs/handoffs/STANDALONE_M15_520_WORLD_DESTRUCTIBLE_HAZARDS_HANDOFF.md`.
+
 # M15.519 ROM World Interactive Objects: Spirit Crystal Orb Switch, Breakable Wall Block & Floor Spike/Saw Hazard (`0x016CBE`..`0x016EBC`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_world_crystal_wall_spike.py`, `tests/rom_world_crystal_wall_spike_test.py` (`19/19 PASS`), `data/thor-evidence/rom_world_crystal_wall_spike_m15_519.json`, and `docs/handoffs/STANDALONE_M15_519_WORLD_CRYSTAL_WALL_SPIKE_HANDOFF.md`.
 
