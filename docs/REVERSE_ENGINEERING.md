@@ -1,3 +1,15 @@
+# Reverse Engineering Notes — Milestone M15.500 (`0x013F22`..`0x014242`): Bow Spirit (`0x1E`) Dismissal, States `$10`/`$02`, 4-Node Vine Chain Interpolator, SAT Sub-Entity Renderer & Leash Velocity Clamper
+- **Original ROM Addresses:** `0x013F22..0x014242` (800 bytes, 206 M68K instructions, zero embedded data tables).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_bow_dismiss_vine_sat.py` and `data/thor-evidence/rom_bow_dismiss_vine_sat_m15_500.json`:
+  * `0x013F22..0x013F5A`: `AI_Bow_Dismissal` (`+$04==0`, `#$00A0039E`, `+$00(+$A6)=0`, State `$10` `+$2A=$1E`, `+$18=$07A8`).
+  * `0x013F5A..0x013F6E`: `AI_Bow_State10_DescendDespawn` (`+$36:1` clear, `+$37:1` -> `+$00=0`).
+  * `0x013F6E..0x013FDC`: `AI_Bow_State02_ReturnAndSettle` (State `0`, `$FF1C1C` init `+$22=$00014084`).
+  * `0x013FDC..0x014084`: `AI_Bow_InterpolateVineChainNodes` (`0x00E338`, `min(head_y-2, anchor_y)`, 12.4 `divs #5` + quantize `$FF19A8..$FF19BF`).
+  * `0x014084..0x014200`: `AI_Bow_RenderVineSubEntitySAT` (`+$00==$001E`, 6 SAT entries clipped `d5<80` X `[104,448)` Y `[112,352)`).
+  * `0x014200..0x014242`: `AI_Bow_StepAndClampVelocityByLeash` (step `+$72/+$76`, call `0x014242`, store delta).
+- **Assumptions:** Shared callees `0x00E338`, `0x00E7FC`, low-SP branch `0x0138B8`, and leash range clamper `0x014242..0x0143C8` are documented in adjacent milestones (`M15.497`, `M15.501`).
+- **Test Status:** Verified via `tests/rom_bow_dismiss_vine_sat_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.499 (`0x013CB4`..`0x013F22`): Bow Spirit (`0x1E`) State `$00` Idle, Command Dispatch, Vulnerability/Wander & Leashed Follow AI
 - **Original ROM Addresses:** `0x013CB4..0x013F22` (622 bytes, 163 M68K instructions, zero embedded data tables).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_bow_idle_follow.py` and `data/thor-evidence/rom_bow_idle_follow_m15_499.json`:

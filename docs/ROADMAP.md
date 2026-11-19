@@ -1,3 +1,6 @@
+# M15.500 ROM Bow Spirit (`0x1E`) Dismissal, States `$10`/`$02`, 4-Node Vine Chain Interpolator, SAT Sub-Entity Renderer & Leash Velocity Clamper (`0x013F22`..`0x014242`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_bow_dismiss_vine_sat.py`, `tests/rom_bow_dismiss_vine_sat_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_dismiss_vine_sat_m15_500.json`, and `docs/handoffs/STANDALONE_M15_500_BOW_DISMISS_VINE_SAT_HANDOFF.md`.
+
 # M15.499 ROM Bow Spirit (`0x1E`) State `$00` Idle, Command Dispatch, Vulnerability/Wander & Leashed Follow AI (`0x013CB4`..`0x013F22`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_bow_idle_follow.py`, `tests/rom_bow_idle_follow_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_idle_follow_m15_499.json`, and `docs/handoffs/STANDALONE_M15_499_BOW_IDLE_FOLLOW_HANDOFF.md`.
 

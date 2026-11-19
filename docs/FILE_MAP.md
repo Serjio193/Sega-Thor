@@ -1,3 +1,9 @@
+# M15.500 ROM Bow Spirit (`0x1E`) Dismissal, States `$10`/`$02`, 4-Node Vine Chain Interpolator, SAT Sub-Entity Renderer & Leash Velocity Clamper
+- `tools/extract_rom_bow_dismiss_vine_sat.py` — extractor for `0x013F22..0x014242` (`AI_Bow_Dismissal`, `AI_Bow_State10_DescendDespawn`, `AI_Bow_State02_ReturnAndSettle`, `AI_Bow_InterpolateVineChainNodes`, `AI_Bow_RenderVineSubEntitySAT`, `AI_Bow_StepAndClampVelocityByLeash`).
+- `tests/rom_bow_dismiss_vine_sat_test.py` — `5` unit tests verifying disassembly/evidence, dismissal & States `$10`/`$02`, 4-node 12.4 chain interpolation, 6-sprite clipped SAT projection, and leash delta clamping.
+- `data/thor-evidence/rom_bow_dismiss_vine_sat_m15_500.json` — extracted M15.500 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_500_BOW_DISMISS_VINE_SAT_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.499 ROM Bow Spirit (`0x1E`) State `$00` Idle, Command Dispatch, Vulnerability/Wander & Leashed Follow AI
 - `tools/extract_rom_bow_idle_follow.py` — extractor for `0x013CB4..0x013F22` (`AI_Bow_State00_DispatchAndSubstateRouter`, `AI_Bow_Substates_01_02_HopAndRest`, `AI_Bow_Substate03_AutoPounceAttack`, `AI_Bow_Substate04_EmoteAndSettle`).
 - `tests/rom_bow_idle_follow_test.py` — `5` unit tests verifying dispatch/reject bypass/scan, PRNG emote/rest/hop bands, Substate `03` pounce/2x bonus/leash, and Substate `04` SFX/settle.
