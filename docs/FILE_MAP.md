@@ -1,3 +1,9 @@
+# M15.517 ROM Serpent Boss Phase 1 Body Contact AABB, Homing Orb Spawner, PRNG Action Selector & 4-Limb Animation Broadcaster
+- `tools/extract_rom_serpent_boss_phase1_actions.py` — extractor for `0x016764..0x016A64` (`AI_SerpentBoss_Phase1BodyContactAABB`, `AI_SerpentBoss_Phase1HomingOrbSpawner`, `AI_SerpentBoss_Phase1ActionSelector`, `AI_SerpentBoss_4LimbAnimBroadcaster`).
+- `tests/rom_serpent_boss_phase1_actions_test.py` — `8` unit tests verifying body contact AABB/knockback, homing orb spawner, `$FF1987` lock, glide anims, `0..99` PRNG rolls, arm grab velocity aiming, and 4-limb anim broadcaster.
+- `data/thor-evidence/rom_serpent_boss_phase1_actions_m15_517.json` — extracted M15.517 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_517_SERPENT_BOSS_PHASE1_ACTIONS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.516 ROM Serpent Boss Phase 1 States `0x00..0x18` (Hover, Bounds-Clamped Glide, Dive Leap, Ground Slam Tremor & 4-Shot Fan Barrage)
 - `tools/extract_rom_serpent_boss_phase1_states.py` — extractor for `0x0164E2..0x016764` (States `$00..$18`, `[0x60..0x1A0]` X-clamp `0x01656A`, 4-byte fan angle table `0x016734..0x016738`).
 - `tests/rom_serpent_boss_phase1_states_test.py` — `8` unit tests verifying hover wait, death gravity fall, `[0x60..0x1A0]` glide clamping, windup/arm wait, 42-frame dive leap & slam, and 4-shot fan barrage.

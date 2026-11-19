@@ -1,3 +1,6 @@
+# M15.517 ROM Serpent Boss Phase 1 Body Contact AABB, Homing Orb Spawner, PRNG Action Selector & 4-Limb Animation Broadcaster (`0x016764`..`0x016A64`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_serpent_boss_phase1_actions.py`, `tests/rom_serpent_boss_phase1_actions_test.py` (`8/8 PASS`), `data/thor-evidence/rom_serpent_boss_phase1_actions_m15_517.json`, and `docs/handoffs/STANDALONE_M15_517_SERPENT_BOSS_PHASE1_ACTIONS_HANDOFF.md`.
+
 # M15.516 ROM Serpent Boss Phase 1 States `0x00..0x18` (Hover, Bounds-Clamped Glide, Dive Leap, Ground Slam Tremor & 4-Shot Fan Barrage) (`0x0164E2`..`0x016764`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_serpent_boss_phase1_states.py`, `tests/rom_serpent_boss_phase1_states_test.py` (`8/8 PASS`), `data/thor-evidence/rom_serpent_boss_phase1_states_m15_516.json`, and `docs/handoffs/STANDALONE_M15_516_SERPENT_BOSS_PHASE1_STATES_HANDOFF.md`.
 
