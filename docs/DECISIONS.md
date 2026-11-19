@@ -1,3 +1,18 @@
+# ADR-20261119-M16-195-GROUP2-ENTITY-DISPATCHER — ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Pointer Table (0x00DEEC..0x00E0BA)
+**Status:** Accepted
+**Date:** 2026-11-19
+
+**Context:**
+1. Hybrid M15 extracted ROM routine `0x00DEEC..0x00E0BA` (462 bytes: 104B dispatcher code `0x00DEEC..0x00DF54`, 356B 89-entry 32-bit handler table `0x00DF54..0x00E0B8`, and 2B dummy `rts` at `0x00E0B8`):
+   - Direct Capstone disassembly verified `$FF17B8` bit-1 pause gate, 20-slot (`moveq #$13, d7`) `0xBC`-stride sweep over `$FF1AA4..$FF2898` (Slot 0 companion spirit, Slots 1..19 general entities), `type <= 0` and `type < 0x16` skip gates, PC-relative lookup `0x00DF28 + 2 * type` for even types `0x16..0xC6` (`d7/a6` saved around `jsr (a0)`), and unconditional post-tick isometric footprint projection (`+$48`/`+$49` swapped when `+$17` bit 0 set -> `+$42 = d1`, `s1 = (d2 + 1) >> 1`, `+$44 = s1 + (s1 >> 1)`).
+   - C++ `group2_type_to_table_index` enforces even types in `[0x0016, 0x00C6]` so synthetic inputs cannot index past the 89-entry handler table, while preserving unconditional post-tick footprint calculation even when a handler zeroes `entity.type`.
+
+**Decisions:**
+1. **`group2_entity_dispatcher` Cleanroom Module:**
+   - Implemented `src/game/world/group2_entity_dispatcher.hpp/.cpp` and `include/game/world/group2_entity_dispatcher.hpp` in namespace `thor::world` (aliased into `oasis::game::world`), providing all 89 handler addresses (`kGroup2ActionHandlerAddrs`), `project_isometric_footprint`, `apply_post_tick_footprint*`, `dispatch_group2_entities` (table & callback overloads), and `dispatch_group2_entities_from_ram`.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_195_group2_entity_dispatcher` + 176-test M16 + file-limit regression suite; local ROM pointer table verification optional in CI).
+
 # ADR-20261119-M16-194-AABB-FORCE-FIELDS — ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem (0x00DDA2..0x00DEEC)
 **Status:** Accepted
 **Date:** 2026-11-19

@@ -1,3 +1,16 @@
+# Worklog — 2026-11-19 (M16.195: ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Pointer Table)
+- **Concrete Task**: Implement `src/game/world/group2_entity_dispatcher.hpp/.cpp` and `include/game/world/group2_entity_dispatcher.hpp` in cleanroom namespace `thor::world` covering `0x00DEEC..0x00E0BA` (462 bytes: `$FF17B8` bit-1 pause gate, 20-slot `$FF1AA4` sweep at `0xBC` stride, `<= 0` / `< 0x16` skip gates, 89-entry even-type jump table `0x00DF54..0x00E0B8` with dummy `0x00E0B8` `rts`, unconditional post-tick 3/4 isometric footprint projection on `+$48/+$49` with `+$17` bit-0 X/Y swap into `+$42/+$44`, and 64KB RAM window helper); add `tests/m16_195_group2_entity_dispatcher_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/group2_entity_dispatcher.hpp` (192 lines) / `src/game/world/group2_entity_dispatcher.cpp` (205 lines).
+  * Added `include/game/world/group2_entity_dispatcher.hpp` (3 lines).
+  * Added `tests/m16_195_group2_entity_dispatcher_test.cpp` (291 lines, registered as `oasis_m16_195_group2_entity_dispatcher` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_195_group2_entity_dispatcher` + M16 + `project_file_line_limit` suite passed (`176/176`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_195_group2_entity_dispatcher` + M16 + `project_file_line_limit` suite passed (`176/176`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Ready for M16.196 spark/projectile dispatcher, gravity, blink/despawn & bounce phase init (`0x00E0BA..0x00E25C`).
+
 # Worklog — 2026-11-19 (M16.194: ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem)
 - **Concrete Task**: Implement `src/game/physics/aabb_force_fields.hpp/.cpp` and `include/game/physics/aabb_force_fields.hpp` in cleanroom namespace `thor::physics` covering `0x00DDA2..0x00DEEC` (`BoundingBox3D`, `apply_box_force_vector`, `apply_box_force_vector_with_elevation_boost`, `apply_conveyor_current_force`, and 64KB RAM window helpers over `$FF19E8` 21 slots); add `tests/m16_194_aabb_force_fields_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

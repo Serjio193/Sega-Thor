@@ -1,3 +1,11 @@
+# M16.195 ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Pointer Table (`0x00DEEC..0x00E0BA`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/world/group2_entity_dispatcher.hpp/.cpp` and `include/game/world/group2_entity_dispatcher.hpp` in cleanroom namespace `thor::world`:
+  - `kGroup2ActionHandlerAddrs`: all 89 exact ROM 32-bit handler addresses (`0x00DF54..0x00E0B8`, even types `0x16..0xC6`, dummy `0x00E0B8` `rts`).
+  - `dispatch_group2_entities` (+ `_from_ram`) and `project_isometric_footprint` (`0x00DEEC..0x00DF52`): `$FF17B8` bit-1 pause gate, 20-slot `$FF1AA4` sweep, and unconditional post-tick 3/4 isometric bounding-box projection with `+$17` bit-0 swap.
+- Qualified `oasis_m16_195_group2_entity_dispatcher` and the 176-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.194 ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem (`0x00DDA2..0x00DEEC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
