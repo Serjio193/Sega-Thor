@@ -1,3 +1,13 @@
+# Reverse Engineering Notes — Milestone M15.497 (`0x01387C`..`0x013B36`): Bow Spirit (`0x1E`) Master Tick, 9-Entry Jump Table, Command Starters & States `$0E`/`$0A`/`$0C`
+- **Original ROM Addresses:** `0x01387C..0x013B36` (698 bytes: 680 code bytes / 156 M68K instructions across `0x01387C..0x0138E6` and `0x0138F8..0x013B36` + 18-byte 9-entry relative jump table `0x0138E6..0x0138F8`).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_bow_dispatch_commands.py` and `data/thor-evidence/rom_bow_dispatch_commands_m15_497.json`:
+  * `0x01387C..0x0138F8`: `AI_Bow_MasterTickAndStateDispatcher` (30-frame SP drain, `+$86`/`+$83`/`+$82` clear, 9-entry jump table `0x0138E6..0x0138F8` States `$00..$10`).
+  * `0x0138F8..0x013924`: `AI_Bow_State0E_FinishAndPlaySfx` (`+$18=$04F8`, State `$02`, `#$80037E`).
+  * `0x013924..0x013A5C`: Command 1 Lunge Bite (`0x014494 <= $D8`, `4 SP`, `0x00F10C`, State `$08`), Command 2 Dive (`9 SP`, `0x013FDC`, `0x00E45E`, State `$04`), Command 3 Bloom (`28 SP`, State `$0A`), and reject reset `0x013A3A` (`#$90037D -> 0x013CDC`).
+  * `0x013A5C..0x013B36`: `AI_Bow_State0A_BloomWindup` & `AI_Bow_State0C_BloomActiveAndCooldown` (`#$800226`, `0x014200`, `($FF0DB9<<5)+$78`, `$FF199E`, `#$800380`/`#$80037E`).
+- **Assumptions:** Callees `0x009C40`, `0x009D00`, `0x00E338`, `0x00E45E`, `0x00E682`, `0x00E7FC`, `0x00F10C`, `0x011A4C`, `0x011B28`, and sibling Bow states (`0x013B36..0x014848`) are traced in adjacent milestones.
+- **Test Status:** Verified via `tests/rom_bow_dispatch_commands_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.496 (`0x01366A`..`0x01387C`): Shade Spirit Idle Command Dispatcher, Hitstun Recovery, Ascend Dismissal, Approach Homing & 2-Slot Ali Pose History Ring Buffer
 - **Original ROM Addresses:** `0x01366A..0x01387C` (530 bytes, 135 M68K instructions, zero embedded data tables; terminates on `rts` immediately before `0x01387C` Bow Spirit entry).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_shade_follow_history.py` and `data/thor-evidence/rom_shade_follow_history_m15_496.json`:

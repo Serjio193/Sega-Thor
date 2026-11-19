@@ -1,3 +1,9 @@
+# M15.497 ROM Bow Spirit (`0x1E`) Master Tick, 9-Entry Jump Table, Command Starters & States `$0E`/`$0A`/`$0C`
+- `tools/extract_rom_bow_dispatch_commands.py` — extractor for `0x01387C..0x013B36` (`AI_Bow_MasterTickAndStateDispatcher`, 9-entry jump table `0x0138E6..0x0138F8`, Commands 1/2/3, reject reset `0x013A3A`, and Bloom States `$0A`/`$0C`).
+- `tests/rom_bow_dispatch_commands_test.py` — `5` unit tests verifying jump table/instructions, 30-frame SP drain & damage clear, Command 1/2/3 gates, reject reset, and Bloom windup/active states.
+- `data/thor-evidence/rom_bow_dispatch_commands_m15_497.json` — extracted M15.497 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_497_BOW_DISPATCH_COMMANDS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.496 ROM Shade Spirit Idle Command Dispatcher, Hitstun Recovery, Ascend Dismissal, Approach Homing & 2-Slot Ali Pose History Ring Buffer
 - `tools/extract_rom_shade_follow_history.py` — extractor for `0x01366A..0x01387C` (Idle `$00`, Hitstun `$04`, Dismissal `$10`, Approach `$02`, descriptor switch `$03F4A6`/`$03F306`, and `$FF19A8`/`$FF19B4` ring buffer).
 - `tests/rom_shade_follow_history_test.py` — `5` unit tests verifying evidence/disassembly, idle command dispatch & dismissal guard, hitstun blink/ascend despawn, approach homing + Z compensation, and 2-frame pose history lag.

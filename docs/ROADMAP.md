@@ -1,3 +1,6 @@
+# M15.497 ROM Bow Spirit (`0x1E`) Master Tick, 9-Entry Jump Table, Command Starters & States `$0E`/`$0A`/`$0C` (`0x01387C`..`0x013B36`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_bow_dispatch_commands.py`, `tests/rom_bow_dispatch_commands_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_dispatch_commands_m15_497.json`, and `docs/handoffs/STANDALONE_M15_497_BOW_DISPATCH_COMMANDS_HANDOFF.md`.
+
 # M15.496 ROM Shade Spirit Idle Command Dispatcher, Hitstun Recovery, Ascend Dismissal, Approach Homing & 2-Slot Ali Pose History Ring Buffer (`0x01366A`..`0x01387C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_shade_follow_history.py`, `tests/rom_shade_follow_history_test.py` (`5/5 PASS`), `data/thor-evidence/rom_shade_follow_history_m15_496.json`, and `docs/handoffs/STANDALONE_M15_496_SHADE_FOLLOW_HISTORY_HANDOFF.md`.
 
