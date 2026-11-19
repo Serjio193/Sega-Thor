@@ -1,3 +1,6 @@
+# M15.496 ROM Shade Spirit Idle Command Dispatcher, Hitstun Recovery, Ascend Dismissal, Approach Homing & 2-Slot Ali Pose History Ring Buffer (`0x01366A`..`0x01387C`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_shade_follow_history.py`, `tests/rom_shade_follow_history_test.py` (`5/5 PASS`), `data/thor-evidence/rom_shade_follow_history_m15_496.json`, and `docs/handoffs/STANDALONE_M15_496_SHADE_FOLLOW_HISTORY_HANDOFF.md`.
+
 # M15.495 ROM Shade Spirit Grapple Retraction, Entity/Item Reel-In Sync, Dynamic Tether Stretch & Tip Probe Offset Table (`0x01341A`..`0x01366A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_shade_retract_tether.py`, `tests/rom_shade_retract_tether_test.py` (`5/5 PASS`), `data/thor-evidence/rom_shade_retract_tether_m15_495.json`, and `docs/handoffs/STANDALONE_M15_495_SHADE_RETRACT_TETHER_HANDOFF.md`.
 

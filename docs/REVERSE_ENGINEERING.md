@@ -1,3 +1,14 @@
+# Reverse Engineering Notes — Milestone M15.496 (`0x01366A`..`0x01387C`): Shade Spirit Idle Command Dispatcher, Hitstun Recovery, Ascend Dismissal, Approach Homing & 2-Slot Ali Pose History Ring Buffer
+- **Original ROM Addresses:** `0x01366A..0x01387C` (530 bytes, 135 M68K instructions, zero embedded data tables; terminates on `rts` immediately before `0x01387C` Bow Spirit entry).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_shade_follow_history.py` and `data/thor-evidence/rom_shade_follow_history_m15_496.json`:
+  * `0x01366A..0x0136AC`: `AI_Shade_State00_IdleCommandAndHistoryFollow` (`+$36(a5):1`, `$FF19A7`, `$FF19A2` 1/2/3, `$FF1989=$FF`, `0x0137F0`).
+  * `0x0136AC..0x0136CC`: `AI_Shade_State04_HitstunBlinkRecovery` (`+$83` countdown, `+$36:6` blink -> `0x01378A`).
+  * `0x0136CC..0x013716`: `AI_Shade_DismissalAndState10_AscendDespawn` (`#$00A0039E`, `$03F4A6`, Anim `$14`, `+8/frame` ascent `> 256 -> +$00=0`).
+  * `0x013716..0x013764`: `AI_Shade_State02_SummonApproachHoming` (`0x0123B8 d4=1`, `0x00E45E d4 <= 7 -> 0x01378A` vs `4x` vel).
+  * `0x013764..0x01387C`: `AI_Shade_DescriptorSwitchAndPoseHistoryRing` (`$03F4A6`/`$03F306`, `$FF19A8`/`$FF19B4` 6-word ring `+$2E=$03DE`).
+- **Assumptions:** Callees `0x008EF8`, `0x00E45E`, `0x00E7FC`, `0x0123B8`, `0x012F6A..0x01319E`, and `0x01387C+` (Bow Spirit) are handled in sibling milestones.
+- **Test Status:** Verified via `tests/rom_shade_follow_history_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.495 (`0x01341A`..`0x01366A`): Shade Spirit Grapple Retraction, Entity/Item Reel-In Sync, Dynamic Tether Stretch & Tip Probe Offset Table
 - **Original ROM Addresses:** `0x01341A..0x01366A` (592 bytes: 568 code bytes / 159 M68K instructions across `0x01341A..0x013652` + 24-byte embedded `ShadeGrappleTipOffsetTable` at `0x013652..0x01366A`).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_shade_retract_tether.py` and `data/thor-evidence/rom_shade_retract_tether_m15_495.json`:

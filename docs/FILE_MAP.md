@@ -1,3 +1,9 @@
+# M15.496 ROM Shade Spirit Idle Command Dispatcher, Hitstun Recovery, Ascend Dismissal, Approach Homing & 2-Slot Ali Pose History Ring Buffer
+- `tools/extract_rom_shade_follow_history.py` — extractor for `0x01366A..0x01387C` (Idle `$00`, Hitstun `$04`, Dismissal `$10`, Approach `$02`, descriptor switch `$03F4A6`/`$03F306`, and `$FF19A8`/`$FF19B4` ring buffer).
+- `tests/rom_shade_follow_history_test.py` — `5` unit tests verifying evidence/disassembly, idle command dispatch & dismissal guard, hitstun blink/ascend despawn, approach homing + Z compensation, and 2-frame pose history lag.
+- `data/thor-evidence/rom_shade_follow_history_m15_496.json` — extracted M15.496 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_496_SHADE_FOLLOW_HISTORY_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.495 ROM Shade Spirit Grapple Retraction, Entity/Item Reel-In Sync, Dynamic Tether Stretch & Tip Probe Offset Table
 - `tools/extract_rom_shade_retract_tether.py` — extractor for `0x01341A..0x01366A` (`AI_Shade_State0A_GrappleRetractAndComplete`, `AI_Shade_GrappleTetherAnchorAndDragHelpers`, `AI_Shade_UpdateTetherStretchEntity`, `AI_Shade_ProbeItemsAtGrappleTip`, and `ShadeGrappleTipOffsetTable`).
 - `tests/rom_shade_retract_tether_test.py` — `5` unit tests verifying tip table tiers, empty/entity/item retract modes, anchor lock/sync, tether stretch/blink/despawn, and tip item probing.
