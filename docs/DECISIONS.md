@@ -1,3 +1,18 @@
+# ADR-20261119-M16-194-AABB-FORCE-FIELDS — ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem (0x00DDA2..0x00DEEC)
+**Status:** Accepted
+**Date:** 2026-11-19
+
+**Context:**
+1. Hybrid M15.445 extracted ROM routines `0x00DDA2..0x00DEEC` (330 bytes, 102 M68K instructions across 3 entrypoints: `apply_box_force_vector` `0x00DDA2`, `apply_box_force_vector_with_elevation_boost` `0x00DE00`, and `apply_conveyor_current_force` `0x00DE6C`):
+   - Direct disassembly verified all 3 entrypoints directly iterate the 21-slot `$FF19E8` master entity pool (`moveq #$14, d0; dbra`, stride `0xBC`), filtering signed `+$00.w > 0` (`status`), and testing inclusive `[min, max]` 16-bit bounds `(Y, X, Z)` packed in `d3/d4/d5` against integer word reads `+$0C.w`, `+$08.w`, `+$10.w` (`pos_z_fp >> 16`, high 16 bits of 16.16 fixed-point rather than low bits).
+   - Accumulates 2D 16.16 fixed-point force vector `(d1, d2)` into `+$72(a0)` and `+$76(a0)`; `0x00DE00` and `0x00DE6C` apply a 2x boost when 32-bit `+$10(a0) != 0` (`pos_z_fp != 0`, including subpixel fractions like `0x00008000`); `0x00DE6C` exempts entities with `+$3A(a0)` bits 0 (`0x01`) or 3 (`0x08`).
+
+**Decisions:**
+1. **`aabb_force_fields` Cleanroom Module:**
+   - Implemented `src/game/physics/aabb_force_fields.hpp/.cpp` and `include/game/physics/aabb_force_fields.hpp` in namespace `thor::physics` (aliased into `oasis::game::physics`), providing `BoundingBox3D`, `PackedBoxRegisters`, `ForceEntitySlot`, all 3 entrypoints, and 64KB RAM window + packed register helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_194_aabb_force_fields` + 175-test M16 + file-limit regression suite).
+
 # ADR-20261118-M16-193-DIRTY-PLANE-BLITTER — ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer (0x00DC26..0x00DDA2)
 **Status:** Accepted
 **Date:** 2026-11-18

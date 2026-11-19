@@ -1,3 +1,11 @@
+# M16.194 ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem (`0x00DDA2..0x00DEEC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/physics/aabb_force_fields.hpp/.cpp` and `include/game/physics/aabb_force_fields.hpp` in cleanroom namespace `thor::physics`:
+  - `BoundingBox3D` & `PackedBoxRegisters`: authentic M68K `d3/d4/d5` packed signed bounds and `(Y, X, Z)` inclusive `[min, max]` containment using 16.16 `pos_z_fp >> 16`.
+  - `apply_box_force_vector` (`0x00DDA2`), `apply_box_force_vector_with_elevation_boost` (`0x00DE00`), `apply_conveyor_current_force` (`0x00DE6C`) (+ `_from_ram` & `_packed_from_ram` overloads): 21-slot `$FF19E8` force application with `+$3A` bits 0/3 immunity and 2x `pos_z_fp != 0` boost.
+- Qualified `oasis_m16_194_aabb_force_fields` and the 175-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.193 ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer (`0x00DC26..0x00DDA2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

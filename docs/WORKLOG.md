@@ -1,3 +1,16 @@
+# Worklog — 2026-11-19 (M16.194: ROM 3D AABB Entity Force Vector Field, Conveyor Belt & Elevation Current Displacement Subsystem)
+- **Concrete Task**: Implement `src/game/physics/aabb_force_fields.hpp/.cpp` and `include/game/physics/aabb_force_fields.hpp` in cleanroom namespace `thor::physics` covering `0x00DDA2..0x00DEEC` (`BoundingBox3D`, `apply_box_force_vector`, `apply_box_force_vector_with_elevation_boost`, `apply_conveyor_current_force`, and 64KB RAM window helpers over `$FF19E8` 21 slots); add `tests/m16_194_aabb_force_fields_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/physics/aabb_force_fields.hpp` (280 lines) / `src/game/physics/aabb_force_fields.cpp` (245 lines).
+  * Added `include/game/physics/aabb_force_fields.hpp` (3 lines).
+  * Added `tests/m16_194_aabb_force_fields_test.cpp` (416 lines, registered as `oasis_m16_194_aabb_force_fields` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_194_aabb_force_fields` + M16 + `project_file_line_limit` suite passed (`175/175`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_194_aabb_force_fields` + M16 + `project_file_line_limit` suite passed (`175/175`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Ready for M16.195 master Group 2 entity tick dispatcher (`0x00DEEC..0x00E0BA`).
+
 # Worklog — 2026-11-18 (M16.193: ROM Dynamic Partial Tilemap Plane VRAM Dirty Block Blitter, Viewport Bounds Clipper & Toroidal Stride Streamer)
 - **Concrete Task**: Implement `src/game/render/dirty_plane_blitter.hpp/.cpp` and `include/game/render/dirty_plane_blitter.hpp` in cleanroom namespace `thor::render` covering `0x00DC26..0x00DDA2` (`compute_dirty_vram_write_cmd`, `plan_dirty_plane_rect` with 42x30 inclusive clipping, bit-1 unclipped branch, `+$24` top skip, `+$0C` VDP ring offset, `vdp_sync_dirty_plane_rect` + `TilemapRectSyncRequest`/`_from_tilemap`/`_from_ram` overloads); add `tests/m16_193_dirty_plane_blitter_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:
