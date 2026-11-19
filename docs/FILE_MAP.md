@@ -1,3 +1,9 @@
+# M15.503 ROM Bow Spirit (`0x1E`) Spawn Initializer, Boss/Flying Enemy AI Master Tick, Hit-Damage/Death Handler & State `$00`/`$04`
+- `tools/extract_rom_boss_ai_master_state0.py` — extractor for `0x0147E0..0x014A72` (`AI_BowSpirit_SpawnInit`, `AI_Boss_MasterTick_DamageDeathHandler`, 14-entry jump table `0x014914..0x014930`, State `$00` PRNG action selector, State `$04` wander stepper).
+- `tests/rom_boss_ai_master_state0_test.py` — `7` unit tests verifying Bow spawn init, damage/bit-13 guard/death trigger, 14-entry jump table targets, State `$00` PRNG bands, Chebyshev speeds, and State `$04` stepper.
+- `data/thor-evidence/rom_boss_ai_master_state0_m15_503.json` — extracted M15.503 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_503_BOSS_AI_MASTER_STATE0_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.502 ROM Companion Spirit VRAM Graphics Decompressor & DMA Uploader + 4-Spirit Summon Dispatcher
 - `tools/extract_rom_spirit_summon_vram.py` — extractor for `0x014522..0x0147E0` (`AI_Spirit_UploadVRAMGraphics`, `AI_Spirit_SummonDispatcher`, and per-spirit spawn initializers for Dytto `0x18`, Efreet `0x1A`, Shade `0x1C`, Bow `0x1E`).
 - `tests/rom_spirit_summon_vram_test.py` — `9` unit tests verifying VRAM table lookup, 8B DMA descriptor queue write, overlay register resets, `$FF19A6` 0..3 routing, and per-spirit spawn parameters.

@@ -1,3 +1,6 @@
+# M15.503 ROM Bow Spirit (`0x1E`) Spawn Initializer, Boss/Flying Enemy AI Master Tick, Hit-Damage/Death Handler & State `$00`/`$04` (`0x0147E0`..`0x014A72`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_boss_ai_master_state0.py`, `tests/rom_boss_ai_master_state0_test.py` (`7/7 PASS`), `data/thor-evidence/rom_boss_ai_master_state0_m15_503.json`, and `docs/handoffs/STANDALONE_M15_503_BOSS_AI_MASTER_STATE0_HANDOFF.md`.
+
 # M15.502 ROM Companion Spirit VRAM Graphics Decompressor & DMA Uploader + 4-Spirit Summon Dispatcher (`0x014522`..`0x0147E0`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_spirit_summon_vram.py`, `tests/rom_spirit_summon_vram_test.py` (`9/9 PASS`), `data/thor-evidence/rom_spirit_summon_vram_m15_502.json`, and `docs/handoffs/STANDALONE_M15_502_SPIRIT_SUMMON_VRAM_HANDOFF.md`.
 
