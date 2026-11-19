@@ -1,3 +1,9 @@
+# M15.514 ROM Composite Serpent Boss State `$12` Homing Orb Projectile, Ali Grab Pinning, Homing Hit Callback & Smooth Turn-Rate Steering
+- `tools/extract_rom_serpent_boss_homing_orb.py` — extractor for `0x0160E2..0x016294` (`AI_SerpentBoss_HomingOrb_Tick`, `AI_SerpentBoss_SubStepAnchorIntegrator`, `AI_SerpentBoss_AliGrabPinning`, `AI_SerpentBoss_HomingOrb_HitCallback`, `AI_SerpentBoss_SmoothHomingTurnRateSteering`).
+- `tests/rom_serpent_boss_homing_orb_test.py` — `9` unit tests verifying anchor sub-step, Ali `-8px` grab pinning, grounded/airborne/guarded homing hit callbacks, `<=8` turn-rate limits, 4-way facing quantization, and ROM `$5D706` sin/cos stepping.
+- `data/thor-evidence/rom_serpent_boss_homing_orb_m15_514.json` — extracted M15.514 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_514_SERPENT_BOSS_HOMING_ORB_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.512 ROM Composite Serpent/Multi-Segment Boss Sub-Modes 2/3, Hit-Flash Palette Toggle, Defense-Mitigated HP Subtraction & 13-Entry State Jump Table
 - `tools/extract_rom_serpent_boss_master_damage.py` — extractor for `0x015C4A..0x015E0E` (`AI_SerpentBoss_SubMode3_Activation`, `AI_SerpentBoss_SubMode2_Countdown`, `AI_SerpentBoss_SubMode2_MasterTick`, 13-entry jump table `0x015DF4..0x015E0E`).
 - `tests/rom_serpent_boss_master_damage_test.py` — `10` unit tests verifying all 13 jump table targets, Sub-Mode 3/2 flows, 5-segment `$4200`/`$0200` hit-flash toggle, State 2->4 rebound, defense mitigation, and death transitions.
