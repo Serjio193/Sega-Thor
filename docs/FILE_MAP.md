@@ -1,3 +1,9 @@
+# M15.512 ROM Composite Serpent/Multi-Segment Boss Sub-Modes 2/3, Hit-Flash Palette Toggle, Defense-Mitigated HP Subtraction & 13-Entry State Jump Table
+- `tools/extract_rom_serpent_boss_master_damage.py` — extractor for `0x015C4A..0x015E0E` (`AI_SerpentBoss_SubMode3_Activation`, `AI_SerpentBoss_SubMode2_Countdown`, `AI_SerpentBoss_SubMode2_MasterTick`, 13-entry jump table `0x015DF4..0x015E0E`).
+- `tests/rom_serpent_boss_master_damage_test.py` — `10` unit tests verifying all 13 jump table targets, Sub-Mode 3/2 flows, 5-segment `$4200`/`$0200` hit-flash toggle, State 2->4 rebound, defense mitigation, and death transitions.
+- `data/thor-evidence/rom_serpent_boss_master_damage_m15_512.json` — extracted M15.512 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_512_SERPENT_BOSS_MASTER_DAMAGE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.511 ROM Golem Boulder/Debris Projectile Ballistics & Composite Serpent/Multi-Segment Boss Constructor
 - `tools/extract_rom_golem_boulder_serpent_init.py` — extractor for `0x0159E2..0x015C4A` (`AI_GolemBoulder_Tick`, `AI_GolemBoulder_HitCallback`, `AI_CompositeSerpent_SubModeRouter`, `AI_CompositeSerpent_InitCompositeSegments`).
 - `tests/rom_golem_boulder_serpent_init_test.py` — `7` unit tests verifying boulder gravity/shatter/bounce/knockback, sub-mode routing, and 9-slot composite serpent initialization.

@@ -1,3 +1,6 @@
+# M15.512 ROM Composite Serpent/Multi-Segment Boss Sub-Modes 2/3, Hit-Flash Palette Toggle, Defense-Mitigated HP Subtraction & 13-Entry State Jump Table (`0x015C4A`..`0x015E0E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_serpent_boss_master_damage.py`, `tests/rom_serpent_boss_master_damage_test.py` (`10/10 PASS`), `data/thor-evidence/rom_serpent_boss_master_damage_m15_512.json`, and `docs/handoffs/STANDALONE_M15_512_SERPENT_BOSS_MASTER_DAMAGE_HANDOFF.md`.
+
 # M15.511 ROM Golem Boulder/Debris Projectile Ballistics & Composite Serpent/Multi-Segment Boss Constructor (`0x0159E2`..`0x015C4A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_golem_boulder_serpent_init.py`, `tests/rom_golem_boulder_serpent_init_test.py` (`7/7 PASS`), `data/thor-evidence/rom_golem_boulder_serpent_init_m15_511.json`, and `docs/handoffs/STANDALONE_M15_511_GOLEM_BOULDER_SERPENT_INIT_HANDOFF.md`.
 
