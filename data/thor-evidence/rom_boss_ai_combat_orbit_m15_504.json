@@ -1,0 +1,373 @@
+{
+  "milestone": "M15.504",
+  "title": "ROM Boss AI Combat States $10/$06/$08/$0A/$16/$18 & Orbit Target Helpers",
+  "range": {
+    "start": "0x014A72",
+    "end": "0x014D1A",
+    "size_bytes": 680
+  },
+  "combat_states": {
+    "state_10": {
+      "name": "CombatAttack_Ranged",
+      "state_id": "0x10",
+      "projectile_spawn": "0x015214",
+      "sfx": "0x0080034F",
+      "trigger_condition": "+$30 == 0x18 and +$2E == 0",
+      "next_substate": "0x08"
+    },
+    "state_06": {
+      "name": "OrbitApproach",
+      "state_id": "0x06",
+      "next_state": "0x08",
+      "next_substate": "0x00"
+    },
+    "state_08": {
+      "name": "OrbitCombatAttack",
+      "state_id": "0x08",
+      "attack_helper": "0x015136",
+      "sfx": "0x0080034F",
+      "trigger_condition": "+$32 == 12 and $FF1971 % 3 == 0",
+      "next_state": "0x0A",
+      "next_substate": "0x04"
+    },
+    "state_0a": {
+      "name": "Retreat",
+      "state_id": "0x0A",
+      "next_substate": "0x08"
+    },
+    "state_16": {
+      "name": "ChaseAliHitbox",
+      "state_id": "0x16",
+      "hitbox_table": "0x00058CE6",
+      "next_state_on_hit": "0x18",
+      "next_substate_on_hit": "0x1A",
+      "chase_speed": "0x00010000"
+    },
+    "state_18": {
+      "name": "HitThrustAndCallback",
+      "state_id": "0x18",
+      "hit_callback": "0x014C04",
+      "post_hit_speed": "0x00030000",
+      "post_hit_timer": 20,
+      "angle_flip_delta": "0x80",
+      "ali_knockback_vel": "0x00020000"
+    }
+  },
+  "orbit_helpers": {
+    "high_orbit": {
+      "function": "0x014C1C",
+      "offsets": {
+        "facing_0": {
+          "dx": "+0x60",
+          "dy": "-0x30"
+        },
+        "facing_1": {
+          "dx": "-0x60",
+          "dy": "-0x30"
+        },
+        "facing_2": {
+          "dx": "0",
+          "dy": "-0x68"
+        }
+      },
+      "y_clamp_min": "0x00C8",
+      "speed_tiers": {
+        "dist_gt_24": "0x00030000",
+        "dist_17_to_24": "0x00020000",
+        "dist_le_16": "0x00018000"
+      },
+      "timer_reload": 4
+    },
+    "low_orbit": {
+      "function": "0x014CA0",
+      "offsets": {
+        "facing_0": {
+          "dx": "+0x48",
+          "dy": "-0x30"
+        },
+        "facing_1": {
+          "dx": "-0x48",
+          "dy": "-0x30"
+        },
+        "facing_2": {
+          "dx": "0",
+          "dy": "-0x38"
+        }
+      },
+      "y_clamp_min": null,
+      "speed_tiers": {
+        "dist_gt_24": "0x00028000",
+        "dist_17_to_24": "0x00020000",
+        "dist_le_16": "0x00018000"
+      },
+      "timer_reload": 4
+    }
+  },
+  "constants": {
+    "sfx_projectile": "0x0080034F",
+    "high_orbit_y_clamp": "0x00C8",
+    "state_18_rebound_timer": 20,
+    "orbit_timer_reload": 4,
+    "knockback_velocity": "0x00020000"
+  },
+  "ram_addresses": {
+    "ali_entity_ptr": "0x00FF19E8",
+    "frame_counter_prng": "0x00FF1971",
+    "hit_callback_slot": "0x00FF1940"
+  },
+  "external_targets": {
+    "steer_towards_target": "0x0150A0",
+    "spawn_projectile_special": "0x015214",
+    "orbit_attack_helper": "0x015136",
+    "test_hitbox": "0x00BAAC",
+    "apply_hitbox": "0x00BCE2",
+    "target_hurt_reaction": "0x00BEBA",
+    "state_reset_common": "0x014958",
+    "sound_dispatch": "0x00E7FC"
+  },
+  "routines": [
+    {
+      "name": "BossAI_State10_CombatAttack",
+      "start": "0x014A72",
+      "end": "0x014ABC",
+      "size_bytes": 74,
+      "instruction_count": 18,
+      "description": "State $10: Decrements timer at +$2; when 0 calls High Orbit helper 0x014C1C. Steers towards target (+$A6, +$AA) via 0x0150A0. If +$30 == $18 and +$2E == 0, calls special projectile spawn 0x015214 and plays SFX #$0080034F via 0x00E7FC. When anim complete (+$37 bit 1 set), sets substate +$2A = 8 and transitions to 0x014958."
+    },
+    {
+      "name": "BossAI_State06_OrbitApproach",
+      "start": "0x014ABC",
+      "end": "0x014AEA",
+      "size_bytes": 46,
+      "instruction_count": 11,
+      "description": "State $06: Decrements timer at +$2; when 0 calls Low Orbit helper 0x014CA0. Steers towards target (+$A6, +$AA) via 0x0150A0. When anim complete (+$37:1), sets substate +$2A = 0 and transitions to State $08 (+$04 = 8)."
+    },
+    {
+      "name": "BossAI_State08_OrbitCombatAttack",
+      "start": "0x014AEA",
+      "end": "0x014B50",
+      "size_bytes": 102,
+      "instruction_count": 25,
+      "description": "State $08: Decrements timer at +$2; when 0 calls Low Orbit helper 0x014CA0. Steers via 0x0150A0. When +$32 == 12 and $FF1971 % 3 == 0, calls attack helper 0x015136 and (if quotient & 3 == 0) plays SFX #$0080034F. When anim complete (+$37:1), sets substate +$2A = 4 and transitions to State $0A (+$04 = $0A)."
+    },
+    {
+      "name": "BossAI_State0A_Retreat",
+      "start": "0x014B50",
+      "end": "0x014B7C",
+      "size_bytes": 44,
+      "instruction_count": 11,
+      "description": "State $0A: Decrements timer at +$2; when 0 calls Low Orbit helper 0x014CA0. Steers via 0x0150A0. When anim complete (+$37:1), sets substate +$2A = 8 and transitions to 0x014958."
+    },
+    {
+      "name": "BossAI_State16_ChaseAliHitbox",
+      "start": "0x014B7C",
+      "end": "0x014BB8",
+      "size_bytes": 60,
+      "instruction_count": 13,
+      "description": "State $16: Steers directly towards Ali ($FF19E8) via 0x0150A0. Tests attack hitbox $58CE6 via 0x00BAAC. If carry set (hit landed) or timer +$2 expires, transitions to State $18 (+$04 = $18, +$2A = $1A, speed +$B0 = $00010000)."
+    },
+    {
+      "name": "BossAI_State18_HitThrustAndCallback",
+      "start": "0x014BB8",
+      "end": "0x014C1C",
+      "size_bytes": 100,
+      "instruction_count": 20,
+      "description": "State $18: Steers towards Ali via 0x0150A0. Registers hit callback 0x014C04 at $FF1940 and calls 0x00BCE2. When anim complete (+$37:1), resets state via 0x014958, sets +$2A = 8, speed +$B0 = $00030000, timer +$2 = 20 ($14), and flips angle +$AF += $80. Callback 0x014C04 calls 0x00BEBA and applies knockback $00020000 to Ali +$52.",
+      "sub_entry_points": {
+        "hit_callback": "0x014C04"
+      }
+    },
+    {
+      "name": "BossAI_HighOrbitTargetHelper",
+      "start": "0x014C1C",
+      "end": "0x014CA0",
+      "size_bytes": 132,
+      "instruction_count": 39,
+      "description": "Computes high orbit target relative to Ali ($FF19E8) based on facing +$16: facing 0 -> (+0x60, -0x30), facing 1 -> (-0x60, -0x30), facing 2 -> (0, -0x68). Clamps Y to minimum 200 ($00C8). Computes Chebyshev distance max(|dx|, |dy|) and selects speed tier: > 24 -> $00030000, 17..24 -> $00020000, <= 16 -> $00018000; resets timer +$2 = 4."
+    },
+    {
+      "name": "BossAI_LowOrbitTargetHelper",
+      "start": "0x014CA0",
+      "end": "0x014D1A",
+      "size_bytes": 122,
+      "instruction_count": 36,
+      "description": "Computes low orbit target relative to Ali ($FF19E8) based on facing +$16: facing 0 -> (+0x48, -0x30), facing 1 -> (-0x48, -0x30), facing 2 -> (0, -0x38). Computes Chebyshev distance max(|dx|, |dy|) and selects speed tier: > 24 -> $00028000, 17..24 -> $00020000, <= 16 -> $00018000; resets timer +$2 = 4."
+    }
+  ],
+  "instruction_count": 173,
+  "instructions": [
+    {"address": "0x014A72", "mnemonic": "subq.w", "op_str": "#$1, $2(a6)", "bytes": "536e0002", "size": 4},
+    {"address": "0x014A76", "mnemonic": "bne.w", "op_str": "$14a7e", "bytes": "66000006", "size": 4},
+    {"address": "0x014A7A", "mnemonic": "bsr.w", "op_str": "$14c1c", "bytes": "610001a0", "size": 4},
+    {"address": "0x014A7E", "mnemonic": "move.w", "op_str": "$a6(a6), d1", "bytes": "322e00a6", "size": 4},
+    {"address": "0x014A82", "mnemonic": "move.w", "op_str": "$aa(a6), d2", "bytes": "342e00aa", "size": 4},
+    {"address": "0x014A86", "mnemonic": "bsr.w", "op_str": "$150a0", "bytes": "61000618", "size": 4},
+    {"address": "0x014A8A", "mnemonic": "cmpi.w", "op_str": "#$18, $30(a6)", "bytes": "0c6e00180030", "size": 6},
+    {"address": "0x014A90", "mnemonic": "bne.b", "op_str": "$14aa8", "bytes": "6616", "size": 2},
+    {"address": "0x014A92", "mnemonic": "tst.w", "op_str": "$2e(a6)", "bytes": "4a6e002e", "size": 4},
+    {"address": "0x014A96", "mnemonic": "bne.b", "op_str": "$14aa8", "bytes": "6610", "size": 2},
+    {"address": "0x014A98", "mnemonic": "bsr.w", "op_str": "$15214", "bytes": "6100077a", "size": 4},
+    {"address": "0x014A9C", "mnemonic": "move.l", "op_str": "#$80034f, d0", "bytes": "203c0080034f", "size": 6},
+    {"address": "0x014AA2", "mnemonic": "jsr", "op_str": "$e7fc.l", "bytes": "4eb90000e7fc", "size": 6},
+    {"address": "0x014AA8", "mnemonic": "btst.b", "op_str": "#$1, $37(a6)", "bytes": "082e00010037", "size": 6},
+    {"address": "0x014AAE", "mnemonic": "beq.b", "op_str": "$14aba", "bytes": "670a", "size": 2},
+    {"address": "0x014AB0", "mnemonic": "move.w", "op_str": "#$8, $2a(a6)", "bytes": "3d7c0008002a", "size": 6},
+    {"address": "0x014AB6", "mnemonic": "bra.w", "op_str": "$14958", "bytes": "6000fea0", "size": 4},
+    {"address": "0x014ABA", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014ABC", "mnemonic": "subq.w", "op_str": "#$1, $2(a6)", "bytes": "536e0002", "size": 4},
+    {"address": "0x014AC0", "mnemonic": "bne.w", "op_str": "$14ac8", "bytes": "66000006", "size": 4},
+    {"address": "0x014AC4", "mnemonic": "bsr.w", "op_str": "$14ca0", "bytes": "610001da", "size": 4},
+    {"address": "0x014AC8", "mnemonic": "move.w", "op_str": "$a6(a6), d1", "bytes": "322e00a6", "size": 4},
+    {"address": "0x014ACC", "mnemonic": "move.w", "op_str": "$aa(a6), d2", "bytes": "342e00aa", "size": 4},
+    {"address": "0x014AD0", "mnemonic": "bsr.w", "op_str": "$150a0", "bytes": "610005ce", "size": 4},
+    {"address": "0x014AD4", "mnemonic": "btst.b", "op_str": "#$1, $37(a6)", "bytes": "082e00010037", "size": 6},
+    {"address": "0x014ADA", "mnemonic": "beq.b", "op_str": "$14ae8", "bytes": "670c", "size": 2},
+    {"address": "0x014ADC", "mnemonic": "move.w", "op_str": "#$0, $2a(a6)", "bytes": "3d7c0000002a", "size": 6},
+    {"address": "0x014AE2", "mnemonic": "move.w", "op_str": "#$8, $4(a6)", "bytes": "3d7c00080004", "size": 6},
+    {"address": "0x014AE8", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014AEA", "mnemonic": "subq.w", "op_str": "#$1, $2(a6)", "bytes": "536e0002", "size": 4},
+    {"address": "0x014AEE", "mnemonic": "bne.w", "op_str": "$14af6", "bytes": "66000006", "size": 4},
+    {"address": "0x014AF2", "mnemonic": "bsr.w", "op_str": "$14ca0", "bytes": "610001ac", "size": 4},
+    {"address": "0x014AF6", "mnemonic": "move.w", "op_str": "$a6(a6), d1", "bytes": "322e00a6", "size": 4},
+    {"address": "0x014AFA", "mnemonic": "move.w", "op_str": "$aa(a6), d2", "bytes": "342e00aa", "size": 4},
+    {"address": "0x014AFE", "mnemonic": "bsr.w", "op_str": "$150a0", "bytes": "610005a0", "size": 4},
+    {"address": "0x014B02", "mnemonic": "cmpi.w", "op_str": "#$c, $32(a6)", "bytes": "0c6e000c0032", "size": 6},
+    {"address": "0x014B08", "mnemonic": "bne.w", "op_str": "$14b3a", "bytes": "66000030", "size": 4},
+    {"address": "0x014B0C", "mnemonic": "moveq", "op_str": "#$0, d7", "bytes": "7e00", "size": 2},
+    {"address": "0x014B0E", "mnemonic": "move.b", "op_str": "$ff1971.l, d7", "bytes": "1e3900ff1971", "size": 6},
+    {"address": "0x014B14", "mnemonic": "divu.w", "op_str": "#$3, d7", "bytes": "8efc0003", "size": 4},
+    {"address": "0x014B18", "mnemonic": "swap", "op_str": "d7", "bytes": "4847", "size": 2},
+    {"address": "0x014B1A", "mnemonic": "tst.w", "op_str": "d7", "bytes": "4a47", "size": 2},
+    {"address": "0x014B1C", "mnemonic": "bne.w", "op_str": "$14b3a", "bytes": "6600001c", "size": 4},
+    {"address": "0x014B20", "mnemonic": "bsr.w", "op_str": "$15136", "bytes": "61000614", "size": 4},
+    {"address": "0x014B24", "mnemonic": "swap", "op_str": "d7", "bytes": "4847", "size": 2},
+    {"address": "0x014B26", "mnemonic": "andi.b", "op_str": "#$3, d7", "bytes": "02070003", "size": 4},
+    {"address": "0x014B2A", "mnemonic": "bne.w", "op_str": "$14b3a", "bytes": "6600000e", "size": 4},
+    {"address": "0x014B2E", "mnemonic": "move.l", "op_str": "#$80034f, d0", "bytes": "203c0080034f", "size": 6},
+    {"address": "0x014B34", "mnemonic": "jsr", "op_str": "$e7fc.l", "bytes": "4eb90000e7fc", "size": 6},
+    {"address": "0x014B3A", "mnemonic": "btst.b", "op_str": "#$1, $37(a6)", "bytes": "082e00010037", "size": 6},
+    {"address": "0x014B40", "mnemonic": "beq.b", "op_str": "$14b4e", "bytes": "670c", "size": 2},
+    {"address": "0x014B42", "mnemonic": "move.w", "op_str": "#$4, $2a(a6)", "bytes": "3d7c0004002a", "size": 6},
+    {"address": "0x014B48", "mnemonic": "move.w", "op_str": "#$a, $4(a6)", "bytes": "3d7c000a0004", "size": 6},
+    {"address": "0x014B4E", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014B50", "mnemonic": "subq.w", "op_str": "#$1, $2(a6)", "bytes": "536e0002", "size": 4},
+    {"address": "0x014B54", "mnemonic": "bne.w", "op_str": "$14b5c", "bytes": "66000006", "size": 4},
+    {"address": "0x014B58", "mnemonic": "bsr.w", "op_str": "$14ca0", "bytes": "61000146", "size": 4},
+    {"address": "0x014B5C", "mnemonic": "move.w", "op_str": "$a6(a6), d1", "bytes": "322e00a6", "size": 4},
+    {"address": "0x014B60", "mnemonic": "move.w", "op_str": "$aa(a6), d2", "bytes": "342e00aa", "size": 4},
+    {"address": "0x014B64", "mnemonic": "bsr.w", "op_str": "$150a0", "bytes": "6100053a", "size": 4},
+    {"address": "0x014B68", "mnemonic": "btst.b", "op_str": "#$1, $37(a6)", "bytes": "082e00010037", "size": 6},
+    {"address": "0x014B6E", "mnemonic": "beq.b", "op_str": "$14b7a", "bytes": "670a", "size": 2},
+    {"address": "0x014B70", "mnemonic": "move.w", "op_str": "#$8, $2a(a6)", "bytes": "3d7c0008002a", "size": 6},
+    {"address": "0x014B76", "mnemonic": "bra.w", "op_str": "$14958", "bytes": "6000fde0", "size": 4},
+    {"address": "0x014B7A", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014B7C", "mnemonic": "lea.l", "op_str": "$ff19e8.l, a0", "bytes": "41f900ff19e8", "size": 6},
+    {"address": "0x014B82", "mnemonic": "move.w", "op_str": "$8(a0), d1", "bytes": "32280008", "size": 4},
+    {"address": "0x014B86", "mnemonic": "move.w", "op_str": "$c(a0), d2", "bytes": "3428000c", "size": 4},
+    {"address": "0x014B8A", "mnemonic": "bsr.w", "op_str": "$150a0", "bytes": "61000514", "size": 4},
+    {"address": "0x014B8E", "mnemonic": "lea.l", "op_str": "$58ce6.l, a1", "bytes": "43f900058ce6", "size": 6},
+    {"address": "0x014B94", "mnemonic": "jsr", "op_str": "$baac.l", "bytes": "4eb90000baac", "size": 6},
+    {"address": "0x014B9A", "mnemonic": "bcs.b", "op_str": "$14ba2", "bytes": "6506", "size": 2},
+    {"address": "0x014B9C", "mnemonic": "subq.w", "op_str": "#$1, $2(a6)", "bytes": "536e0002", "size": 4},
+    {"address": "0x014BA0", "mnemonic": "bne.b", "op_str": "$14bb6", "bytes": "6614", "size": 2},
+    {"address": "0x014BA2", "mnemonic": "move.w", "op_str": "#$1a, $2a(a6)", "bytes": "3d7c001a002a", "size": 6},
+    {"address": "0x014BA8", "mnemonic": "move.w", "op_str": "#$18, $4(a6)", "bytes": "3d7c00180004", "size": 6},
+    {"address": "0x014BAE", "mnemonic": "move.l", "op_str": "#$10000, $b0(a6)", "bytes": "2d7c0001000000b0", "size": 8},
+    {"address": "0x014BB6", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014BB8", "mnemonic": "lea.l", "op_str": "$ff19e8.l, a0", "bytes": "41f900ff19e8", "size": 6},
+    {"address": "0x014BBE", "mnemonic": "move.w", "op_str": "$8(a0), d1", "bytes": "32280008", "size": 4},
+    {"address": "0x014BC2", "mnemonic": "move.w", "op_str": "$c(a0), d2", "bytes": "3428000c", "size": 4},
+    {"address": "0x014BC6", "mnemonic": "bsr.w", "op_str": "$150a0", "bytes": "610004d8", "size": 4},
+    {"address": "0x014BCA", "mnemonic": "moveq", "op_str": "#$0, d0", "bytes": "7000", "size": 2},
+    {"address": "0x014BCC", "mnemonic": "move.l", "op_str": "#$14c04, $ff1940.l", "bytes": "23fc00014c0400ff1940", "size": 10},
+    {"address": "0x014BD6", "mnemonic": "jsr", "op_str": "$bce2.l", "bytes": "4eb90000bce2", "size": 6},
+    {"address": "0x014BDC", "mnemonic": "btst.b", "op_str": "#$1, $37(a6)", "bytes": "082e00010037", "size": 6},
+    {"address": "0x014BE2", "mnemonic": "beq.b", "op_str": "$14c02", "bytes": "671e", "size": 2},
+    {"address": "0x014BE4", "mnemonic": "bsr.w", "op_str": "$14958", "bytes": "6100fd72", "size": 4},
+    {"address": "0x014BE8", "mnemonic": "move.w", "op_str": "#$8, $2a(a6)", "bytes": "3d7c0008002a", "size": 6},
+    {"address": "0x014BEE", "mnemonic": "move.l", "op_str": "#$30000, $b0(a6)", "bytes": "2d7c0003000000b0", "size": 8},
+    {"address": "0x014BF6", "mnemonic": "move.w", "op_str": "#$14, $2(a6)", "bytes": "3d7c00140002", "size": 6},
+    {"address": "0x014BFC", "mnemonic": "addi.b", "op_str": "#$80, $af(a6)", "bytes": "062e008000af", "size": 6},
+    {"address": "0x014C02", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014C04", "mnemonic": "jsr", "op_str": "$beba.l", "bytes": "4eb90000beba", "size": 6},
+    {"address": "0x014C0A", "mnemonic": "cmpi.w", "op_str": "#$2, $16(a6)", "bytes": "0c6e00020016", "size": 6},
+    {"address": "0x014C10", "mnemonic": "beq.b", "op_str": "$14c1a", "bytes": "6708", "size": 2},
+    {"address": "0x014C12", "mnemonic": "move.l", "op_str": "#$20000, $52(a0)", "bytes": "217c000200000052", "size": 8},
+    {"address": "0x014C1A", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014C1C", "mnemonic": "lea.l", "op_str": "$ff19e8.l, a0", "bytes": "41f900ff19e8", "size": 6},
+    {"address": "0x014C22", "mnemonic": "move.w", "op_str": "$8(a0), d1", "bytes": "32280008", "size": 4},
+    {"address": "0x014C26", "mnemonic": "move.w", "op_str": "$c(a0), d2", "bytes": "3428000c", "size": 4},
+    {"address": "0x014C2A", "mnemonic": "move.w", "op_str": "$16(a6), d0", "bytes": "302e0016", "size": 4},
+    {"address": "0x014C2E", "mnemonic": "subq.w", "op_str": "#$1, d0", "bytes": "5340", "size": 2},
+    {"address": "0x014C30", "mnemonic": "beq.b", "op_str": "$14c40", "bytes": "670e", "size": 2},
+    {"address": "0x014C32", "mnemonic": "subq.w", "op_str": "#$1, d0", "bytes": "5340", "size": 2},
+    {"address": "0x014C34", "mnemonic": "beq.b", "op_str": "$14c4a", "bytes": "6714", "size": 2},
+    {"address": "0x014C36", "mnemonic": "addi.w", "op_str": "#$60, d1", "bytes": "06410060", "size": 4},
+    {"address": "0x014C3A", "mnemonic": "subi.w", "op_str": "#$30, d2", "bytes": "04420030", "size": 4},
+    {"address": "0x014C3E", "mnemonic": "bra.b", "op_str": "$14c4e", "bytes": "600e", "size": 2},
+    {"address": "0x014C40", "mnemonic": "subi.w", "op_str": "#$60, d1", "bytes": "04410060", "size": 4},
+    {"address": "0x014C44", "mnemonic": "subi.w", "op_str": "#$30, d2", "bytes": "04420030", "size": 4},
+    {"address": "0x014C48", "mnemonic": "bra.b", "op_str": "$14c4e", "bytes": "6004", "size": 2},
+    {"address": "0x014C4A", "mnemonic": "subi.w", "op_str": "#$68, d2", "bytes": "04420068", "size": 4},
+    {"address": "0x014C4E", "mnemonic": "cmpi.w", "op_str": "#$c8, d2", "bytes": "0c4200c8", "size": 4},
+    {"address": "0x014C52", "mnemonic": "bge.b", "op_str": "$14c58", "bytes": "6c04", "size": 2},
+    {"address": "0x014C54", "mnemonic": "move.w", "op_str": "#$c8, d2", "bytes": "343c00c8", "size": 4},
+    {"address": "0x014C58", "mnemonic": "move.w", "op_str": "d1, $a6(a6)", "bytes": "3d4100a6", "size": 4},
+    {"address": "0x014C5C", "mnemonic": "move.w", "op_str": "d2, $aa(a6)", "bytes": "3d4200aa", "size": 4},
+    {"address": "0x014C60", "mnemonic": "move.l", "op_str": "#$30000, d0", "bytes": "203c00030000", "size": 6},
+    {"address": "0x014C66", "mnemonic": "sub.w", "op_str": "$8(a6), d1", "bytes": "926e0008", "size": 4},
+    {"address": "0x014C6A", "mnemonic": "bpl.b", "op_str": "$14c6e", "bytes": "6a02", "size": 2},
+    {"address": "0x014C6C", "mnemonic": "neg.w", "op_str": "d1", "bytes": "4441", "size": 2},
+    {"address": "0x014C6E", "mnemonic": "sub.w", "op_str": "$c(a6), d2", "bytes": "946e000c", "size": 4},
+    {"address": "0x014C72", "mnemonic": "bpl.b", "op_str": "$14c76", "bytes": "6a02", "size": 2},
+    {"address": "0x014C74", "mnemonic": "neg.w", "op_str": "d2", "bytes": "4442", "size": 2},
+    {"address": "0x014C76", "mnemonic": "cmp.w", "op_str": "d2, d1", "bytes": "b242", "size": 2},
+    {"address": "0x014C78", "mnemonic": "bcc.b", "op_str": "$14c7c", "bytes": "6402", "size": 2},
+    {"address": "0x014C7A", "mnemonic": "move.w", "op_str": "d2, d1", "bytes": "3202", "size": 2},
+    {"address": "0x014C7C", "mnemonic": "cmpi.w", "op_str": "#$18, d1", "bytes": "0c410018", "size": 4},
+    {"address": "0x014C80", "mnemonic": "bhi.b", "op_str": "$14c94", "bytes": "6212", "size": 2},
+    {"address": "0x014C82", "mnemonic": "move.l", "op_str": "#$20000, d0", "bytes": "203c00020000", "size": 6},
+    {"address": "0x014C88", "mnemonic": "cmpi.w", "op_str": "#$10, d1", "bytes": "0c410010", "size": 4},
+    {"address": "0x014C8C", "mnemonic": "bhi.b", "op_str": "$14c94", "bytes": "6206", "size": 2},
+    {"address": "0x014C8E", "mnemonic": "move.l", "op_str": "#$18000, d0", "bytes": "203c00018000", "size": 6},
+    {"address": "0x014C94", "mnemonic": "move.l", "op_str": "d0, $b0(a6)", "bytes": "2d4000b0", "size": 4},
+    {"address": "0x014C98", "mnemonic": "move.w", "op_str": "#$4, $2(a6)", "bytes": "3d7c00040002", "size": 6},
+    {"address": "0x014C9E", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2},
+    {"address": "0x014CA0", "mnemonic": "lea.l", "op_str": "$ff19e8.l, a0", "bytes": "41f900ff19e8", "size": 6},
+    {"address": "0x014CA6", "mnemonic": "move.w", "op_str": "$8(a0), d1", "bytes": "32280008", "size": 4},
+    {"address": "0x014CAA", "mnemonic": "move.w", "op_str": "$c(a0), d2", "bytes": "3428000c", "size": 4},
+    {"address": "0x014CAE", "mnemonic": "move.w", "op_str": "$16(a6), d0", "bytes": "302e0016", "size": 4},
+    {"address": "0x014CB2", "mnemonic": "subq.w", "op_str": "#$1, d0", "bytes": "5340", "size": 2},
+    {"address": "0x014CB4", "mnemonic": "beq.b", "op_str": "$14cc4", "bytes": "670e", "size": 2},
+    {"address": "0x014CB6", "mnemonic": "subq.w", "op_str": "#$1, d0", "bytes": "5340", "size": 2},
+    {"address": "0x014CB8", "mnemonic": "beq.b", "op_str": "$14cce", "bytes": "6714", "size": 2},
+    {"address": "0x014CBA", "mnemonic": "addi.w", "op_str": "#$48, d1", "bytes": "06410048", "size": 4},
+    {"address": "0x014CBE", "mnemonic": "subi.w", "op_str": "#$30, d2", "bytes": "04420030", "size": 4},
+    {"address": "0x014CC2", "mnemonic": "bra.b", "op_str": "$14cd2", "bytes": "600e", "size": 2},
+    {"address": "0x014CC4", "mnemonic": "subi.w", "op_str": "#$48, d1", "bytes": "04410048", "size": 4},
+    {"address": "0x014CC8", "mnemonic": "subi.w", "op_str": "#$30, d2", "bytes": "04420030", "size": 4},
+    {"address": "0x014CCC", "mnemonic": "bra.b", "op_str": "$14cd2", "bytes": "6004", "size": 2},
+    {"address": "0x014CCE", "mnemonic": "subi.w", "op_str": "#$38, d2", "bytes": "04420038", "size": 4},
+    {"address": "0x014CD2", "mnemonic": "move.w", "op_str": "d1, $a6(a6)", "bytes": "3d4100a6", "size": 4},
+    {"address": "0x014CD6", "mnemonic": "move.w", "op_str": "d2, $aa(a6)", "bytes": "3d4200aa", "size": 4},
+    {"address": "0x014CDA", "mnemonic": "move.l", "op_str": "#$28000, d0", "bytes": "203c00028000", "size": 6},
+    {"address": "0x014CE0", "mnemonic": "sub.w", "op_str": "$8(a6), d1", "bytes": "926e0008", "size": 4},
+    {"address": "0x014CE4", "mnemonic": "bpl.b", "op_str": "$14ce8", "bytes": "6a02", "size": 2},
+    {"address": "0x014CE6", "mnemonic": "neg.w", "op_str": "d1", "bytes": "4441", "size": 2},
+    {"address": "0x014CE8", "mnemonic": "sub.w", "op_str": "$c(a6), d2", "bytes": "946e000c", "size": 4},
+    {"address": "0x014CEC", "mnemonic": "bpl.b", "op_str": "$14cf0", "bytes": "6a02", "size": 2},
+    {"address": "0x014CEE", "mnemonic": "neg.w", "op_str": "d2", "bytes": "4442", "size": 2},
+    {"address": "0x014CF0", "mnemonic": "cmp.w", "op_str": "d2, d1", "bytes": "b242", "size": 2},
+    {"address": "0x014CF2", "mnemonic": "bcc.b", "op_str": "$14cf6", "bytes": "6402", "size": 2},
+    {"address": "0x014CF4", "mnemonic": "move.w", "op_str": "d2, d1", "bytes": "3202", "size": 2},
+    {"address": "0x014CF6", "mnemonic": "cmpi.w", "op_str": "#$18, d1", "bytes": "0c410018", "size": 4},
+    {"address": "0x014CFA", "mnemonic": "bhi.b", "op_str": "$14d0e", "bytes": "6212", "size": 2},
+    {"address": "0x014CFC", "mnemonic": "move.l", "op_str": "#$20000, d0", "bytes": "203c00020000", "size": 6},
+    {"address": "0x014D02", "mnemonic": "cmpi.w", "op_str": "#$10, d1", "bytes": "0c410010", "size": 4},
+    {"address": "0x014D06", "mnemonic": "bhi.b", "op_str": "$14d0e", "bytes": "6206", "size": 2},
+    {"address": "0x014D08", "mnemonic": "move.l", "op_str": "#$18000, d0", "bytes": "203c00018000", "size": 6},
+    {"address": "0x014D0E", "mnemonic": "move.l", "op_str": "d0, $b0(a6)", "bytes": "2d4000b0", "size": 4},
+    {"address": "0x014D12", "mnemonic": "move.w", "op_str": "#$4, $2(a6)", "bytes": "3d7c00040002", "size": 6},
+    {"address": "0x014D18", "mnemonic": "rts", "op_str": "", "bytes": "4e75", "size": 2}
+  ]
+}

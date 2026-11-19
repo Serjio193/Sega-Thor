@@ -1,3 +1,6 @@
+# M15.504 ROM Boss AI Combat States `$10`/`$06`/`$08`/`$0A`/`$16`/`$18` & Orbit Target Helpers (`0x014A72`..`0x014D1A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_boss_ai_combat_orbit.py`, `tests/rom_boss_ai_combat_orbit_test.py` (`10/10 PASS`), `data/thor-evidence/rom_boss_ai_combat_orbit_m15_504.json`, and `docs/handoffs/STANDALONE_M15_504_BOSS_AI_COMBAT_ORBIT_HANDOFF.md`.
+
 # M15.503 ROM Bow Spirit (`0x1E`) Spawn Initializer, Boss/Flying Enemy AI Master Tick, Hit-Damage/Death Handler & State `$00`/`$04` (`0x0147E0`..`0x014A72`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_boss_ai_master_state0.py`, `tests/rom_boss_ai_master_state0_test.py` (`7/7 PASS`), `data/thor-evidence/rom_boss_ai_master_state0_m15_503.json`, and `docs/handoffs/STANDALONE_M15_503_BOSS_AI_MASTER_STATE0_HANDOFF.md`.
 

@@ -1,3 +1,9 @@
+# M15.504 ROM Boss AI Combat States `$10`/`$06`/`$08`/`$0A`/`$16`/`$18` & Orbit Target Helpers
+- `tools/extract_rom_boss_ai_combat_orbit.py` — extractor for `0x014A72..0x014D1A` (States `$10`, `$06`, `$08`, `$0A`, `$16`, `$18`, hit callback `0x014C04`, and High/Low Orbit target helpers).
+- `tests/rom_boss_ai_combat_orbit_test.py` — `10` unit tests verifying all 6 combat states, `$58CE6` hitbox chase, `$AF += $80` thrust flip, `$20000` knockback callback, and Chebyshev orbit speed tiers.
+- `data/thor-evidence/rom_boss_ai_combat_orbit_m15_504.json` — extracted M15.504 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_504_BOSS_AI_COMBAT_ORBIT_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.503 ROM Bow Spirit (`0x1E`) Spawn Initializer, Boss/Flying Enemy AI Master Tick, Hit-Damage/Death Handler & State `$00`/`$04`
 - `tools/extract_rom_boss_ai_master_state0.py` — extractor for `0x0147E0..0x014A72` (`AI_BowSpirit_SpawnInit`, `AI_Boss_MasterTick_DamageDeathHandler`, 14-entry jump table `0x014914..0x014930`, State `$00` PRNG action selector, State `$04` wander stepper).
 - `tests/rom_boss_ai_master_state0_test.py` — `7` unit tests verifying Bow spawn init, damage/bit-13 guard/death trigger, 14-entry jump table targets, State `$00` PRNG bands, Chebyshev speeds, and State `$04` stepper.
