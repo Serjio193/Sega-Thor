@@ -4,6 +4,12 @@
 - `tests/thor_ir_synthetic_driver.cpp` executes the generated code and reports the final registers, CCR, PC and ordered byte writes.
 - `data/thor-fixtures/thor_ir_synthetic_reference.json` stores the independent CPU observations and the SHA-256 values of the input image and reference core.
 
+# M15.524 ROM Interactive World Objects: Room Doors, Vortex Portals, Spirit Locks & Treasure Chests
+- `tools/extract_rom_world_portals_chests.py`: ROM extractor for `0x017A96..0x017E28` (914 bytes, 225 instructions).
+- `tests/rom_world_portals_chests_test.py`: Deterministic regression tests (`14/14 PASS`).
+- `data/thor-evidence/rom_world_portals_chests_m15_524.json`: Disassembly & metadata evidence JSON.
+- `docs/handoffs/STANDALONE_M15_524_WORLD_PORTALS_CHESTS_HANDOFF.md`: Standalone C++20 handoff specification.
+
 # M15.522 ROM World Rolling/Sliding Crusher & Ceiling Crusher Traps
 - `tools/extract_rom_world_rolling_crusher_traps.py`: ROM extractor for `0x0173D6..0x01778C` (950 bytes, 242 instructions).
 - `tests/rom_world_rolling_crusher_traps_test.py`: Deterministic regression tests (`6/6 PASS`).

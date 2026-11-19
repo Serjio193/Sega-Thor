@@ -1,3 +1,6 @@
+# M15.524 ROM Interactive World Objects: Room Doors, Vortex Portals, Spirit Locks & Treasure Chests (`0x017A96`..`0x017E28`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_world_portals_chests.py`, `tests/rom_world_portals_chests_test.py` (`14/14 PASS`), `data/thor-evidence/rom_world_portals_chests_m15_524.json`, and `docs/handoffs/STANDALONE_M15_524_WORLD_PORTALS_CHESTS_HANDOFF.md`.
+
 # M15.522 ROM World Rolling/Sliding Crusher & Ceiling Crusher Traps (`0x0173D6`..`0x01778C`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_world_rolling_crusher_traps.py`, `tests/rom_world_rolling_crusher_traps_test.py` (`6/6 PASS`), `data/thor-evidence/rom_world_rolling_crusher_traps_m15_522.json`, and `docs/handoffs/STANDALONE_M15_522_WORLD_ROLLING_CRUSHER_TRAPS_HANDOFF.md`.
 
