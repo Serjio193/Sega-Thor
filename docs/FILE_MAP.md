@@ -1,3 +1,9 @@
+# M15.511 ROM Golem Boulder/Debris Projectile Ballistics & Composite Serpent/Multi-Segment Boss Constructor
+- `tools/extract_rom_golem_boulder_serpent_init.py` — extractor for `0x0159E2..0x015C4A` (`AI_GolemBoulder_Tick`, `AI_GolemBoulder_HitCallback`, `AI_CompositeSerpent_SubModeRouter`, `AI_CompositeSerpent_InitCompositeSegments`).
+- `tests/rom_golem_boulder_serpent_init_test.py` — `7` unit tests verifying boulder gravity/shatter/bounce/knockback, sub-mode routing, and 9-slot composite serpent initialization.
+- `data/thor-evidence/rom_golem_boulder_serpent_init_m15_511.json` — extracted M15.511 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_511_GOLEM_BOULDER_SERPENT_INIT_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.510 ROM Multi-Part Boss/Golem (`0x9A`) Phase Damage Handler, Plane A Tilemap Damage Patches, Tentacle/Arm Sub-State Machine (`0..4`) & Spore Homing
 - `tools/extract_rom_golem_boss_damage_arm.py` — extractor for `0x015758..0x0159E2` (Golem body hit damage, Phase 0/1 Plane A tilemap fracture patches `0x0157FC`/`0x015850`, tentacle arm States `0..4`, spore homing return).
 - `tests/rom_golem_boss_damage_arm_test.py` — `10` unit tests verifying both 12B tilemap patch records, damage/death/Phase 0 & 1 thresholds, tentacle extend/hit/retract/hitstun states, and spore homing despawn.

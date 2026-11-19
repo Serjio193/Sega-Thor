@@ -1,3 +1,6 @@
+# M15.511 ROM Golem Boulder/Debris Projectile Ballistics & Composite Serpent/Multi-Segment Boss Constructor (`0x0159E2`..`0x015C4A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_golem_boulder_serpent_init.py`, `tests/rom_golem_boulder_serpent_init_test.py` (`7/7 PASS`), `data/thor-evidence/rom_golem_boulder_serpent_init_m15_511.json`, and `docs/handoffs/STANDALONE_M15_511_GOLEM_BOULDER_SERPENT_INIT_HANDOFF.md`.
+
 # M15.510 ROM Multi-Part Boss/Golem (`0x9A`) Phase Damage Handler, Plane A Tilemap Damage Patches, Tentacle/Arm Sub-State Machine (`0..4`) & Spore Homing (`0x015758`..`0x0159E2`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_golem_boss_damage_arm.py`, `tests/rom_golem_boss_damage_arm_test.py` (`10/10 PASS`), `data/thor-evidence/rom_golem_boss_damage_arm_m15_510.json`, and `docs/handoffs/STANDALONE_M15_510_GOLEM_BOSS_DAMAGE_ARM_HANDOFF.md`.
 
