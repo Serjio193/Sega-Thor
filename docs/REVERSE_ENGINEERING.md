@@ -1,3 +1,13 @@
+# Reverse Engineering Notes — Milestone M15.499 (`0x013CB4`..`0x013F22`): Bow Spirit (`0x1E`) State `$00` Idle, Command Dispatch, Vulnerability/Wander & Leashed Follow AI
+- **Original ROM Addresses:** `0x013CB4..0x013F22` (622 bytes, 163 M68K instructions, zero embedded data tables).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_bow_idle_follow.py` and `data/thor-evidence/rom_bow_idle_follow_m15_499.json`:
+  * `0x013CB4..0x013DAA`: `AI_Bow_State00_DispatchAndSubstateRouter` (`$FF19A7`, `$FF19A2`, `0x013CDC` bypass, `0x013FDC`/`0x0143C8`, `+$9E` `0..4`, PRNG `0x00E268` emote bands `<= $C0`/`$C1..$E0`/`>$E0`).
+  * `0x013DAA..0x013E26`: `AI_Bow_Substates_01_02_HopAndRest` (`(prng<<2)+$30000`, `-$C000` gravity, `0x014200(6)`/`0x014242(6)`).
+  * `0x013E26..0x013EBC`: `AI_Bow_Substate03_AutoPounceAttack` (`0x00BBA8`/`$05887C`, `+$90=2*(($FF0DB9+1)>>2)`, `0x00BCA4(0)`, `0x014200(8/6)`).
+  * `0x013EBC..0x013F22`: `AI_Bow_Substate04_EmoteAndSettle` (`+$32==$3F`, `#$700235`, `-$C000` settle).
+- **Assumptions:** Callees `0x00BBA8`, `0x00BCA4`, `0x00E268`, `0x00E7FC`, and trailing helpers `0x013F22..0x014848` are covered in sibling milestones.
+- **Test Status:** Verified via `tests/rom_bow_idle_follow_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.498 (`0x013B36`..`0x013CB4`): Bow Spirit (`0x1E`) Combat States `$08`, `$04` Gravity Leap/Chomp & `$06`
 - **Original ROM Addresses:** `0x013B36..0x013CB4` (382 bytes, 95 M68K instructions, zero embedded data tables).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_bow_combat_states.py` and `data/thor-evidence/rom_bow_combat_states_m15_498.json`:

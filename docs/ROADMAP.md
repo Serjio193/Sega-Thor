@@ -1,3 +1,6 @@
+# M15.499 ROM Bow Spirit (`0x1E`) State `$00` Idle, Command Dispatch, Vulnerability/Wander & Leashed Follow AI (`0x013CB4`..`0x013F22`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_bow_idle_follow.py`, `tests/rom_bow_idle_follow_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_idle_follow_m15_499.json`, and `docs/handoffs/STANDALONE_M15_499_BOW_IDLE_FOLLOW_HANDOFF.md`.
+
 # M15.498 ROM Bow Spirit (`0x1E`) Combat States `$08`, `$04` Gravity Leap/Chomp & `$06` (`0x013B36`..`0x013CB4`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_bow_combat_states.py`, `tests/rom_bow_combat_states_test.py` (`5/5 PASS`), `data/thor-evidence/rom_bow_combat_states_m15_498.json`, and `docs/handoffs/STANDALONE_M15_498_BOW_COMBAT_STATES_HANDOFF.md`.
 

@@ -1,3 +1,9 @@
+# M15.499 ROM Bow Spirit (`0x1E`) State `$00` Idle, Command Dispatch, Vulnerability/Wander & Leashed Follow AI
+- `tools/extract_rom_bow_idle_follow.py` — extractor for `0x013CB4..0x013F22` (`AI_Bow_State00_DispatchAndSubstateRouter`, `AI_Bow_Substates_01_02_HopAndRest`, `AI_Bow_Substate03_AutoPounceAttack`, `AI_Bow_Substate04_EmoteAndSettle`).
+- `tests/rom_bow_idle_follow_test.py` — `5` unit tests verifying dispatch/reject bypass/scan, PRNG emote/rest/hop bands, Substate `03` pounce/2x bonus/leash, and Substate `04` SFX/settle.
+- `data/thor-evidence/rom_bow_idle_follow_m15_499.json` — extracted M15.499 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_499_BOW_IDLE_FOLLOW_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.498 ROM Bow Spirit (`0x1E`) Combat States `$08`, `$04` Gravity Leap/Chomp & `$06`
 - `tools/extract_rom_bow_combat_states.py` — extractor for `0x013B36..0x013CB4` (`AI_Bow_State08_ChompAttackAndTrail`, `AI_Bow_State04_GravityLeapAndSeek`, `AI_Bow_State06_PopupAndRestorePos`).
 - `tests/rom_bow_combat_states_test.py` — `5` unit tests verifying chomp proximity/callback/exit, gravity leap Z floor clamp, 3 exit predicates to State `$06`, and State `$06` backup restore.
