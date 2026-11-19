@@ -1,3 +1,9 @@
+# M15.510 ROM Multi-Part Boss/Golem (`0x9A`) Phase Damage Handler, Plane A Tilemap Damage Patches, Tentacle/Arm Sub-State Machine (`0..4`) & Spore Homing
+- `tools/extract_rom_golem_boss_damage_arm.py` — extractor for `0x015758..0x0159E2` (Golem body hit damage, Phase 0/1 Plane A tilemap fracture patches `0x0157FC`/`0x015850`, tentacle arm States `0..4`, spore homing return).
+- `tests/rom_golem_boss_damage_arm_test.py` — `10` unit tests verifying both 12B tilemap patch records, damage/death/Phase 0 & 1 thresholds, tentacle extend/hit/retract/hitstun states, and spore homing despawn.
+- `data/thor-evidence/rom_golem_boss_damage_arm_m15_510.json` — extracted M15.510 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_510_GOLEM_BOSS_DAMAGE_ARM_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.509 ROM Multi-Part Boss/Golem (`0x9A`) Vacuum Pull, Boulder Barrage Spawner, Body Knockback & Camera-Relative SFX Helpers
 - `tools/extract_rom_golem_boss_vacuum_barrage.py` — extractor for `0x0154E8..0x015758` (State `$04` vacuum pull, State `$02` boulder barrage, body contact knockback, falling spore spawner, camera-relative SFX helper, sub-mode 4 check).
 - `tests/rom_golem_boss_vacuum_barrage_test.py` — `6` unit tests verifying vacuum pull scaling, boulder barrage PRNG/aimed cadence, body knockback/push, spore offsets, camera SFX offset, and sub-mode 4 check.
