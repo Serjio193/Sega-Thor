@@ -1,3 +1,6 @@
+# M15.521 ROM Interactive World Objects: Sliding/Retracting Wall Trap, Falling Rock Boulder & Impact AABB (`0x0171C4`..`0x0173D6`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_world_sliding_falling_traps.py`, `tests/rom_world_sliding_falling_traps_test.py` (`15/15 PASS`), `data/thor-evidence/rom_world_sliding_falling_traps_m15_521.json`, and `docs/handoffs/STANDALONE_M15_521_WORLD_SLIDING_FALLING_TRAPS_HANDOFF.md`.
+
 # M15.520 ROM Interactive World Objects: Timed Switch, Destructible Block, Periodic Pop-Up Hazard & Periodic Toggle/Vent Hazard (`0x016EBC`..`0x0171C4`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_world_destructible_hazards.py`, `tests/rom_world_destructible_hazards_test.py` (`6/6 PASS`), `data/thor-evidence/rom_world_destructible_hazards_m15_520.json`, and `docs/handoffs/STANDALONE_M15_520_WORLD_DESTRUCTIBLE_HAZARDS_HANDOFF.md`.
 

@@ -1,3 +1,9 @@
+# M15.521 ROM Interactive World Objects: Sliding/Retracting Wall Trap, Falling Rock Boulder & Impact AABB
+- `tools/extract_rom_world_sliding_falling_traps.py`: ROM extractor for `0x0171C4..0x0173D6` (530 bytes, 137 instructions).
+- `tests/rom_world_sliding_falling_traps_test.py`: Deterministic regression tests (`15/15 PASS`).
+- `data/thor-evidence/rom_world_sliding_falling_traps_m15_521.json`: Disassembly & metadata evidence JSON.
+- `docs/handoffs/STANDALONE_M15_521_WORLD_SLIDING_FALLING_TRAPS_HANDOFF.md`: Standalone C++20 handoff specification.
+
 # M15.520 ROM Interactive World Objects: Timed Switch, Destructible Block, Periodic Pop-Up Hazard & Periodic Toggle/Vent Hazard
 - `tools/extract_rom_world_destructible_hazards.py`: ROM extractor for `0x016EBC..0x0171C4` (776 bytes, 203 instructions).
 - `tests/rom_world_destructible_hazards_test.py`: Deterministic regression tests (`6/6 PASS`).
