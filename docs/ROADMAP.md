@@ -1,3 +1,6 @@
+# M15.519 ROM World Interactive Objects: Spirit Crystal Orb Switch, Breakable Wall Block & Floor Spike/Saw Hazard (`0x016CBE`..`0x016EBC`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_world_crystal_wall_spike.py`, `tests/rom_world_crystal_wall_spike_test.py` (`19/19 PASS`), `data/thor-evidence/rom_world_crystal_wall_spike_m15_519.json`, and `docs/handoffs/STANDALONE_M15_519_WORLD_CRYSTAL_WALL_SPIKE_HANDOFF.md`.
+
 # M15.518 ROM Interactive World Objects: Moving Bridge/Dust Streamer, Falling Stalactite Trap, Floor Pressure Switch & Hit-Toggle Crystal Switch (`0x016A64`..`0x016CBE`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_world_traps_switches.py`, `tests/rom_world_traps_switches_test.py` (`8/8 PASS`), `data/thor-evidence/rom_world_traps_switches_m15_518.json`, and `docs/handoffs/STANDALONE_M15_518_WORLD_TRAPS_SWITCHES_HANDOFF.md`.
 

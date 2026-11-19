@@ -1,3 +1,9 @@
+# M15.519 ROM World Interactive Objects: Spirit Crystal Orb Switch, Breakable Wall Block & Floor Spike/Saw Hazard
+- `tools/extract_rom_world_crystal_wall_spike.py`: ROM extractor for `0x016CBE..0x016EBC` (510 bytes, 132 instructions).
+- `tests/rom_world_crystal_wall_spike_test.py`: Deterministic regression tests (`19/19 PASS`).
+- `data/thor-evidence/rom_world_crystal_wall_spike_m15_519.json`: Disassembly & metadata evidence JSON.
+- `docs/handoffs/STANDALONE_M15_519_WORLD_CRYSTAL_WALL_SPIKE_HANDOFF.md`: Standalone C++20 handoff specification.
+
 # M15.518 ROM Interactive World Objects: Moving Bridge/Dust Streamer, Falling Stalactite Trap, Floor Pressure Switch & Hit-Toggle Crystal Switch
 - `tools/extract_rom_world_traps_switches.py`: ROM extractor for `0x016A64..0x016CBE` (602 bytes, 174 instructions).
 - `tests/rom_world_traps_switches_test.py`: Deterministic regression tests (`8/8 PASS`).
