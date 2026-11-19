@@ -1,3 +1,6 @@
+# M15.523 ROM Interactive World Objects: Patrolling/Pacing Trap, Persistent Gate & Hidden Bridge, and Bomb-Destructible Barrier (`0x01778C`..`0x017A96`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_world_patrol_gate_bomb.py`, `tests/rom_world_patrol_gate_bomb_test.py` (`14/14 PASS`), `data/thor-evidence/rom_world_patrol_gate_bomb_m15_523.json`, and `docs/handoffs/STANDALONE_M15_523_WORLD_PATROL_GATE_BOMB_HANDOFF.md`.
+
 # M15.521 ROM Interactive World Objects: Sliding/Retracting Wall Trap, Falling Rock Boulder & Impact AABB (`0x0171C4`..`0x0173D6`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_world_sliding_falling_traps.py`, `tests/rom_world_sliding_falling_traps_test.py` (`15/15 PASS`), `data/thor-evidence/rom_world_sliding_falling_traps_m15_521.json`, and `docs/handoffs/STANDALONE_M15_521_WORLD_SLIDING_FALLING_TRAPS_HANDOFF.md`.
 

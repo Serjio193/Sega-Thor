@@ -1,3 +1,9 @@
+# M15.523 ROM Interactive World Objects: Patrolling/Pacing Trap, Persistent Gate & Hidden Bridge, and Bomb-Destructible Barrier
+- `tools/extract_rom_world_patrol_gate_bomb.py`: ROM extractor for `0x01778C..0x017A96` (778 bytes, 204 instructions).
+- `tests/rom_world_patrol_gate_bomb_test.py`: Deterministic regression tests (`14/14 PASS`).
+- `data/thor-evidence/rom_world_patrol_gate_bomb_m15_523.json`: Disassembly & metadata evidence JSON.
+- `docs/handoffs/STANDALONE_M15_523_WORLD_PATROL_GATE_BOMB_HANDOFF.md`: Standalone C++20 handoff specification.
+
 # M15.521 ROM Interactive World Objects: Sliding/Retracting Wall Trap, Falling Rock Boulder & Impact AABB
 - `tools/extract_rom_world_sliding_falling_traps.py`: ROM extractor for `0x0171C4..0x0173D6` (530 bytes, 137 instructions).
 - `tests/rom_world_sliding_falling_traps_test.py`: Deterministic regression tests (`15/15 PASS`).
