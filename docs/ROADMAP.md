@@ -1,3 +1,6 @@
+# M15.494 ROM Shade Spirit Buzzer, Dark Hole Fall-Rescue Drain & Teleport Recovery, and Shadow Grapple Extension & Hit Latch (`0x01319E`..`0x01341A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_shade_rescue_grapple_hit.py`, `tests/rom_shade_rescue_grapple_hit_test.py` (`5/5 PASS`), `data/thor-evidence/rom_shade_rescue_grapple_hit_m15_494.json`, and `docs/handoffs/STANDALONE_M15_494_SHADE_RESCUE_GRAPPLE_HIT_HANDOFF.md`.
+
 # M15.493 ROM Shade Spirit Master Tick, 40-Frame SP Drain, Damage-to-SP Absorption, 10-State Jump Table, Shadow Grapple & Anchor Warp Starters (`0x012F1E`..`0x01319E`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_shade_dispatch_grapple.py`, `tests/rom_shade_dispatch_grapple_test.py` (`5/5 PASS`), `data/thor-evidence/rom_shade_dispatch_grapple_m15_493.json`, and `docs/handoffs/STANDALONE_M15_493_SHADE_DISPATCH_GRAPPLE_HANDOFF.md`.
 

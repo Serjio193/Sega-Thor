@@ -1,3 +1,13 @@
+# Reverse Engineering Notes — Milestone M15.494 (`0x01319E`..`0x01341A`): Shade Spirit Buzzer, Dark Hole Fall-Rescue Drain & Teleport Recovery, and Shadow Grapple Extension & Hit Latch
+- **Original ROM Addresses:** `0x01319E..0x01341A` (636 bytes, 147 M68K instructions, zero embedded data tables).
+- **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_shade_rescue_grapple_hit.py` and `data/thor-evidence/rom_shade_rescue_grapple_hit_m15_494.json`:
+  * `0x01319E..0x0131AE`: `AI_Shade_InsufficientSpBuzzer` (`#$00A00253` -> `0x0136A0`).
+  * `0x0131AE..0x01325E`: `AI_Shade_State0C_DarkHoleRescueAndDrain` (drain `-4/frame`, `$FF1971` bit-0 blink, `$FF0D7E` restore, `0x009D00`, `0x01378A`, `0x002E1E`, `$FF17BA=$FF`, State `$0E`).
+  * `0x01325E..0x0132AA`: `AI_Shade_State0E_FinishDarkHoleRecovery` (`$FF1985=0`, `$FF19A0=$FF`, `0x002D84`, `$FF16F1:1 -> $FF164F=$FF`).
+  * `0x0132AA..0x01341A`: `AI_Shade_State06_08_GrappleExtendAndHitLatch` (`0x013608`, `+$37:7`, enemy strike with big-endian `bset.b #7, $86(a0)` -> `0x8000` airborne bit, `(0x80,0x80)` accel, `0x0133E6` `timer=18-+$02` retract).
+- **Assumptions:** Callees `0x002D84`, `0x002E1E`, `0x009D00`, `0x00E2D4`, `0x0134DE`, `0x013550`, `0x013608`, `0x0136A0`, `0x01378A` are traced in neighboring slices.
+- **Test Status:** Verified via `tests/rom_shade_rescue_grapple_hit_test.py` (`5/5 PASS`).
+
 # Reverse Engineering Notes — Milestone M15.493 (`0x012F1E`..`0x01319E`): Shade Spirit Master Tick, 40-Frame SP Drain, Damage-to-SP Absorption, 10-State Jump Table, Shadow Grapple & Anchor Warp Starters
 - **Original ROM Addresses:** `0x012F1E..0x01319E` (640 bytes: 620 code bytes / 144 M68K instructions across `0x012F1E..0x013008` and `0x01301C..0x01319E` + 20-byte 10-entry relative jump table at `0x013008..0x01301C`).
 - **Evidence:** Direct M68K Capstone disassembly of `local-roms/Beyond Oasis (USA).md` via `tools/extract_rom_shade_dispatch_grapple.py` and `data/thor-evidence/rom_shade_dispatch_grapple_m15_493.json`:

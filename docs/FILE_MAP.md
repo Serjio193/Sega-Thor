@@ -1,3 +1,9 @@
+# M15.494 ROM Shade Spirit Buzzer, Dark Hole Fall-Rescue Drain & Teleport Recovery, and Shadow Grapple Extension & Hit Latch
+- `tools/extract_rom_shade_rescue_grapple_hit.py` — extractor for `0x01319E..0x01341A` (`AI_Shade_InsufficientSpBuzzer`, `AI_Shade_State0C_DarkHoleRescueAndDrain`, `AI_Shade_State0E_FinishDarkHoleRecovery`, `AI_Shade_State06_08_GrappleExtendAndHitLatch`).
+- `tests/rom_shade_rescue_grapple_hit_test.py` — `5` unit tests verifying evidence integrity, buzzer, Dark Hole rescue drain/teleport, recovery cleanup, grapple item/wall/retract flow, and `+$86 |= 0x8000` airborne enemy hit.
+- `data/thor-evidence/rom_shade_rescue_grapple_hit_m15_494.json` — extracted M15.494 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_494_SHADE_RESCUE_GRAPPLE_HIT_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.493 ROM Shade Spirit Master Tick, 40-Frame SP Drain, Damage-to-SP Absorption, 10-State Jump Table, Shadow Grapple & Anchor Warp Starters
 - `tools/extract_rom_shade_dispatch_grapple.py` — extractor for `0x012F1E..0x01319E` (`AI_Shade_MasterTickAndSpAbsorption`, 10-entry jump table `0x013008..0x01301C`, `AI_Shade_TryStartShadowGrapple`, and `AI_Shade_TryStartShadowAnchorOrRescue`).
 - `tests/rom_shade_dispatch_grapple_test.py` — `5` unit tests verifying evidence/jump table structure, 40-frame SP drain & `SP <= 1` blink, `+$86` damage-to-SP absorption, Grapple tether spawn, and Dark Hole / Anchor Warp starter.
