@@ -1,3 +1,9 @@
+# M15.515 ROM Serpent Boss Phase 1 Intro Cutscene, Palette Crossfades, Active Master Tick, 5-Segment Hit-Flash & 13-Entry State Jump Table
+- `tools/extract_rom_serpent_boss_phase1_intro_damage.py` — extractor for `0x016294..0x0164E2` (`AI_SerpentBoss_Phase1IntroCutscene`, `AI_SerpentBoss_Phase1ActiveMasterTick`, 13-entry jump table `0x0164C8..0x0164E2`).
+- `tests/rom_serpent_boss_phase1_intro_damage_test.py` — `9` unit tests verifying all 13 jump table targets, 6-stage intro cutscene, `$AE` invuln, `$AF` 5-segment `$4200`/`$0200` flash, defense mitigation, and State `$16` death sequence.
+- `data/thor-evidence/rom_serpent_boss_phase1_intro_damage_m15_515.json` — extracted M15.515 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_515_SERPENT_BOSS_PHASE1_INTRO_DAMAGE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.513 ROM Composite Serpent/Multi-Segment Boss States `0x00..0x16` (Grab, Slam, Spit, Death Gravity Fall & 4-Segment Despawn Stagger)
 - `tools/extract_rom_serpent_boss_states.py` — extractor for `0x015E0E..0x0160E2` (States `$00/$08/$02/$04/$06/$0A/$0C/$0E/$14/$16/$10` covering anchor sync, Ali grab probe, directional slam/spit, and 4-segment death stagger).
 - `tests/rom_serpent_boss_states_test.py` — `9` unit tests verifying anchor sync, ascend/descend, Ali grab proximity/lock, rightward & leftward slam/spit sequences, and State `$10` 4-segment stagger.
