@@ -4,6 +4,12 @@
 - `tests/thor_ir_synthetic_driver.cpp` executes the generated code and reports the final registers, CCR, PC and ordered byte writes.
 - `data/thor-fixtures/thor_ir_synthetic_reference.json` stores the independent CPU observations and the SHA-256 values of the input image and reference core.
 
+# M15.526 ROM Town NPC Spawn Initializer (20 Variants)
+- `tools/extract_rom_town_npc_init.py`: ROM extractor for `0x018072..0x018538` (1222 bytes, 274 instructions).
+- `tests/rom_town_npc_init_test.py`: Deterministic regression tests (`8/8 PASS`).
+- `data/thor-evidence/rom_town_npc_init_m15_526.json`: Disassembly & metadata evidence JSON.
+- `docs/handoffs/STANDALONE_M15_526_TOWN_NPC_INIT_HANDOFF.md`: Standalone C++20 handoff specification.
+
 # M15.525 ROM Interactive/Destructible Enemy/Object & Core Persistent Flag Bitfield Helpers
 - `tools/extract_rom_world_destructible_flags.py`: ROM extractor for `0x017E28..0x018072` (586 bytes, 146 instructions).
 - `tests/rom_world_destructible_flags_test.py`: Deterministic regression tests (`6/6 PASS`).

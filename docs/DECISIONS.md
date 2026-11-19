@@ -1,3 +1,7 @@
+# ADR-20261119-M15-526-TOWN-NPC-INIT — ROM Town NPC Spawn Initializer (`0x018072`..`0x018538`)
+- **Decision**: Extracted and verified the 1222-byte (274-instruction) town NPC spawn initializer (`0x018072..0x018538`) covering all 20 variant blocks (`+$66` `1..20`), story flag gating (`$FF0DBF:0`, `$FF0DBC:0`, `$FF0DC5:3`), patrol bounding boxes `(+$A6..+$AC)`, and dialog IDs `+$A0`.
+- **Evidence**: `tools/extract_rom_town_npc_init.py`, `tests/rom_town_npc_init_test.py` (`8/8 PASS`), `data/thor-evidence/rom_town_npc_init_m15_526.json`, `docs/handoffs/STANDALONE_M15_526_TOWN_NPC_INIT_HANDOFF.md`.
+
 # ADR-20261119-M15-525-WORLD-DESTRUCTIBLE-FLAGS — ROM Interactive/Destructible Enemy/Object & Core Persistent Flag Bitfield Helpers (`0x017E28`..`0x018072`)
 - **Decision**: Extracted and verified the 586-byte (146-instruction) destructible object & persistent flag helpers block (`0x017E28..0x018072`) covering `AI_WorldObject_DestructibleEnemyObject` (`0x017EE6` jump table, `+$92` defense, `-$C000` gravity, `0x00F476` loot drop) and the core persistent bitfield helpers `PersistentFlag_SetBit` (`0x017FF2`) and `PersistentFlag_ResolveBit` (`0x018030`) for banks `1..3` (`$FF0DBC/$FF0E1C/$FF0E2C`).
 - **Evidence**: `tools/extract_rom_world_destructible_flags.py`, `tests/rom_world_destructible_flags_test.py` (`6/6 PASS`), `data/thor-evidence/rom_world_destructible_flags_m15_525.json`, `docs/handoffs/STANDALONE_M15_525_WORLD_DESTRUCTIBLE_FLAGS_HANDOFF.md`.

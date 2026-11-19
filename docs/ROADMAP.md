@@ -1,3 +1,6 @@
+# M15.526 ROM Town NPC Spawn Initializer (20 Variants, `0x018072`..`0x018538`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_town_npc_init.py`, `tests/rom_town_npc_init_test.py` (`8/8 PASS`), `data/thor-evidence/rom_town_npc_init_m15_526.json`, and `docs/handoffs/STANDALONE_M15_526_TOWN_NPC_INIT_HANDOFF.md`.
+
 # M15.525 ROM Interactive/Destructible Enemy/Object & Core Persistent Flag Bitfield Helpers (`0x017E28`..`0x018072`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_world_destructible_flags.py`, `tests/rom_world_destructible_flags_test.py` (`6/6 PASS`), `data/thor-evidence/rom_world_destructible_flags_m15_525.json`, and `docs/handoffs/STANDALONE_M15_525_WORLD_DESTRUCTIBLE_FLAGS_HANDOFF.md`.
 
