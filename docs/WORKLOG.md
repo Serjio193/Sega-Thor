@@ -1,3 +1,16 @@
+# Worklog — 2026-11-19 (M16.198: ROM Player Ali Targeting, Cardinal Motion Table Loader, Fixed-Point Aim Vector Normalization & Knockback Launch Physics)
+- **Concrete Task**: Implement `src/game/physics/player_targeting.hpp/.cpp` and `include/game/physics/player_targeting.hpp` in cleanroom namespace `thor::physics` covering `0x00E398..0x00E502` (362 bytes, 120 instructions: `target_player_ali_quadrant_angle` `0x00E398` with X-favoring ties, `target_player_ali_and_load_motion_table` `0x00E3E8` with Y-favoring ties & `max(dom_dist, 16)` timer clamp, `normalize_target_aim_vector_divs` `0x00E45E` with `divs.w` truncation toward zero & `d4` `half_span` return, `launch_directional_projectile_physics` `0x00E4D0` `(0x0300, 0x02E0)` + `0x00060000` Z launch gated by `d7 & 0xC000`, and 64KB RAM window helpers); add `tests/m16_198_player_targeting_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/physics/player_targeting.hpp` (302 lines) / `src/game/physics/player_targeting.cpp` (332 lines).
+  * Added `include/game/physics/player_targeting.hpp` (3 lines).
+  * Added `tests/m16_198_player_targeting_test.cpp` (399 lines, registered as `oasis_m16_198_player_targeting` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_198_player_targeting` + M16 + `project_file_line_limit` suite passed (`179/179`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_198_player_targeting` + M16 + `project_file_line_limit` suite passed (`179/179`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Batch 4 Track M16 (`M16.195..198`) complete; next up Batch 5 M16.199..202 (`0x00EE94..0x00F396`).
+
 # Worklog — 2026-11-19 (M16.197: ROM 16-Bit LFSR PRNG, 8-Way Fixed-Point Vector Engine, 4-Way Cardinal Resolver & Water Surface Probe)
 - **Concrete Task**: Implement `src/game/physics/prng_vector_engine.hpp/.cpp` and `include/game/physics/prng_vector_engine.hpp` in cleanroom namespace `thor::physics` covering `0x00E25C..0x00E398` (316 bytes, 122 instructions: `step_entity_lifecycle_timer` `0x00E25C` `clr.w $0`, 16-bit left-shift LFSR `$FF1928` `prng_step_16`/`prng_range_word`/`prng_range_byte` `0x00E268..0x00E2D4`, 8.8->16.16 `<< 8` 8-way directional velocity projector `project_velocity_8way` `0x00E2D4..0x00E338` with `(v>>1)+((v>>1)>>1)` diagonals `4..7`, unsigned 32-bit `resolve_cardinal_direction_4way` `0x00E338..0x00E36E` returning `0..3`, and `probe_entity_water_surface`/`probe_water_surface_with_aux` `0x00E36E..0x00E398` + `0x009C40` + `0x009C7C` checking `(attr & 0x90) == 0x80` and `$FF2D8C` type-`0x0056` rafts); add `tests/m16_197_prng_vector_engine_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

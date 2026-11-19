@@ -1,3 +1,19 @@
+# ADR-20261119-M16-198-PLAYER-TARGETING — ROM Player Ali Targeting, Cardinal Motion Table Loader, Fixed-Point Aim Vector Normalization & Knockback Launch Physics (0x00E398..0x00E502)
+**Status:** Accepted
+**Date:** 2026-11-19
+
+**Context:**
+1. Direct Capstone disassembly of `0x00E398..0x00E502` (362 bytes, 120 instructions across 4 entrypoints) uncovered exact tie-breaking and register-return details beyond the early M15 handoff prose:
+   - **Tie-breaker asymmetry:** `0x00E398` (`cmp.w d3, d4; bhi`) resolves `|dx| == |dy|` to X-dominant (`Right`/`Left`), whereas `0x00E3E8` (`cmp.w d4, d3; bls`) and `0x00E45E` (`cmp.w d5, d4; bhi`) resolve `|dx| == |dy|` to Y-dominant (`Up`/`Down`).
+   - **Exposed `d4` (`half_span`):** `0x00E45E` returns `d4 = max_span >> 1` (or `0` on the `0x00E4C2` fallback), inspected by ROM proximity callers (`0x011CCE`).
+   - **Exact boundary `0x00E4D0`:** Uses `0x02E0 / 0x0300` (`23/24`) with 8-way `0x00E2D4` `(v>>1)+(v>>2)` diagonal scaling and `d7 & 0xC000` suppression, terminated cleanly at `0x00E502`.
+
+**Decisions:**
+1. **`player_targeting` Cleanroom Module:**
+   - Implemented `src/game/physics/player_targeting.hpp/.cpp` and `include/game/physics/player_targeting.hpp` in namespace `thor::physics` (aliased into `oasis::game::physics`) preserving exact 16-bit wrapping, `divs.w` truncation toward zero, `asr.w #1`, tie-breakers, `half_span` return, and 64KB RAM helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_198_player_targeting` + 179-test M16 + file-limit regression suite).
+
 # ADR-20261119-M16-197-PRNG-VECTOR-ENGINE — ROM 16-Bit LFSR PRNG, 8-Way Fixed-Point Vector Engine, 4-Way Cardinal Resolver & Water Surface Probe (0x00E25C..0x00E398)
 **Status:** Accepted
 **Date:** 2026-11-19

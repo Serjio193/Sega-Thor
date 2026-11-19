@@ -1,3 +1,10 @@
+# M16.198 ROM Player Ali Targeting, Cardinal Motion Table Loader, Fixed-Point Aim Vector Normalization & Knockback Launch Physics (`0x00E398..0x00E502`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/physics/player_targeting.hpp/.cpp` and `include/game/physics/player_targeting.hpp` in cleanroom namespace `thor::physics`:
+  - `target_player_ali_quadrant_angle` (`0x00E398`), `target_player_ali_and_load_motion_table` (`0x00E3E8`), `normalize_target_aim_vector_divs` (`0x00E45E` returning `half_span`), `launch_directional_projectile_physics` (`0x00E4D0`), and 64KB Work RAM helpers.
+- Qualified `oasis_m16_198_player_targeting` and the 179-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.197 ROM 16-Bit LFSR PRNG, 8-Way Fixed-Point Vector Engine, 4-Way Cardinal Resolver & Water Surface Probe (`0x00E25C..0x00E398`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

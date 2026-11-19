@@ -171,6 +171,7 @@ add_library(oasis_core
     src/game/physics/aabb_force_fields.cpp
     src/game/physics/projectile_spark_lifecycle.cpp
     src/game/physics/prng_vector_engine.cpp
+    src/game/physics/player_targeting.cpp
     src/game/camera/camera_controller.cpp
     src/game/camera/camera_follow.cpp
     src/game/world/byte_grid.cpp
