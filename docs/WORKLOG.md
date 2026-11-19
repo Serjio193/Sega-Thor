@@ -1,3 +1,16 @@
+# Worklog — 2026-11-19 (M16.196: ROM Spark Effect Dispatcher, Projectile Gravity Fall, Lifetime Blink & Despawn Subsystem)
+- **Concrete Task**: Implement `src/game/physics/projectile_spark_lifecycle.hpp/.cpp` and `include/game/physics/projectile_spark_lifecycle.hpp` in cleanroom namespace `thor::physics` covering `0x00E0BA..0x00E25C` (`dispatch_spark_effects` `$FF2D8C` 6x90B, `dispatch_projectile_entities` `$FF1856` pre-pause decrement + `$FF2ABC` 8x90B, `dispatch_projectile_slot_state` `0x00E144` via table `0x00E140` `[0x0010, 0x0050]`, `step_projectile_gravity_landing` `-0xC000` Z gravity & `< $FF2ABC` parent unlatch, `step_projectile_gravity_blink_despawn` with `0x00E1CE -> 0x00E1D2` fallthrough + 240..300 blink + `> 300` despawn without writing `301`, `step_projectile_bounce_phase` non-decrementing `+$9E` `0->0x63`/`1->2`, and 64KB RAM window helpers); add `tests/m16_196_projectile_spark_lifecycle_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/physics/projectile_spark_lifecycle.hpp` (240 lines) / `src/game/physics/projectile_spark_lifecycle.cpp` (478 lines).
+  * Added `include/game/physics/projectile_spark_lifecycle.hpp` (3 lines).
+  * Added `tests/m16_196_projectile_spark_lifecycle_test.cpp` (419 lines, registered as `oasis_m16_196_projectile_spark_lifecycle` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_196_projectile_spark_lifecycle` + M16 + `project_file_line_limit` suite passed (`177/177`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_196_projectile_spark_lifecycle` + M16 + `project_file_line_limit` suite passed (`177/177`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: Ready for M16.197 16-bit LFSR PRNG, 8-way vector engine, 4-way cardinal resolver & water probe (`0x00E25C..0x00E398`).
+
 # Worklog — 2026-11-19 (M16.195: ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Pointer Table)
 - **Concrete Task**: Implement `src/game/world/group2_entity_dispatcher.hpp/.cpp` and `include/game/world/group2_entity_dispatcher.hpp` in cleanroom namespace `thor::world` covering `0x00DEEC..0x00E0BA` (462 bytes: `$FF17B8` bit-1 pause gate, 20-slot `$FF1AA4` sweep at `0xBC` stride, `<= 0` / `< 0x16` skip gates, 89-entry even-type jump table `0x00DF54..0x00E0B8` with dummy `0x00E0B8` `rts`, unconditional post-tick 3/4 isometric footprint projection on `+$48/+$49` with `+$17` bit-0 X/Y swap into `+$42/+$44`, and 64KB RAM window helper); add `tests/m16_195_group2_entity_dispatcher_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

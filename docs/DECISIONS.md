@@ -1,3 +1,17 @@
+# ADR-20261119-M16-196-PROJECTILE-SPARK-LIFECYCLE — ROM Spark Effect Dispatcher, Projectile Gravity Fall, Lifetime Blink & Despawn Subsystem (0x00E0BA..0x00E25C)
+**Status:** Accepted
+**Date:** 2026-11-19
+
+**Context:**
+1. Hybrid M15 extracted ROM routines `0x00E0BA..0x00E25C` (418 bytes covering spark dispatcher `0x00E0BA`, projectile dispatcher `0x00E0F4`, jump table `0x00E140`, single-slot Group 2 target `0x00E144`, gravity landing `0x00E150`, gravity blink/despawn `0x00E192`, and bounce-phase init `0x00E20A`):
+   - Direct Capstone disassembly resolved 4 subtle ROM behaviors missed/misstated in earlier prose: (a) `< $FF2ABC` parent unlatch compares `slot_ram_addr < 0x00FF2ABC`; (b) State 2 `clr.w $0(a6)` at `0x00E1CE` falls straight through into `0x00E1D2` lifetime increment/blink rather than returning; (c) `> 300` despawn at `0x00E1E4` clears `type = 0` without storing `301` back into `+$22`; and (d) `0x00E20A` tests `+$9E == 0/1` via `subq.b #1, d0` without decrementing `+$9E` in memory (`0 -> 0x63`, `1 -> 2`).
+
+**Decisions:**
+1. **`projectile_spark_lifecycle` Cleanroom Module:**
+   - Implemented `src/game/physics/projectile_spark_lifecycle.hpp/.cpp` and `include/game/physics/projectile_spark_lifecycle.hpp` in namespace `thor::physics` (aliased into `oasis::game::physics`) matching all verified M68K branch/fallthrough/word-write behaviors plus 64KB Work RAM window helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_196_projectile_spark_lifecycle` + 177-test M16 + file-limit regression suite; local ROM constant checks optional in CI).
+
 # ADR-20261119-M16-195-GROUP2-ENTITY-DISPATCHER — ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Pointer Table (0x00DEEC..0x00E0BA)
 **Status:** Accepted
 **Date:** 2026-11-19

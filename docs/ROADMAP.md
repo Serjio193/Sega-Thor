@@ -1,3 +1,11 @@
+# M16.196 ROM Spark Effect Dispatcher, Projectile Gravity Fall, Lifetime Blink & Despawn Subsystem (`0x00E0BA..0x00E25C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/physics/projectile_spark_lifecycle.hpp/.cpp` and `include/game/physics/projectile_spark_lifecycle.hpp` in cleanroom namespace `thor::physics`:
+  - `dispatch_spark_effects` (`$FF2D8C` 6x90B) and `dispatch_projectile_entities` (`$FF1856` pre-pause decrement, `$FF2ABC` 8x90B, `0x00E140` jump table, `0x00E144` Group 2 entrypoint).
+  - `step_projectile_gravity_landing`, `step_projectile_gravity_blink_despawn` (with verified `0x00E1CE` fallthrough and `> 300` despawn), `step_projectile_bounce_phase`, and 64KB Work RAM window helpers.
+- Qualified `oasis_m16_196_projectile_spark_lifecycle` and the 177-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.195 ROM Master Group 2 Entity Tick Dispatcher, Post-Tick Isometric Bounding Box Calculator & 89-Entry Action Pointer Table (`0x00DEEC..0x00E0BA`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

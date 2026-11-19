@@ -169,6 +169,7 @@ add_library(oasis_core
     src/game/render/tilemap_rect_ops.cpp
     src/game/render/dirty_plane_blitter.cpp
     src/game/physics/aabb_force_fields.cpp
+    src/game/physics/projectile_spark_lifecycle.cpp
     src/game/camera/camera_controller.cpp
     src/game/camera/camera_follow.cpp
     src/game/world/byte_grid.cpp
