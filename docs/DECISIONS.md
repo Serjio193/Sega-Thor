@@ -1,3 +1,20 @@
+# ADR-20261120-M16-203-BOW-ARROW-ENGINE — ROM Player Bow Arrow Projectile Spawner, Ground/Water Facing Offsets & Parabolic Launch Engine (0x00F396..0x00F476)
+**Status:** Accepted
+**Date:** 2026-11-20
+
+**Context:**
+1. Direct Capstone disassembly of `0x00F396..0x00F476` (224 bytes) and USA ROM callers `0x007380..0x007430` refined earlier handoff prose:
+   - **Exact callers & `+$02(a6)` word (`d2`):** Ground fires via `0x0073C0` (`elevation = 0x0022`, `d2 = (subtype << 4) + 1`), and water fires via `0x00741A` (`elevation = 0x0004`, `d2 = (subtype << 3)`).
+   - **Unsigned threshold (`0x00F444..0x00F44A`):** `cmpi.w #$10, $10(a6); bcc.b $f45c` checks unsigned `uint16_t(elevation) >= 16` (negative `s16` values wrap `>= 0x8000` and take the `(0x0300, 0x00020000)` arc).
+   - **Cleared projectile facing (`0x00F3D2`):** Writes `+$16(a6) = 0` on the projectile while using owner `+$16(a4)` for both tip offset lookup (`& 3`) and `0x00E2D4` velocity projection.
+   - **Misidentified `0x009D00`:** Executes the terrain footprint & floor elevation probe (`+$6E/+$6F/+$70/+$14`), matching `elemental_blade`.
+
+**Decisions:**
+1. **`bow_arrow_engine` Cleanroom Module:**
+   - Implemented `src/game/combat/bow_arrow_engine.hpp/.cpp` and `include/game/combat/bow_arrow_engine.hpp` in namespace `thor::combat` (aliased into `oasis::game::combat`) preserving exact ground/water tip tables, unsigned `0x0010` threshold, `+$16=0`, `0x00E2D4` velocity projection, `$FF17B8:0` anchor doubling, and 64KB RAM helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_203_bow_arrow_engine` + 184-test M16 + file-limit regression suite).
+
 # ADR-20261120-M16-202-ELEMENTAL-BLADE — ROM Elemental Blade Projectile Wave Spawner, Ground/Water Tip Tables & Bitmask Variant Decoder (0x00F258..0x00F396)
 **Status:** Accepted
 **Date:** 2026-11-20

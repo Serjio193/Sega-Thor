@@ -1,3 +1,9 @@
+# M16.203 ROM Player Bow Arrow Projectile Spawner, Ground/Water Facing Offsets & Parabolic Launch Engine (`0x00F396..0x00F476`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/combat/bow_arrow_engine.hpp/.cpp` and `include/game/combat/bow_arrow_engine.hpp` in cleanroom namespace `thor::combat` covering `0x00F396..0x00F476` (`calculate_bow_arrow_launch_params`, `compute_bow_arrow_anchor`, `spawn_bow_arrow`, and 64KB RAM helpers).
+- Qualified `oasis_m16_203_bow_arrow_engine` and the 184-test M16 + `project_file_line_limit` suite on both MinGW Release (`10.93s`) and MSVC Debug (`23.29s`).
+
 # M16.202 ROM Elemental Blade Projectile Wave Spawner, Ground/Water Tip Tables & Bitmask Variant Decoder (`0x00F258..0x00F396`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
