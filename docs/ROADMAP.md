@@ -1,3 +1,9 @@
+# M16.202 ROM Elemental Blade Projectile Wave Spawner, Ground/Water Tip Tables & Bitmask Variant Decoder (`0x00F258..0x00F396`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/combat/elemental_blade.hpp/.cpp` and `include/game/combat/elemental_blade.hpp` in cleanroom namespace `thor::combat` covering `0x00F258..0x00F396` (`decode_sword_wave_parameters`, `compute_sword_wave_anchor`, `spawn_elemental_blade`, and 64KB RAM helpers).
+- Qualified `oasis_m16_202_elemental_blade` and the 183-test M16 + `project_file_line_limit` suite on both MinGW Release (`10.95s`) and MSVC Debug (`23.36s`).
+
 # M16.201 ROM Pool 2 Knockback Stun Wave Broadcaster & Global 21-Slot Entity Type Lookup Engine (`0x00F1B2..0x00F258`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

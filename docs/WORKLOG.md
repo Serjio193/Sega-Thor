@@ -1,3 +1,16 @@
+# Worklog — 2026-11-20 (M16.202: ROM Elemental Blade Projectile Wave Spawner, Ground/Water Tip Tables & Bitmask Variant Decoder)
+- **Concrete Task**: Implement `src/game/combat/elemental_blade.hpp/.cpp` and `include/game/combat/elemental_blade.hpp` in cleanroom namespace `thor::combat` (aliased into `oasis::game::combat`) covering `0x00F258..0x00F396` (318 bytes: `0x00F258` ground / `0x00F26A` water entrypoints with `0x008530` durability hook, `0x00F262`/`0x00F274` 4-direction `(dx, dy)` tables, shared `$FF1B60` slot `0x0034` initializer `0x00F27C..0x00F396` with callers `0x0072C4`/`0x007348`, `0x008D06` slot zeroing, `0x009D00` terrain probe, bit-31 Fire fallthrough to Omega/Hyper, `(speed_x, speed_y)` `0x00E2D4` 8-way projection, `pos_z_fp = elevation << 16`, `$FF17B8:0` slow-mo anchor doubling, and 64KB RAM helpers); add `tests/m16_202_elemental_blade_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/combat/elemental_blade.hpp` (263 lines) / `src/game/combat/elemental_blade.cpp` (374 lines).
+  * Added `include/game/combat/elemental_blade.hpp` (3 lines).
+  * Added `tests/m16_202_elemental_blade_test.cpp` (377 lines, registered as `oasis_m16_202_elemental_blade` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_202_elemental_blade` + M16 + `project_file_line_limit` suite passed (`183/183`, `10.95 sec`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_202_elemental_blade` + M16 + `project_file_line_limit` suite passed (`183/183`, `23.36 sec`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: `M16.203` (`0x00F396..0x00F476`, `bow_arrow_engine`) next to finish closing the `M15.456..460` slice.
+
 # Worklog — 2026-11-20 (M16.201: ROM Pool 2 Knockback Stun Wave Broadcaster & Global 21-Slot Entity Type Lookup Engine)
 - **Concrete Task**: Implement `src/game/world/entity_stun_lookup.hpp/.cpp` and `include/game/world/entity_stun_lookup.hpp` in cleanroom namespace `thor::world` (aliased into `oasis::game::world`) covering `0x00F1B2..0x00F258` (166 bytes, 44 instructions: `broadcast_pool2_knockback_stun` `0x00F1B2..0x00F234` sweeping 17 `$FF1CD8` Pool-2 slots when caller `+$00 == 0`, preserving `+$16` while toggling bit 1 into `+$84`, calling `0x00E4D0` `(0x0300,0x02E0)` + `0x00060000` Z with `d7=0`, latching `+$86=0xCFFF` & `+$8C=0xFFFF` if 0, unconditionally writing `$FF17B2=0x0004382E`, plus `find_entity_by_type_id_global` `0x00F234..0x00F258` 21-slot `$FF19E8` scan and 64KB RAM helpers); add `tests/m16_201_entity_stun_lookup_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

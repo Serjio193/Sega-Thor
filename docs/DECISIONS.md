@@ -1,3 +1,20 @@
+# ADR-20261120-M16-202-ELEMENTAL-BLADE — ROM Elemental Blade Projectile Wave Spawner, Ground/Water Tip Tables & Bitmask Variant Decoder (0x00F258..0x00F396)
+**Status:** Accepted
+**Date:** 2026-11-20
+
+**Context:**
+1. Direct Capstone disassembly of `0x00F258..0x00F396` (318 bytes) resolved multiple discrepancies in earlier M15 handoff prose:
+   - **Exact USA ROM callers:** Ground swing calls `0x00F258` at `0x0072C4` (`elevation = 0x001C`), and water swing calls `0x00F26A` at `0x007348` (`elevation = 0x000D`).
+   - **Misidentified callee `0x009D00`:** Executes the terrain footprint & floor elevation probe (`+$6E/+$6F/+$70/+$14`), not animation frame setup.
+   - **`speed_x` / `speed_y` meaning:** `d1` (`0x0C00`/`0x1000`/`0x0E00`) is X speed and `d2` (`0x0BC0`/`0x0F00`/`0x0D00`) is Y speed passed to `0x00E2D4`; diagonal `0.75x` scaling happens inside `0x00E2D4`.
+   - **Bit-31 Fire fallthrough & high-word `+$10` write:** `0x00F2D6..0x00F2EC` falls through into bit 30/29 checks so composite masks preserve Fire `+$2A=4` and `+$3C |= 2`, while `0x00F2C2` writes `d0.w` into `+$10` leaving `pos_z_fp = elevation << 16`.
+
+**Decisions:**
+1. **`elemental_blade` Cleanroom Module:**
+   - Implemented `src/game/combat/elemental_blade.hpp/.cpp` and `include/game/combat/elemental_blade.hpp` in namespace `thor::combat` (aliased into `oasis::game::combat`) preserving exact tip unpacking, bitmask fallthrough, `0x00E2D4` projection, `$FF17B8:0` slow-mo anchor doubling, and 64KB RAM helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_202_elemental_blade` + 183-test M16 + file-limit regression suite).
+
 # ADR-20261120-M16-201-ENTITY-STUN-LOOKUP — ROM Pool 2 Knockback Stun Wave Broadcaster & Global 21-Slot Entity Type Lookup Engine (0x00F1B2..0x00F258)
 **Status:** Accepted
 **Date:** 2026-11-20

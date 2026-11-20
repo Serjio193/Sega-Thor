@@ -60,6 +60,7 @@ add_library(oasis_core
     src/game/combat/attack_scanner_engine.cpp
     src/game/combat/combat_hit_response.cpp
     src/game/combat/hit_spark_generator.cpp
+    src/game/combat/elemental_blade.cpp
     src/game/hud/decimal_formatter.cpp
     src/game/collision/player_rect_collision.cpp
     src/game/font/font_glyph_packer.cpp
