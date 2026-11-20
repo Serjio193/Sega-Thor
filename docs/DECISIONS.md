@@ -1,3 +1,19 @@
+# ADR-20261119-M16-200-VECTOR-MATH-3D — ROM 2D/3D Euclidean Distance, divs.w Velocity Normalizer, Sphere Clamp & Boss3A Rock Launch Vector Engine (0x00F054..0x00F1B2)
+**Status:** Accepted
+**Date:** 2026-11-19
+
+**Context:**
+1. Direct Capstone disassembly of `0x00F054..0x00F1B2` (350 bytes) clarified exact HUD, comparison, and helper reuse behavior:
+   - **HUD tracker latch (`0x00F054`):** Calls `bsr.w $be98` (`$FF184F = 0x5A`, `$FF1850 = a0` unless `a0 == $FF19E8` or `+$3A` bit 0 is set) before computing 4-way launch direction.
+   - **Unsigned sphere threshold (`0x00F17A..0x00F17C`):** Uses `cmp.w d4, d0; bls.w $f1a8` (unsigned `dist <= radius`), exiting unclamped for `u16` radii >= `0x8000` when `dist <= radius`.
+   - **Shared `isqrt_u32` (`0x00E6BA`):** Reuses `oasis::game::math::isqrt_u32` with guess cap `0x0400 = 1024`, ensuring co-inclusion parity across math modules.
+
+**Decisions:**
+1. **`vector_math_3d` Cleanroom Module:**
+   - Implemented `src/game/math/vector_math_3d.hpp/.cpp` and `include/game/math/vector_math_3d.hpp` in namespace `thor::math` (aliased into `oasis::game::math`) preserving exact 16-bit wrapping, `divs.w` overflow guard, unsigned sphere compare, Boss3A close-range override (`<= 0x00080000` -> entry 3), and 64KB RAM helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_200_vector_math_3d` + 181-test M16 + file-limit regression suite).
+
 # ADR-20261119-M16-199-BOSS-CHARGE-ENGINE — ROM Boss Charge Attack, Water-Stop Gate, Elevation-Adjusted Gravity Bounce & Directional Knockback Velocity Engine (0x00EE94..0x00F054)
 **Status:** Accepted
 **Date:** 2026-11-19

@@ -1,3 +1,9 @@
+# M16.200 ROM 2D/3D Euclidean Distance, `divs.w` Velocity Normalizer, Sphere Clamp & Boss3A Rock Launch Vector Engine (`0x00F054..0x00F1B2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/math/vector_math_3d.hpp/.cpp` and `include/game/math/vector_math_3d.hpp` in cleanroom namespace `thor::math` covering `0x00F054..0x00F1B2` (`setup_boss3a_rock_launch`, `distance_2d`, `distance_3d`, `normalize_velocity_3d`, `clamp_to_sphere_3d`, and 64KB RAM helpers).
+- Qualified `oasis_m16_200_vector_math_3d` and the 181-test M16 + `project_file_line_limit` suite on both MinGW Release (`11.11s`) and MSVC Debug (`24.37s`).
+
 # M16.199 ROM Boss Charge Attack, Water-Stop Gate, Elevation-Adjusted Gravity Bounce & Directional Knockback Velocity Engine (`0x00EE94..0x00F054`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

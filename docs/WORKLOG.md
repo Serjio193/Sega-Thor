@@ -1,3 +1,16 @@
+# Worklog — 2026-11-19 (M16.200: ROM 2D/3D Euclidean Distance, divs.w Velocity Normalizer, Sphere Clamp & Boss3A Rock Launch Vector Engine)
+- **Concrete Task**: Implement `src/game/math/vector_math_3d.hpp/.cpp` and `include/game/math/vector_math_3d.hpp` in cleanroom namespace `thor::math` (aliased into `oasis::game::math`) covering `0x00F054..0x00F1B2` (350 bytes: `setup_boss3a_rock_launch` `0x00F054..0x00F0C2` with HUD tracker hook `0x00F054 -> 0x00BE98` writing `$FF184F=0x5A` / `$FF1850=a0` unless `$FF19E8` or `+$3A:0`, 4-entry `kBoss3ARockVelocityTable` at `0x00F0C2` `{0x0300,0x0300},{0x0500,0x0400},{0x0700,0x0500},{0x0000,0x0800}`, `distance_2d` `0x00F0D2`, `distance_3d` `0x00F0EC`, `normalize_velocity_3d` `0x00F10C` `divs.w` `<< 12`, `clamp_to_sphere_3d` `0x00F160` unsigned `cmp.w d4, d0; bls`, reusing `oasis::game::math::isqrt_u32` `0x0400` cap, plus 64KB RAM helpers); add `tests/m16_200_vector_math_3d_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/math/vector_math_3d.hpp` (208 lines) / `src/game/math/vector_math_3d.cpp` (416 lines).
+  * Added `include/game/math/vector_math_3d.hpp` (3 lines).
+  * Added `tests/m16_200_vector_math_3d_test.cpp` (313 lines, registered as `oasis_m16_200_vector_math_3d` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_200_vector_math_3d` + M16 + `project_file_line_limit` suite passed (`181/181`, `11.11 sec`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_200_vector_math_3d` + M16 + `project_file_line_limit` suite passed (`181/181`, `24.37 sec`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: `M16.201..203` (`0x00F1B2..0x00F476`) next to finish closing the `M15.456..460` gap.
+
 # Worklog — 2026-11-19 (M16.199: ROM Boss Charge Attack, Water-Stop Gate, Elevation-Adjusted Gravity Bounce & Directional Knockback Velocity Engine)
 - **Concrete Task**: Implement `src/game/enemy/boss_charge_engine.hpp/.cpp` and `include/game/enemy/boss_charge_engine.hpp` in cleanroom namespace `thor::enemy` (aliased into `oasis::game::enemy`) covering `0x00EE94..0x00F054` (448 bytes: `advance_boss_charge_phase` `0x00EE94..0x00EF7C` with water probe `0x00EFA2 -> 0x00E36E` & SFX `0x00E7E8`, `integrate_boss_gravity_bounce` `0x00EF7C..0x00F032` with `0.75*vz` -> `+$56` / `0.5*vz` -> `+$10`, unsigned `0x4000` bounce threshold, downward ground skip `0x00EFCE`, and `normalize_directional_knockback_velocity` `0x00F032..0x00F054`); add `tests/m16_199_boss_charge_engine_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:
