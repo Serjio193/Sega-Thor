@@ -1,3 +1,16 @@
+# Worklog — 2026-11-20 (M16.201: ROM Pool 2 Knockback Stun Wave Broadcaster & Global 21-Slot Entity Type Lookup Engine)
+- **Concrete Task**: Implement `src/game/world/entity_stun_lookup.hpp/.cpp` and `include/game/world/entity_stun_lookup.hpp` in cleanroom namespace `thor::world` (aliased into `oasis::game::world`) covering `0x00F1B2..0x00F258` (166 bytes, 44 instructions: `broadcast_pool2_knockback_stun` `0x00F1B2..0x00F234` sweeping 17 `$FF1CD8` Pool-2 slots when caller `+$00 == 0`, preserving `+$16` while toggling bit 1 into `+$84`, calling `0x00E4D0` `(0x0300,0x02E0)` + `0x00060000` Z with `d7=0`, latching `+$86=0xCFFF` & `+$8C=0xFFFF` if 0, unconditionally writing `$FF17B2=0x0004382E`, plus `find_entity_by_type_id_global` `0x00F234..0x00F258` 21-slot `$FF19E8` scan and 64KB RAM helpers); add `tests/m16_201_entity_stun_lookup_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/entity_stun_lookup.hpp` (174 lines) / `src/game/world/entity_stun_lookup.cpp` (344 lines).
+  * Added `include/game/world/entity_stun_lookup.hpp` (3 lines).
+  * Added `tests/m16_201_entity_stun_lookup_test.cpp` (295 lines, registered as `oasis_m16_201_entity_stun_lookup` in `cmake/project_tests_m16_b.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_201_entity_stun_lookup` + M16 + `project_file_line_limit` suite passed (`182/182`, `10.96 sec`, `ctest --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `oasis_m16_201_entity_stun_lookup` + M16 + `project_file_line_limit` suite passed (`182/182`, `24.28 sec`, `ctest -C Debug --output-on-failure -R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean (0 exit code).
+  * Line limit check: all files strictly <= 500 lines (`project_file_line_limit` passed).
+  * Remaining unknowns: `M16.202..203` (`0x00F258..0x00F476`) next to finish closing the `M15.456..460` slice.
+
 # Worklog — 2026-11-19 (M16.200: ROM 2D/3D Euclidean Distance, divs.w Velocity Normalizer, Sphere Clamp & Boss3A Rock Launch Vector Engine)
 - **Concrete Task**: Implement `src/game/math/vector_math_3d.hpp/.cpp` and `include/game/math/vector_math_3d.hpp` in cleanroom namespace `thor::math` (aliased into `oasis::game::math`) covering `0x00F054..0x00F1B2` (350 bytes: `setup_boss3a_rock_launch` `0x00F054..0x00F0C2` with HUD tracker hook `0x00F054 -> 0x00BE98` writing `$FF184F=0x5A` / `$FF1850=a0` unless `$FF19E8` or `+$3A:0`, 4-entry `kBoss3ARockVelocityTable` at `0x00F0C2` `{0x0300,0x0300},{0x0500,0x0400},{0x0700,0x0500},{0x0000,0x0800}`, `distance_2d` `0x00F0D2`, `distance_3d` `0x00F0EC`, `normalize_velocity_3d` `0x00F10C` `divs.w` `<< 12`, `clamp_to_sphere_3d` `0x00F160` unsigned `cmp.w d4, d0; bls`, reusing `oasis::game::math::isqrt_u32` `0x0400` cap, plus 64KB RAM helpers); add `tests/m16_200_vector_math_3d_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16_b.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), and `git diff --check`.
 - **Delivered**:

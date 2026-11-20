@@ -195,6 +195,7 @@ add_library(oasis_core
     src/game/world/world_graph.cpp
     src/game/world/entity_pool_alloc.cpp
     src/game/world/group2_entity_dispatcher.cpp
+    src/game/world/entity_stun_lookup.cpp
     src/game/scene_transition_helpers.cpp
     src/game/event/event_vm.cpp
     src/game/events/event_vm.cpp

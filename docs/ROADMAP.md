@@ -1,3 +1,9 @@
+# M16.201 ROM Pool 2 Knockback Stun Wave Broadcaster & Global 21-Slot Entity Type Lookup Engine (`0x00F1B2..0x00F258`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `src/game/world/entity_stun_lookup.hpp/.cpp` and `include/game/world/entity_stun_lookup.hpp` in cleanroom namespace `thor::world` covering `0x00F1B2..0x00F258` (`broadcast_pool2_knockback_stun`, `apply_default_stun_launch_physics`, `find_entity_by_type_id_global`, and 64KB RAM helpers).
+- Qualified `oasis_m16_201_entity_stun_lookup` and the 182-test M16 + `project_file_line_limit` suite on both MinGW Release (`10.96s`) and MSVC Debug (`24.28s`).
+
 # M16.200 ROM 2D/3D Euclidean Distance, `divs.w` Velocity Normalizer, Sphere Clamp & Boss3A Rock Launch Vector Engine (`0x00F054..0x00F1B2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

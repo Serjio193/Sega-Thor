@@ -1,3 +1,20 @@
+# ADR-20261120-M16-201-ENTITY-STUN-LOOKUP — ROM Pool 2 Knockback Stun Wave Broadcaster & Global 21-Slot Entity Type Lookup Engine (0x00F1B2..0x00F258)
+**Status:** Accepted
+**Date:** 2026-11-20
+
+**Context:**
+1. Direct Capstone disassembly of `0x00F1B2..0x00F258` (166 bytes, 44 instructions) caught key behavior differences from earlier prose/Python handoff notes:
+   - **Read-only `+$16` vs reversed `+$84` (`0x00F1EE..0x00F1F6`):** `move.w $16(a6), d0; bchg.b #$1, d0; move.w d0, $84(a6)` preserves `+$16(a6)` untouched and writes the bit-1-flipped cardinal direction (`0<->2`, `1<->3`) solely into `+$84(a6)`.
+   - **Knockback launch callee (`0x00F1FA..0x00F1FC`):** Executes `clr.w d7; bsr.w $e4d0` projecting `(0x0300, 0x02E0)` along `+$84(a6) & 7` plus `+0x00060000` Z velocity, writing `+$86=0xCFFF` and conditional `+$8C=0xFFFF` (only if `0`).
+   - **Unconditional `$FF17B2` pointer (`0x00F21A`):** Writes `0x0004382E` to `$FF17B2` and returns Carry set even if 0 Pool-2 slots matched, once caller `+$00(a5) == 0`.
+   - **Global 21-slot scan (`0x00F234..0x00F258`):** Compares `cmp.w $0(a0), d0` across `$FF19E8[0..20]` including `0`/negative values.
+
+**Decisions:**
+1. **`entity_stun_lookup` Cleanroom Module:**
+   - Implemented `src/game/world/entity_stun_lookup.hpp/.cpp` and `include/game/world/entity_stun_lookup.hpp` in namespace `thor::world` (aliased into `oasis::game::world`) preserving exact filter/launch semantics and 64KB RAM helpers.
+2. **Dual Toolchain Parity & CI Independence:**
+   - Qualified across MinGW Release and MSVC Debug (`oasis_m16_201_entity_stun_lookup` + 182-test M16 + file-limit regression suite).
+
 # ADR-20261119-M16-200-VECTOR-MATH-3D — ROM 2D/3D Euclidean Distance, divs.w Velocity Normalizer, Sphere Clamp & Boss3A Rock Launch Vector Engine (0x00F054..0x00F1B2)
 **Status:** Accepted
 **Date:** 2026-11-19
